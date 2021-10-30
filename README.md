@@ -1,6 +1,4 @@
-# npo-frontend-template
-
-This template will be used to create all NPO frontend repos
+# Abound Food Care Frontend
 
 ## Available Scripts
 
