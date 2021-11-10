@@ -1,23 +1,25 @@
 import React from 'react';
-import logo from './logo.svg';
+import {Button, DatePicker} from 'antd';
 import './App.css';
+import 'antd/dist/antd.css';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          *AntDesign provides a set of high-quality React components out of the box!*
+          <br />
+          <a href="https://ant.design/components/overview/" target="_blank" rel="noreferrer">
+            Overview of available AntDesign components
+          </a>
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <br />
+        <h1 style={{color: 'white'}}>Example Ant Design Components</h1>
+        <Button type="primary" onClick={() => alert('you clicked me!')}>
+          dummy antdesign button
+        </Button>
+        <DatePicker placeholder="select date" />
       </header>
     </div>
   );
