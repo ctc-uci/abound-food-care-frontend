@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import React from 'react';
 import {Button, DatePicker} from 'antd';
 import './App.css';
