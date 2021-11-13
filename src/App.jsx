@@ -1,6 +1,6 @@
 /* eslint-disable no-alert */
 import React from 'react';
-import {Button, DatePicker} from 'antd';
+import { Button, DatePicker } from 'antd';
 import './App.css';
 import 'antd/dist/antd.css';
 
@@ -16,7 +16,7 @@ function App() {
           </a>
         </p>
         <br />
-        <h1 style={{color: 'white'}}>Example Ant Design Components</h1>
+        <h1 style={{ color: 'white' }}>Example Ant Design Components</h1>
         <Button type="primary" onClick={() => alert('you clicked me!')}>
           dummy antdesign button
         </Button>
