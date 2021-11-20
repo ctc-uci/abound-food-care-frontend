@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, DatePicker} from 'antd';
+import { Button, DatePicker } from 'antd';
 import './App.css';
 
 function App() {
@@ -14,7 +14,7 @@ function App() {
           </a>
         </p>
         <br />
-        <h1 style={{color: 'white'}}>Example Ant Design Components</h1>
+        <h1 style={{ color: 'white' }}>Example Ant Design Components</h1>
         <Button type="primary"> dummy antdesign button </Button>
         <DatePicker placeholder="select date" />
       </header>
