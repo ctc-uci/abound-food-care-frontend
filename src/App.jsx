@@ -1,10 +1,13 @@
 import React from 'react';
 import { Button, DatePicker } from 'antd';
 import './App.css';
+import Header from './components/header';
+import Footer from './components/footer';
 
 function App() {
   return (
     <div className="App">
+      <Header />
       <header className="App-header">
         <p>
           *AntDesign provides a set of high-quality React components out of the box!*
@@ -18,6 +21,7 @@ function App() {
         <Button type="primary"> dummy antdesign button </Button>
         <DatePicker placeholder="select date" />
       </header>
+      <Footer />
     </div>
   );
 }
