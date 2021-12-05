@@ -10,6 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:    
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - run: yarn install
       - name: Run eslint with reviewdog
         uses: reviewdog/action-eslint@v1.14.0
         with:
