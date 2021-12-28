@@ -3,11 +3,13 @@ import { Button, DatePicker } from 'antd';
 import './App.css';
 import Header from './components/header';
 import Footer from './components/footer';
+import GeneralInfo from './components/GeneralInfo';
 
 function App() {
   return (
     <div className="App">
       <Header />
+      <GeneralInfo />
       <header className="App-header">
         <p>
           *AntDesign provides a set of high-quality React components out of the box!*
