@@ -20,7 +20,7 @@ const DuiAndCrimHis = () => {
     <Form
       labelCol={{ span: 6 }}
       wrapperCol={{ span: 14 }}
-      name="nest-messages"
+      name="dui_criminal_history"
       validateMessages={validateMessages}
       size={componentSize}
       onValuesChange={onFormLayoutChange}
@@ -33,7 +33,6 @@ const DuiAndCrimHis = () => {
       </Form.Item>
 
       <Form.Item label="Please elaborate if you checked Yes:">
-        <Input placeholder="Placeholder sentence..." />
         <Input.TextArea />
       </Form.Item>
 
@@ -45,7 +44,6 @@ const DuiAndCrimHis = () => {
       </Form.Item>
 
       <Form.Item label="Please elaborate if you checked Yes:">
-        <Input placeholder="Placeholder sentence..." />
         <Input.TextArea />
       </Form.Item>
 
