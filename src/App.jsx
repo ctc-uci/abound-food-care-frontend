@@ -4,11 +4,13 @@ import './App.css';
 import Header from './components/header';
 import Footer from './components/footer';
 import GeneralInfo from './components/GeneralInfo';
+import WeeklyInfo from './components/WeeklyInfo';
 
 function App() {
   return (
     <div className="App">
       <Header />
+      <WeeklyInfo />
       <GeneralInfo />
       <header className="App-header">
         <p>
