@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, Radio, Form, Select, Option, InputNumber, Button } from 'antd';
+import { Input, Radio, Form, Select, Option, InputNumber, Button, Col, Checkbox, Row } from 'antd';
 
 /* eslint-disable no-template-curly-in-string */
 
@@ -14,13 +14,13 @@ const RolesAndSkills = () => {
 
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
-//
-  const[form] = Form.useForm();
-  const [requiredMark, setRequiredMarkType] = useState('optional');
 
-  const onRequiredTypeChange = ({ requiredMarkValue }) => {
-    setRequiredMarkType(requiredMarkValue);
-  };
+    // const [form] = Form.useForm();
+    // const [requiredMark, setRequiredMarkType] = useState('optional');
+
+    // const onRequiredTypeChange = ({ requiredMarkValue }) => {
+    //  setRequiredMarkType(requiredMarkValue);
+    // };
   };
 
   return (
@@ -46,40 +46,40 @@ const RolesAndSkills = () => {
           <Row>
             <Col span={6}>
               <Checkbox
-              value="item01"
-              style={{
-                lineHeight: '32px',
-              }}
+                value="item01"
+                style={{
+                  lineHeight: '32px',
+                }}
               >
                 item01
               </Checkbox>
             </Col>
             <Col span={6}>
               <Checkbox
-              value="item02"
-              style={{
-                lineHeight: '32px',
-              }}
+                value="item02"
+                style={{
+                  lineHeight: '32px',
+                }}
               >
                 item02
               </Checkbox>
             </Col>
             <Col span={6}>
               <Checkbox
-              value="item03"
-              style={{
-                lineHeight: '32px',
-              }}
+                value="item03"
+                style={{
+                  lineHeight: '32px',
+                }}
               >
                 item03
               </Checkbox>
             </Col>
             <Col span={6}>
               <Checkbox
-              value="item04"
-              style={{
-                lineHeight: '32px',
-              }}
+                value="item04"
+                style={{
+                  lineHeight: '32px',
+                }}
               >
                 item04
               </Checkbox>
@@ -88,14 +88,11 @@ const RolesAndSkills = () => {
         </Checkbox.Group>
       </Form.Item>
 
-      <Form.Item
-        name="skills"
-        label="Skills"
-      >
+      <Form.Item name="skills" label="Skills">
         <Radio.Group>
           <Radio.Button value="optional">Optional</Radio.Button>
         </Radio.Group>
-        <Input.TextArea placeholder="Please enter your work goals"/>
+        <Input.TextArea placeholder="Please enter your work goals" />
       </Form.Item>
 
       <Form.Item
@@ -112,77 +109,80 @@ const RolesAndSkills = () => {
           <Row>
             <Col span={3}>
               <Checkbox
-              value="item01"
-              style={{
-                lineHeight: '32px',
-              }}
+                value="item01"
+                style={{
+                  lineHeight: '32px',
+                }}
               >
                 item01
               </Checkbox>
             </Col>
             <Col span={3}>
               <Checkbox
-              value="item02"
-              style={{
-                lineHeight: '32px',
-              }}
+                value="item02"
+                style={{
+                  lineHeight: '32px',
+                }}
               >
                 item02
               </Checkbox>
             </Col>
             <Col span={3}>
               <Checkbox
-              value="item03"
-              style={{
-                lineHeight: '32px',
-              }}
+                value="item03"
+                style={{
+                  lineHeight: '32px',
+                }}
               >
                 item03
               </Checkbox>
             </Col>
             <Col span={3}>
               <Checkbox
-              value="item04"
-              style={{
-                lineHeight: '32px',
-              }}
+                value="item04"
+                style={{
+                  lineHeight: '32px',
+                }}
               >
                 item04
               </Checkbox>
             </Col>
             <Col span={3}>
               <Checkbox
-              value="item05"
-              style={{
-                lineHeight: '32px',
-              }}
+                value="item05"
+                style={{
+                  lineHeight: '32px',
+                }}
               >
                 item05
               </Checkbox>
-            </Col><Col span={3}>
+            </Col>
+            <Col span={3}>
               <Checkbox
-              value="item06"
-              style={{
-                lineHeight: '32px',
-              }}
+                value="item06"
+                style={{
+                  lineHeight: '32px',
+                }}
               >
                 item06
               </Checkbox>
-            </Col><Col span={3}>
+            </Col>
+            <Col span={3}>
               <Checkbox
-              value="item07"
-              style={{
-                lineHeight: '32px',
-              }}
+                value="item07"
+                style={{
+                  lineHeight: '32px',
+                }}
               >
                 item07
               </Checkbox>
-            </Col><Col span={3}>
+            </Col>
+            <Col span={3}>
               <Checkbox
-              value="Other"
-              style={{
-                lineHeight: '32px',
-              }}
+                value="Other"
+                style={{
+                  lineHeight: '32px',
+                }}
               >
                 Other
               </Checkbox>
