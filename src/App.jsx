@@ -19,7 +19,7 @@ function App() {
   return (
     <div>
       <Header />
-    <Router>
+      <Router>
       <Routes>
         <Route path="/login" exact element={<Login />} />
         <Route path="/about" exact element={<About />} />
