@@ -18,7 +18,7 @@ import Waivers from './pages/Waivers';
 function App() {
   return (
     <div>
-    <Header />
+      <Header />
     <Router>
       <Routes>
         <Route path="/login" exact element={<Login />} />
