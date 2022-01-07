@@ -1,9 +1,8 @@
-/* eslint-disable no-alert */
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// import { Button, DatePicker } from 'antd';
 import './App.css';
-import 'antd/dist/antd.css';
+import Header from './components/header';
+import Footer from './components/footer';
 
 // Pages
 import Login from './pages/Login';
@@ -18,6 +17,8 @@ import Waivers from './pages/Waivers';
 
 function App() {
   return (
+    <div>
+    <Header />
     <Router>
       <Routes>
         <Route path="/login" exact element={<Login />} />
@@ -31,28 +32,9 @@ function App() {
         <Route path="/waivers" exact element={<Waivers />} />
       </Routes>
     </Router>
+    <Footer />
+    </div>
   );
 }
 
 export default App;
-
-/*
-<div className="App">
-      <header className="App-header">
-        <p>
-          *AntDesign provides a set of high-quality React components out of the box!*
-          <br />
-          <a href="https://ant.design/components/overview/" target="_blank" rel="noreferrer">
-            Overview of available AntDesign components
-          </a>
-        </p>
-        <br />
-        <h1 style={{ color: 'white' }}>Example Ant Design Components</h1>
-        <Button type="primary" onClick={() => alert('you clicked me!')}>
-          dummy antdesign button
-        </Button>
-        <DatePicker placeholder="select date" />
-      </header>
-    </div>
-
-*/
