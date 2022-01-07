@@ -1,7 +1,9 @@
 import React from 'react';
-import { Input, Radio, Form, Select, Option, InputNumber, Button, Col, Checkbox, Row } from 'antd';
+import { Input, Radio, Form, Select, InputNumber, Button, Col, Checkbox, Row } from 'antd';
 
 /* eslint-disable no-template-curly-in-string */
+
+const { Option } = Select;
 
 const validateMessages = {
   required: '${label} is required!',
