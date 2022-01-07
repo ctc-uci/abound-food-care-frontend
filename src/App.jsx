@@ -30,7 +30,7 @@ function App() {
         <Route path="/profile" exact element={<Profile />} />
           <Route path="/event" exact element={<Event />} />
           <Route path="/waivers" exact element={<Waivers />} />
-      </Routes>
+        </Routes>
     </Router>
     <Footer />
     </div>
