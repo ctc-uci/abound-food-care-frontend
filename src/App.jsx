@@ -24,10 +24,10 @@ function App() {
           <Route path="/login" exact element={<Login />} />
           <Route path="/about" exact element={<About />} />
           <Route path="/partners" exact element={<Partners />} />
-        <Route path="/solutions" exact element={<Solutions />} />
-        <Route path="/events" exact element={<Events />} />
-        <Route path="/volunteers" exact element={<Volunteers />} />
-        <Route path="/profile" exact element={<Profile />} />
+          <Route path="/solutions" exact element={<Solutions />} />
+          <Route path="/events" exact element={<Events />} />
+          <Route path="/volunteers" exact element={<Volunteers />} />
+          <Route path="/profile" exact element={<Profile />} />
           <Route path="/event" exact element={<Event />} />
           <Route path="/waivers" exact element={<Waivers />} />
         </Routes>
