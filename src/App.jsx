@@ -29,7 +29,7 @@ function App() {
         <Route path="/volunteers" exact element={<Volunteers />} />
         <Route path="/profile" exact element={<Profile />} />
           <Route path="/event" exact element={<Event />} />
-        <Route path="/waivers" exact element={<Waivers />} />
+          <Route path="/waivers" exact element={<Waivers />} />
       </Routes>
     </Router>
     <Footer />
