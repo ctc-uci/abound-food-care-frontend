@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Chart from 'react-apexcharts';
 
-class App extends Component {
+class WeeklyInfo extends Component {
   constructor(props) {
     super(props);
 
@@ -29,11 +29,11 @@ class App extends Component {
       return series;
     }
 
-    function onSquareClick(event, chartContext, config) {
-      console.log(event);
-      console.log(chartContext);
-      console.log(config);
-    }
+    // function onSquareClick(event, chartContext, config) {
+    //   console.log(event);
+    //   console.log(chartContext);
+    //   console.log(config);
+    // }
 
     function generateSeries(startHour, endHour) {
       const times = [];
@@ -61,17 +61,14 @@ class App extends Component {
         chart: {
           height: 350,
           type: 'heatmap',
-          events: {
-            dataPointSelection: onSquareClick,
-          },
+          // events: {
+          //   dataPointSelection: onSquareClick,
+          // },
         },
         dataLabels: {
           enabled: false,
         },
         colors: ['#008FFB'],
-        title: {
-          text: 'HeatMap Chart (Single color)',
-        },
       },
       series: generateSeries(9, 17),
     };
@@ -81,6 +78,7 @@ class App extends Component {
     const { options, series } = this.state;
     return (
       <div className="app">
+        <h1>Weekly Availability</h1>
         <div className="row">
           <div className="mixed-chart">
             <Chart options={options} series={series} type="heatmap" width="500" height="500" />
@@ -91,4 +89,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default WeeklyInfo;
