@@ -1,10 +1,10 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
+import ApexCharts from 'apexcharts';
 
 const WeeklyInfo = () => {
   const [options, setOptions] = React.useState(null);
   const [series, setSeries] = React.useState(null);
-
   const generateData = count => {
     const dayOfWeek = [
       'Sunday',
@@ -26,7 +26,6 @@ const WeeklyInfo = () => {
       });
       i += 1;
     }
-    // console.log(generatedSeries);
     return generatedSeries;
   };
 
@@ -47,56 +46,68 @@ const WeeklyInfo = () => {
         data: generateData(7),
       };
     });
-
     setSeries(generatedSeries);
   };
 
-  React.useEffect(() => {
-    console.log(series);
-  }, [series]);
-
   const onSquareClick = (event, chartContext, config) => {
-    console.log(series);
-    // what square was clicked?
-    // seriesIndex = row (bottom = 0)
-    // dataPointIndex = column (left = 0)
-
-    // what value does it have?
-    // check if it's selected already or not
-
-    // toggle that value
-    // console.log(event);
-    // console.log(chartContext);
-    // console.log(config);
+    // Get square coordinates
     const rowIndex = config.seriesIndex;
     const colIndex = config.dataPointIndex;
-    console.log(rowIndex, colIndex);
-    console.log(config);
-    console.log(config.w.config.series);
     const updatedSeries = config.w.config.series;
-    console.log(updatedSeries);
-
-    console.log(updatedSeries[0].data[colIndex]);
-    // set y value to opposite
-    updatedSeries[0].data[colIndex].y = 100;
-    console.log(updatedSeries);
-    setSeries(updatedSeries);
-    // updatedSeries
+    const curValue = updatedSeries[rowIndex].data[colIndex].y;
+    // check if it's selected already or not
+    // toggle that value
+    const newValue = curValue === 2 ? 1 : 2;
+    updatedSeries[rowIndex].data[colIndex].y = newValue;
+    ApexCharts.exec('availability', 'updateSeries', updatedSeries);
   };
 
   React.useEffect(() => {
     const values = {
       chart: {
+        id: 'availability',
         height: 350,
         type: 'heatmap',
+        toolbar: {
+          show: false,
+        },
         events: {
           dataPointSelection: onSquareClick,
+        },
+        animations: {
+          enabled: true,
+          easing: 'linear',
+          dynamicAnimation: {
+            speed: 5,
+          },
         },
       },
       dataLabels: {
         enabled: false,
       },
-      colors: ['#008FFB'],
+      tooltip: {
+        enabled: false,
+      },
+      plotOptions: {
+        heatmap: {
+          colorScale: {
+            ranges: [
+              {
+                from: 1,
+                to: 1,
+                color: '#D3D3D3',
+                name: 'unavailable',
+              },
+              {
+                from: 2,
+                to: 2,
+                color: '#00008B',
+                name: 'available',
+              },
+            ],
+          },
+        },
+      },
     };
     setOptions(values);
     generateSeries(9, 17);
@@ -104,7 +115,7 @@ const WeeklyInfo = () => {
 
   const renderChart = () => {
     if (options) {
-      return <Chart options={options} series={series} type="heatmap" width="500" height="500" />;
+      return <Chart options={options} series={series} type="heatmap" width="800" height="500" />;
     }
     return null;
   };
