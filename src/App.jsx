@@ -31,8 +31,8 @@ function App() {
           <Route path="/event" exact element={<Event />} />
           <Route path="/waivers" exact element={<Waivers />} />
         </Routes>
-    </Router>
-    <Footer />
+      </Router>
+      <Footer />
     </div>
   );
 }
