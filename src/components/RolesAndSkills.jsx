@@ -9,7 +9,12 @@ const validateMessages = {
 };
 
 const RolesAndSkills = () => {
+  const [requiredMark, setRequiredMarkType] = React.useState('optional');
   const [componentSize, setComponentSize] = React.useState('default');
+
+  const onRequiredTypeChange = ({ requiredMarkValue }) => {
+    setRequiredMarkType(requiredMarkValue);
+  };
 
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
@@ -24,7 +29,11 @@ const RolesAndSkills = () => {
         name="roles_n_skills"
         validateMessages={validateMessages}
         size={componentSize}
-        onValuesChange={onFormLayoutChange}
+        initialValues={{
+          requiredMarkValue: requiredMark,
+        }}
+        onValuesChange={(onRequiredTypeChange, onFormLayoutChange)}
+        requiredMark={requiredMark}
       >
         <Form.Item
           name="roles-interested-in"
@@ -83,9 +92,6 @@ const RolesAndSkills = () => {
         </Form.Item>
 
         <Form.Item name="skills" label="Skills">
-          <Radio.Group>
-            <Radio.Button value="optional">Optional</Radio.Button>
-          </Radio.Group>
           <Input.TextArea placeholder="Please enter your work goals" />
         </Form.Item>
 
@@ -196,22 +202,13 @@ const RolesAndSkills = () => {
             },
           ]}
         >
-          <Input placeholder="0 lbs" />
-          <InputNumber />
+          <InputNumber placeholder="0 lbs" />
         </Form.Item>
 
-        <Form.Item
-          label="Can you drive?"
-          rules={[
-            {
-              required: true,
-              message: validateMessages,
-            },
-          ]}
-        >
+        <Form.Item label="Can you drive?" required>
           <Radio.Group>
-            <Radio value>Yes</Radio>
-            <Radio value>No</Radio>
+            <Radio value="true">Yes</Radio>
+            <Radio value="false">No</Radio>
           </Radio.Group>
         </Form.Item>
 
@@ -243,8 +240,7 @@ const RolesAndSkills = () => {
             },
           ]}
         >
-          <Input placeholder="0 miles" />
-          <InputNumber />
+          <InputNumber placeholder="0 miles" />
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 19 }}>
