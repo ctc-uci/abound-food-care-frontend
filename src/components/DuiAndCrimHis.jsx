@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Radio, Form, Input, Button } from 'antd';
 
 const validateMessages = {
   // eslint-disable-next-line no-template-curly-in-string
-  required: '${label} is required!',
+  required: 'Answer to this question is required!',
 };
 
 const DuiAndCrimHis = () => {
-  const [componentSize, setComponentSize] = React.useState('default');
-  const [requiredMark, setRequiredMarkType] = React.useState('optional');
+  const [componentSize, setComponentSize] = useState('default');
+  const [requiredMark, setRequiredMarkType] = useState('optional');
 
   const onRequiredTypeChange = ({ requiredMarkValue }) => {
     setRequiredMarkType(requiredMarkValue);
@@ -33,29 +33,49 @@ const DuiAndCrimHis = () => {
         onValuesChange={(onRequiredTypeChange, onFormLayoutChange)}
         requiredMark={requiredMark}
       >
-        <Form.Item label="Do you have a DUI (Driving Under Influence) history?" required>
+        <Form.Item
+          name="DuiHistory"
+          label="Do you have a DUI (Driving Under Influence) history?"
+          rules={[{ required: true }]}
+        >
           <Radio.Group>
             <Radio value="true">Yes</Radio>
             <Radio value="false">No</Radio>
           </Radio.Group>
         </Form.Item>
 
-        <Form.Item label="If yes, please elaborate:" required>
+        <Form.Item
+          name="duiElaboration"
+          label="If yes, please elaborate:"
+          rules={[{ required: true }]}
+        >
           <Input.TextArea />
         </Form.Item>
 
-        <Form.Item label="Do you have a criminal history?" required>
+        <Form.Item
+          name="crimHistory"
+          label="Do you have a criminal history?"
+          rules={[{ required: true }]}
+        >
           <Radio.Group>
             <Radio value="true">Yes</Radio>
             <Radio value="false">No</Radio>
           </Radio.Group>
         </Form.Item>
 
-        <Form.Item label="If yes, please elaborate:" required>
+        <Form.Item
+          name="crimHisElaboration"
+          label="If yes, please elaborate:"
+          rules={[{ required: true }]}
+        >
           <Input.TextArea />
         </Form.Item>
 
-        <Form.Item label="Have you completed the Chowmatch Training?" required>
+        <Form.Item
+          name="chowmatchTraining"
+          label="Have you completed the Chowmatch Training?"
+          rules={[{ required: true }]}
+        >
           <Radio.Group>
             <Radio value="true">Yes</Radio>
             <Radio value="false">No</Radio>

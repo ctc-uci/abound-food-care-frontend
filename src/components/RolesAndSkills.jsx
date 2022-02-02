@@ -1,16 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Input, Radio, Form, Select, InputNumber, Button, Col, Checkbox, Row } from 'antd';
 
 const { Option } = Select;
 
 const validateMessages = {
   // eslint-disable-next-line no-template-curly-in-string
-  required: '${label} is required!',
+  required: 'Answer to this question is required!',
 };
 
 const RolesAndSkills = () => {
+  const [componentSize, setComponentSize] = useState('default');
   const [requiredMark, setRequiredMarkType] = React.useState('optional');
-  const [componentSize, setComponentSize] = React.useState('default');
 
   const onRequiredTypeChange = ({ requiredMarkValue }) => {
     setRequiredMarkType(requiredMarkValue);
@@ -26,8 +26,8 @@ const RolesAndSkills = () => {
       <Form
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 14 }}
-        name="roles_n_skills"
         validateMessages={validateMessages}
+        name="roles_n_skills"
         size={componentSize}
         initialValues={{
           requiredMarkValue: requiredMark,
@@ -35,16 +35,7 @@ const RolesAndSkills = () => {
         onValuesChange={(onRequiredTypeChange, onFormLayoutChange)}
         requiredMark={requiredMark}
       >
-        <Form.Item
-          name="roles-interested-in"
-          label="Roles Interested In"
-          rules={[
-            {
-              required: true,
-              message: validateMessages,
-            },
-          ]}
-        >
+        <Form.Item name="interestedRoles" label="Roles Interested In" rules={[{ required: true }]}>
           <Checkbox.Group>
             <Row>
               <Col span={6}>
@@ -95,16 +86,7 @@ const RolesAndSkills = () => {
           <Input.TextArea placeholder="Please enter your work goals" />
         </Form.Item>
 
-        <Form.Item
-          name="languages-spoken"
-          label="Languages Spoken"
-          rules={[
-            {
-              required: true,
-              message: validateMessages,
-            },
-          ]}
-        >
+        <Form.Item name="languagesSpoken" label="Languages Spoken" rules={[{ required: true }]}>
           <Checkbox.Group>
             <Row>
               <Col span={3}>
@@ -192,36 +174,26 @@ const RolesAndSkills = () => {
         </Form.Item>
 
         <Form.Item
-          name="weightlifting"
+          name="weightliftingAbility"
           label="Weightlifting Ability"
           rules={[
             {
               type: 'number',
               required: true,
-              message: validateMessages,
             },
           ]}
         >
           <InputNumber placeholder="0 lbs" />
         </Form.Item>
 
-        <Form.Item label="Can you drive?" required>
+        <Form.Item name="drive" label="Can you drive?" rules={[{ required: true }]}>
           <Radio.Group>
             <Radio value="true">Yes</Radio>
             <Radio value="false">No</Radio>
           </Radio.Group>
         </Form.Item>
 
-        <Form.Item
-          name="vehicle_types"
-          label="Vehicle Type:"
-          rules={[
-            {
-              required: true,
-              message: validateMessages,
-            },
-          ]}
-        >
+        <Form.Item name="vehicleType" label="Vehicle Type:" rules={[{ required: true }]}>
           <Select mode="multiple" placeholder="Select all that apply.">
             <Option value="opt1">opt1</Option>
             <Option value="opt2">opt2</Option>
@@ -235,7 +207,6 @@ const RolesAndSkills = () => {
           rules={[
             {
               required: true,
-              message: validateMessages,
               type: 'number',
             },
           ]}
