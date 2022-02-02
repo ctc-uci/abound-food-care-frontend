@@ -10,7 +10,7 @@ const validateMessages = {
 
 const RolesAndSkills = () => {
   const [componentSize, setComponentSize] = useState('default');
-  const [requiredMark, setRequiredMarkType] = React.useState('optional');
+  const [requiredMark, setRequiredMarkType] = useState('optional');
 
   const onRequiredTypeChange = ({ requiredMarkValue }) => {
     setRequiredMarkType(requiredMarkValue);
