@@ -151,38 +151,49 @@ function Admin() {
   }, []);
 
   return (
-    <div>
-      <h1>Volunteer Availabilities</h1>
-      <div className="filter-availabilities">
-        <div>
-          <input type="text" placeholder="&#128269; Search by name, email, role..." />
-          <button type="button">View Database</button>
-          <button type="button">Export</button>
-          <button type="button" id="add-user-btn">
-            + Add User
-          </button>
-        </div>
-        <div>
-          <label htmlFor="event-types">
-            Event Types
-            <select name="event-types" id="event-types">
-              <option value="all">All</option>
-              <option value="option1">Option 1</option>
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
-            </select>
-          </label>
-          <label htmlFor="drivers">
-            Drivers?
-            <select name="drivers" id="drivers">
-              <option value="can-drive">Can Drive</option>
-              <option value="cant-drive">Can`&apos;`t Drive</option>
-            </select>
-          </label>
-        </div>
-      </div>
-      <HeatMap />
+    <div className="volunteer-availabilities">
       <div>
+        <h1>Volunteer Availabilities</h1>
+        <div className="filter-availabilities">
+          <div>
+            <img src="filter-icon.png" alt="Filter icon" />
+            <input
+              type="search"
+              placeholder="Search by name, email, role..."
+              id="search-volunteers"
+            />
+            <div className="right-align">
+              <button type="button">View Database</button>
+              <button type="button">Export</button>
+              <button type="button" id="add-user-btn">
+                + Add User
+              </button>
+            </div>
+          </div>
+          <div>
+            <label htmlFor="event-types">
+              Event Types
+              <br />
+              <select name="event-types" id="event-types">
+                <option value="all">All</option>
+                <option value="option1">Option 1</option>
+                <option value="option2">Option 2</option>
+                <option value="option3">Option 3</option>
+              </select>
+            </label>
+            <label htmlFor="drivers">
+              Drivers?
+              <br />
+              <select name="drivers" id="drivers">
+                <option value="can-drive">Can Drive</option>
+                <option value="cant-drive">Can&apos;t Drive</option>
+              </select>
+            </label>
+          </div>
+        </div>
+        <HeatMap />
+      </div>
+      <div className="available-volunteers">
         <h2>
           Volunteers ({availableVolunteers.length}/{volunteers.length})
         </h2>
