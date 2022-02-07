@@ -169,16 +169,32 @@ function Database() {
     },
   });
 
+  const filterIcon = () => {
+    if (window.innerWidth > 1250) {
+      return (
+        <Col span={1}>
+          <FilterFilled style={{ fontSize: '28px' }} />
+        </Col>
+      );
+    }
+    return <></>;
+  };
+
+  const iconGap = () => {
+    if (window.innerWidth > 1250) {
+      return <Col span={1} />;
+    }
+    return <></>;
+  };
+
   return (
     <>
       <ConfigProvider>
         <div className="database-tab">
           <div className="database-header">
-            <Row style={{ height: '50%' }} align="middle">
-              <Col span={1}>
-                <FilterFilled style={{ fontSize: '28px' }} />
-              </Col>
-              <Col span={13}>
+            <Row style={{ height: '50%', flexWrap: 'wrap' }} align="middle">
+              {filterIcon()}
+              <Col style={{ width: '40vw' }}>
                 <Input
                   size="large"
                   placeholder="Search by name, email, role..."
@@ -194,7 +210,7 @@ function Database() {
               </Col>
             </Row>
             <Row style={{ height: '50%' }} align="middle">
-              <Col span={1} />
+              {iconGap()}
               <Col span={4}>
                 <div className="dropdown-box">
                   <p className="dropdown-label">Event Types</p>
@@ -246,7 +262,7 @@ function Database() {
               columns={columns}
               dataSource={filteredData}
               loading={isLoading}
-              size="medium"
+              size="small"
               rowClassName="table-row"
             />
           </div>
