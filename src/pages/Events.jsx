@@ -8,6 +8,7 @@ function Events() {
     <div>
       <p>This is the events page.</p>
       <EventsGeneralInfo />
+      {/* commit */}
       {/* <EventsAdditionalInfo /> */}
     </div>
   );
