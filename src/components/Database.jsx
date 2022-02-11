@@ -42,7 +42,7 @@ function Database() {
       dataIndex: 'name',
       key: 'name',
       render: text => (
-        <a style={{ color: '#6CC24A' }} href="/volunteers">
+        <a style={{ color: '#115740' }} href="/volunteers">
           {text}
         </a>
       ),
@@ -202,11 +202,13 @@ function Database() {
                   prefix={<SearchOutlined style={{ fontSize: '22px', color: '#BFBFBF' }} />}
                 />
               </Col>
-              <Col span={2} />
-              <Col span={8} className="button-group">
+              <Col span={3} />
+              <Col span={6} className="button-group">
                 <Button>View Heatmap</Button>
                 <Button>Export</Button>
-                <Button type="primary">+ Add User</Button>
+                <Button type="primary" style={{ backgroundColor: '#115740' }}>
+                  + Add User
+                </Button>
               </Col>
             </Row>
             <Row style={{ height: '50%' }} align="middle">
@@ -224,7 +226,7 @@ function Database() {
                   </Dropdown>
                 </div>
               </Col>
-              <Col span={2} />
+              <Col span={3} />
               <Col span={4}>
                 <div className="dropdown-box">
                   <p className="dropdown-label">Driving Ability</p>
@@ -238,7 +240,7 @@ function Database() {
                   </Dropdown>
                 </div>
               </Col>
-              <Col span={2} />
+              <Col span={3} />
               <Col span={4}>
                 <div className="dropdown-box">
                   <p className="dropdown-label">Age</p>
