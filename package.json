@@ -4,6 +4,7 @@
   "dependencies": {
     "@angular/common": "^6.0.0",
     "@angular/core": "^6.0.0",
+    "@ant-design/icons": "^4.7.0",
     "@babel/core": "^7.0.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
