@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import 'antd/dist/antd.css';
 import HeatMap from '../components/HeatMap';
+import Database from '../components/Database';
 import './Admin.css';
 
 function Admin() {
@@ -165,7 +166,7 @@ function Admin() {
             <div className="right-align">
               <button type="button">View Database</button>
               <button type="button">Export</button>
-              <button type="button" id="add-user-btn">
+              <button type="button" style={{ backgroundColor: '#115740' }} id="add-user-btn">
                 + Add User
               </button>
             </div>
@@ -207,6 +208,9 @@ function Admin() {
             </p>
           );
         })}
+      </div>
+      <div>
+        <Database />
       </div>
     </div>
   );
