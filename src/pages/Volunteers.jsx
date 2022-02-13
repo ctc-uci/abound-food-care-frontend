@@ -1,7 +1,7 @@
 import React from 'react';
 import GeneralInfo from '../components/GeneralInfo';
 import WeeklyInfo from '../components/WeeklyInfo';
-import CancelModal from '../components/CancelModal';
+import EditHours from '../components/EditHours';
 import 'antd/dist/antd.css';
 
 function Volunteers() {
@@ -10,7 +10,7 @@ function Volunteers() {
       <p>This is the volunteers page</p>
       <WeeklyInfo />
       <GeneralInfo />
-      <CancelModal />
+      <EditHours />
     </div>
   );
 }
