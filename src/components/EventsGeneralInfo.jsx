@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { DatePicker, Form, Input, Button, TimePicker, InputNumber, Dropdown, Menu } from 'antd';
 import { DownOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons';
 
@@ -32,6 +32,25 @@ const GeneralInfo = () => {
       </Menu.Item>
     </Menu>
   );
+
+  const tagList = [
+    { name: 'First Aid Training' },
+    { name: 'Can Drive' },
+    { name: 'Age 18 or Older' },
+  ];
+
+  const [list, updateList] = useState(tagList);
+
+  const handleRemoveItem = e => {
+    const name = e.target.getAttribute('name');
+    updateList(list.filter(item => item.name !== name));
+  };
+
+  const [state, setState] = useState('start');
+
+  const addItem = item => {
+    tagList.name = item.target.value;
+  };
 
   return (
     <div>
@@ -72,31 +91,36 @@ const GeneralInfo = () => {
           </Dropdown>
         </Form.Item>
 
-        {/* TODO: Add functionality */}
         <Form.Item label="Requirements (optional)">
-          <Button>
-            First Aid Training <CloseOutlined />
-          </Button>
-          <Button>
-            Can Drive <CloseOutlined />
-          </Button>
-          <Button>
-            Age 18 or Older <CloseOutlined />
-          </Button>
-          <Button type="dashed" icon={<PlusOutlined />}>
-            New Tag
-          </Button>
+          {/* TODO: Make the deleting smoother */}
+          {list.map(item => {
+            return (
+              <>
+                <Button name={item.name} onClick={handleRemoveItem}>
+                  {item.name} <CloseOutlined />
+                </Button>
+              </>
+            );
+          })}
+
+          {state === 'start' && (
+            <>
+              <Button type="dashed" icon={<PlusOutlined />} onClick={() => setState('add-item')}>
+                New Tag
+              </Button>
+            </>
+          )}
+
+          {/* TODO: Fix the enter */}
+          {state === 'add-item' && (
+            <>
+              <Input onKeyDown={e => e.key === 'Enter' && addItem} />
+            </>
+          )}
         </Form.Item>
 
         <Form.Item label="Location">
           <Input placeholder="Ex. Irvine, CA" />
-        </Form.Item>
-
-        <Form.Item style={{ textAlign: 'center' }}>
-          <Button type="primary">Cancel</Button>
-          <Button type="primary" htmlType="submit" style={{ float: 'right' }}>
-            Next
-          </Button>
         </Form.Item>
       </Form>
     </div>
