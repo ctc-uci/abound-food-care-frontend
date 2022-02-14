@@ -1,5 +1,16 @@
 import React, { useState } from 'react';
-import { DatePicker, Form, Input, Button, TimePicker, InputNumber, Dropdown, Menu } from 'antd';
+import {
+  DatePicker,
+  Form,
+  Input,
+  Button,
+  TimePicker,
+  InputNumber,
+  Dropdown,
+  Menu,
+  Modal,
+  Card,
+} from 'antd';
 import { DownOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons';
 
 const GeneralInfo = () => {
@@ -11,6 +22,47 @@ const GeneralInfo = () => {
 
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
+  };
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isAddModalVisible, setIsAddModalVisible] = useState(false);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+
+  const showModalEventType = () => {
+    setIsModalVisible(true);
+  };
+
+  const showModalAddEventType = () => {
+    setIsAddModalVisible(true);
+  };
+
+  const showModalEditEventType = () => {
+    setIsModalVisible(false);
+    setIsEditModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleAddOk = () => {
+    setIsAddModalVisible(false);
+  };
+
+  const handleAddCancel = () => {
+    setIsAddModalVisible(false);
+  };
+
+  const handleEditOk = () => {
+    setIsEditModalVisible(false);
+  };
+
+  const handleEditCancel = () => {
+    setIsEditModalVisible(false);
   };
 
   const volunteerTypeMenu = (
@@ -74,9 +126,83 @@ const GeneralInfo = () => {
         </Form.Item>
 
         <Form.Item label="Event Type">
-          {/* TODO: Open popup */}
-          <Button>Type</Button>
-          <a href="http://">New Event Type</a>
+          <Button onClick={showModalEventType}>Type</Button>
+          <Button type="link" onClick={showModalAddEventType}>
+            New Event Type
+          </Button>
+          {/* Event Type Pop Up */}
+          <Modal
+            title="Event Type"
+            visible={isModalVisible}
+            onOk={handleOk}
+            onCancel={handleCancel}
+            footer={[
+              <Button key="submit" type="primary" onClick={handleOk}>
+                Add Event Type
+              </Button>,
+            ]}
+          >
+            <Card>
+              <p>Distribution</p>
+              <Button type="link" onClick={showModalEditEventType}>
+                Edit
+              </Button>
+              <Button type="link">Delete</Button>
+            </Card>
+            <Card>
+              <p>Food Running</p>
+            </Card>
+          </Modal>
+
+          {/* Add Event Type Pop Up */}
+          <Modal
+            title="Event Type"
+            visible={isAddModalVisible}
+            onOk={handleAddOk}
+            onCancel={handleAddCancel}
+            footer={[
+              <Button key="back" onClick={handleAddCancel}>
+                Cancel
+              </Button>,
+              <Button key="submit" type="primary" onClick={handleAddOk}>
+                Add Event Type
+              </Button>,
+            ]}
+          >
+            <Form>
+              <Form.Item label="Event Type Name">
+                <Input placeholder="Describe what events should go under this type." />
+              </Form.Item>
+              <Form.Item label="Description">
+                <Input placeholder="Describe what events should go under this type." />
+              </Form.Item>
+            </Form>
+          </Modal>
+
+          {/* Edit Event Type Pop Up */}
+          <Modal
+            title="Event Type"
+            visible={isEditModalVisible}
+            onOk={handleEditOk}
+            onCancel={handleEditCancel}
+            footer={[
+              <Button key="back" onClick={handleEditCancel}>
+                Cancel
+              </Button>,
+              <Button key="submit" type="primary" onClick={handleEditOk}>
+                Save
+              </Button>,
+            ]}
+          >
+            <Form>
+              <Form.Item label="Event Type Name">
+                <Input placeholder="Food Running" />
+              </Form.Item>
+              <Form.Item label="Description">
+                <Input placeholder="..." />
+              </Form.Item>
+            </Form>
+          </Modal>
         </Form.Item>
 
         <Form.Item label="Num Volunteers">
