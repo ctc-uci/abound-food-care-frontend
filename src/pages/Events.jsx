@@ -1,7 +1,7 @@
 import React from 'react';
 import 'antd/dist/antd.css';
 import EventsGeneralInfo from '../components/EventsGeneralInfo';
-// import EventsAdditionalInfo from '../components/EventsAdditionalInfo';
+import EventsAdditionalInfo from '../components/EventsAdditionalInfo';
 
 function Events() {
   return (
@@ -9,7 +9,7 @@ function Events() {
       <p>This is the events page.</p>
       <EventsGeneralInfo />
       {/* commit */}
-      {/* <EventsAdditionalInfo /> */}
+      <EventsAdditionalInfo />
     </div>
   );
 }
