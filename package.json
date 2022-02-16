@@ -11,7 +11,7 @@
     "@testing-library/user-event": "^12.1.10",
     "antd": "^4.16.13",
     "apexcharts": "^3.33.0",
-    "eslint": "^7.3.1",
+    "eslint": "^7.32.0",
     "eslint-config-airbnb": "18.2.1",
     "eslint-config-airbnb-base": "14.2.1",
     "eslint-config-prettier": "^8.3.0",
