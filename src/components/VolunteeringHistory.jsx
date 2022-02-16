@@ -3,6 +3,7 @@ import { FieldTimeOutlined, ScheduleOutlined, UsergroupDeleteOutlined } from '@a
 import { ConfigProvider, Table, Button } from 'antd';
 import './VolunteeringHistory.css';
 import EditHours from './EditHours';
+import SuccessModal from './SuccessModal';
 
 function VolunteeringHistory() {
   const [totalHours, setTotalHours] = useState(0);
@@ -11,6 +12,7 @@ function VolunteeringHistory() {
   const [unsubmittedData, setUnsubmittedData] = useState([]);
   const [submittedData, setSubmittedData] = useState([]);
   const [isLoading, setLoading] = useState(true);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [editIndex, setEditIndex] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -54,7 +56,9 @@ function VolunteeringHistory() {
     setLoading(false);
   }, []);
 
-  const handleSubmit = () => {
+  const handleSubmit = index => {
+    setEditIndex(index);
+    setIsSubmitted(true);
     /*
     fetch(BACKEND_URL)
       .then((res) => {
@@ -182,6 +186,12 @@ function VolunteeringHistory() {
 
   return (
     <ConfigProvider>
+      {isSubmitted && (
+        <SuccessModal
+          setIsSubmitted={setIsSubmitted}
+          volunteerHours={unsubmittedData[editIndex].hours}
+        />
+      )}
       {isEditing && (
         <EditHours
           setIsEditing={setIsEditing}

@@ -4,12 +4,14 @@ import { Button } from 'antd';
 import PropTypes from 'prop-types';
 
 const SuccessModal = props => {
-  const { volunteerHours } = props;
+  const { volunteerHours, setIsSubmitted } = props;
+
   return (
     <div
       style={{
         borderRadius: '.5em',
         position: 'fixed',
+        zIndex: 2,
         bottom: '37.5vh',
         right: '30.5vw',
         backgroundColor: '#FFFFFF',
@@ -45,7 +47,14 @@ const SuccessModal = props => {
       <div
         style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', width: '85%' }}
       >
-        <Button type="primary">Done</Button>
+        <Button
+          type="primary"
+          onClick={() => {
+            setIsSubmitted(false);
+          }}
+        >
+          Done
+        </Button>
       </div>
     </div>
   );
@@ -53,10 +62,12 @@ const SuccessModal = props => {
 
 SuccessModal.propTypes = {
   volunteerHours: PropTypes.number,
+  setIsSubmitted: PropTypes.func,
 };
 
 SuccessModal.defaultProps = {
   volunteerHours: 0,
+  setIsSubmitted: () => {},
 };
 
 export default SuccessModal;
