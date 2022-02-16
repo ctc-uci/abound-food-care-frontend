@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { Radio, Form, Input, Button } from 'antd';
 
 const validateMessages = {
@@ -6,7 +7,13 @@ const validateMessages = {
   required: 'Answer to this question is required!',
 };
 
-const DuiAndCrimHis = () => {
+const DuiAndCrimHis = props => {
+  const { submitForm, prevPage, setDuiAndCrimHis } = props;
+  const onFinish = values => {
+    setDuiAndCrimHis(values);
+    submitForm();
+  };
+
   const [componentSize, setComponentSize] = useState('default');
   const [requiredMark, setRequiredMarkType] = useState('optional');
 
@@ -25,6 +32,7 @@ const DuiAndCrimHis = () => {
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 14 }}
         name="dui_criminal_history"
+        onFinish={onFinish}
         validateMessages={validateMessages}
         size={componentSize}
         initialValues={{
@@ -87,13 +95,22 @@ const DuiAndCrimHis = () => {
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 19 }}>
+          <Button type="primary" htmlType="button" onClick={prevPage}>
+            Previous
+          </Button>
           <Button type="primary" htmlType="submit">
-            Next
+            Finish
           </Button>
         </Form.Item>
       </Form>
     </div>
   );
+};
+
+DuiAndCrimHis.propTypes = {
+  submitForm: PropTypes.func.isRequired,
+  prevPage: PropTypes.func.isRequired,
+  setDuiAndCrimHis: PropTypes.func.isRequired,
 };
 
 export default DuiAndCrimHis;
