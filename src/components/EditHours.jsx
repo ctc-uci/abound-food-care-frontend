@@ -1,36 +1,62 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CloseOutlined } from '@ant-design/icons';
 import { Button, Divider, Input, DatePicker, TimePicker } from 'antd';
+import PropTypes from 'prop-types';
 
-const EditHours = () => {
-  const [eventName, setEventName] = useState('');
-  const [timeIn, setTimeIn] = useState('');
-  const [timeOut, setTimeOut] = useState('');
-  const [date, setDate] = useState('');
-  const [notes, setNotes] = useState('');
+const EditHours = props => {
+  const [newEventName, setNewEventName] = useState('');
+  const [newTimeIn, setNewTimeIn] = useState('');
+  const [newTimeOut, setNewTimeOut] = useState('');
+  const [newDate, setNewDate] = useState('');
+  const [newNotes, setNewNotes] = useState('');
+
+  const { changeUnsubmittedData, setIsEditing, eventName, timeIn, timeOut, date, notes, index } =
+    props;
+
+  useEffect(() => {
+    setNewEventName(eventName);
+    setNewDate(date);
+    setNewTimeIn(timeIn);
+    setNewTimeOut(timeOut);
+    setNewNotes(notes);
+  }, []);
 
   const setEventNameVal = e => {
-    setEventName(e.target.value);
+    setNewEventName(e.target.value);
   };
 
   const setTimeInVal = e => {
-    setTimeIn(e.target.value);
+    setNewTimeIn(e.target.value);
   };
 
   const setTimeOutVal = e => {
-    setTimeOut(e.target.value);
+    setNewTimeOut(e.target.value);
   };
 
   const setDateVal = e => {
-    setDate(e.target.value);
+    setNewDate(e.target.value);
   };
 
   const setNotesVal = e => {
-    setNotes(e.target.value);
+    setNewNotes(e.target.value);
   };
 
-  const onClickOK = () => {
-    return eventName + timeIn + timeOut + date + notes;
+  const handleClose = () => {
+    setIsEditing(false);
+  };
+
+  const handleEdit = () => {
+    changeUnsubmittedData(index, {
+      key: index,
+      name: newEventName,
+      timeIn: newTimeIn,
+      timeOut: newTimeOut,
+      date: newDate,
+      notes: newNotes,
+      submit: index,
+      edit: index,
+    });
+    setIsEditing(false);
   };
 
   return (
@@ -40,6 +66,7 @@ const EditHours = () => {
         position: 'fixed',
         bottom: '31.5vh',
         right: '30.5vw',
+        zIndex: 2,
         backgroundColor: '#FFFFFF',
         width: '39vw',
         height: '37vh',
@@ -87,6 +114,7 @@ const EditHours = () => {
           </p>
 
           <CloseOutlined
+            onClick={handleClose}
             style={{
               fontSize: '1em',
               color: '#AAAAAA',
@@ -217,8 +245,8 @@ const EditHours = () => {
               justifyContent: 'space-between',
             }}
           >
-            <Button>Cancel</Button>
-            <Button onClick={onClickOK} type="primary">
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleEdit} type="primary">
               OK
             </Button>
           </div>
@@ -226,6 +254,28 @@ const EditHours = () => {
       </div>
     </div>
   );
+};
+
+EditHours.propTypes = {
+  setIsEditing: PropTypes.func,
+  changeUnsubmittedData: PropTypes.func,
+  eventName: PropTypes.string,
+  date: PropTypes.string,
+  timeIn: PropTypes.string,
+  timeOut: PropTypes.string,
+  notes: PropTypes.string,
+  index: PropTypes.number,
+};
+
+EditHours.defaultProps = {
+  setIsEditing: () => {},
+  changeUnsubmittedData: () => {},
+  eventName: '',
+  date: '',
+  timeIn: '',
+  timeOut: '',
+  notes: '',
+  index: 0,
 };
 
 export default EditHours;

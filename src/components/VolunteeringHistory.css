@@ -49,24 +49,32 @@
   padding-bottom: 0.5em;
 }
 
+.iconDiv {
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+}
+
 .overviewDiv {
   display: flex;
   align-items: center;
   flex-direction: column;
-  justify-content: center;
   padding: 0;
   margin: 0;
   padding-top: 1em;
+  width: 23em;
+  padding-right: 10em;
 }
 
-.hrs {
+.iconTxt {
   font-family: Inter-SemiBold;
-  font-size: 1.8em;
+  font-size: 1.7em;
   color: #115740;
+  text-align: center;
 }
 
-.clockIcon {
-  font-size: 12em;
+.icon {
+  font-size: 10em;
   color: #115740;
 }
 
