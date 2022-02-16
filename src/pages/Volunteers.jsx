@@ -1,6 +1,8 @@
 import React from 'react';
 import GeneralInfo from '../components/GeneralInfo';
 import WeeklyInfo from '../components/WeeklyInfo';
+import RolesAndSkills from '../components/RolesAndSkills';
+import DuiAndCrimHis from '../components/DuiAndCrimHis';
 
 import 'antd/dist/antd.variable.min.css';
 
@@ -10,6 +12,8 @@ function Volunteers() {
       <p>This is the volunteers page</p>
       <WeeklyInfo />
       <GeneralInfo />
+      <RolesAndSkills />
+      <DuiAndCrimHis />
     </div>
   );
 }
