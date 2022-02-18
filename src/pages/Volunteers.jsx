@@ -45,23 +45,23 @@ function Volunteers() {
       });
   };
 
-  const setGeneralInfo = values => {
-    setBirthdate(values.birthdate);
-    setFirstName(values.firstName);
-    setLastName(values.lastName);
-    setEmail(values.email);
-    setPhoneNumber(values.phoneNumber);
-    setAddress(values.address);
+  const setGeneralInfo = async values => {
+    await setBirthdate(values.birthdate);
+    await setFirstName(values.firstName);
+    await setLastName(values.lastName);
+    await setEmail(values.email);
+    await setPhoneNumber(values.phoneNumber);
+    await setAddress(values.address);
   };
-  const setRolesAndSkills = values => {
-    setDrive(values.drive);
-    setDrivingMiles(values.drivingMiles);
-    setInterestedRoles(values.interestedRoles);
-    setLanguagesSpoken(values.languagesSpoken);
-    setSkills(values.skills);
-    setVehicleType(values.vehicleType);
-    setWeightliftingAbility(values.weightliftingAbility);
-    setFoodRunsInterest(values.foodRunsInterest);
+  const setRolesAndSkills = async values => {
+    await setDrive(values.drive);
+    await setDrivingMiles(values.drivingMiles);
+    await setInterestedRoles(values.interestedRoles);
+    await setLanguagesSpoken(values.languagesSpoken);
+    await setSkills(values.skills);
+    await setVehicleType(values.vehicleType);
+    await setWeightliftingAbility(values.weightliftingAbility);
+    await setFoodRunsInterest(values.foodRunsInterest);
   };
   const setDuiAndCrimHis = async values => {
     await setDuiHistory(values.duiHistory);
