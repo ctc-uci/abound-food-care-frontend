@@ -1,13 +1,12 @@
 @import '~antd/dist/antd.variable.min.css';
 @font-face {
-  font-family: "Inter-Regular";
-  src: url("../assets/fonts/Inter-Regular.ttf");
+  font-family: 'Inter-Regular';
+  src: url('../assets/fonts/Inter-Regular.ttf');
 }
 @font-face {
-  font-family: "Inter-SemiBold";
-  src: url("../assets/fonts/Inter-SemiBold.ttf");
+  font-family: 'Inter-SemiBold';
+  src: url('../assets/fonts/Inter-SemiBold.ttf');
 }
-
 
 .database-tab {
   width: 79vw;
@@ -15,7 +14,7 @@
   border-width: 1px;
   border-radius: 10px;
   background-color: white;
-  border-color: rgba(108, 194, 74, .06);
+  border-color: rgba(108, 194, 74, 0.06);
   box-shadow: 0px 4px 4px rgba(108, 194, 74, 0.25);
   margin: 5px;
 }
