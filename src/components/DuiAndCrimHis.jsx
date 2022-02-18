@@ -8,10 +8,9 @@ const validateMessages = {
 };
 
 const DuiAndCrimHis = props => {
-  const { submitForm, prevPage, setDuiAndCrimHis } = props;
-  const onFinish = values => {
-    setDuiAndCrimHis(values);
-    submitForm();
+  const { prevPage, setDuiAndCrimHis } = props;
+  const onFinish = async values => {
+    await setDuiAndCrimHis(values);
   };
 
   const [componentSize, setComponentSize] = useState('default');
@@ -42,7 +41,7 @@ const DuiAndCrimHis = props => {
         requiredMark={requiredMark}
       >
         <Form.Item
-          name="DuiHistory"
+          name="duiHistory"
           label="Do you have a DUI (Driving Under Influence) history?"
           rules={[{ required: true }]}
         >
@@ -108,7 +107,6 @@ const DuiAndCrimHis = props => {
 };
 
 DuiAndCrimHis.propTypes = {
-  submitForm: PropTypes.func.isRequired,
   prevPage: PropTypes.func.isRequired,
   setDuiAndCrimHis: PropTypes.func.isRequired,
 };

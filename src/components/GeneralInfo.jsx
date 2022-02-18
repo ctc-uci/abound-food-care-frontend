@@ -51,7 +51,7 @@ const GeneralInfo = props => {
           <Input placeholder="Give the target a name" />
         </Form.Item>
 
-        <Form.Item label="Birthday" required>
+        <Form.Item name="birthdate" label="Birthday" required>
           <DatePicker placeholder="Select date" />
         </Form.Item>
 

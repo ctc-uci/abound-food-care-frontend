@@ -201,6 +201,17 @@ const RolesAndSkills = props => {
           </Radio.Group>
         </Form.Item>
 
+        <Form.Item
+          name="foodRunsInterest"
+          label="Are you interested in food runs?"
+          rules={[{ required: true }]}
+        >
+          <Radio.Group>
+            <Radio value="true">Yes</Radio>
+            <Radio value="false">No</Radio>
+          </Radio.Group>
+        </Form.Item>
+
         <Form.Item name="vehicleType" label="Vehicle Type:" rules={[{ required: true }]}>
           <Select mode="multiple" placeholder="Select all that apply.">
             <Option value="opt1">opt1</Option>

@@ -9,6 +9,7 @@ import 'antd/dist/antd.variable.min.css';
 
 function Volunteers() {
   const [currPage, setCurrPage] = useState(1);
+  const [birthdate, setBirthdate] = useState('');
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -16,21 +17,36 @@ function Volunteers() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [address, setAddress] = useState('');
 
-  const [drive, setDrive] = useState('');
+  const [drive, setDrive] = useState(false);
   const [drivingMiles, setDrivingMiles] = useState('');
   const [interestedRoles, setInterestedRoles] = useState([]);
   const [languagesSpoken, setLanguagesSpoken] = useState([]);
   const [skills, setSkills] = useState('');
   const [vehicleType, setVehicleType] = useState([]);
   const [weightliftingAbility, setWeightliftingAbility] = useState('');
+  const [foodRunsInterest, setFoodRunsInterest] = useState(false);
 
-  const [duiHistory, setDuiHistory] = useState('');
-  const [chowmatchTraining, setChowmatchTraining] = useState('');
+  const [duiHistory, setDuiHistory] = useState(false);
+  const [chowmatchTraining, setChowmatchTraining] = useState(false);
   const [crimHisElaboration, setCrimHisElaboration] = useState('');
-  const [crimHistory, setCrimHistory] = useState('');
+  const [crimHistory, setCrimHistory] = useState(false);
   const [duiElaboration, setDuiElaboration] = useState('');
+  const [data, setData] = useState({});
+
+  const submitForm = async () => {
+    axios
+      .post('http://localhost:3001/users/create', data)
+      .then(response => {
+        console.log(`Status: ${response.status}`);
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.error('Something went wrong!', error);
+      });
+  };
 
   const setGeneralInfo = values => {
+    setBirthdate(values.birthdate);
     setFirstName(values.firstName);
     setLastName(values.lastName);
     setEmail(values.email);
@@ -45,32 +61,27 @@ function Volunteers() {
     setSkills(values.skills);
     setVehicleType(values.vehicleType);
     setWeightliftingAbility(values.weightliftingAbility);
+    setFoodRunsInterest(values.foodRunsInterest);
   };
-  const setDuiAndCrimHis = values => {
-    setDuiHistory(values.DuiHistory);
-    setChowmatchTraining(values.chowmatchTraining);
-    setCrimHisElaboration(values.crimHisElaboration);
-    setCrimHistory(values.crimHistory);
-    setDuiElaboration(values.duiElaboration);
-  };
+  const setDuiAndCrimHis = async values => {
+    await setDuiHistory(values.duiHistory);
+    await setChowmatchTraining(values.chowmatchTraining);
+    await setCrimHisElaboration(values.crimHisElaboration);
+    await setCrimHistory(values.crimHistory);
+    await setDuiElaboration(values.duiElaboration);
+    let otherInfo = {};
 
-  const nextPage = () => {
-    setCurrPage(currPage + 1);
-  };
-  const prevPage = () => {
-    setCurrPage(currPage - 1);
-  };
-  const submitForm = () => {
-    const otherInfo = {
+    otherInfo = {
       drive,
       drivingMiles,
       vehicleType,
       languagesSpoken,
     };
-    const data = {
+    console.log(otherInfo);
+    await setData({
       uType: 'volunteer',
       name: `${firstName} ${lastName}`,
-      birthdate: 'October 19, 2001',
+      birthdate,
       email,
       phone: phoneNumber,
       preferredContactMethod: 'email',
@@ -82,22 +93,20 @@ function Volunteers() {
       duiHistoryDetails: duiElaboration,
       criminalHistoryDetails: crimHisElaboration,
       completedChowmatchTraining: chowmatchTraining,
-      foodRunsInterest: '',
+      drive,
+      foodRunsInterest,
       specializations: skills,
       volunteeringRolesInterest: interestedRoles,
       additionalInformation: 'N/A',
-    };
-    console.log(otherInfo);
+    });
+    submitForm(data);
+  };
 
-    axios
-      .post('http://localhost:3001/users/create', data)
-      .then(response => {
-        console.log(`Status: ${response.status}`);
-        console.log(response.data);
-      })
-      .catch(error => {
-        console.error('Something went wrong!', error);
-      });
+  const nextPage = () => {
+    setCurrPage(currPage + 1);
+  };
+  const prevPage = () => {
+    setCurrPage(currPage - 1);
   };
 
   return (
@@ -112,13 +121,7 @@ function Volunteers() {
           setRolesAndSkills={setRolesAndSkills}
         />
       )}
-      {currPage === 4 && (
-        <DuiAndCrimHis
-          prevPage={prevPage}
-          submitForm={submitForm}
-          setDuiAndCrimHis={setDuiAndCrimHis}
-        />
-      )}
+      {currPage === 4 && <DuiAndCrimHis prevPage={prevPage} setDuiAndCrimHis={setDuiAndCrimHis} />}
     </div>
   );
 }
