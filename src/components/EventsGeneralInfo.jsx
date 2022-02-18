@@ -13,12 +13,22 @@ import {
 } from 'antd';
 import { DownOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons';
 
+const validateMessages = {
+  // eslint-disable-next-line no-template-curly-in-string
+  required: 'Answer to this question is required!',
+};
+
 const GeneralInfo = () => {
   // const onFinish = values => {
   //   console.log(values);
   // };
 
   const [componentSize, setComponentSize] = React.useState('default');
+  const [requiredMark, setRequiredMarkType] = useState('');
+
+  const onRequiredTypeChange = ({ requiredMarkValue }) => {
+    setRequiredMarkType(requiredMarkValue);
+  };
 
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
@@ -112,9 +122,13 @@ const GeneralInfo = () => {
         wrapperCol={{ span: 14 }}
         // name="nest-messages"
         // onFinish={onFinish}
-        // validateMessages={validateMessages}
+        validateMessages={validateMessages}
         size={componentSize}
-        onValuesChange={onFormLayoutChange}
+        initialValues={{
+          requiredMarkValue: requiredMark,
+        }}
+        onValuesChange={(onRequiredTypeChange, onFormLayoutChange)}
+        requiredMark={requiredMark}
       >
         <Form.Item label="Event Name" rules={[{ required: true }]}>
           <Input placeholder="Ex. Food Running Event" />
