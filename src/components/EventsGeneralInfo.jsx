@@ -24,9 +24,17 @@ const GeneralInfo = () => {
     setComponentSize(size);
   };
 
+  const tagList = [
+    { name: 'First Aid Training' },
+    { name: 'Can Drive' },
+    { name: 'Age 18 or Older' },
+  ];
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [inputTagValue, setInputTagValue] = useState('');
+  const [tags, setTags] = useState(tagList);
 
   const showModalEventType = () => {
     setIsModalVisible(true);
@@ -65,6 +73,16 @@ const GeneralInfo = () => {
     setIsEditModalVisible(false);
   };
 
+  const handleInputTagChange = e => {
+    setInputTagValue(e.target.value);
+  };
+
+  const handleAddNewTag = () => {
+    // updateTags()
+    tagList.push({ name: inputTagValue });
+    setTags(tagList);
+  };
+
   const volunteerTypeMenu = (
     <Menu>
       <Menu.Item>
@@ -79,24 +97,12 @@ const GeneralInfo = () => {
     </Menu>
   );
 
-  const tagList = [
-    { name: 'First Aid Training' },
-    { name: 'Can Drive' },
-    { name: 'Age 18 or Older' },
-  ];
-
-  const [list, updateList] = useState(tagList);
-
   const handleRemoveItem = e => {
     const name = e.target.getAttribute('name');
-    updateList(list.filter(item => item.name !== name));
+    setTags(tags.filter(item => item.name !== name));
   };
 
   const [state, setState] = useState('start');
-
-  const addItem = item => {
-    tagList.name = item.target.value;
-  };
 
   return (
     <div>
@@ -244,7 +250,7 @@ const GeneralInfo = () => {
 
         <Form.Item label="Requirements (optional)">
           {/* TODO: Make the deleting smoother */}
-          {list.map(item => {
+          {tags.map(item => {
             return (
               <>
                 <Button
@@ -273,7 +279,7 @@ const GeneralInfo = () => {
           {/* TODO: Fix the enter */}
           {state === 'add-item' && (
             <>
-              <Input onKeyDown={e => e.key === 'Enter' && addItem} />
+              <Input onChange={handleInputTagChange} onPressEnter={handleAddNewTag} />
             </>
           )}
         </Form.Item>
