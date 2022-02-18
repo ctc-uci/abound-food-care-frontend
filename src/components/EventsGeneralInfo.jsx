@@ -68,18 +68,18 @@ const GeneralInfo = () => {
   const volunteerTypeMenu = (
     <Menu>
       <Menu.Item>
-        <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
-          1st menu item
+        <a target="_blank" rel="noopener noreferrer" href="...">
+          Type
         </a>
       </Menu.Item>
       <Menu.Item>
-        <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
-          2nd menu item
+        <a target="_blank" rel="noopener noreferrer" href="...">
+          Type 2
         </a>
       </Menu.Item>
       <Menu.Item>
-        <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
-          3rd menu item
+        <a target="_blank" rel="noopener noreferrer" href="...">
+          Type 3
         </a>
       </Menu.Item>
     </Menu>
