@@ -68,19 +68,13 @@ const GeneralInfo = () => {
   const volunteerTypeMenu = (
     <Menu>
       <Menu.Item>
-        <a target="_blank" rel="noopener noreferrer" href="...">
-          Type
-        </a>
+        <p>type 1</p>
       </Menu.Item>
       <Menu.Item>
-        <a target="_blank" rel="noopener noreferrer" href="...">
-          Type 2
-        </a>
+        <p>type 2</p>
       </Menu.Item>
       <Menu.Item>
-        <a target="_blank" rel="noopener noreferrer" href="...">
-          Type 3
-        </a>
+        <p>type 3</p>
       </Menu.Item>
     </Menu>
   );
@@ -110,24 +104,31 @@ const GeneralInfo = () => {
       <Form
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 14 }}
-        name="nest-messages"
+        // name="nest-messages"
         // onFinish={onFinish}
         // validateMessages={validateMessages}
         size={componentSize}
         onValuesChange={onFormLayoutChange}
       >
-        <Form.Item label="Event Name">
+        <Form.Item label="Event Name" rules={[{ required: true }]}>
           <Input placeholder="Ex. Food Running Event" />
         </Form.Item>
 
-        <Form.Item label="Date / Time">
+        <Form.Item label="Start Date / Time" rules={[{ required: true }]}>
           <DatePicker placeholder="Select date" />
           <TimePicker placeholder="Select time" />
         </Form.Item>
 
-        <Form.Item label="Event Type">
-          <Button onClick={showModalEventType}>Type</Button>
-          <Button type="link" onClick={showModalAddEventType}>
+        <Form.Item label="End Date / Time" rules={[{ required: true }]}>
+          <DatePicker placeholder="Select date" />
+          <TimePicker placeholder="Select time" />
+        </Form.Item>
+
+        <Form.Item label="Event Type" rules={[{ required: true }]}>
+          <Button onClick={showModalEventType}>
+            Type <DownOutlined />
+          </Button>
+          <Button type="link" onClick={showModalAddEventType} style={{ color: '#6CC24A' }}>
             New Event Type
           </Button>
           {/* Event Type Pop Up */}
@@ -137,7 +138,15 @@ const GeneralInfo = () => {
             onOk={handleOk}
             onCancel={handleCancel}
             footer={[
-              <Button key="submit" type="primary" onClick={handleOk}>
+              <Button
+                key="submit"
+                onClick={handleOk}
+                style={{
+                  background: '#115740',
+                  color: 'white',
+                  borderColor: '#115740',
+                }}
+              >
                 Add Event Type
               </Button>,
             ]}
@@ -164,7 +173,15 @@ const GeneralInfo = () => {
               <Button key="back" onClick={handleAddCancel}>
                 Cancel
               </Button>,
-              <Button key="submit" type="primary" onClick={handleAddOk}>
+              <Button
+                key="submit"
+                onClick={handleAddOk}
+                style={{
+                  background: '#115740',
+                  color: 'white',
+                  borderColor: '#115740',
+                }}
+              >
                 Add Event Type
               </Button>,
             ]}
@@ -189,7 +206,15 @@ const GeneralInfo = () => {
               <Button key="back" onClick={handleEditCancel}>
                 Cancel
               </Button>,
-              <Button key="submit" type="primary" onClick={handleEditOk}>
+              <Button
+                key="submit"
+                onClick={handleEditOk}
+                style={{
+                  background: '#115740',
+                  color: 'white',
+                  borderColor: '#115740',
+                }}
+              >
                 Save
               </Button>,
             ]}
@@ -205,7 +230,7 @@ const GeneralInfo = () => {
           </Modal>
         </Form.Item>
 
-        <Form.Item label="Num Volunteers">
+        <Form.Item label="Num Volunteers" rules={[{ required: true }]}>
           <InputNumber />
         </Form.Item>
 
@@ -222,7 +247,15 @@ const GeneralInfo = () => {
           {list.map(item => {
             return (
               <>
-                <Button name={item.name} onClick={handleRemoveItem}>
+                <Button
+                  name={item.name}
+                  onClick={handleRemoveItem}
+                  style={{
+                    background: 'rgba(108, 194, 74, 0.25)',
+                    color: 'rgba(0, 0, 0, 0.85)',
+                    border: 'rgba(17, 87, 64, 0.25)',
+                  }}
+                >
                   {item.name} <CloseOutlined />
                 </Button>
               </>
@@ -245,7 +278,7 @@ const GeneralInfo = () => {
           )}
         </Form.Item>
 
-        <Form.Item label="Location">
+        <Form.Item label="Location" rules={[{ required: true }]}>
           <Input placeholder="Ex. Irvine, CA" />
         </Form.Item>
       </Form>

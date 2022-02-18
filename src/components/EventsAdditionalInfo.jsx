@@ -36,15 +36,18 @@ const AdditionalInfo = () => {
 
         <Form.Item label="Upload Forms">
           <Upload>
-            <Button icon={<RightOutlined />}> Click to Upload</Button>
+            <Button
+              icon={<RightOutlined />}
+              style={{
+                background: 'rgba(108, 194, 74, 0.25)',
+                color: 'rgba(0, 0, 0, 0.85)',
+                border: 'rgba(17, 87, 64, 0.25)',
+              }}
+            >
+              {' '}
+              Click to Upload
+            </Button>
           </Upload>
-        </Form.Item>
-
-        <Form.Item style={{ textAlign: 'center' }}>
-          <Button type="primary">Cancel</Button>
-          <Button type="primary" htmlType="submit" style={{ float: 'right' }}>
-            Publish Event
-          </Button>
         </Form.Item>
       </Form>
     </div>
