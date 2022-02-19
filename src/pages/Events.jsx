@@ -4,9 +4,6 @@ import { Button } from 'antd';
 import EventsGeneralInfo from '../components/EventsGeneralInfo';
 import EventsAdditionalInfo from '../components/EventsAdditionalInfo';
 
-// TODO: Change color of hover
-// TODO: Add functionality
-
 function Events() {
   const [state, setState] = useState('start');
 

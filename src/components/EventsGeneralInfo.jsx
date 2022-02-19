@@ -13,50 +13,58 @@ import {
 } from 'antd';
 import { DownOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons';
 
-const validateMessages = {
-  // eslint-disable-next-line no-template-curly-in-string
-  required: 'Answer to this question is required!',
-};
-
 const GeneralInfo = () => {
   // const onFinish = values => {
   //   console.log(values);
   // };
 
   const [componentSize, setComponentSize] = React.useState('default');
-  const [requiredMark, setRequiredMarkType] = useState('');
-
-  const onRequiredTypeChange = ({ requiredMarkValue }) => {
-    setRequiredMarkType(requiredMarkValue);
-  };
 
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
   };
 
-  const tagList = [
-    { name: 'First Aid Training' },
-    { name: 'Can Drive' },
-    { name: 'Age 18 or Older' },
+  // Event Type Modals
+  const eventTypeList = [
+    {
+      name: 'Distribution',
+      description:
+        'Lorem ipsum dolor sit amex, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    },
+    {
+      name: 'Food Running',
+      description:
+        'Lorem ipsum dolor sit amex, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    },
   ];
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  const [inputTagValue, setInputTagValue] = useState('');
-  const [tags, setTags] = useState(tagList);
+  const [editEventTypeState, setEditEventTypeState] = useState('');
+  const [inputEventNameValue, setInputEventNameValue] = useState('');
+  const [inputEventDescriptionValue, setInputEventDescriptionValue] = useState('');
+  const [eventType, setEventType] = useState(eventTypeList);
 
   const showModalEventType = () => {
     setIsModalVisible(true);
+    setEventType(eventTypeList);
   };
 
   const showModalAddEventType = () => {
     setIsAddModalVisible(true);
   };
 
-  const showModalEditEventType = () => {
+  const showModalEditEventType = e => {
+    const { value } = e.target;
+    setEditEventTypeState(value);
     setIsModalVisible(false);
     setIsEditModalVisible(true);
+  };
+
+  const handleRemoveEventType = e => {
+    const name = e.target.getAttribute('name');
+    setEventType(eventType.filter(item => item.name !== name));
   };
 
   const handleOk = () => {
@@ -67,8 +75,19 @@ const GeneralInfo = () => {
     setIsModalVisible(false);
   };
 
+  const handleEventNameChange = e => {
+    setInputEventNameValue(e.target.value);
+  };
+
+  const handleEventDescriptionChange = e => {
+    setInputEventDescriptionValue(e.target.value);
+  };
+
   const handleAddOk = () => {
     setIsAddModalVisible(false);
+    eventTypeList.push({ name: inputEventNameValue, description: inputEventDescriptionValue });
+    setEventType(eventTypeList);
+    setIsModalVisible(true);
   };
 
   const handleAddCancel = () => {
@@ -77,22 +96,17 @@ const GeneralInfo = () => {
 
   const handleEditOk = () => {
     setIsEditModalVisible(false);
+    setEventType(eventType.filter(item => item === editEventTypeState));
+    eventTypeList.push({ name: inputEventNameValue, description: inputEventDescriptionValue });
+    setEventType(eventTypeList);
+    setIsModalVisible(true);
   };
 
   const handleEditCancel = () => {
     setIsEditModalVisible(false);
   };
 
-  const handleInputTagChange = e => {
-    setInputTagValue(e.target.value);
-  };
-
-  const handleAddNewTag = () => {
-    // updateTags()
-    tagList.push({ name: inputTagValue });
-    setTags(tagList);
-  };
-
+  // Volunteer Type
   const volunteerTypeMenu = (
     <Menu>
       <Menu.Item>
@@ -107,12 +121,30 @@ const GeneralInfo = () => {
     </Menu>
   );
 
-  const handleRemoveItem = e => {
-    const name = e.target.getAttribute('name');
-    setTags(tags.filter(item => item.name !== name));
+  // Requirements
+  const tagList = [
+    { name: 'First Aid Training' },
+    { name: 'Can Drive' },
+    { name: 'Age 18 or Older' },
+  ];
+
+  const [state, setState] = useState('new-tag');
+  const [inputTagValue, setInputTagValue] = useState('');
+  const [tags, setTags] = useState(tagList);
+
+  const handleInputTagChange = e => {
+    setInputTagValue(e.target.value);
   };
 
-  const [state, setState] = useState('start');
+  const handleAddNewTag = () => {
+    tagList.push({ name: inputTagValue });
+    setTags(tagList);
+  };
+
+  const handleRemoveTag = e => {
+    const name = e.target.getAttribute('name');
+    setTags(tags.filter(tag => tag.name !== name));
+  };
 
   return (
     <div>
@@ -122,13 +154,9 @@ const GeneralInfo = () => {
         wrapperCol={{ span: 14 }}
         // name="nest-messages"
         // onFinish={onFinish}
-        validateMessages={validateMessages}
+        // validateMessages={validateMessages}
         size={componentSize}
-        initialValues={{
-          requiredMarkValue: requiredMark,
-        }}
-        onValuesChange={(onRequiredTypeChange, onFormLayoutChange)}
-        requiredMark={requiredMark}
+        onValuesChange={onFormLayoutChange}
       >
         <Form.Item label="Event Name" rules={[{ required: true }]}>
           <Input placeholder="Ex. Food Running Event" />
@@ -171,16 +199,45 @@ const GeneralInfo = () => {
               </Button>,
             ]}
           >
-            <Card>
-              <p>Distribution</p>
-              <Button type="link" onClick={showModalEditEventType}>
-                Edit
-              </Button>
-              <Button type="link">Delete</Button>
-            </Card>
-            <Card>
-              <p>Food Running</p>
-            </Card>
+            {eventType.map(item => {
+              return (
+                <>
+                  <Card>
+                    <b>{item.name}</b>
+                    <div>
+                      <div style={{ display: 'inline-block', float: 'left' }}>
+                        <p>{item.description}</p>
+                      </div>
+                      <div style={{ display: 'inline-block', float: 'right' }}>
+                        <div style={{ display: 'inline-block' }}>
+                          <Button
+                            name={item.name}
+                            type="link"
+                            onClick={showModalEditEventType}
+                            style={{ color: '#6CC24A' }}
+                          >
+                            Edit
+                          </Button>
+                        </div>
+                        <div style={{ display: 'inline-block' }}>
+                          <p>|</p>
+                        </div>
+                        <div style={{ display: 'inline-block' }}>
+                          <Button
+                            name={item.name}
+                            type="link"
+                            onClick={handleRemoveEventType}
+                            style={{ color: '#6CC24A' }}
+                          >
+                            Delete
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </>
+              );
+            })}
           </Modal>
 
           {/* Add Event Type Pop Up */}
@@ -208,10 +265,16 @@ const GeneralInfo = () => {
           >
             <Form>
               <Form.Item label="Event Type Name">
-                <Input placeholder="Describe what events should go under this type." />
+                <Input
+                  onChange={handleEventNameChange}
+                  placeholder="Describe what events should go under this type."
+                />
               </Form.Item>
               <Form.Item label="Description">
-                <Input placeholder="Describe what events should go under this type." />
+                <Input
+                  onChange={handleEventDescriptionChange}
+                  placeholder="Describe what events should go under this type."
+                />
               </Form.Item>
             </Form>
           </Modal>
@@ -240,12 +303,23 @@ const GeneralInfo = () => {
             ]}
           >
             <Form>
-              <Form.Item label="Event Type Name">
-                <Input placeholder="Food Running" />
-              </Form.Item>
-              <Form.Item label="Description">
-                <Input placeholder="..." />
-              </Form.Item>
+              {eventType
+                .filter(item => item === editEventTypeState)
+                .map(item => {
+                  return (
+                    <>
+                      <Form.Item label="Event Type Name">
+                        <Input onChange={handleEventNameChange} defaultValue={item.name} />
+                      </Form.Item>
+                      <Form.Item label="Description">
+                        <Input
+                          onChange={handleEventDescriptionChange}
+                          defaultValue={item.description}
+                        />
+                      </Form.Item>
+                    </>
+                  );
+                })}
             </Form>
           </Modal>
         </Form.Item>
@@ -263,35 +337,33 @@ const GeneralInfo = () => {
         </Form.Item>
 
         <Form.Item label="Requirements (optional)">
-          {/* TODO: Make the deleting smoother */}
-          {tags.map(item => {
+          {tags.map(tag => {
             return (
               <>
                 <Button
-                  name={item.name}
-                  onClick={handleRemoveItem}
+                  name={tag.name}
+                  onClick={handleRemoveTag}
                   style={{
                     background: 'rgba(108, 194, 74, 0.25)',
                     color: 'rgba(0, 0, 0, 0.85)',
                     border: 'rgba(17, 87, 64, 0.25)',
                   }}
                 >
-                  {item.name} <CloseOutlined />
+                  {tag.name} <CloseOutlined />
                 </Button>
               </>
             );
           })}
 
-          {state === 'start' && (
+          {state === 'new-tag' && (
             <>
-              <Button type="dashed" icon={<PlusOutlined />} onClick={() => setState('add-item')}>
+              <Button type="dashed" icon={<PlusOutlined />} onClick={() => setState('add-tag')}>
                 New Tag
               </Button>
             </>
           )}
 
-          {/* TODO: Fix the enter */}
-          {state === 'add-item' && (
+          {state === 'add-tag' && (
             <>
               <Input onChange={handleInputTagChange} onPressEnter={handleAddNewTag} />
             </>
