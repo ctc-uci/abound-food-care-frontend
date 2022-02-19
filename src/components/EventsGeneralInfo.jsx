@@ -38,6 +38,8 @@ const GeneralInfo = () => {
     },
   ];
 
+  const eventTypeAddedList = [];
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
@@ -45,10 +47,12 @@ const GeneralInfo = () => {
   const [inputEventNameValue, setInputEventNameValue] = useState('');
   const [inputEventDescriptionValue, setInputEventDescriptionValue] = useState('');
   const [eventType, setEventType] = useState(eventTypeList);
+  const [eventTypeCardState, setEventTypeCardState] = useState(false);
+  const [eventTypeAdded, setEventTypeAdded] = useState(eventTypeAddedList);
 
   const showModalEventType = () => {
-    setIsModalVisible(true);
     setEventType(eventTypeList);
+    setIsModalVisible(true);
   };
 
   const showModalAddEventType = () => {
@@ -67,7 +71,25 @@ const GeneralInfo = () => {
     setEventType(eventType.filter(item => item.name !== name));
   };
 
+  const selectEventTypeCard = e => {
+    console.log(e.target.getAttribute('name'));
+    if (eventTypeCardState) {
+      setEventTypeCardState(false);
+      e.target.style.background = '#ffffff';
+      const name = e.target.getAttribute('name');
+      setEventTypeAdded(eventTypeAddedList.filter(item => item.name !== name));
+    } else {
+      setEventTypeCardState(true);
+      e.target.style.background = 'rgba(108, 194, 74, 0.25)';
+      const name = e.target.getAttribute('name');
+      const description = e.target.getAttribute('description');
+      eventTypeAddedList.push({ name, description });
+      setEventTypeAdded(eventTypeAddedList);
+    }
+  };
+
   const handleOk = () => {
+    setEventTypeAdded(eventTypeAddedList);
     setIsModalVisible(false);
   };
 
@@ -179,6 +201,20 @@ const GeneralInfo = () => {
           <Button type="link" onClick={showModalAddEventType} style={{ color: '#6CC24A' }}>
             New Event Type
           </Button>
+          {/* Event Type Added */}
+          {eventTypeAdded.map(item => {
+            return (
+              <>
+                <Card>
+                  <b>{item.name}</b>
+                  <div>
+                    <p>{item.description}</p>
+                  </div>
+                </Card>
+              </>
+            );
+          })}
+
           {/* Event Type Pop Up */}
           <Modal
             title="Event Type"
@@ -202,32 +238,33 @@ const GeneralInfo = () => {
             {eventType.map(item => {
               return (
                 <>
-                  <Card>
-                    <b>{item.name}</b>
+                  <Card
+                    name={item.name}
+                    description={item.description}
+                    state={eventTypeCardState}
+                    onClick={selectEventTypeCard}
+                  >
                     <div>
-                      <div style={{ display: 'inline-block', float: 'left' }}>
-                        <p>{item.description}</p>
-                      </div>
-                      <div style={{ display: 'inline-block', float: 'right' }}>
-                        <div style={{ display: 'inline-block' }}>
+                      <b>{item.name}</b>
+                      <div>
+                        <div style={{ display: 'inline-block', float: 'left' }}>
+                          <p>{item.description}</p>
+                        </div>
+                        <div style={{ display: 'inline-block', float: 'right' }}>
                           <Button
                             name={item.name}
                             type="link"
                             onClick={showModalEditEventType}
-                            style={{ color: '#6CC24A' }}
+                            style={{ color: '#6CC24A', display: 'inline-block' }}
                           >
                             Edit
                           </Button>
-                        </div>
-                        <div style={{ display: 'inline-block' }}>
-                          <p>|</p>
-                        </div>
-                        <div style={{ display: 'inline-block' }}>
+                          <p style={{ display: 'inline-block' }}>|</p>
                           <Button
                             name={item.name}
                             type="link"
                             onClick={handleRemoveEventType}
-                            style={{ color: '#6CC24A' }}
+                            style={{ color: '#6CC24A', display: 'inline-block' }}
                           >
                             Delete
                           </Button>
