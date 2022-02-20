@@ -27,12 +27,10 @@ const AdminEvents = () => {
   ];
 
   const onTypeChange = e => {
-    console.log('type changed', e.target.value);
     setEventTypeValue(e.target.value);
   };
 
   const onStatusChange = e => {
-    console.log('status changed', e.target.value);
     setEventStatusValue(e.target.value);
   };
 

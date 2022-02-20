@@ -25,7 +25,7 @@ const EventCard = ({ id, name, startDateTime, endDateTime, volunteerCapacity }) 
         const { data: volunteerResponse } = await axios.get(
           `http://localhost:3001/volunteers/${id}`,
         );
-        setNumVolunteers(volunteerResponse.length);
+        setNumVolunteers(volunteerResponse.count);
       } catch (err) {
         console.error(err.message);
       }
