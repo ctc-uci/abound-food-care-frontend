@@ -1,8 +1,13 @@
 import React from 'react';
 import 'antd/dist/antd.css';
+import PostEvent from '../components/PostEvent';
 
 function Events() {
-  return <p>This is the events page.</p>;
+  return (
+    <div>
+      <PostEvent />
+    </div>
+  );
 }
 
 export default Events;
