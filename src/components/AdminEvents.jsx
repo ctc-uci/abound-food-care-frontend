@@ -7,46 +7,94 @@ const { Search } = Input;
 const { Title } = Typography;
 
 const AdminEvents = () => {
-  const onSearch = value => console.log(value);
-  const [eventTypeValue, setEventTypeValue] = useState(1);
-  const [eventStatusValue, setEventStatusValue] = useState(1);
+  const [eventTypeValue, setEventTypeValue] = useState('all');
+  const [eventStatusValue, setEventStatusValue] = useState('all');
   const [loading, setLoading] = useState(true);
   const [eventsData, setEventsData] = useState([]);
+  const [allEvents, setAllEvents] = useState([]);
 
   const eventTypeOptions = [
-    { label: 'All', value: 1 },
-    { label: 'Distributions', value: 2 },
-    { label: 'Food Running', value: 3 },
-    { label: 'Other', value: 4 },
+    { label: 'All', value: 'all' },
+    { label: 'Distributions', value: 'distribution' },
+    { label: 'Food Running', value: 'food' },
+    { label: 'Other', value: 'other' },
   ];
 
   const eventStatusOptions = [
-    { label: 'All', value: 1 },
-    { label: 'Upcoming', value: 2 },
-    { label: 'Past', value: 3 },
+    { label: 'All', value: 'all' },
+    { label: 'Upcoming', value: 'upcoming' },
+    { label: 'Past', value: 'past' },
   ];
+
+  const fetchAllEvents = async () => {
+    try {
+      const { data: eventResponse } = await axios.get('http://localhost:3001/events');
+      setEventsData(eventResponse);
+      setAllEvents(eventResponse);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    fetchAllEvents();
+    setLoading(false);
+  }, []);
+
+  const onSearch = searchTerm => {
+    if (searchTerm === '') {
+      setEventsData(allEvents);
+    } else {
+      const searchSpecificEventData = eventsData.filter(event => event.name === searchTerm);
+      setEventsData(searchSpecificEventData);
+    }
+  };
+
+  const determineStatus = startDatetime => {
+    if (new Date(startDatetime) > new Date()) {
+      return 'upcoming';
+    }
+    return 'past';
+  };
+
+  const renderEventsByTypeAndStatus = (type, status) => {
+    let filteredEvents = allEvents;
+    if (type === 'all' && status === 'all') {
+      filteredEvents = allEvents;
+    } else if (type === 'all' || status === 'all') {
+      const fieldToFilterBy = type !== 'all' ? type : status;
+      filteredEvents = filteredEvents.filter(
+        event =>
+          event.ntype === fieldToFilterBy ||
+          determineStatus(event.startDateTime) === fieldToFilterBy,
+      );
+    } else if (
+      (type === 'distribution' || type === 'food') &&
+      (status === 'upcoming' || status === 'past')
+    ) {
+      filteredEvents = filteredEvents.filter(
+        event => event.ntype === type && determineStatus(event.startDateTime) === status,
+      );
+    } else {
+      filteredEvents = filteredEvents.filter(
+        event =>
+          (event.ntype === type || event.ntype === 'null') &&
+          determineStatus(event.startDateTime) === status,
+      );
+    }
+    setEventsData(filteredEvents);
+  };
 
   const onTypeChange = e => {
     setEventTypeValue(e.target.value);
+    renderEventsByTypeAndStatus(e.target.value, eventStatusValue);
   };
 
   const onStatusChange = e => {
     setEventStatusValue(e.target.value);
+    renderEventsByTypeAndStatus(eventTypeValue, e.target.value);
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const { data: eventResponse } = await axios.get('http://localhost:3001/events');
-        setEventsData(eventResponse);
-      } catch (err) {
-        console.error(err.message);
-      }
-      setLoading(false);
-    };
-    fetchData();
-  }, []);
 
   const renderEventsGrid = events => {
     const rows = events.map(event => (
@@ -71,7 +119,7 @@ const AdminEvents = () => {
           <Card>
             <Title level={3}>Events</Title>
             <Search
-              placeholder="input search text"
+              placeholder="Search for event"
               onSearch={onSearch}
               allowClear
               enterButton="Search"
@@ -99,7 +147,9 @@ const AdminEvents = () => {
             <Button>New Event Type</Button>
           </Card>
           <Card>
-            <Row>{renderEventsGrid(eventsData)}</Row>
+            <Row>
+              {eventsData ? renderEventsGrid(eventsData) : <Title level={2}>No events</Title>}
+            </Row>
           </Card>
         </>
       )}
