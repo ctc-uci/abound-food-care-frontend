@@ -7,6 +7,7 @@ import {
 import { Button, Divider, ConfigProvider } from 'antd';
 import axios from 'axios';
 import PostEvent from './PostEvent';
+import './eventPage.css';
 
 function EventPage() {
   const [eventData, setEventData] = useState(null);
@@ -18,6 +19,7 @@ function EventPage() {
   useEffect(() => {
     axios.get(`http://localhost:3001/events/${eventId}`).then(res => {
       setEventData(res.data[0]);
+      res.data[0].volunteer_requirements = [1, 2, 3, 4, 5];
       setLoading(false);
     });
   }, []);
@@ -45,17 +47,17 @@ function EventPage() {
 
   const parseTimeRange = () => {
     let startTime = eventData.start_datetime.substring(11, 16);
-    if (startTime.substring[0] !== '1') {
+    if (startTime[0] !== '0' && parseInt(startTime[1], 10) > 2) {
       startTime = `${parseInt(startTime.substring(0, 2), 10) - 12}:${startTime.substring(3, 5)} pm`;
     } else {
-      startTime = `${startTime.substring(1, 5)} am`;
+      startTime = `${parseInt(startTime.substring(0, 2), 10)}:${startTime.substring(3, 5)} am`;
     }
 
     let endTime = eventData.end_datetime.substring(11, 16);
-    if (endTime.substring[0] !== '1') {
-      endTime = `${parseInt(endTime.substring(0, 2), 10) - 12}:${endTime.substring(3, 5)} pm`;
+    if (endTime[0] !== '0' && parseInt(endTime[1], 10) > 2) {
+      startTime = `${parseInt(endTime.substring(0, 2), 10)}:${endTime.substring(3, 5)} am`;
     } else {
-      endTime = `${endTime.substring(1, 5)} am`;
+      endTime = `${endTime.substring(0, 5)} am`;
     }
 
     return `${startTime} - ${endTime}`;
@@ -126,7 +128,6 @@ function EventPage() {
       <ConfigProvider>
         <div
           style={{
-            backgroundColor: 'grey',
             width: '80vw',
             display: 'flex',
             flexDirection: 'row',
@@ -135,7 +136,6 @@ function EventPage() {
         >
           <div
             style={{
-              backgroundColor: 'lightgrey',
               width: '46%',
               height: '50em',
               display: 'flex',
@@ -253,8 +253,7 @@ function EventPage() {
           </div>
           <div
             style={{
-              backgroundColor: 'lightgrey',
-              width: '30%',
+              width: '25%',
               height: '50em',
               display: 'flex',
               flexDirection: 'column',
@@ -284,62 +283,93 @@ function EventPage() {
             </div>
 
             <div
+              className="containerBorder"
               style={{
                 backgroundColor: 'white',
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center',
                 marginTop: '2.5em',
-                height: '14em',
               }}
             >
               <p
                 style={{
                   color: 'black',
                   fontWeight: 500,
-                  fontSize: '28px',
+                  fontSize: '20px',
                   padding: 0,
-                  margin: 0,
-                  lineHeight: '22px',
+                  margin: '1em',
                 }}
               >
                 Event Location
               </p>
-              <Divider style={{ padding: 0, margin: '1em' }} />
+              <Divider style={{ padding: 0, margin: 0, marginBottom: '1em' }} />
               <div
                 style={{
                   backgroundColor: 'lightgrey',
+                  alignSelf: 'center',
                   width: '85%',
-                  height: '65%',
+                  height: '12em',
                   padding: 0,
                   margin: 0,
+                  marginBottom: '1em',
                 }}
               />
             </div>
 
             <div
+              className="containerBorder"
               style={{
                 backgroundColor: 'white',
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center',
+                justifyContent: 'flex-start',
                 marginTop: '2.5em',
-                height: '8em',
               }}
             >
               <p
                 style={{
                   color: 'black',
                   fontWeight: 500,
-                  fontSize: '28px',
+                  fontSize: '20px',
                   padding: 0,
-                  margin: 0,
-                  lineHeight: '22px',
+                  margin: '1em',
                 }}
               >
                 Requirements
               </p>
-              <Divider style={{ padding: 0, margin: '1em' }} />
+              <Divider style={{ padding: 0, margin: 0, marginBottom: '1em' }} />
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                }}
+              >
+                {eventData.volunteer_requirements.map(e => {
+                  return (
+                    <div
+                      key={e}
+                      className="requirementsTag"
+                      style={{
+                        paddingLeft: '1em',
+                        paddingRight: '1em',
+                        margin: '1em',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <p
+                        style={{
+                          padding: 0,
+                          margin: 0,
+                        }}
+                      >
+                        {e}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
             <div
               style={{
