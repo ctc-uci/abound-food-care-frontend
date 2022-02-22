@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Card, Typography } from 'antd';
 import { EditOutlined, EllipsisOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
+import './eventCard.css';
+import 'antd/dist/antd.variable.min.css';
 
 const { Title } = Typography;
 
@@ -41,17 +43,24 @@ const EventCard = ({ id, name, startDateTime, endDateTime, volunteerCapacity }) 
       {!loading && (
         <>
           <Card
+            className="event-card"
             title={name}
             bordered
             hoverable
-            headStyle={{ backgroundColor: '#009A44', color: 'white' }}
+            headStyle={{
+              backgroundColor: '#009A44',
+              color: 'white',
+              fontSize: '18px',
+              fontWeight: 'bold',
+            }}
             actions={[<EditOutlined key="edit" />, <EllipsisOutlined key="ellipsis" />]}
           >
-            <Title level={5}>{eventDate}</Title>
-            <Title level={5}>
+            <Title className="event-date-time" level={5}>
+              {eventDate}
+              <br />
               {eventStarttime} - {eventEndtime}
             </Title>
-            <p style={{ color: 'GrayText' }}>
+            <p className="num-volunteers" style={{ color: 'GrayText' }}>
               {numVolunteers}/{volunteerCapacity} Volunteers
             </p>
           </Card>

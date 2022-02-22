@@ -1,12 +1,25 @@
 import { React, useState, useEffect } from 'react';
-import { Input, Button, Radio, Row, Col, Card, Typography, Space } from 'antd';
+import { Input, Button, Radio, Row, Col, Card, Typography, Space, ConfigProvider } from 'antd';
 import axios from 'axios';
+import styled from 'styled-components';
 import EventCard from './EventCard';
-import './eventCard.css';
+import './adminEvents.css';
 import 'antd/dist/antd.variable.min.css';
 
 const { Search } = Input;
 const { Title } = Typography;
+
+ConfigProvider.config({
+  theme: {
+    primaryColor: '#6CC24A',
+  },
+});
+
+const SearchButton = styled.div`
+  .ant-btn-primary {
+    background-color: var(--eden);
+  }
+`;
 
 const AdminEvents = () => {
   const [eventTypeValue, setEventTypeValue] = useState('all');
@@ -114,49 +127,60 @@ const AdminEvents = () => {
   };
 
   return (
-    <div>
-      {loading && <div>Loading...</div>}
-      {!loading && (
-        <>
-          <Card>
-            <Title level={3}>Events</Title>
-            <Search
-              placeholder="Search for event"
-              onSearch={onSearch}
-              allowClear
-              enterButton="Search"
-              style={{ width: 500 }}
-            />
-          </Card>
-          <Card>
-            <Space>
-              <Radio.Group
-                className="event-type-radio"
-                options={eventTypeOptions}
-                onChange={onTypeChange}
-                value={eventTypeValue}
-                optionType="button"
-              />
-            </Space>
-            <Space>
-              <Radio.Group
-                className="status-type-radio"
-                options={eventStatusOptions}
-                onChange={onStatusChange}
-                value={eventStatusValue}
-                optionType="button"
-              />
-            </Space>
-            <Button className="new-event-btn" type="primary">
-              New Event
-            </Button>
-          </Card>
-          <Card>
-            <Row className="event-card-row">{renderEventsGrid(eventsData)}</Row>
-          </Card>
-        </>
-      )}
-    </div>
+    <>
+      <ConfigProvider>
+        <div className="events">
+          {loading && <div>Loading...</div>}
+          {!loading && (
+            <>
+              <Card className="card">
+                <Title level={3}>Events</Title>
+                <SearchButton className="search-bar">
+                  <Search
+                    placeholder="Search for event"
+                    onSearch={onSearch}
+                    allowClear
+                    enterButton="Search"
+                    style={{
+                      width: 500,
+                      backgroundColor: '#BFBFBF',
+                    }}
+                  />
+                </SearchButton>
+              </Card>
+              <Card className="card">
+                <Space>
+                  Event Type:
+                  <Radio.Group
+                    className="event-type-radio"
+                    options={eventTypeOptions}
+                    onChange={onTypeChange}
+                    value={eventTypeValue}
+                    optionType="button"
+                  />
+                </Space>
+                <Space>
+                  Event Status:
+                  <Radio.Group
+                    className="status-type-radio"
+                    options={eventStatusOptions}
+                    onChange={onStatusChange}
+                    value={eventStatusValue}
+                    optionType="button"
+                  />
+                </Space>
+                <Button className="new-event-btn" type="primary">
+                  New Event
+                </Button>
+              </Card>
+              <Card className="events-grid card">
+                <Row className="event-card-row">{renderEventsGrid(eventsData)}</Row>
+              </Card>
+            </>
+          )}
+        </div>
+      </ConfigProvider>
+    </>
   );
 };
 

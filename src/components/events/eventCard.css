@@ -1,26 +1,27 @@
 @import '~antd/dist/antd.variable.min.css';
-
-/* .ant-radio-inner:after {
-  background: red !important;
+@font-face {
+  font-family: 'Inter-Regular';
+  src: url('../../assets/fonts/Inter-Regular.ttf');
+}
+@font-face {
+  font-family: 'Inter-SemiBold';
+  src: url('../../assets/fonts/Inter-SemiBold.ttf');
 }
 
-.ant-radio-checked .ant-radio-inner,
-.ant-radio:hover .ant-radio-inner,
-.ant-radio-wrapper:hover,
-.ant-radio-input:focus .ant-radio-inner {
-  border-color: red !important;
-} */
-
-.event-type-radio {
-  border-color: #009A44 !important;
+.event-card {
+  margin: 10px;
+  border-color: #BFBFBF;
+  border-radius: 5px;
+  box-shadow: 0px 4px 4px rgba(108, 194, 74, 0.25);
 }
 
-.status-type-radio {
-  border-color: #009A44;
+.event-date-time {
+  font-family: Inter-SemiBold;
+  font-size: 14px;
+  height: 8vh;
 }
 
-.new-event-btn, .new-event-btn:hover, .new-event-btn:focus {
-  background-color: #115740;
-  border-color: #115740;
-  color: white;
+.num-volunteers {
+  font-family: Inter-Regular;
+  font-size: small;
 }
