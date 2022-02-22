@@ -1,13 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form, Input, Button, ConfigProvider } from 'antd';
 import { CalendarOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import axios from 'axios';
+import PropTypes from 'prop-types';
 
-const PostEvent = () => {
+const PostEvent = props => {
+  const { name, date, time, eventId, setIsAddingPost } = props;
+  const [postEventSection, setPostEventSection] = useState('');
+
   ConfigProvider.config({
     theme: {
       primaryColor: '#009A44',
     },
   });
+
+  const sendPostEvent = () => {
+    axios
+      .put(`http://localhost:3001/postevents/${eventId}`, { description: postEventSection })
+      .then(() => {
+        setIsAddingPost(false);
+      });
+  };
 
   return (
     <ConfigProvider>
@@ -32,7 +45,7 @@ const PostEvent = () => {
             marginTop: '1.5em',
           }}
         >
-          <h2> Event Name </h2>
+          <h2> {name} </h2>
 
           <div
             style={{
@@ -44,11 +57,11 @@ const PostEvent = () => {
             }}
           >
             <h4>
-              <CalendarOutlined /> December 3, 2021
+              <CalendarOutlined /> {date}
             </h4>
 
             <h4>
-              <ClockCircleOutlined /> 9:00 am - 1:30 pm
+              <ClockCircleOutlined /> {time}
             </h4>
 
             <div
@@ -64,11 +77,16 @@ const PostEvent = () => {
             >
               <Form labelCol={{ span: 4 }} wrapperCol={{ span: 18 }} name="post_event_section">
                 <Form.Item name="post_event_sec" label="Post-Event Section">
-                  <Input placeholder="Write about the volunteers' impact and what happened at the event here!" />
+                  <Input
+                    value={postEventSection}
+                    onChange={e => setPostEventSection(e.target.value)}
+                    placeholder="Write about the volunteers' impact and what happened at the event here!"
+                  />
                 </Form.Item>
 
                 <Form.Item width={{ width: 10 }} wrapperCol={{ offset: 20 }}>
                   <Button
+                    onClick={sendPostEvent}
                     style={{
                       width: '9.0em',
                       marginTop: '3.0em',
@@ -87,3 +105,19 @@ const PostEvent = () => {
   );
 };
 export default PostEvent;
+
+PostEvent.propTypes = {
+  name: PropTypes.string,
+  date: PropTypes.string,
+  time: PropTypes.string,
+  eventId: PropTypes.number,
+  setIsAddingPost: PropTypes.func,
+};
+
+PostEvent.defaultProps = {
+  name: '',
+  date: '',
+  time: '',
+  eventId: 0,
+  setIsAddingPost: () => {},
+};

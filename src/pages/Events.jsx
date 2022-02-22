@@ -2,8 +2,8 @@ import React from 'react';
 import 'antd/dist/antd.css';
 import EventPage from '../components/EventPage';
 
-function Event() {
+function Events() {
   return <EventPage />;
 }
 
-export default Event;
+export default Events;
