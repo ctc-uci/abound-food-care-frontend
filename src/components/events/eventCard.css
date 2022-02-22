@@ -1,0 +1,26 @@
+@import '~antd/dist/antd.variable.min.css';
+
+/* .ant-radio-inner:after {
+  background: red !important;
+}
+
+.ant-radio-checked .ant-radio-inner,
+.ant-radio:hover .ant-radio-inner,
+.ant-radio-wrapper:hover,
+.ant-radio-input:focus .ant-radio-inner {
+  border-color: red !important;
+} */
+
+.event-type-radio {
+  border-color: #009A44 !important;
+}
+
+.status-type-radio {
+  border-color: #009A44;
+}
+
+.new-event-btn, .new-event-btn:hover, .new-event-btn:focus {
+  background-color: #115740;
+  border-color: #115740;
+  color: white;
+}

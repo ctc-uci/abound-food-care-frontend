@@ -1,6 +1,7 @@
 import { React, useState, useEffect } from 'react';
 import axios from 'axios';
 import { Card, Typography } from 'antd';
+import { EditOutlined, EllipsisOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 
 const { Title } = Typography;
@@ -39,7 +40,13 @@ const EventCard = ({ id, name, startDateTime, endDateTime, volunteerCapacity }) 
       {loading && <div>Loading Event Data...</div>}
       {!loading && (
         <>
-          <Card title={name} borderd="false">
+          <Card
+            title={name}
+            bordered
+            hoverable
+            headStyle={{ backgroundColor: '#009A44', color: 'white' }}
+            actions={[<EditOutlined key="edit" />, <EllipsisOutlined key="ellipsis" />]}
+          >
             <Title level={5}>{eventDate}</Title>
             <Title level={5}>
               {eventStarttime} - {eventEndtime}

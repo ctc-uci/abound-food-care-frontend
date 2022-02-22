@@ -6,6 +6,7 @@
     "@angular/core": "^6.0.0",
     "@ant-design/icons": "^4.7.0",
     "@babel/core": "^7.0.0",
+    "@craco/craco": "^6.4.3",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -88,5 +89,10 @@
     "@storybook/react": "^6.3.12",
     "husky": "^7.0.0",
     "prettier": "^2.4.1"
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "/node_modules/(?!antd|@ant-design|rc-.+?|@babel/runtime).+(js|jsx)$"
+    ]
   }
 }

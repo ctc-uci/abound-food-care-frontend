@@ -2,6 +2,8 @@ import { React, useState, useEffect } from 'react';
 import { Input, Button, Radio, Row, Col, Card, Typography, Space } from 'antd';
 import axios from 'axios';
 import EventCard from './EventCard';
+import './eventCard.css';
+import 'antd/dist/antd.variable.min.css';
 
 const { Search } = Input;
 const { Title } = Typography;
@@ -129,6 +131,7 @@ const AdminEvents = () => {
           <Card>
             <Space>
               <Radio.Group
+                className="event-type-radio"
                 options={eventTypeOptions}
                 onChange={onTypeChange}
                 value={eventTypeValue}
@@ -137,19 +140,19 @@ const AdminEvents = () => {
             </Space>
             <Space>
               <Radio.Group
+                className="status-type-radio"
                 options={eventStatusOptions}
                 onChange={onStatusChange}
                 value={eventStatusValue}
                 optionType="button"
               />
             </Space>
-            <Button type="primary">New Event</Button>
-            <Button>New Event Type</Button>
+            <Button className="new-event-btn" type="primary">
+              New Event
+            </Button>
           </Card>
           <Card>
-            <Row>
-              {eventsData ? renderEventsGrid(eventsData) : <Title level={2}>No events</Title>}
-            </Row>
+            <Row className="event-card-row">{renderEventsGrid(eventsData)}</Row>
           </Card>
         </>
       )}
