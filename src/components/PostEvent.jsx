@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, ConfigProvider } from 'antd';
+import { Input, Button, ConfigProvider } from 'antd';
 import { CalendarOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import PropTypes from 'prop-types';
@@ -34,69 +34,91 @@ const PostEvent = props => {
           marginTop: '1.5em',
         }}
       >
-        <h1> Post-Event Page </h1>
+        <h1 style={{ fontSize: 34, fontWeight: 600, marginBottom: '1%' }}> Post-Event Recap </h1>
+        <p style={{ fontWeight: 400 }}>
+          The post-event recap will be posted on the EventName page for all volunteers to see.
+        </p>
 
         <div
           style={{
-            background: 'white',
             width: '80vw',
             display: 'flex',
             flexDirection: 'column',
-            marginTop: '1.5em',
+            marginTop: '2em',
           }}
         >
-          <h2> {name} </h2>
-
           <div
             style={{
-              background: 'white',
               width: '80vw',
               display: 'flex',
               flexDirection: 'column',
-              marginTop: '1.5em',
             }}
           >
-            <h4>
-              <CalendarOutlined /> {date}
-            </h4>
+            <h2 style={{ fontSize: 20, fontWeight: 600 }}> {name} </h2>
 
-            <h4>
-              <ClockCircleOutlined /> {time}
-            </h4>
+            <p style={{ fontSize: 16 }}>
+              <CalendarOutlined style={{ fontSize: 16, marginRight: '.3%' }} /> {date}
+            </p>
+
+            <p style={{ fontSize: 16 }}>
+              <ClockCircleOutlined style={{ fontSize: 16, marginRight: '.3%' }} /> {time}
+            </p>
 
             <div
               style={{
-                background: 'white',
                 width: '80vw',
                 display: 'flex',
                 flexDirection: 'column',
-                marginLeft: '-2%',
                 marginTop: '3.0em',
                 marginBottom: '8.0em',
               }}
             >
-              <Form labelCol={{ span: 4 }} wrapperCol={{ span: 18 }} name="post_event_section">
-                <Form.Item name="post_event_sec" label="Post-Event Section">
-                  <Input
-                    value={postEventSection}
-                    onChange={e => setPostEventSection(e.target.value)}
-                    placeholder="Write about the volunteers' impact and what happened at the event here!"
-                  />
-                </Form.Item>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  alignItems: 'center',
+                }}
+              >
+                <p style={{ fontSize: 16, padding: 0, margin: 0, width: '15%' }}>
+                  Post-Event Section:
+                </p>
 
-                <Form.Item width={{ width: 10 }} wrapperCol={{ offset: 20 }}>
-                  <Button
-                    onClick={sendPostEvent}
-                    style={{
-                      width: '9.0em',
-                      marginTop: '3.0em',
-                    }}
-                    type="primary"
-                  >
-                    Send
-                  </Button>
-                </Form.Item>
-              </Form>
+                <Input
+                  style={{ width: '85%' }}
+                  value={postEventSection}
+                  onChange={e => setPostEventSection(e.target.value)}
+                  placeholder="Write about the volunteers' impact and what happened at the event here!"
+                />
+              </div>
+
+              <div
+                style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}
+              >
+                <Button
+                  onClick={() => {
+                    setIsAddingPost(false);
+                  }}
+                  style={{
+                    width: '9.0em',
+                    marginTop: '3.0em',
+                  }}
+                >
+                  Cancel
+                </Button>
+
+                <Button
+                  onClick={sendPostEvent}
+                  style={{
+                    width: '9.0em',
+                    marginTop: '3.0em',
+                  }}
+                  type="primary"
+                >
+                  Send
+                </Button>
+              </div>
             </div>
           </div>
         </div>

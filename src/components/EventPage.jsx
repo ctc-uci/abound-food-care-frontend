@@ -13,6 +13,9 @@ function EventPage() {
   const [eventData, setEventData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAddingPost, setIsAddingPost] = useState(false);
+  /*
+  const [postEvent, setPostEvent] = useState(null);
+  */
 
   const eventId = 2;
 
@@ -24,6 +27,12 @@ function EventPage() {
     });
   }, []);
 
+  /*
+  useEffect(() => {
+    //get post event
+    //axios.get(`http://localhost:3001/postevents/${eventId}`)
+  }, [isAddingPost]);
+  */
   const parseDate = () => {
     const months = [
       'January',
