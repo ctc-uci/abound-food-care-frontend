@@ -10,8 +10,11 @@ import {
   Menu,
   Modal,
   Card,
+  Checkbox,
+  Row,
+  Col,
 } from 'antd';
-import { DownOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons';
+import { DownOutlined } from '@ant-design/icons'; // PlusOutlined, CloseOutlined } from '@ant-design/icons';
 
 const GeneralInfo = () => {
   // const onFinish = values => {
@@ -144,29 +147,30 @@ const GeneralInfo = () => {
   );
 
   // Requirements
-  const tagList = [
-    { name: 'First Aid Training' },
-    { name: 'Can Drive' },
-    { name: 'Age 18 or Older' },
-  ];
+  // const tagList = [
+  //   { name: 'Can Drive' },
+  //   { name: 'Adult (age 18+)' },
+  //   { name: 'Minor (age <18)' },
+  //   {},
+  // ];
 
-  const [state, setState] = useState('new-tag');
-  const [inputTagValue, setInputTagValue] = useState('');
-  const [tags, setTags] = useState(tagList);
+  // const [state, setState] = useState('new-tag');
+  // const [inputTagValue, setInputTagValue] = useState('');
+  // const [tags, setTags] = useState(tagList);
 
-  const handleInputTagChange = e => {
-    setInputTagValue(e.target.value);
-  };
+  // const handleInputTagChange = e => {
+  //   setInputTagValue(e.target.value);
+  // };
 
-  const handleAddNewTag = () => {
-    tagList.push({ name: inputTagValue });
-    setTags(tagList);
-  };
+  // const handleAddNewTag = () => {
+  //   tagList.push({ name: inputTagValue });
+  //   setTags(tagList);
+  // };
 
-  const handleRemoveTag = e => {
-    const name = e.target.getAttribute('name');
-    setTags(tags.filter(tag => tag.name !== name));
-  };
+  // const handleRemoveTag = e => {
+  //   const name = e.target.getAttribute('name');
+  //   setTags(tags.filter(tag => tag.name !== name));
+  // };
 
   return (
     <div>
@@ -374,37 +378,46 @@ const GeneralInfo = () => {
         </Form.Item>
 
         <Form.Item label="Requirements (optional)">
-          {tags.map(tag => {
-            return (
-              <>
-                <Button
-                  name={tag.name}
-                  onClick={handleRemoveTag}
-                  style={{
-                    background: 'rgba(108, 194, 74, 0.25)',
-                    color: 'rgba(0, 0, 0, 0.85)',
-                    border: 'rgba(17, 87, 64, 0.25)',
-                  }}
-                >
-                  {tag.name} <CloseOutlined />
-                </Button>
-              </>
-            );
-          })}
-
-          {state === 'new-tag' && (
-            <>
-              <Button type="dashed" icon={<PlusOutlined />} onClick={() => setState('add-tag')}>
-                New Tag
-              </Button>
-            </>
-          )}
-
-          {state === 'add-tag' && (
-            <>
-              <Input onChange={handleInputTagChange} onPressEnter={handleAddNewTag} />
-            </>
-          )}
+          <Checkbox.Group style={{ width: '100%' }}>
+            {' '}
+            {/* onChange={onChange}> */}
+            {/* Add color for when state of checkbox is checked */}
+            {/* Slightly change spacing */}
+            <Row>
+              <Col span={8}>
+                <Checkbox value="Can Drive">Can Drive</Checkbox>
+              </Col>
+              <Col span={8}>
+                <Checkbox value="Adult (age 18+)">Adult (age 18+)</Checkbox>
+              </Col>
+              <Col span={8}>
+                <Checkbox value="Minor (age <18)">Minor (age &#60;18)</Checkbox>
+              </Col>
+              <br />
+              <br />
+              <Col span={8}>
+                <Checkbox value="First Aid Training">First Aid Training</Checkbox>
+              </Col>
+              <Col span={8}>
+                <Checkbox value="Serve Safe Knowledge">Serve Safe Knowledge</Checkbox>
+              </Col>
+              <Col span={8}>
+                <Checkbox value="Transportation Experience">Transportation Experience</Checkbox>
+              </Col>
+              <br />
+              <br />
+              <Col span={8}>
+                <Checkbox value="Moving / Warehouse Experience">
+                  Moving / Warehouse Experience
+                </Checkbox>
+              </Col>
+              <Col span={8}>
+                <Checkbox value="Food Service Industry Knowledge">
+                  Food Service Industry Knowledge
+                </Checkbox>
+              </Col>
+            </Row>
+          </Checkbox.Group>
         </Form.Item>
 
         <Form.Item label="Location" rules={[{ required: true }]}>
