@@ -18,6 +18,7 @@ ConfigProvider.config({
 const SearchButton = styled.div`
   .ant-btn-primary {
     background-color: var(--eden);
+    border-color: var(--eden);
   }
 `;
 
@@ -117,6 +118,7 @@ const AdminEvents = () => {
         <EventCard
           id={event.id}
           name={event.name}
+          type={event.ntype}
           startDateTime={event.startDateTime}
           endDateTime={event.endDateTime}
           volunteerCapacity={event.volunteerCapacity}
@@ -133,8 +135,10 @@ const AdminEvents = () => {
           {loading && <div>Loading...</div>}
           {!loading && (
             <>
+              <Title level={1} className="title">
+                Events
+              </Title>
               <Card className="card">
-                <Title level={3}>Events</Title>
                 <SearchButton className="search-bar">
                   <Search
                     placeholder="Search for event"
@@ -147,9 +151,7 @@ const AdminEvents = () => {
                     }}
                   />
                 </SearchButton>
-              </Card>
-              <Card className="card">
-                <Space>
+                <Space className="space">
                   Event Type:
                   <Radio.Group
                     className="event-type-radio"
@@ -159,7 +161,7 @@ const AdminEvents = () => {
                     optionType="button"
                   />
                 </Space>
-                <Space>
+                <Space className="space">
                   Event Status:
                   <Radio.Group
                     className="status-type-radio"

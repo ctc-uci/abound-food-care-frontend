@@ -1,14 +1,13 @@
 import { React, useState, useEffect } from 'react';
 import axios from 'axios';
 import { Card, Typography } from 'antd';
-import { EditOutlined, EllipsisOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import './eventCard.css';
 import 'antd/dist/antd.variable.min.css';
 
 const { Title } = Typography;
 
-const EventCard = ({ id, name, startDateTime, endDateTime, volunteerCapacity }) => {
+const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapacity }) => {
   const [numVolunteers, setNumVolunteers] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -42,28 +41,75 @@ const EventCard = ({ id, name, startDateTime, endDateTime, volunteerCapacity }) 
       {loading && <div>Loading Event Data...</div>}
       {!loading && (
         <>
-          <Card
-            className="event-card"
-            title={name}
-            bordered
-            hoverable
-            headStyle={{
-              backgroundColor: '#009A44',
-              color: 'white',
-              fontSize: '18px',
-              fontWeight: 'bold',
-            }}
-            actions={[<EditOutlined key="edit" />, <EllipsisOutlined key="ellipsis" />]}
-          >
-            <Title className="event-date-time" level={5}>
-              {eventDate}
-              <br />
-              {eventStarttime} - {eventEndtime}
-            </Title>
-            <p className="num-volunteers" style={{ color: 'GrayText' }}>
-              {numVolunteers}/{volunteerCapacity} Volunteers
-            </p>
-          </Card>
+          {type === 'distribution' && (
+            <Card
+              className="event-card"
+              title={name}
+              bordered
+              hoverable
+              headStyle={{
+                backgroundColor: '#009A44',
+                color: 'white',
+                fontSize: '18px',
+                fontWeight: 'bold',
+              }}
+            >
+              <Title className="event-date-time" level={5}>
+                {eventDate}
+                <br />
+                {eventStarttime} - {eventEndtime}
+              </Title>
+              <p className="num-volunteers" style={{ color: 'GrayText' }}>
+                {numVolunteers}/{volunteerCapacity} Volunteers
+              </p>
+            </Card>
+          )}
+          {type === 'food' && (
+            <Card
+              className="event-card"
+              title={name}
+              bordered
+              hoverable
+              headStyle={{
+                backgroundColor: '#FFA500',
+                color: 'white',
+                fontSize: '18px',
+                fontWeight: 'bold',
+              }}
+            >
+              <Title className="event-date-time" level={5}>
+                {eventDate}
+                <br />
+                {eventStarttime} - {eventEndtime}
+              </Title>
+              <p className="num-volunteers" style={{ color: 'GrayText' }}>
+                {numVolunteers}/{volunteerCapacity} Volunteers
+              </p>
+            </Card>
+          )}
+          {(type === 'other' || type === null) && (
+            <Card
+              className="event-card"
+              title={name}
+              bordered
+              hoverable
+              headStyle={{
+                backgroundColor: '#808080',
+                color: 'white',
+                fontSize: '18px',
+                fontWeight: 'bold',
+              }}
+            >
+              <Title className="event-date-time" level={5}>
+                {eventDate}
+                <br />
+                {eventStarttime} - {eventEndtime}
+              </Title>
+              <p className="num-volunteers" style={{ color: 'GrayText' }}>
+                {numVolunteers}/{volunteerCapacity} Volunteers
+              </p>
+            </Card>
+          )}
         </>
       )}
     </div>
@@ -73,6 +119,7 @@ const EventCard = ({ id, name, startDateTime, endDateTime, volunteerCapacity }) 
 EventCard.propTypes = {
   id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
   startDateTime: PropTypes.string.isRequired,
   endDateTime: PropTypes.string.isRequired,
   volunteerCapacity: PropTypes.number.isRequired,
