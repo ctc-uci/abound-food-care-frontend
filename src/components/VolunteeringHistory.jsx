@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { FieldTimeOutlined, ScheduleOutlined, UsergroupDeleteOutlined } from '@ant-design/icons';
 import { ConfigProvider, Table, Button } from 'antd';
 import './VolunteeringHistory.css';
@@ -15,20 +16,31 @@ function VolunteeringHistory() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [editIndex, setEditIndex] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     setTotalHours(230);
     setEventCount(0);
     setPeopleImpacted(0);
 
-    const data = [];
+    let data = [];
     const data2 = [];
+    if (error) {
+      data = [];
+    }
+    axios
+      .get('http://localhost:3001/hours/unsubmitted')
+      .then(res => {
+        data = res.data;
+      })
+      .catch(() => setError(true));
     /*
     fetch(BACKEND_URL)
       .then((res) => {
         setVolunteerData(res);
       })
     */
+
     for (let i = 0; i < 5; i += 1) {
       data.push({
         key: i,
@@ -59,6 +71,14 @@ function VolunteeringHistory() {
   const handleSubmit = index => {
     setEditIndex(index);
     setIsSubmitted(true);
+    /*
+    const { userId, eventId, startDatetime, endDatetime, approved, notes } = req.body;
+    */
+    /*
+   const body = {
+    userId: userId,
+    eventId: data[i].eventId,
+   */
     /*
     fetch(BACKEND_URL)
       .then((res) => {
