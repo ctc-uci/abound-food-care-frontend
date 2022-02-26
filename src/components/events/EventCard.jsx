@@ -1,12 +1,10 @@
 import { React, useState, useEffect } from 'react';
 import axios from 'axios';
-import { Card, Typography } from 'antd';
+import { Card } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import './eventCard.css';
 import 'antd/dist/antd.variable.min.css';
-
-const { Title } = Typography;
 
 const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapacity }) => {
   const [numVolunteers, setNumVolunteers] = useState(0);
@@ -56,13 +54,13 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
               }}
               actions={[<EditOutlined key="edit" />]}
             >
-              <Title className="event-date-time" level={5}>
+              <p className="event-date-time">
                 {eventDate}
                 <br />
                 {eventStarttime} - {eventEndtime}
-              </Title>
-              <p className="num-volunteers" style={{ color: 'GrayText' }}>
-                {numVolunteers}/{volunteerCapacity} Volunteers
+              </p>
+              <p className="num-volunteers" style={{ color: '#BFBFBF' }}>
+                {numVolunteers}/{volunteerCapacity} Volunteers Signed Up
               </p>
             </Card>
           )}
@@ -80,13 +78,13 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
               }}
               actions={[<EditOutlined key="edit" />]}
             >
-              <Title className="event-date-time" level={5}>
+              <p className="event-date-time">
                 {eventDate}
                 <br />
                 {eventStarttime} - {eventEndtime}
-              </Title>
-              <p className="num-volunteers" style={{ color: 'GrayText' }}>
-                {numVolunteers}/{volunteerCapacity} Volunteers
+              </p>
+              <p className="num-volunteers" style={{ color: '#BFBFBF' }}>
+                {numVolunteers}/{volunteerCapacity} Volunteers Signed Up
               </p>
             </Card>
           )}
@@ -104,13 +102,13 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
               }}
               actions={[<EditOutlined key="edit" />]}
             >
-              <Title className="event-date-time" level={5}>
+              <p className="event-date-time">
                 {eventDate}
                 <br />
                 {eventStarttime} - {eventEndtime}
-              </Title>
-              <p className="num-volunteers" style={{ color: 'GrayText' }}>
-                {numVolunteers}/{volunteerCapacity} Volunteers
+              </p>
+              <p className="num-volunteers" style={{ color: '#BFBFBF' }}>
+                {numVolunteers}/{volunteerCapacity} Volunteers Signed Up
               </p>
             </Card>
           )}

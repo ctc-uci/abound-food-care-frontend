@@ -16,12 +16,14 @@
 }
 
 .event-date-time {
-  font-family: Inter-SemiBold;
-  font-size: 14px;
-  height: 8vh;
+  font-family: Inter-Regular;
+  font-weight: lighter;
+  font-size: 18px;
+  height: 5vh;
 }
 
 .num-volunteers {
   font-family: Inter-Regular;
-  font-size: small;
+  font-size: 18px;
+  height: 1vh;
 }
