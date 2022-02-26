@@ -1,12 +1,11 @@
 import { React, useState, useEffect } from 'react';
-import { Input, Button, Radio, Row, Col, Card, Typography, Space, ConfigProvider } from 'antd';
+import { Input, Button, Radio, Row, Col, Card, Typography, ConfigProvider } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import styled from 'styled-components';
 import EventCard from './EventCard';
 import './adminEvents.css';
 import 'antd/dist/antd.variable.min.css';
 
-const { Search } = Input;
 const { Title } = Typography;
 
 ConfigProvider.config({
@@ -14,13 +13,6 @@ ConfigProvider.config({
     primaryColor: '#6CC24A',
   },
 });
-
-const SearchButton = styled.div`
-  .ant-btn-primary {
-    background-color: var(--eden);
-    border-color: var(--eden);
-  }
-`;
 
 const AdminEvents = () => {
   const [eventTypeValue, setEventTypeValue] = useState('all');
@@ -58,12 +50,18 @@ const AdminEvents = () => {
     setLoading(false);
   }, []);
 
-  const onSearch = searchTerm => {
-    if (searchTerm === '') {
+  const onSearch = e => {
+    if (e.target.value === '') {
       setEventsData(allEvents);
     } else {
-      const searchSpecificEventData = eventsData.filter(event => event.name === searchTerm);
+      const searchSpecificEventData = eventsData.filter(event => event.name === e.target.value);
       setEventsData(searchSpecificEventData);
+    }
+  };
+
+  const onChange = e => {
+    if (e.target.value === '') {
+      onSearch(e);
     }
   };
 
@@ -139,45 +137,44 @@ const AdminEvents = () => {
                 Events
               </Title>
               <Card className="card">
-                <SearchButton className="search-bar">
-                  <Search
-                    placeholder="Search for event"
-                    onSearch={onSearch}
-                    allowClear
-                    enterButton="Search"
-                    style={{
-                      width: 500,
-                      backgroundColor: '#BFBFBF',
-                    }}
-                  />
-                </SearchButton>
-                <Space className="space">
-                  Event Type:
-                  <Radio.Group
-                    className="event-type-radio"
-                    options={eventTypeOptions}
-                    onChange={onTypeChange}
-                    value={eventTypeValue}
-                    optionType="button"
-                  />
-                </Space>
-                <Space className="space">
-                  Event Status:
-                  <Radio.Group
-                    className="status-type-radio"
-                    options={eventStatusOptions}
-                    onChange={onStatusChange}
-                    value={eventStatusValue}
-                    optionType="button"
-                  />
-                </Space>
-                <Button className="new-event-btn" type="primary">
-                  New Event
-                </Button>
+                <Input
+                  prefix={<SearchOutlined style={{ color: '#BFBFBF' }} />}
+                  className="search-bar"
+                  size="large"
+                  placeholder="Search events by name"
+                  onPressEnter={onSearch}
+                  onChange={onChange}
+                  allowClear
+                />
+                <div className="filters">
+                  <span>
+                    Event Type:
+                    <Radio.Group
+                      className="event-type-radio"
+                      options={eventTypeOptions}
+                      onChange={onTypeChange}
+                      value={eventTypeValue}
+                      optionType="button"
+                    />
+                  </span>
+                  <span>
+                    Event Status:
+                    <Radio.Group
+                      className="status-type-radio"
+                      options={eventStatusOptions}
+                      onChange={onStatusChange}
+                      value={eventStatusValue}
+                      optionType="button"
+                    />
+                  </span>
+                  <Button className="new-event-btn" type="primary">
+                    Create New Event
+                  </Button>
+                </div>
               </Card>
-              <Card className="events-grid card">
+              <div className="events-grid">
                 <Row className="event-card-row">{renderEventsGrid(eventsData)}</Row>
-              </Card>
+              </div>
             </>
           )}
         </div>

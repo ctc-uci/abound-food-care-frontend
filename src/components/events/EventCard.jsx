@@ -1,6 +1,7 @@
 import { React, useState, useEffect } from 'react';
 import axios from 'axios';
 import { Card, Typography } from 'antd';
+import { EditOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import './eventCard.css';
 import 'antd/dist/antd.variable.min.css';
@@ -53,6 +54,7 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
                 fontSize: '18px',
                 fontWeight: 'bold',
               }}
+              actions={[<EditOutlined key="edit" />]}
             >
               <Title className="event-date-time" level={5}>
                 {eventDate}
@@ -76,6 +78,7 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
                 fontSize: '18px',
                 fontWeight: 'bold',
               }}
+              actions={[<EditOutlined key="edit" />]}
             >
               <Title className="event-date-time" level={5}>
                 {eventDate}
@@ -99,6 +102,7 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
                 fontSize: '18px',
                 fontWeight: 'bold',
               }}
+              actions={[<EditOutlined key="edit" />]}
             >
               <Title className="event-date-time" level={5}>
                 {eventDate}

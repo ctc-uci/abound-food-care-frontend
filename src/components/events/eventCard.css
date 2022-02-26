@@ -12,7 +12,7 @@
   margin: 10px;
   border-color: #BFBFBF;
   border-radius: 5px;
-  box-shadow: 0px 4px 4px rgba(108, 194, 74, 0.25);
+  box-shadow: 0px 4px 4px #D3D3D3;
 }
 
 .event-date-time {

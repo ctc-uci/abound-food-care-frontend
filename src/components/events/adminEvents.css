@@ -29,27 +29,41 @@
 .card {
   margin: 15px;
   border-radius: 5px;
-  box-shadow: 0px 4px 4px rgba(108, 194, 74, 0.25);
 }
 
-/* .search-bar {
-  margin: auto;
-  width: 50%;
-} */
+.search-bar {
+  width: 750px;
+}
 
-.space {
+.filters {
   margin: 40px 5px 20px;
+}
+
+.event-type-radio, .status-type-radio {
+  margin: 10px;
 }
 
 .new-event-btn, .new-event-btn:hover, .new-event-btn:focus {
   background-color: var(--eden);
   border-color: var(--eden);
   color: white;
-  margin: 40px 5px 20px;
+  font-weight: 600;
+  margin-top: 15px;
   float: right;
 }
 
 .events-grid {
   max-height: 80vh;
   overflow-y: scroll;
+  margin: 4px;
+}
+
+.events-grid::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 1050px) {
+  .search-bar {
+    width: 75%;
+  }
 }
