@@ -10,7 +10,7 @@ const { Title } = Typography;
 
 ConfigProvider.config({
   theme: {
-    primaryColor: '#6CC24A',
+    primaryColor: '#115740',
   },
 });
 
@@ -155,6 +155,7 @@ const AdminEvents = () => {
                       onChange={onTypeChange}
                       value={eventTypeValue}
                       optionType="button"
+                      buttonStyle="solid"
                     />
                   </span>
                   <span>
@@ -165,6 +166,7 @@ const AdminEvents = () => {
                       onChange={onStatusChange}
                       value={eventStatusValue}
                       optionType="button"
+                      buttonStyle="solid"
                     />
                   </span>
                   <Button className="new-event-btn" type="primary">
