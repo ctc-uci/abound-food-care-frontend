@@ -5,12 +5,12 @@ import EventsGeneralInfo from '../components/EventsGeneralInfo';
 import EventsAdditionalInfo from '../components/EventsAdditionalInfo';
 
 function Events() {
-  const [state, setState] = useState('start');
+  const [state, setState] = useState('general-info');
 
   return (
     <div>
       <p>This is the events page.</p>
-      {state === 'start' && (
+      {state === 'general-info' && (
         <>
           <EventsGeneralInfo />
           <div>

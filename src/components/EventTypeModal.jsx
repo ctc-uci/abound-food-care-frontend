@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Modal, Card, ConfigProvider } from 'antd';
 import PropTypes from 'prop-types';
+import AddEventTypeModal from './AddEventTypeModal';
 
 ConfigProvider.config({
   theme: {
@@ -8,26 +9,14 @@ ConfigProvider.config({
   },
 });
 
-const EventTypeModal = ({ visible, setVisible }) => {
-  const defaultEventTypes = [
-    {
-      name: 'Distribution',
-      description:
-        'Events where volunteers assist in distributing food - duties may include loading cars, taking data, packaging produce & meal, and traffic.',
-    },
-    {
-      name: 'Food Running',
-      description: 'Events where volunteers transport food safely from donor to recipient.',
-    },
-  ];
-
+const EventTypeModal = ({ visible, setVisible, eventsData, setEventsData }) => {
+  const [addVisible, setAddVisible] = useState(false);
   const onCancel = () => {
     setVisible(false);
   };
 
   const handleAddEvent = () => {
-    // console.log(e.target.value);
-    setVisible(false); // change this
+    setAddVisible(true);
   };
 
   return (
@@ -35,7 +24,7 @@ const EventTypeModal = ({ visible, setVisible }) => {
       <Modal
         visible={visible}
         animation={false}
-        title="EventType"
+        title="Event Types"
         onCancel={onCancel}
         footer={[
           <Button key="add" type="primary" onClick={handleAddEvent}>
@@ -43,7 +32,7 @@ const EventTypeModal = ({ visible, setVisible }) => {
           </Button>,
         ]}
       >
-        {defaultEventTypes.map(eventType => {
+        {eventsData.map(eventType => {
           return (
             <>
               <Card key={eventType.name}>
@@ -59,18 +48,25 @@ const EventTypeModal = ({ visible, setVisible }) => {
           );
         })}
       </Modal>
+      <div>
+        {addVisible && (
+          <AddEventTypeModal
+            eventsData={eventsData}
+            setEventsData={setEventsData}
+            addVisible={addVisible}
+            setAddVisible={setAddVisible}
+          />
+        )}
+      </div>
     </ConfigProvider>
   );
 };
 
 EventTypeModal.propTypes = {
-  visible: PropTypes.bool,
-  setVisible: PropTypes.func,
-};
-
-EventTypeModal.defaultProps = {
-  visible: false,
-  setVisible: () => {},
+  visible: PropTypes.bool.isRequired,
+  setVisible: PropTypes.func.isRequired,
+  eventsData: PropTypes.arrayOf(Object).isRequired,
+  setEventsData: PropTypes.func.isRequired,
 };
 
 export default EventTypeModal;

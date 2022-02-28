@@ -3,25 +3,49 @@ import {
   DatePicker,
   Form,
   Input,
+  Select,
   Button,
   TimePicker,
   InputNumber,
-  Dropdown,
-  Menu,
   Checkbox,
   Row,
   Col,
 } from 'antd';
-import { DownOutlined } from '@ant-design/icons'; // PlusOutlined, CloseOutlined } from '@ant-design/icons';
 import EventTypeModal from './EventTypeModal';
+
+const { Option } = Select;
 
 const EventsGeneralInfo = () => {
   // const onFinish = values => {
   //   console.log(values);
   // };
+  const defaultEventTypes = [
+    {
+      name: 'Distribution',
+      description:
+        'Events where volunteers assist in distributing food - duties may include loading cars, taking data, packaging produce & meal, and traffic.',
+    },
+    {
+      name: 'Food Running',
+      description: 'Events where volunteers transport food safely from donor to recipient.',
+    },
+  ];
+
+  const defaultVolunteerTypes = [
+    {
+      name: 'type1',
+    },
+    {
+      name: 'type2',
+    },
+    {
+      name: 'type3',
+    },
+  ];
 
   const [componentSize, setComponentSize] = useState('default');
   const [eventTypeModal, setEventTypeModal] = useState(false); // visible, setVisible
+  const [eventsData, setEventsData] = useState(defaultEventTypes);
 
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
@@ -135,19 +159,14 @@ const EventsGeneralInfo = () => {
   // };
 
   // Volunteer Type
-  const volunteerTypeMenu = (
-    <Menu>
-      <Menu.Item>
-        <p>type 1</p>
-      </Menu.Item>
-      <Menu.Item>
-        <p>type 2</p>
-      </Menu.Item>
-      <Menu.Item>
-        <p>type 3</p>
-      </Menu.Item>
-    </Menu>
-  );
+  const volunteerTypeMenu = defaultVolunteerTypes.map(event => {
+    return <Option key={event.name}>{event.name}</Option>;
+  });
+
+  // Event Type Menu
+  const eventTypeMenu = eventsData.map(event => {
+    return <Option key={event.name}>{event.name}</Option>;
+  });
 
   // Requirements
   // const tagList = [
@@ -202,15 +221,20 @@ const EventsGeneralInfo = () => {
         </Form.Item>
 
         <Form.Item label="Event Type" rules={[{ required: true }]}>
-          <Button>
-            Type <DownOutlined />
-          </Button>
+          <Select placeholder="Type" style={{ width: '100px' }}>
+            {eventTypeMenu}
+          </Select>
           <Button type="link" onClick={handleClickNewEventType} style={{ color: '#6CC24A' }}>
             New Event Type
           </Button>
           <div>
             {eventTypeModal && (
-              <EventTypeModal visible={eventTypeModal} setVisible={setEventTypeModal} />
+              <EventTypeModal
+                visible={eventTypeModal}
+                setVisible={setEventTypeModal}
+                eventsData={eventsData}
+                setEventsData={setEventsData}
+              />
             )}
           </div>
           {/* Event Type Added */}
@@ -378,11 +402,14 @@ const EventsGeneralInfo = () => {
         </Form.Item>
 
         <Form.Item label="Volunteer Type">
-          <Dropdown overlay={volunteerTypeMenu} placement="bottomCenter">
+          <Select placeholder="Type" style={{ width: '100px' }}>
+            {volunteerTypeMenu}
+          </Select>
+          {/* <Dropdown overlay={volunteerTypeMenu} placement="bottomCenter">
             <Button>
               Type <DownOutlined />
             </Button>
-          </Dropdown>
+          </Dropdown> */}
         </Form.Item>
 
         <Form.Item label="Requirements (optional)">
