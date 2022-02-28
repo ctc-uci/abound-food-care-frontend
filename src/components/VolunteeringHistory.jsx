@@ -218,6 +218,12 @@ function VolunteeringHistory() {
       key: 'hours',
       render: hours => <p>{hours}</p>,
     },
+    {
+      title: 'Approved?',
+      dataIndex: 'approved',
+      key: 'approved',
+      render: approved => <p>{approved ? 'Yes' : 'Not yet'}</p>,
+    },
   ];
 
   ConfigProvider.config({
