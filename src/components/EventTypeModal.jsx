@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, Modal, Card, ConfigProvider } from 'antd';
 import PropTypes from 'prop-types';
 import AddEventTypeModal from './AddEventTypeModal';
+import EditEventTypeModal from './EditEventTypeModal';
 
 ConfigProvider.config({
   theme: {
@@ -11,12 +12,21 @@ ConfigProvider.config({
 
 const EventTypeModal = ({ visible, setVisible, eventsData, setEventsData }) => {
   const [addVisible, setAddVisible] = useState(false);
+  const [editVisible, setEditVisible] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [editDescription, setEditDescription] = useState('');
   const onCancel = () => {
     setVisible(false);
   };
 
   const handleAddEvent = () => {
     setAddVisible(true);
+  };
+
+  const handleEditEvent = (name, description) => () => {
+    setEditName(name);
+    setEditDescription(description);
+    setEditVisible(true);
   };
 
   return (
@@ -41,7 +51,17 @@ const EventTypeModal = ({ visible, setVisible, eventsData, setEventsData }) => {
                   <p>{eventType.description}</p>
                 </div>
                 <div>
-                  <Button type="link">Edit</Button>|<Button type="link">Delete</Button>
+                  <Button
+                    type="link"
+                    onClick={handleEditEvent(eventType.name, eventType.description)}
+                    style={{ color: '#6CC24A' }}
+                  >
+                    Edit
+                  </Button>
+                  |
+                  <Button type="link" style={{ color: '#6CC24A' }}>
+                    Delete
+                  </Button>
                 </div>
               </Card>
             </>
@@ -49,6 +69,16 @@ const EventTypeModal = ({ visible, setVisible, eventsData, setEventsData }) => {
         })}
       </Modal>
       <div>
+        {editVisible && (
+          <EditEventTypeModal
+            eventsData={eventsData}
+            setEventsData={setEventsData}
+            editVisible={editVisible}
+            setEditVisible={setEditVisible}
+            editName={editName}
+            editDescription={editDescription}
+          />
+        )}
         {addVisible && (
           <AddEventTypeModal
             eventsData={eventsData}

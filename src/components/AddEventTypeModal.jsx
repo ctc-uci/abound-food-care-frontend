@@ -41,7 +41,7 @@ const AddEventTypeModal = ({ addVisible, setAddVisible, eventsData, setEventsDat
         title="Add Event Type"
         onCancel={onCancel}
         footer={[
-          <Button key="cancel" type="primary" onClick={onCancel}>
+          <Button key="cancel" onClick={onCancel}>
             Cancel
           </Button>,
           <Button key="add" type="primary" onClick={handleAdd}>
@@ -56,7 +56,7 @@ const AddEventTypeModal = ({ addVisible, setAddVisible, eventsData, setEventsDat
               placeholder="Describe what events should go under this type"
             />
           </Form.Item>
-          <Form.Item label="Event Type Name" rules={[{ required: true }]}>
+          <Form.Item label="Description" rules={[{ required: true }]}>
             <Input
               onChange={handleDescriptionChange}
               placeholder="Describe what events should go under this type"
