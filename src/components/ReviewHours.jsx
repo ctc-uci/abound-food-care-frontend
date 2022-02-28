@@ -20,7 +20,6 @@ function ReviewHours() {
   const [isLoading, setLoading] = useState(true);
   const [filteredData, setFilteredData] = useState([]);
   const [sortCriterion, setSortCriterion] = useState('All');
-  const [filterCriterion, setFilterCriterion] = useState('All');
 
   useEffect(() => {
     const data = [];
@@ -117,30 +116,13 @@ function ReviewHours() {
   const sortMenu = (
     <Menu>
       <Menu.Item key="1" className="menu" onClick={() => setSortCriterion('Most Recent')}>
-        Most Recent
+        Date (most recent first)
       </Menu.Item>
       <Menu.Item key="2" className="menu" onClick={() => setSortCriterion('Name')}>
-        Name
+        Volunteer Name
       </Menu.Item>
       <Menu.Item key="3" className="menu" onClick={() => setSortCriterion('Email')}>
-        Email
-      </Menu.Item>
-      <Menu.Item key="4" className="menu" onClick={() => setSortCriterion('Date')}>
-        Date
-      </Menu.Item>
-    </Menu>
-  );
-
-  const filterMenu = (
-    <Menu>
-      <Menu.Item key="1" className="menu" onClick={() => setFilterCriterion('To-be-reviewed')}>
-        To-be-reviewed
-      </Menu.Item>
-      <Menu.Item key="2" className="menu" onClick={() => setFilterCriterion('2nd Dummy')}>
-        2nd dummy
-      </Menu.Item>
-      <Menu.Item key="3" className="menu" onClick={() => setFilterCriterion('2nd Dummy')}>
-        3rd dummy
+        Organization
       </Menu.Item>
     </Menu>
   );
@@ -150,7 +132,7 @@ function ReviewHours() {
       <div className="database-tab">
         <div className="database-header">
           <Row style={{ height: '50%', flexWrap: 'wrap' }} align="middle">
-            <Col style={{ width: '40vw' }}>
+            <Col style={{ width: '50vw' }}>
               <Input
                 size="large"
                 placeholder="Search by event, name, date..."
@@ -158,22 +140,7 @@ function ReviewHours() {
                 prefix={<SearchOutlined style={{ fontSize: '22px', color: '#BFBFBF' }} />}
               />
             </Col>
-            <Col span={2} />
-            <Col span={1}>
-              <p className="dropdown-label">Filter:</p>
-            </Col>
-            <Col span={3} className="button-group">
-              <div className="dropdown-box">
-                <Dropdown overlay={filterMenu}>
-                  <Button className="dropdown-button">
-                    <div className="dropdown-button-text">
-                      {filterCriterion}
-                      <DownOutlined />
-                    </div>
-                  </Button>
-                </Dropdown>
-              </div>
-            </Col>
+            <Col span={1} />
             <Col span={2} style={{ textAlign: 'right', paddingRight: '10px' }}>
               <p className="dropdown-label">Sort by:</p>
             </Col>
