@@ -8,128 +8,131 @@ import {
   InputNumber,
   Dropdown,
   Menu,
-  Modal,
-  Card,
   Checkbox,
   Row,
   Col,
 } from 'antd';
 import { DownOutlined } from '@ant-design/icons'; // PlusOutlined, CloseOutlined } from '@ant-design/icons';
+import EventTypeModal from './EventTypeModal';
 
-const GeneralInfo = () => {
+const EventsGeneralInfo = () => {
   // const onFinish = values => {
   //   console.log(values);
   // };
 
-  const [componentSize, setComponentSize] = React.useState('default');
+  const [componentSize, setComponentSize] = useState('default');
+  const [eventTypeModal, setEventTypeModal] = useState(false); // visible, setVisible
 
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
   };
 
+  const handleClickNewEventType = () => {
+    setEventTypeModal(true);
+  };
+
   // Event Type Modals
-  const eventTypeList = [
-    {
-      name: 'Distribution',
-      description:
-        'Lorem ipsum dolor sit amex, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    },
-    {
-      name: 'Food Running',
-      description:
-        'Lorem ipsum dolor sit amex, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    },
-  ];
+  // const eventTypeList = [
+  //   {
+  //     name: 'Distribution',
+  //     description:
+  //       'Events where volunteers assist in distributing food - duties may include loading cars, taking data, packaging produce & meal, and traffic.',
+  //   },
+  //   {
+  //     name: 'Food Running',
+  //     description: 'Events where volunteers transport food safely from donor to recipient.',
+  //   },
+  // ];
 
-  const eventTypeAddedList = [];
+  // const eventTypeAddedList = [];
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isAddModalVisible, setIsAddModalVisible] = useState(false);
-  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  const [editEventTypeState, setEditEventTypeState] = useState('');
-  const [inputEventNameValue, setInputEventNameValue] = useState('');
-  const [inputEventDescriptionValue, setInputEventDescriptionValue] = useState('');
-  const [eventType, setEventType] = useState(eventTypeList);
-  const [eventTypeCardState, setEventTypeCardState] = useState(false);
-  const [eventTypeAdded, setEventTypeAdded] = useState(eventTypeAddedList);
+  // const [isModalVisible, setIsModalVisible] = useState(false);
+  // const [isAddModalVisible, setIsAddModalVisible] = useState(false);
+  // const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  // const [editEventTypeState, setEditEventTypeState] = useState('');
+  // const [inputEventNameValue, setInputEventNameValue] = useState('');
+  // const [inputEventDescriptionValue, setInputEventDescriptionValue] = useState('');
+  // const [eventType, setEventType] = useState(eventTypeList);
+  // const [eventTypeCardState, setEventTypeCardState] = useState(false);
+  // const [eventTypeAdded, setEventTypeAdded] = useState(eventTypeAddedList);
 
-  const showModalEventType = () => {
-    setEventType(eventTypeList);
-    setIsModalVisible(true);
-  };
+  // const showModalEventType = () => {
+  //   setEventType(eventTypeList);
+  //   setIsModalVisible(true);
+  // };
 
-  const showModalAddEventType = () => {
-    setIsAddModalVisible(true);
-  };
+  // const showModalAddEventType = () => {
+  //   setIsAddModalVisible(true);
+  // };
 
-  const showModalEditEventType = e => {
-    const { value } = e.target;
-    setEditEventTypeState(value);
-    setIsModalVisible(false);
-    setIsEditModalVisible(true);
-  };
+  // const showModalEditEventType = e => {
+  //   const { value } = e.target;
+  //   setEditEventTypeState(value);
+  //   setIsModalVisible(false);
+  //   setIsEditModalVisible(true);
+  // };
 
-  const handleRemoveEventType = e => {
-    const name = e.target.getAttribute('name');
-    setEventType(eventType.filter(item => item.name !== name));
-  };
+  // const handleRemoveEventType = e => {
+  //   const name = e.target.getAttribute('name');
+  //   setEventType(eventType.filter(item => item.name !== name));
+  // };
 
-  const selectEventTypeCard = e => {
-    console.log(e.target.getAttribute('name'));
-    if (eventTypeCardState) {
-      setEventTypeCardState(false);
-      e.target.style.background = '#ffffff';
-      const name = e.target.getAttribute('name');
-      setEventTypeAdded(eventTypeAddedList.filter(item => item.name !== name));
-    } else {
-      setEventTypeCardState(true);
-      e.target.style.background = 'rgba(108, 194, 74, 0.25)';
-      const name = e.target.getAttribute('name');
-      const description = e.target.getAttribute('description');
-      eventTypeAddedList.push({ name, description });
-      setEventTypeAdded(eventTypeAddedList);
-    }
-  };
+  // const selectEventTypeCard = e => {
+  //   console.log(e.target.getAttribute('name'));
+  //   if (eventTypeCardState) {
+  //     setEventTypeCardState(false);
+  //     e.target.style.background = '#ffffff';
+  //     const name = e.target.getAttribute('name');
+  //     setEventTypeAdded(eventTypeAddedList.filter(item => item.name !== name));
+  //   } else {
+  //     setEventTypeCardState(true);
+  //     e.target.style.background = 'rgba(108, 194, 74, 0.25)';
+  //     const name = e.target.getAttribute('name');
+  //     const description = e.target.getAttribute('description');
+  //     eventTypeAddedList.push({ name, description });
+  //     setEventTypeAdded(eventTypeAddedList);
+  //   }
+  // };
 
-  const handleOk = () => {
-    setEventTypeAdded(eventTypeAddedList);
-    setIsModalVisible(false);
-  };
+  // const handleOk = () => {
+  //   setEventTypeAdded(eventTypeAddedList);
+  //   setIsModalVisible(false);
+  // };
 
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
+  // const handleCancel = () => {
+  //   setIsModalVisible(false);
+  // };
 
-  const handleEventNameChange = e => {
-    setInputEventNameValue(e.target.value);
-  };
+  // const handleEventNameChange = e => {
+  //   setInputEventNameValue(e.target.value);
+  // };
 
-  const handleEventDescriptionChange = e => {
-    setInputEventDescriptionValue(e.target.value);
-  };
+  // const handleEventDescriptionChange = e => {
+  //   setInputEventDescriptionValue(e.target.value);
+  // };
 
-  const handleAddOk = () => {
-    setIsAddModalVisible(false);
-    eventTypeList.push({ name: inputEventNameValue, description: inputEventDescriptionValue });
-    setEventType(eventTypeList);
-    setIsModalVisible(true);
-  };
+  // const handleAddOk = () => {
+  //   setIsAddModalVisible(false);
+  //   eventTypeList.push({ name: inputEventNameValue, description: inputEventDescriptionValue });
+  //   setEventType(eventTypeList);
+  //   setIsModalVisible(true);
+  // };
 
-  const handleAddCancel = () => {
-    setIsAddModalVisible(false);
-  };
+  // const handleAddCancel = () => {
+  //   setIsAddModalVisible(false);
+  // };
 
-  const handleEditOk = () => {
-    setIsEditModalVisible(false);
-    setEventType(eventType.filter(item => item === editEventTypeState));
-    eventTypeList.push({ name: inputEventNameValue, description: inputEventDescriptionValue });
-    setEventType(eventTypeList);
-    setIsModalVisible(true);
-  };
+  // const handleEditOk = () => {
+  //   setIsEditModalVisible(false);
+  //   setEventType(eventType.filter(item => item === editEventTypeState));
+  //   eventTypeList.push({ name: inputEventNameValue, description: inputEventDescriptionValue });
+  //   setEventType(eventTypeList);
+  //   setIsModalVisible(true);
+  // };
 
-  const handleEditCancel = () => {
-    setIsEditModalVisible(false);
-  };
+  // const handleEditCancel = () => {
+  //   setIsEditModalVisible(false);
+  // };
 
   // Volunteer Type
   const volunteerTypeMenu = (
@@ -199,14 +202,19 @@ const GeneralInfo = () => {
         </Form.Item>
 
         <Form.Item label="Event Type" rules={[{ required: true }]}>
-          <Button onClick={showModalEventType}>
+          <Button>
             Type <DownOutlined />
           </Button>
-          <Button type="link" onClick={showModalAddEventType} style={{ color: '#6CC24A' }}>
+          <Button type="link" onClick={handleClickNewEventType} style={{ color: '#6CC24A' }}>
             New Event Type
           </Button>
+          <div>
+            {eventTypeModal && (
+              <EventTypeModal visible={eventTypeModal} setVisible={setEventTypeModal} />
+            )}
+          </div>
           {/* Event Type Added */}
-          {eventTypeAdded.map(item => {
+          {/* {eventTypeAdded.map(item => {
             return (
               <>
                 <Card>
@@ -217,10 +225,10 @@ const GeneralInfo = () => {
                 </Card>
               </>
             );
-          })}
+          })} */}
 
           {/* Event Type Pop Up */}
-          <Modal
+          {/* <Modal
             title="Event Type"
             visible={isModalVisible}
             onOk={handleOk}
@@ -279,10 +287,10 @@ const GeneralInfo = () => {
                 </>
               );
             })}
-          </Modal>
+          </Modal> */}
 
           {/* Add Event Type Pop Up */}
-          <Modal
+          {/* <Modal
             title="Event Type"
             visible={isAddModalVisible}
             onOk={handleAddOk}
@@ -318,10 +326,10 @@ const GeneralInfo = () => {
                 />
               </Form.Item>
             </Form>
-          </Modal>
+          </Modal> */}
 
           {/* Edit Event Type Pop Up */}
-          <Modal
+          {/* <Modal
             title="Event Type"
             visible={isEditModalVisible}
             onOk={handleEditOk}
@@ -362,7 +370,7 @@ const GeneralInfo = () => {
                   );
                 })}
             </Form>
-          </Modal>
+          </Modal> */}
         </Form.Item>
 
         <Form.Item label="Num Volunteers" rules={[{ required: true }]}>
@@ -428,4 +436,4 @@ const GeneralInfo = () => {
   );
 };
 
-export default GeneralInfo;
+export default EventsGeneralInfo;

@@ -11,7 +11,7 @@ import { RightOutlined } from '@ant-design/icons';
 //   },
 // };
 
-const AdditionalInfo = () => {
+const EventsAdditionalInfo = () => {
   const [componentSize, setComponentSize] = React.useState('default');
 
   const onFormLayoutChange = ({ size }) => {
@@ -54,4 +54,4 @@ const AdditionalInfo = () => {
   );
 };
 
-export default AdditionalInfo;
+export default EventsAdditionalInfo;
