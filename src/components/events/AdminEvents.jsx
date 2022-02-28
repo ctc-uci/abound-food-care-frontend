@@ -5,6 +5,7 @@ import axios from 'axios';
 import EventCard from './EventCard';
 import './adminEvents.css';
 import 'antd/dist/antd.variable.min.css';
+import 'antd/dist/antd.less';
 
 const { Title } = Typography;
 
@@ -21,12 +22,12 @@ const AdminEvents = () => {
   const [eventsData, setEventsData] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
 
-  const eventTypeOptions = [
-    { label: 'All', value: 'all' },
-    { label: 'Distributions', value: 'distribution' },
-    { label: 'Food Running', value: 'food' },
-    { label: 'Other', value: 'other' },
-  ];
+  // const eventTypeOptions = [
+  //   { label: 'All', value: 'all' },
+  //   { label: 'Distributions', value: 'distribution' },
+  //   { label: 'Food Running', value: 'food' },
+  //   { label: 'Other', value: 'other' },
+  // ];
 
   const eventStatusOptions = [
     { label: 'All', value: 'all' },
@@ -151,12 +152,21 @@ const AdminEvents = () => {
                     Event Type:
                     <Radio.Group
                       className="event-type-radio"
-                      options={eventTypeOptions}
+                      defaultValue="all"
                       onChange={onTypeChange}
                       value={eventTypeValue}
                       optionType="button"
                       buttonStyle="solid"
-                    />
+                    >
+                      <Radio.Button value="all">All</Radio.Button>
+                      <Radio.Button className="distribution-radio-btn" value="distribution">
+                        Distributions
+                      </Radio.Button>
+                      <Radio.Button className="food-radio-btn" value="food">
+                        Food Running
+                      </Radio.Button>
+                      <Radio.Button value="other">Other</Radio.Button>
+                    </Radio.Group>
                   </span>
                   <span>
                     Event Status:

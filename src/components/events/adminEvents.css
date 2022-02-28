@@ -39,6 +39,21 @@
   margin: 40px 5px 20px;
 }
 
+.distribution-radio-btn {
+  border-color: #009A44;
+  border-left-color: #009A44;
+  color: #009A44;
+  margin-right: 1px;
+  margin-left: 0px;
+}
+
+.food-radio-btn {
+  border-color: #FFA500;
+  border-left-color: #FFA500;
+  color: #FFA500;
+  margin-right: 1px;
+}
+
 .event-type-radio, .status-type-radio {
   margin: 10px;
 }
