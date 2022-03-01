@@ -23,10 +23,17 @@ const EventTypeModal = ({ visible, setVisible, eventsData, setEventsData }) => {
     setAddVisible(true);
   };
 
-  const handleEditEvent = (name, description) => () => {
+  const handleEditEvent = (name, description) => {
     setEditName(name);
     setEditDescription(description);
     setEditVisible(true);
+  };
+
+  const handleDeleteEvent = name => {
+    const filteredData = eventsData.filter(eventType => {
+      return eventType.name !== name;
+    });
+    setEventsData(filteredData);
   };
 
   return (
@@ -53,13 +60,17 @@ const EventTypeModal = ({ visible, setVisible, eventsData, setEventsData }) => {
                 <div>
                   <Button
                     type="link"
-                    onClick={handleEditEvent(eventType.name, eventType.description)}
+                    onClick={() => handleEditEvent(eventType.name, eventType.description)}
                     style={{ color: '#6CC24A' }}
                   >
                     Edit
                   </Button>
                   |
-                  <Button type="link" style={{ color: '#6CC24A' }}>
+                  <Button
+                    type="link"
+                    onClick={() => handleDeleteEvent(eventType.name)}
+                    style={{ color: '#6CC24A' }}
+                  >
                     Delete
                   </Button>
                 </div>

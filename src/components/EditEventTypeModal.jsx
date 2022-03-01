@@ -56,7 +56,7 @@ const EditEventTypeModal = ({
           </Button>,
         ]}
       >
-        <Form>
+        <Form requiredMark>
           <Form.Item label="Event Type Name" rules={[{ required: true }]}>
             <Input onChange={handleEventChange} defaultValue={eventName} />
           </Form.Item>
