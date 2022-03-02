@@ -11,14 +11,16 @@ import {
   Row,
   Col,
 } from 'antd';
+import PropTypes from 'prop-types';
 import EventTypeModal from './EventTypeModal';
 
 const { Option } = Select;
 
-const EventsGeneralInfo = () => {
-  // const onFinish = values => {
-  //   console.log(values);
-  // };
+const EventsGeneralInfo = ({ setGeneralInfo }) => {
+  const onFinish = values => {
+    setGeneralInfo(values);
+  };
+
   const defaultEventTypes = [
     {
       name: 'Distribution',
@@ -72,26 +74,26 @@ const EventsGeneralInfo = () => {
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 14 }}
         // name="nest-messages"
-        // onFinish={onFinish}
+        onFinish={onFinish}
         // validateMessages={validateMessages}
         size={componentSize}
         onValuesChange={onFormLayoutChange}
       >
-        <Form.Item label="Event Name" rules={[{ required: true }]}>
+        <Form.Item name="name" label="Event Name" rules={[{ required: true }]}>
           <Input placeholder="Ex. Food Running Event" />
         </Form.Item>
 
-        <Form.Item label="Start Date / Time" rules={[{ required: true }]}>
+        <Form.Item name="startDateTime" label="Start Date / Time" rules={[{ required: true }]}>
           <DatePicker placeholder="Select date" />
           <TimePicker placeholder="Select time" />
         </Form.Item>
 
-        <Form.Item label="End Date / Time" rules={[{ required: true }]}>
+        <Form.Item name="endDateTime" label="End Date / Time" rules={[{ required: true }]}>
           <DatePicker placeholder="Select date" />
           <TimePicker placeholder="Select time" />
         </Form.Item>
 
-        <Form.Item label="Event Type" rules={[{ required: true }]}>
+        <Form.Item name="ntype" label="Event Type" rules={[{ required: true }]}>
           <Select placeholder="Type" style={{ width: '100px' }}>
             {eventTypeMenu}
           </Select>
@@ -110,17 +112,17 @@ const EventsGeneralInfo = () => {
           </div>
         </Form.Item>
 
-        <Form.Item label="Num Volunteers" rules={[{ required: true }]}>
+        <Form.Item name="volunteerCapacity" label="Num Volunteers" rules={[{ required: true }]}>
           <InputNumber />
         </Form.Item>
 
-        <Form.Item label="Volunteer Type">
+        <Form.Item name="volunteerType" label="Volunteer Type">
           <Select placeholder="Type" style={{ width: '100px' }}>
             {volunteerTypeMenu}
           </Select>
         </Form.Item>
 
-        <Form.Item label="Requirements (optional)">
+        <Form.Item name="volunteerRequirements" label="Requirements (optional)">
           <Checkbox.Group style={{ width: '100%' }}>
             {' '}
             {/* onChange={onChange}> */}
@@ -163,12 +165,16 @@ const EventsGeneralInfo = () => {
           </Checkbox.Group>
         </Form.Item>
 
-        <Form.Item label="Location" rules={[{ required: true }]}>
+        <Form.Item name="location" label="Location" rules={[{ required: true }]}>
           <Input placeholder="Ex. Irvine, CA" />
         </Form.Item>
       </Form>
     </div>
   );
+};
+
+EventsGeneralInfo.propTypes = {
+  setGeneralInfo: PropTypes.func.isRequired,
 };
 
 export default EventsGeneralInfo;

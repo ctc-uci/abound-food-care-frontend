@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form, Input, Upload, Button } from 'antd';
+import PropTypes from 'prop-types';
 import { RightOutlined } from '@ant-design/icons';
 
 // const layout = {
@@ -11,7 +12,11 @@ import { RightOutlined } from '@ant-design/icons';
 //   },
 // };
 
-const EventsAdditionalInfo = () => {
+const EventsAdditionalInfo = ({ setAdditionalInfo }) => {
+  const onFinish = values => {
+    setAdditionalInfo(values);
+  };
+
   const [componentSize, setComponentSize] = React.useState('default');
 
   const onFormLayoutChange = ({ size }) => {
@@ -25,16 +30,16 @@ const EventsAdditionalInfo = () => {
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 14 }}
         name="nest-messages"
-        // onFinish={onFinish}
+        onFinish={onFinish}
         // validateMessages={validateMessages}
         size={componentSize}
         onValuesChange={onFormLayoutChange}
       >
-        <Form.Item label="Additional Info">
+        <Form.Item name="notes" label="Additional Info">
           <Input placeholder="Ex. This event will take place on December 3, 2021 at 9:00AM." />
         </Form.Item>
 
-        <Form.Item label="Upload Forms">
+        <Form.Item name="fileAttachments" label="Upload Forms">
           <Upload>
             <Button
               icon={<RightOutlined />}
@@ -52,6 +57,10 @@ const EventsAdditionalInfo = () => {
       </Form>
     </div>
   );
+};
+
+EventsAdditionalInfo.propTypes = {
+  setAdditionalInfo: PropTypes.func.isRequired,
 };
 
 export default EventsAdditionalInfo;
