@@ -1,8 +1,9 @@
 import { React, useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Input, Button, Radio, Row, Col, Card, Typography, ConfigProvider } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import EventCard from './EventCard';
+import EventCard from '../EventCard';
 import './adminEvents.css';
 import 'antd/dist/antd.variable.min.css';
 import 'antd/dist/antd.less';
@@ -21,13 +22,6 @@ const AdminEvents = () => {
   const [loading, setLoading] = useState(true);
   const [eventsData, setEventsData] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
-
-  // const eventTypeOptions = [
-  //   { label: 'All', value: 'all' },
-  //   { label: 'Distributions', value: 'distribution' },
-  //   { label: 'Food Running', value: 'food' },
-  //   { label: 'Other', value: 'other' },
-  // ];
 
   const eventStatusOptions = [
     { label: 'All', value: 'all' },
@@ -179,9 +173,11 @@ const AdminEvents = () => {
                       buttonStyle="solid"
                     />
                   </span>
-                  <Button className="new-event-btn" type="primary">
-                    Create New Event
-                  </Button>
+                  <Link to="/events/create">
+                    <Button className="new-event-btn" type="primary">
+                      Create New Event
+                    </Button>
+                  </Link>
                 </div>
               </Card>
               <div className="events-grid">

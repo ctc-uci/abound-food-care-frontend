@@ -1,11 +1,11 @@
 @import '~antd/dist/antd.variable.min.css';
 @font-face {
   font-family: 'Inter-Regular';
-  src: url('../../assets/fonts/Inter-Regular.ttf');
+  src: url('../../../assets/fonts/Inter-Regular.ttf');
 }
 @font-face {
   font-family: 'Inter-SemiBold';
-  src: url('../../assets/fonts/Inter-SemiBold.ttf');
+  src: url('../../../assets/fonts/Inter-SemiBold.ttf');
 }
 
 .root {
