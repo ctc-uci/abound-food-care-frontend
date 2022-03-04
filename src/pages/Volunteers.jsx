@@ -6,6 +6,7 @@ import RolesAndSkills from '../components/RolesAndSkills';
 import DuiAndCrimHis from '../components/DuiAndCrimHis';
 
 import 'antd/dist/antd.variable.min.css';
+import VolunteerAvailability from '../components/VolunteerAvailability';
 
 function Volunteers() {
   return (
@@ -16,6 +17,7 @@ function Volunteers() {
       <GeneralInfo />
       <RolesAndSkills />
       <DuiAndCrimHis />
+      <VolunteerAvailability />
     </div>
   );
 }
