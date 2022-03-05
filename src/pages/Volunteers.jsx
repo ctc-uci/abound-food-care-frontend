@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import GeneralInfo from '../components/GeneralInfo';
 import WeeklyInfo from '../components/WeeklyInfo';
@@ -18,11 +18,11 @@ function Volunteers() {
   const [address, setAddress] = useState('');
 
   const [drive, setDrive] = useState(false);
-  const [drivingMiles, setDrivingMiles] = useState('');
+  // const [drivingMiles, setDrivingMiles] = useState('');
   const [interestedRoles, setInterestedRoles] = useState([]);
-  const [languagesSpoken, setLanguagesSpoken] = useState([]);
+  // const [languagesSpoken, setLanguagesSpoken] = useState([]);
   const [skills, setSkills] = useState('');
-  const [vehicleType, setVehicleType] = useState([]);
+  // const [vehicleType, setVehicleType] = useState([]);
   const [weightliftingAbility, setWeightliftingAbility] = useState('');
   const [foodRunsInterest, setFoodRunsInterest] = useState(false);
 
@@ -32,6 +32,7 @@ function Volunteers() {
   const [crimHistory, setCrimHistory] = useState(false);
   const [duiElaboration, setDuiElaboration] = useState('');
   const [data, setData] = useState({});
+  const [submit, setSubmit] = useState(false);
 
   const submitForm = async () => {
     axios
@@ -45,6 +46,12 @@ function Volunteers() {
       });
   };
 
+  useEffect(() => {
+    if (submit && data) {
+      submitForm(data);
+    }
+  }, [submit]);
+
   const setGeneralInfo = async values => {
     await setBirthdate(values.birthdate);
     await setFirstName(values.firstName);
@@ -55,11 +62,11 @@ function Volunteers() {
   };
   const setRolesAndSkills = async values => {
     await setDrive(values.drive);
-    await setDrivingMiles(values.drivingMiles);
+    // await setDrivingMiles(values.drivingMiles);
     await setInterestedRoles(values.interestedRoles);
-    await setLanguagesSpoken(values.languagesSpoken);
+    // await setLanguagesSpoken(values.languagesSpoken);
     await setSkills(values.skills);
-    await setVehicleType(values.vehicleType);
+    // await setVehicleType(values.vehicleType);
     await setWeightliftingAbility(values.weightliftingAbility);
     await setFoodRunsInterest(values.foodRunsInterest);
   };
@@ -69,15 +76,7 @@ function Volunteers() {
     await setCrimHisElaboration(values.crimHisElaboration);
     await setCrimHistory(values.crimHistory);
     await setDuiElaboration(values.duiElaboration);
-    let otherInfo = {};
 
-    otherInfo = {
-      drive,
-      drivingMiles,
-      vehicleType,
-      languagesSpoken,
-    };
-    console.log(otherInfo);
     await setData({
       uType: 'volunteer',
       name: `${firstName} ${lastName}`,
@@ -99,7 +98,7 @@ function Volunteers() {
       volunteeringRolesInterest: interestedRoles,
       additionalInformation: 'N/A',
     });
-    submitForm(data);
+    setSubmit(true);
   };
 
   const nextPage = () => {
