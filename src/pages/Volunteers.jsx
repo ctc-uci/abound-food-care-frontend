@@ -35,15 +35,7 @@ function Volunteers() {
   const [submit, setSubmit] = useState(false);
 
   const submitForm = async () => {
-    axios
-      .post('http://localhost:3001/users/create', data)
-      .then(response => {
-        console.log(`Status: ${response.status}`);
-        console.log(response.data);
-      })
-      .catch(error => {
-        console.error('Something went wrong!', error);
-      });
+    axios.post('http://localhost:3001/users/create', data);
   };
 
   useEffect(() => {
