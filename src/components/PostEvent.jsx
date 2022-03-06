@@ -10,7 +10,7 @@ const PostEvent = props => {
 
   ConfigProvider.config({
     theme: {
-      primaryColor: '#009A44',
+      primaryColor: '#115740',
     },
   });
 
@@ -34,7 +34,10 @@ const PostEvent = props => {
           marginTop: '1.5em',
         }}
       >
-        <h1 style={{ fontSize: 34, fontWeight: 600, marginBottom: '1%' }}> Post-Event Recap </h1>
+        <h1 style={{ fontSize: 34, fontFamily: 'AvenirNextLTProBold', marginBottom: '1%' }}>
+          {' '}
+          Post-Event Recap{' '}
+        </h1>
         <p style={{ fontWeight: 400 }}>
           The post-event recap will be posted on the EventName page for all volunteers to see.
         </p>
@@ -54,7 +57,10 @@ const PostEvent = props => {
               flexDirection: 'column',
             }}
           >
-            <h2 style={{ fontSize: 20, fontWeight: 600 }}> {name} </h2>
+            <h2 style={{ fontFamily: 'AvenirNextLTProBold', fontSize: 20, fontWeight: 600 }}>
+              {' '}
+              {name}{' '}
+            </h2>
 
             <p style={{ fontSize: 16 }}>
               <CalendarOutlined style={{ fontSize: 16, marginRight: '.3%' }} /> {date}
@@ -78,7 +84,6 @@ const PostEvent = props => {
                   display: 'flex',
                   flexDirection: 'row',
                   flexWrap: 'wrap',
-                  alignItems: 'center',
                 }}
               >
                 <p style={{ fontSize: 16, padding: 0, margin: 0, width: '15%' }}>

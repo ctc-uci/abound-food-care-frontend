@@ -3,6 +3,7 @@ import {
   CalendarOutlined,
   ClockCircleOutlined,
   VerticalAlignBottomOutlined,
+  AimOutlined,
 } from '@ant-design/icons';
 import { Button, Divider, ConfigProvider } from 'antd';
 import axios from 'axios';
@@ -84,18 +85,7 @@ function EventPage() {
             marginTop: '2.5em',
           }}
         >
-          <p
-            style={{
-              color: 'black',
-              fontWeight: 500,
-              fontSize: '28px',
-              padding: 0,
-              margin: 0,
-              lineHeight: '22px',
-            }}
-          >
-            Additional Notes
-          </p>
+          <p className="header">Additional Notes</p>
           <p
             style={{
               padding: 0,
@@ -115,7 +105,7 @@ function EventPage() {
 
   ConfigProvider.config({
     theme: {
-      primaryColor: '#009A44',
+      primaryColor: '#115740',
     },
   });
 
@@ -162,18 +152,7 @@ function EventPage() {
                 justifyContent: 'space-between',
               }}
             >
-              <p
-                style={{
-                  color: 'black',
-                  fontWeight: 500,
-                  fontSize: '28px',
-                  padding: 0,
-                  margin: 0,
-                  lineHeight: '22px',
-                }}
-              >
-                {eventData.name}
-              </p>
+              <p className="header">{eventData.name}</p>
               <p
                 style={{
                   fontWeight: 500,
@@ -183,32 +162,32 @@ function EventPage() {
                   margin: 0,
                 }}
               >
-                {eventData.volunteer_type ? eventData.volunteer_type : 'All Volunteers'}
+                {eventData.volunteer_type ? eventData.volunteer_type : 'General Event'}
+              </p>
+              <p
+                style={{
+                  fontFamily: 'AvenirNextLTProBold',
+                  fontSize: '15px',
+                  color: '#000000',
+                  padding: 0,
+                  margin: 0,
+                }}
+              >
+                XX/XX Volunteers Signed Up
               </p>
             </div>
             <div
               style={{
                 position: 'relative',
                 backgroundColor: 'white',
-                marginTop: '2.5em',
+                marginTop: '4em',
                 height: '7em',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
               }}
             >
-              <p
-                style={{
-                  color: 'black',
-                  fontWeight: 500,
-                  fontSize: '28px',
-                  padding: 0,
-                  margin: 0,
-                  lineHeight: '28px',
-                }}
-              >
-                Event Information
-              </p>
+              <p className="header">Event Information</p>
               <div
                 style={{
                   display: 'flex',
@@ -216,8 +195,36 @@ function EventPage() {
                   alignItems: 'center',
                 }}
               >
-                <CalendarOutlined style={{ fontSize: '14px' }} />
-                <p style={{ padding: 0, margin: 0, paddingLeft: '.7em', fontSize: '14px' }}>
+                <AimOutlined style={{ fontSize: '16px' }} />
+                <p
+                  style={{
+                    padding: 0,
+                    margin: 0,
+                    paddingLeft: '.7em',
+                    paddingTop: '4px',
+                    fontSize: '16px',
+                  }}
+                >
+                  {eventData.location}
+                </p>
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+              >
+                <CalendarOutlined style={{ fontSize: '16px' }} />
+                <p
+                  style={{
+                    padding: 0,
+                    margin: 0,
+                    paddingLeft: '.7em',
+                    paddingTop: '4px',
+                    fontSize: '16px',
+                  }}
+                >
                   {parseDate()}
                 </p>
               </div>
@@ -228,8 +235,16 @@ function EventPage() {
                   alignItems: 'center',
                 }}
               >
-                <ClockCircleOutlined style={{ fontSize: '14px' }} />
-                <p style={{ padding: 0, margin: 0, paddingLeft: '.7em', fontSize: '14px' }}>
+                <ClockCircleOutlined style={{ fontSize: '16px' }} />
+                <p
+                  style={{
+                    padding: 0,
+                    margin: 0,
+                    paddingLeft: '.7em',
+                    paddingTop: '4px',
+                    fontSize: '16px',
+                  }}
+                >
                   {parseTimeRange()}
                 </p>
               </div>
@@ -241,11 +256,11 @@ function EventPage() {
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 backgroundColor: 'white',
-                marginTop: '2.5em',
+                marginTop: '4em',
                 height: '6em',
               }}
             >
-              <p style={{ padding: 0, margin: 0, fontWeight: 500, fontSize: '28px' }}>Waivers</p>
+              <p className="header">Waivers</p>
               <Button
                 style={{
                   width: '13em',
@@ -258,6 +273,9 @@ function EventPage() {
                 <VerticalAlignBottomOutlined />
                 <p style={{ padding: 0, margin: 0, paddingLeft: '.7em' }}>Click to Download</p>
               </Button>
+              <p style={{ fontFamily: 'AvenirNextLTProBold', fontSize: '14px', color: '#888888' }}>
+                Not yet implemented
+              </p>
             </div>
           </div>
           <div
@@ -279,17 +297,31 @@ function EventPage() {
                 alignItems: 'center',
               }}
             >
-              <p style={{ color: '#888888', padding: 0, margin: 0, fontSize: '14px' }}>
-                Spots: 23/36
-              </p>
               <Button
-                style={{ width: '9em', display: 'flex', alignItems: 'center' }}
+                style={{
+                  width: '9em',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
                 type="primary"
                 onClick={() => setIsAddingPost(true)}
               >
                 <p style={{ padding: 0, margin: 0, fontSize: '14px' }}>Add Post-Event</p>
               </Button>
+              <Button
+                style={{
+                  width: '9em',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                type="primary"
+              >
+                <p style={{ padding: 0, margin: 0, fontSize: '14px' }}>Send Thank You</p>
+              </Button>
             </div>
+            {/*
 
             <div
               className="containerBorder"
@@ -324,6 +356,7 @@ function EventPage() {
                 }}
               />
             </div>
+              */}
 
             <div
               className="containerBorder"
@@ -335,15 +368,7 @@ function EventPage() {
                 marginTop: '2.5em',
               }}
             >
-              <p
-                style={{
-                  color: 'black',
-                  fontWeight: 500,
-                  fontSize: '20px',
-                  padding: 0,
-                  margin: '1em',
-                }}
-              >
+              <p className="header" style={{ paddingLeft: '1em' }}>
                 Requirements
               </p>
               <Divider style={{ padding: 0, margin: 0, marginBottom: '1em' }} />
@@ -352,6 +377,7 @@ function EventPage() {
                   display: 'flex',
                   flexDirection: 'row',
                   flexWrap: 'wrap',
+                  paddingLeft: '1em',
                 }}
               >
                 {eventData.volunteer_requirements.map(e => {
@@ -379,17 +405,6 @@ function EventPage() {
                   );
                 })}
               </div>
-            </div>
-            <div
-              style={{
-                marginTop: '2.5em',
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-                width: '100%',
-              }}
-            >
-              <Button type="primary">Send Thank You</Button>
             </div>
           </div>
         </div>
