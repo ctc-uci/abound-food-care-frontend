@@ -9,6 +9,7 @@ import About from './pages/About';
 import Partners from './pages/Partners';
 import Solutions from './pages/Solutions';
 import Events from './pages/Events';
+import CreateEvent from './pages/CreateEvent';
 import Volunteers from './pages/Volunteers';
 import Profile from './pages/Profile';
 import Event from './pages/Event';
@@ -38,6 +39,7 @@ function App() {
               <Route path="/partners" exact element={<Partners />} />
               <Route path="/solutions" exact element={<Solutions />} />
               <Route path="/events" exact element={<Events />} />
+              <Route path="/events/create" exact element={<CreateEvent />} />
               <Route path="/volunteers" exact element={<Volunteers />} />
               <Route path="/profile" exact element={<Profile />} />
               <Route path="/event" exact element={<Event />} />
