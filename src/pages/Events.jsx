@@ -1,69 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
+import AdminEvents from '../components/events/adminEvent/AdminEvents';
 import 'antd/dist/antd.css';
-import { Button } from 'antd';
-import EventsGeneralInfo from '../components/EventsGeneralInfo';
-import EventsAdditionalInfo from '../components/EventsAdditionalInfo';
 
 function Events() {
-  const [state, setState] = useState('general-info');
-
   return (
     <div>
-      <p>This is the events page.</p>
-      {state === 'general-info' && (
-        <>
-          <EventsGeneralInfo />
-          <div>
-            <Button
-              style={{
-                background: '#F5F5F5',
-                color: 'rgba(0, 0, 0, 0.25)',
-                borderColor: '#D9D9D9',
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={() => setState('additional-info')}
-              style={{
-                background: '#115740',
-                color: 'white',
-                borderColor: '#115740',
-                float: 'right',
-              }}
-            >
-              Next
-            </Button>
-          </div>
-        </>
-      )}
-
-      {state === 'additional-info' && (
-        <>
-          <EventsAdditionalInfo />
-          <div>
-            <Button
-              style={{
-                background: '#F5F5F5',
-                color: 'rgba(0, 0, 0, 0.25)',
-                borderColor: '#D9D9D9',
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              style={{
-                background: '#115740',
-                color: 'white',
-                borderColor: '#115740',
-                float: 'right',
-              }}
-            >
-              Publish Event
-            </Button>
-          </div>
-        </>
-      )}
+      <AdminEvents />
     </div>
   );
 }
