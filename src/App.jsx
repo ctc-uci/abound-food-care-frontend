@@ -15,6 +15,7 @@ import Profile from './pages/Profile';
 import Event from './pages/Event';
 import Waivers from './pages/Waivers';
 import Admin from './pages/Admin';
+import Hours from './pages/Hours';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/event" exact element={<Event />} />
           <Route path="/waivers" exact element={<Waivers />} />
           <Route path="/admin" exact element={<Admin />} />
+          <Route path="/hours" exact element={<Hours />} />
         </Routes>
       </Router>
       <Footer />
