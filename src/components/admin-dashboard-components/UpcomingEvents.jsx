@@ -39,24 +39,6 @@ const dummyData = [
     startTime: 'startTime1',
     endTime: 'endTime1',
   },
-  {
-    title: 'event1',
-    startDate: 'startDate1',
-    startTime: 'startTime1',
-    endTime: 'endTime1',
-  },
-  {
-    title: 'event1',
-    startDate: 'startDate1',
-    startTime: 'startTime1',
-    endTime: 'endTime1',
-  },
-  {
-    title: 'event1',
-    startDate: 'startDate1',
-    startTime: 'startTime1',
-    endTime: 'endTime1',
-  },
 ];
 const UpcomingEvents = () => {
   return (
@@ -64,8 +46,10 @@ const UpcomingEvents = () => {
       {dummyData.map(upcomingEvent => (
         <Card.Grid key={upcomingEvent.title} className="upcoming-event">
           <div>
-            <a href="https://www.google.com">{upcomingEvent.title}</a>
-            <p>{upcomingEvent.startDate}</p>
+            <a className="upcoming-event-name" href="https://www.google.com">
+              {upcomingEvent.title}
+            </a>
+            <p className="upcoming-event-start-date">{upcomingEvent.startDate}</p>
             <p>
               {upcomingEvent.startTime} - {upcomingEvent.endTime}
             </p>
