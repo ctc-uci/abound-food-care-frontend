@@ -1,0 +1,43 @@
+.dashboard-header {
+  width: 100%;
+  height: 97px;
+  border-radius: solid;
+  background-color: blue;
+  display: flex;
+  flex-direction: row;
+  padding: 12px 24px 16px;
+  margin-bottom: 5vh;
+}
+
+.dashboard-statistic {
+  display: flex;
+  flex-direction: column;
+}
+
+.upcoming-events {
+  width: 105vw;
+  height: 77px;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.admin-dashboard-header {
+  border: solid;
+  border-width: 1px;
+  width: 57.24vw;
+  height: 16.8vh;
+}
+
+.user-statistics {
+  display: flex;
+  flex-direction: row;
+}
+
+.statistics-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-col {
+  height: 50%;
+}

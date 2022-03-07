@@ -1,0 +1,9 @@
+.past-events-container {
+  height: 15vh;
+}
+
+.past-event {
+  width: 100%;
+  text-align: left;
+  border-right: none;
+}

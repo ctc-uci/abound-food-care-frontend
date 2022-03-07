@@ -1,0 +1,11 @@
+.upcoming-event {
+  width: 33.3%;
+  text-align: left;
+  border-right: none;
+}
+
+.upcoming-events {
+  margin-bottom: 500px;
+  width: 100%;
+  border-bottom: none;
+}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import 'antd/dist/antd.css';
 import HeatMap from '../components/HeatMap';
 import Database from '../components/Database';
+import AdminDashboard from '../components/AdminDashboard';
 import './Admin.css';
 
 function Admin() {
@@ -211,6 +212,9 @@ function Admin() {
       </div>
       <div>
         <Database />
+      </div>
+      <div>
+        <AdminDashboard />
       </div>
     </div>
   );
