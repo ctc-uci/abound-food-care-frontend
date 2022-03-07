@@ -28,21 +28,50 @@ function Volunteers() {
 
   const [duiHistory, setDuiHistory] = useState(false);
   const [chowmatchTraining, setChowmatchTraining] = useState(false);
-  const [crimHisElaboration, setCrimHisElaboration] = useState('');
+  const [crimHisElaboration, setCrimHisElaboration] = useState('placeholder');
   const [crimHistory, setCrimHistory] = useState(false);
   const [duiElaboration, setDuiElaboration] = useState('');
   const [data, setData] = useState({});
-  const [submit, setSubmit] = useState(false);
 
   const submitForm = async () => {
+    console.log('submitting');
     axios.post('http://localhost:3001/users/create', data);
   };
 
+  useEffect(async () => {
+    if (crimHisElaboration !== 'placeholder') {
+      await setData({
+        uType: 'volunteer',
+        name: `${firstName} ${lastName}`,
+        birthdate,
+        email,
+        phone: phoneNumber,
+        preferredContactMethod: 'email',
+        city: 'Irvine',
+        physicalAddress: address,
+        weightLiftingAbility: weightliftingAbility,
+        criminalHistory: crimHistory,
+        duiHistory,
+        duiHistoryDetails: duiElaboration,
+        criminalHistoryDetails: crimHisElaboration,
+        completedChowmatchTraining: chowmatchTraining,
+        drive,
+        foodRunsInterest,
+        specializations: skills,
+        volunteeringRolesInterest: interestedRoles,
+        additionalInformation: 'N/A',
+      });
+    }
+  }, [duiElaboration]);
+
   useEffect(() => {
-    if (submit && data) {
+    if (crimHisElaboration !== 'placeholder') {
+      console.log('test:', crimHisElaboration);
+      console.log(crimHisElaboration !== 'placeholder');
+      console.log(data);
       submitForm(data);
     }
-  }, [submit]);
+  }, [data]);
 
   const setGeneralInfo = async values => {
     await setBirthdate(values.birthdate);
@@ -68,29 +97,6 @@ function Volunteers() {
     await setCrimHisElaboration(values.crimHisElaboration);
     await setCrimHistory(values.crimHistory);
     await setDuiElaboration(values.duiElaboration);
-
-    await setData({
-      uType: 'volunteer',
-      name: `${firstName} ${lastName}`,
-      birthdate,
-      email,
-      phone: phoneNumber,
-      preferredContactMethod: 'email',
-      city: 'Irvine',
-      physicalAddress: address,
-      weightLiftingAbility: weightliftingAbility,
-      criminalHistory: crimHistory,
-      duiHistory,
-      duiHistoryDetails: duiElaboration,
-      criminalHistoryDetails: crimHisElaboration,
-      completedChowmatchTraining: chowmatchTraining,
-      drive,
-      foodRunsInterest,
-      specializations: skills,
-      volunteeringRolesInterest: interestedRoles,
-      additionalInformation: 'N/A',
-    });
-    setSubmit(true);
   };
 
   const nextPage = () => {
