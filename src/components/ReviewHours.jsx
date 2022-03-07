@@ -14,31 +14,60 @@ import {
   ConfigProvider,
 } from 'antd';
 import { SearchOutlined, DownOutlined } from '@ant-design/icons';
+import axios from 'axios';
 
 function ReviewHours() {
   const [hoursData, setHoursData] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [filteredData, setFilteredData] = useState([]);
-  const [sortCriterion, setSortCriterion] = useState('All');
+  const [sortCriterion, setSortCriterion] = useState('Date (most recent first)');
 
-  useEffect(() => {
+  useEffect(async () => {
     const data = [];
-    /*
-    fetch(BACKEND_URL)
-      .then((res) => {
-        setHoursData(res);
-      })
-    */
-    for (let i = 0; i < 100; i += 1) {
+    const unapprovedData = await axios.get('http://localhost:3001/hours/unapproved').then(res => {
+      return res.data;
+    });
+    const namesPromises = [];
+    const eventsPromises = [];
+    const names = [];
+    const events = [];
+    for (let i = 0; i < unapprovedData.length; i += 1) {
+      namesPromises.push(
+        axios
+          .get(`http://localhost:3001/users/ ${unapprovedData[i].user_id.toString()}`)
+          .then(res => {
+            names.push(res.data[0].name);
+          }),
+      );
+      eventsPromises.push(
+        axios
+          .get(`http://localhost:3001/events/ ${unapprovedData[i].event_id.toString()}`)
+          .then(res => {
+            events.push(res.data[0].name);
+          }),
+      );
+    }
+    await Promise.all(namesPromises);
+    await Promise.all(eventsPromises);
+
+    for (let i = 0; i < unapprovedData.length; i += 1) {
+      const startDate = new Date(unapprovedData[i].start_datetime);
+      const endDate = new Date(unapprovedData[i].end_datetime);
       data.push({
         key: i,
-        name: `Edward ${i}`,
-        eventName: 'EventName',
-        date: '01/01/2021',
-        timeIn: '09:00',
-        timeOut: '15:00',
+        name: names[i],
+        organization: '',
+        eventName: events[i],
+        date: startDate.toLocaleDateString(),
+        start: startDate
+          .toLocaleTimeString([], { hour12: true, hour: '2-digit', minute: '2-digit' })
+          .toString(),
+        end: endDate
+          .toLocaleTimeString([], { hour12: true, hour: '2-digit', minute: '2-digit' })
+          .toString(),
       });
     }
+
     setHoursData(data);
     setFilteredData(data);
     setLoading(false);
@@ -56,6 +85,11 @@ function ReviewHours() {
       ),
     },
     {
+      title: 'Organization(s)',
+      dataIndex: 'organization',
+      key: 'organization',
+    },
+    {
       title: 'Event Name',
       dataIndex: 'eventName',
       key: 'eventName',
@@ -66,14 +100,14 @@ function ReviewHours() {
       key: 'date',
     },
     {
-      title: 'Time In',
-      dataIndex: 'timeIn',
-      key: 'timeIn',
+      title: 'Start (PST)',
+      dataIndex: 'start',
+      key: 'start',
     },
     {
-      title: 'Time Out',
-      dataIndex: 'timeOut',
-      key: 'timeOut',
+      title: 'End (PST)',
+      dataIndex: 'end',
+      key: 'end',
     },
     {
       title: 'Approved or Declined',
@@ -115,13 +149,17 @@ function ReviewHours() {
 
   const sortMenu = (
     <Menu>
-      <Menu.Item key="1" className="menu" onClick={() => setSortCriterion('Most Recent')}>
+      <Menu.Item
+        key="1"
+        className="menu"
+        onClick={() => setSortCriterion('Date (most recent first)')}
+      >
         Date (most recent first)
       </Menu.Item>
-      <Menu.Item key="2" className="menu" onClick={() => setSortCriterion('Name')}>
+      <Menu.Item key="2" className="menu" onClick={() => setSortCriterion('Volunteer Name')}>
         Volunteer Name
       </Menu.Item>
-      <Menu.Item key="3" className="menu" onClick={() => setSortCriterion('Email')}>
+      <Menu.Item key="3" className="menu" onClick={() => setSortCriterion('Organization')}>
         Organization
       </Menu.Item>
     </Menu>
@@ -164,12 +202,11 @@ function ReviewHours() {
           <Col span={7}>
             <p className="table-label">Search Table</p>
           </Col>
-          <Col span={8} />
-          <Col span={8}>
+          <Col span={12} />
+          <Col span={4}>
             <Space>
-              <Button>Decline All</Button>
               <Button type="primary" style={{ backgroundColor: '#115740' }}>
-                Approve All
+                Approve Selected
               </Button>
             </Space>
           </Col>
