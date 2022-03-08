@@ -34,13 +34,12 @@ function Volunteers() {
   const [data, setData] = useState({});
 
   const submitForm = async () => {
-    console.log('submitting');
     axios.post('http://localhost:3001/users/create', data);
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     if (crimHisElaboration !== 'placeholder') {
-      await setData({
+      setData({
         uType: 'volunteer',
         name: `${firstName} ${lastName}`,
         birthdate,
@@ -66,37 +65,34 @@ function Volunteers() {
 
   useEffect(() => {
     if (crimHisElaboration !== 'placeholder') {
-      console.log('test:', crimHisElaboration);
-      console.log(crimHisElaboration !== 'placeholder');
-      console.log(data);
       submitForm(data);
     }
   }, [data]);
 
   const setGeneralInfo = async values => {
-    await setBirthdate(values.birthdate);
-    await setFirstName(values.firstName);
-    await setLastName(values.lastName);
-    await setEmail(values.email);
-    await setPhoneNumber(values.phoneNumber);
-    await setAddress(values.address);
+    setBirthdate(values.birthdate);
+    setFirstName(values.firstName);
+    setLastName(values.lastName);
+    setEmail(values.email);
+    setPhoneNumber(values.phoneNumber);
+    setAddress(values.address);
   };
-  const setRolesAndSkills = async values => {
-    await setDrive(values.drive);
-    // await setDrivingMiles(values.drivingMiles);
-    await setInterestedRoles(values.interestedRoles);
-    // await setLanguagesSpoken(values.languagesSpoken);
-    await setSkills(values.skills);
-    // await setVehicleType(values.vehicleType);
-    await setWeightliftingAbility(values.weightliftingAbility);
-    await setFoodRunsInterest(values.foodRunsInterest);
+  const setRolesAndSkills = values => {
+    setDrive(values.drive);
+    // setDrivingMiles(values.drivingMiles);
+    setInterestedRoles(values.interestedRoles);
+    // setLanguagesSpoken(values.languagesSpoken);
+    setSkills(values.skills);
+    // setVehicleType(values.vehicleType);
+    setWeightliftingAbility(values.weightliftingAbility);
+    setFoodRunsInterest(values.foodRunsInterest);
   };
-  const setDuiAndCrimHis = async values => {
-    await setDuiHistory(values.duiHistory);
-    await setChowmatchTraining(values.chowmatchTraining);
-    await setCrimHisElaboration(values.crimHisElaboration);
-    await setCrimHistory(values.crimHistory);
-    await setDuiElaboration(values.duiElaboration);
+  const setDuiAndCrimHis = values => {
+    setDuiHistory(values.duiHistory);
+    setChowmatchTraining(values.chowmatchTraining);
+    setCrimHisElaboration(values.crimHisElaboration);
+    setCrimHistory(values.crimHistory);
+    setDuiElaboration(values.duiElaboration);
   };
 
   const nextPage = () => {
