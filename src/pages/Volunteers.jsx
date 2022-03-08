@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import GeneralInfo from '../components/GeneralInfo';
-import WeeklyInfo from '../components/WeeklyInfo';
-import RolesAndSkills from '../components/RolesAndSkills';
-import DuiAndCrimHis from '../components/DuiAndCrimHis';
-import VolunteeringHistory from '../components/VolunteeringHistory';
+import GeneralInfo from '../components/create-account/GeneralInfo';
+import WeeklyInfo from '../components/create-account/WeeklyInfo';
+import RolesAndSkills from '../components/create-account/RolesAndSkills';
+import DuiAndCrimHis from '../components/create-account/DuiAndCrimHis';
+import VolunteeringHistory from '../components/volunteer-profile-history/VolunteeringHistory';
 import 'antd/dist/antd.variable.min.css';
 
 function Volunteers() {
