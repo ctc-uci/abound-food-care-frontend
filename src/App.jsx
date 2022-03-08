@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import About from './pages/About';
 import Partners from './pages/Partners';
 import Solutions from './pages/Solutions';
+import VolunteeringHistory from './pages/VolunteeringHistory';
 import Events from './pages/Events';
 import CreateEvent from './pages/CreateEvent';
 import Volunteers from './pages/Volunteers';
@@ -16,6 +17,7 @@ import Event from './pages/Event';
 import Waivers from './pages/Waivers';
 import Admin from './pages/Admin';
 import AdminNavMenu from './components/navigation/AdminNavMenu';
+// import VolunteerNavMenu from './components/navigation/VolunteerNavMenu';
 
 const { Content } = Layout;
 
@@ -38,6 +40,7 @@ function App() {
               <Route path="/about" exact element={<About />} />
               <Route path="/partners" exact element={<Partners />} />
               <Route path="/solutions" exact element={<Solutions />} />
+              <Route path="/volunteeringHistory" exact element={<VolunteeringHistory />} />
               <Route path="/events" exact element={<Events />} />
               <Route path="/events/create" exact element={<CreateEvent />} />
               <Route path="/volunteers" exact element={<Volunteers />} />

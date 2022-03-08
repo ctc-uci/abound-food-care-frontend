@@ -14,7 +14,7 @@ import './navMenu.css';
 
 const { Sider } = Layout;
 
-const AdminNavMenu = () => {
+const VolunteerNavMenu = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [menuTitle, setMenuTitle] = useState('Abound Food Care');
 
@@ -43,7 +43,7 @@ const AdminNavMenu = () => {
         </Link>
         <Menu defaultSelectedKeys={['1']} inlineCollapsed={collapsed} mode="inline">
           <Menu.Item className="menu-item" key="1" icon={<DashboardOutlined />}>
-            <Link to="/admin" className="link">
+            <Link to="/volunteers" className="link">
               Dashboard
             </Link>
           </Menu.Item>
@@ -53,13 +53,13 @@ const AdminNavMenu = () => {
             </Link>
           </Menu.Item>
           <Menu.Item className="menu-item" key="3" icon={<TableOutlined />}>
-            <Link to="/volunteers" className="link">
-              Volunteers
+            <Link to="/volunteeringHistory" className="link">
+              Volunteering History
             </Link>
           </Menu.Item>
           <Menu.Item className="menu-item" key="4" icon={<ProfileOutlined />}>
-            <Link to="/hours" className="link">
-              Hours Log
+            <Link to="/profile" className="link">
+              Profile
             </Link>
           </Menu.Item>
         </Menu>
@@ -74,4 +74,4 @@ const AdminNavMenu = () => {
   );
 };
 
-export default AdminNavMenu;
+export default VolunteerNavMenu;
