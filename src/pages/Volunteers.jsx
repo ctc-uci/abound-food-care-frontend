@@ -4,7 +4,7 @@ import GeneralInfo from '../components/GeneralInfo';
 import WeeklyInfo from '../components/WeeklyInfo';
 import RolesAndSkills from '../components/RolesAndSkills';
 import DuiAndCrimHis from '../components/DuiAndCrimHis';
-
+import VolunteeringHistory from '../components/VolunteeringHistory';
 import 'antd/dist/antd.variable.min.css';
 
 function Volunteers() {
@@ -35,6 +35,7 @@ function Volunteers() {
 
   const submitForm = async () => {
     axios.post('http://localhost:3001/users/create', data);
+    setCurrPage(currPage + 1);
   };
 
   useEffect(() => {
@@ -115,6 +116,7 @@ function Volunteers() {
         />
       )}
       {currPage === 4 && <DuiAndCrimHis prevPage={prevPage} setDuiAndCrimHis={setDuiAndCrimHis} />}
+      {currPage === 5 && <VolunteeringHistory />}
     </div>
   );
 }
