@@ -14,6 +14,9 @@ const ProfileRolesAndSkills = () => {
 
   const [componentSize, setComponentSize] = useState('default');
   const [isEditable] = React.useState(false);
+  const [interestedRoles, setInterestedRoles] = React.useState([]);
+  const [weightliftingAbility, setWeightliftingAbility] = React.useState(0);
+  const [drivingDistance, setDrivingDistance] = React.useState(0);
 
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
@@ -21,6 +24,13 @@ const ProfileRolesAndSkills = () => {
 
   const inputBoxStyle = {
     width: '50%',
+  };
+
+  // Pass in array of roles
+  const getVolunteerRoleTags = roles => {
+    return roles.map(role => {
+      return <Tag key={role}>{role}</Tag>;
+    });
   };
 
   React.useEffect(() => {
@@ -31,30 +41,29 @@ const ProfileRolesAndSkills = () => {
       });
       const [volunteerData] = data;
 
-      // request language data
-      // console.log(volunteerData);
+      // TODO: request language data
+
       form.setFieldsValue({
         accountType: volunteerData.u_type,
-        interestedRoles: volunteerData.volunteering_roles_interest, // FIX
+        interestedRoles: volunteerData.volunteering_roles_interest, // TODO: Backend currently only stores a single string
         skills: volunteerData.specializations,
         // languagesSpoken: ,
-        weightliftingAbility: 122, // FIX
         foodMatchTraining: volunteerData.completed_chowmatch_training.toString(),
         drive: volunteerData.can_drive.toString(),
       });
+      setInterestedRoles([volunteerData.volunteering_roles_interest]);
+      setWeightliftingAbility(volunteerData.weight_lifting_ability);
 
       // get driver data
       if (volunteerData.can_drive === true) {
-        let data2 = {};
-        await axios.get('http://localhost:3001/users/121').then(res => {
-          data2 = res.data;
+        let driverData = {};
+        await axios.get('http://localhost:3001/drivers/121').then(res => {
+          driverData = res.data;
         });
-        const [driverData] = data2;
-
         form.setFieldsValue({
           vehicleType: driverData.vehicle_type,
-          drivingMiles: driverData.distance,
         });
+        setDrivingDistance(driverData.distance);
       }
     };
     getVolunteerData();
@@ -63,9 +72,6 @@ const ProfileRolesAndSkills = () => {
   return (
     <div>
       <h1>PROFILE Roles and Skills</h1>
-      {/* <Button onClick={() => setIsEditable(true)}>Edit</Button>
-      <Button onClick={() => setIsEditable(false)}>Cancel</Button>
-      <Button type="primary">Save</Button> */}
       <Form
         layout="vertical"
         labelCol={{ span: 20 }}
@@ -88,8 +94,7 @@ const ProfileRolesAndSkills = () => {
         </Form.Item>
 
         <Form.Item name="interestedRoles" label="Volunteering Roles Interested In">
-          <Tag>Food Runner</Tag>
-          <Tag>Distribution Work</Tag>
+          {getVolunteerRoleTags(interestedRoles)}
         </Form.Item>
 
         <Form.Item style={inputBoxStyle} name="skills" label="Special Talents/Skills">
@@ -214,10 +219,13 @@ const ProfileRolesAndSkills = () => {
             },
           ]}
         >
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-            <InputNumber placeholder="0" disabled={!isEditable} />
-            <p style={{ marginLeft: '1em' }}>pounds</p>
-          </div>
+          <InputNumber
+            defaultValue={weightliftingAbility}
+            name="weightliftingAbility"
+            disabled={!isEditable}
+            value={weightliftingAbility}
+          />
+          <span className="ant-form-text"> pounds</span>
         </Form.Item>
 
         <Form.Item
@@ -245,11 +253,12 @@ const ProfileRolesAndSkills = () => {
             placeholder="Please select a vehicle type"
             disabled={!isEditable}
           >
-            <Option value="sedan">Sedan</Option>
+            <Option value="van">Van</Option>
             <Option value="truck">Truck</Option>
             <Option value="suv">SUV</Option>
-            <Option value="compact">Compact</Option>
             <Option value="mid-size">Mid-Size</Option>
+            <Option value="compact">Compact</Option>
+            <Option value="sedan">Sedan</Option>
           </Select>
         </Form.Item>
 
@@ -262,10 +271,8 @@ const ProfileRolesAndSkills = () => {
             },
           ]}
         >
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-            <InputNumber placeholder="0" disabled={!isEditable} />
-            <p style={{ marginLeft: '1em' }}>miles</p>
-          </div>
+          <InputNumber value={drivingDistance} name="drivingMiles" min={0} disabled={!isEditable} />
+          <span className="ant-form-text"> miles</span>
         </Form.Item>
       </Form>
     </div>
