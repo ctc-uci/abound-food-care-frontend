@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Input, Radio, Form, Select, InputNumber, Col, Checkbox, Row, Tag } from 'antd';
+import axios from 'axios';
 
 const { Option } = Select;
 
@@ -9,7 +10,10 @@ const validateMessages = {
 };
 
 const ProfileRolesAndSkills = () => {
+  const [form] = Form.useForm();
+
   const [componentSize, setComponentSize] = useState('default');
+  const [isEditable] = React.useState(false);
 
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
@@ -19,9 +23,49 @@ const ProfileRolesAndSkills = () => {
     width: '50%',
   };
 
+  React.useEffect(() => {
+    const getVolunteerData = async () => {
+      let data = {};
+      await axios.get('http://localhost:3001/users/121').then(res => {
+        data = res.data;
+      });
+      const [volunteerData] = data;
+
+      // request language data
+      // console.log(volunteerData);
+      form.setFieldsValue({
+        accountType: volunteerData.u_type,
+        interestedRoles: volunteerData.volunteering_roles_interest, // FIX
+        skills: volunteerData.specializations,
+        // languagesSpoken: ,
+        weightliftingAbility: 122, // FIX
+        foodMatchTraining: volunteerData.completed_chowmatch_training.toString(),
+        drive: volunteerData.can_drive.toString(),
+      });
+
+      // get driver data
+      if (volunteerData.can_drive === true) {
+        let data2 = {};
+        await axios.get('http://localhost:3001/users/121').then(res => {
+          data2 = res.data;
+        });
+        const [driverData] = data2;
+
+        form.setFieldsValue({
+          vehicleType: driverData.vehicle_type,
+          drivingMiles: driverData.distance,
+        });
+      }
+    };
+    getVolunteerData();
+  }, []);
+
   return (
     <div>
-      <h1>PROFILE Roles and Skills (title for now)</h1>
+      <h1>PROFILE Roles and Skills</h1>
+      {/* <Button onClick={() => setIsEditable(true)}>Edit</Button>
+      <Button onClick={() => setIsEditable(false)}>Cancel</Button>
+      <Button type="primary">Save</Button> */}
       <Form
         layout="vertical"
         labelCol={{ span: 20 }}
@@ -30,9 +74,14 @@ const ProfileRolesAndSkills = () => {
         name="roles_n_skills"
         size={componentSize}
         onValuesChange={onFormLayoutChange}
+        form={form}
       >
         <Form.Item name="accountType" label="Account Type">
-          <Select style={inputBoxStyle} placeholder="Please select an account type" disabled>
+          <Select
+            style={inputBoxStyle}
+            placeholder="Please select an account type"
+            disabled={!isEditable}
+          >
             <Option value="volunteer">Volunteer</Option>
             <Option value="admin">Admin</Option>
           </Select>
@@ -44,11 +93,11 @@ const ProfileRolesAndSkills = () => {
         </Form.Item>
 
         <Form.Item style={inputBoxStyle} name="skills" label="Special Talents/Skills">
-          <Input.TextArea placeholder="Please enter your work goals" disabled />
+          <Input.TextArea placeholder="Please enter your work goals" disabled={!isEditable} />
         </Form.Item>
 
         <Form.Item name="languagesSpoken" label="Languages Spoken">
-          <Checkbox.Group style={{ width: '70%' }} disabled>
+          <Checkbox.Group style={{ width: '70%' }} disabled={!isEditable}>
             <Row>
               <Col span={4}>
                 <Checkbox
@@ -166,7 +215,7 @@ const ProfileRolesAndSkills = () => {
           ]}
         >
           <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-            <InputNumber placeholder="0" disabled />
+            <InputNumber placeholder="0" disabled={!isEditable} />
             <p style={{ marginLeft: '1em' }}>pounds</p>
           </div>
         </Form.Item>
@@ -175,26 +224,32 @@ const ProfileRolesAndSkills = () => {
           name="foodMatchTraining"
           label="Have you completed the food match training on Chowmatch?"
         >
-          <Radio.Group disabled>
-            <Radio value="yes">Yes</Radio>
-            <Radio value="no">No</Radio>
-            <Radio value="inProgress">In progress</Radio>
-            <Radio value="noAccount">I do not have an account</Radio>
+          <Radio.Group disabled={!isEditable}>
+            <Radio value="true">Yes</Radio>
+            <Radio value="false">No</Radio>
+            <Radio value="in progress">In progress</Radio>
+            <Radio value="no account">I do not have an account</Radio>
           </Radio.Group>
         </Form.Item>
 
         <Form.Item name="drive" label="Able to Drive">
-          <Radio.Group disabled>
+          <Radio.Group disabled={!isEditable}>
             <Radio value="true">Yes</Radio>
             <Radio value="false">No</Radio>
           </Radio.Group>
         </Form.Item>
 
         <Form.Item name="vehicleType" label="Type of Vehicle">
-          <Select style={inputBoxStyle} placeholder="Please select a vehicle type" disabled>
-            <Option value="opt1">opt1</Option>
-            <Option value="opt2">opt2</Option>
-            <Option value="opt3">opt3</Option>
+          <Select
+            style={inputBoxStyle}
+            placeholder="Please select a vehicle type"
+            disabled={!isEditable}
+          >
+            <Option value="sedan">Sedan</Option>
+            <Option value="truck">Truck</Option>
+            <Option value="suv">SUV</Option>
+            <Option value="compact">Compact</Option>
+            <Option value="mid-size">Mid-Size</Option>
           </Select>
         </Form.Item>
 
@@ -208,7 +263,7 @@ const ProfileRolesAndSkills = () => {
           ]}
         >
           <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-            <InputNumber placeholder="0" disabled />
+            <InputNumber placeholder="0" disabled={!isEditable} />
             <p style={{ marginLeft: '1em' }}>miles</p>
           </div>
         </Form.Item>
