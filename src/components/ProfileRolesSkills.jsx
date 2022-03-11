@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Input, Radio, Form, Select, InputNumber, Col, Checkbox, Row, Tag } from 'antd';
 import axios from 'axios';
+// import PropTypes from 'prop-types';
 
 const { Option } = Select;
 
