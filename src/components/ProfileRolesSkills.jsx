@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Input, Radio, Form, Select, InputNumber, Col, Checkbox, Row, Tag } from 'antd';
 import axios from 'axios';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 const { Option } = Select;
 
@@ -10,7 +10,7 @@ const validateMessages = {
   required: 'Answer to this question is required!',
 };
 
-const ProfileRolesAndSkills = () => {
+const ProfileRolesAndSkills = ({ userId }) => {
   const [form] = Form.useForm();
 
   const [componentSize, setComponentSize] = useState('default');
@@ -37,18 +37,25 @@ const ProfileRolesAndSkills = () => {
   React.useEffect(() => {
     const getVolunteerData = async () => {
       let data = {};
-      await axios.get('http://localhost:3001/users/121').then(res => {
+      await axios.get(`http://localhost:3001/users/${userId}`).then(res => {
         data = res.data;
       });
       const [volunteerData] = data;
 
       // TODO: request language data
+      let languageData = [];
+      await axios.get(`http://localhost:3001/users/getLanguages/${userId}`).then(res => {
+        // check if any languages returned
+        if (res.data.length > 0) {
+          languageData = res.data[0].language;
+        }
+      });
 
       form.setFieldsValue({
         accountType: volunteerData.u_type,
         interestedRoles: volunteerData.volunteering_roles_interest, // TODO: Backend currently only stores a single string
         skills: volunteerData.specializations,
-        // languagesSpoken: ,
+        languagesSpoken: languageData,
         foodMatchTraining: volunteerData.completed_chowmatch_training.toString(),
         drive: volunteerData.can_drive.toString(),
       });
@@ -58,7 +65,7 @@ const ProfileRolesAndSkills = () => {
       // get driver data
       if (volunteerData.can_drive === true) {
         let driverData = {};
-        await axios.get('http://localhost:3001/drivers/121').then(res => {
+        await axios.get(`http://localhost:3001/drivers/${121}`).then(res => {
           driverData = res.data;
         });
         form.setFieldsValue({
@@ -278,6 +285,10 @@ const ProfileRolesAndSkills = () => {
       </Form>
     </div>
   );
+};
+
+ProfileRolesAndSkills.propTypes = {
+  userId: PropTypes.number.isRequired,
 };
 
 export default ProfileRolesAndSkills;

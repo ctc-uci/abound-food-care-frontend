@@ -13,9 +13,9 @@ function Volunteers() {
   return (
     <div>
       <p>This is the volunteers page</p>
-      <ProfileDUICrimHistory />
-      <ProfileRolesSkills />
-      <ProfileGeneralInfo />
+      <ProfileDUICrimHistory userId={121} />
+      <ProfileRolesSkills userId={121} />
+      <ProfileGeneralInfo userId={121} />
       <WeeklyInfo />
       <GeneralInfo />
       <RolesAndSkills />

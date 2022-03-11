@@ -2,8 +2,9 @@ import React from 'react';
 import { DatePicker, Form, Input, Radio, Row, Col } from 'antd';
 import axios from 'axios';
 import moment from 'moment';
+import PropTypes from 'prop-types';
 
-const ProfileGeneralInfo = () => {
+const ProfileGeneralInfo = ({ userId }) => {
   // const onFinish = values => {
   //   console.log(values);
   // };
@@ -17,8 +18,6 @@ const ProfileGeneralInfo = () => {
     setComponentSize(size);
   };
 
-  // Load in data!
-  // Form data should NOT be editable?
   const inputBoxStyle = {
     width: '50%',
   };
@@ -26,14 +25,14 @@ const ProfileGeneralInfo = () => {
   React.useEffect(() => {
     const getVolunteerData = async () => {
       let data = {};
-      await axios.get('http://localhost:3001/users/121').then(res => {
+      await axios.get(`http://localhost:3001/users/${userId}`).then(res => {
         data = res.data;
       });
       const [volunteerData] = data;
-      // console.log(volunteerData);
+      console.log(volunteerData.zipcode);
       form.setFieldsValue({
-        firstName: volunteerData.name,
-        lastName: volunteerData.name,
+        firstName: volunteerData.first_name,
+        lastName: volunteerData.last_name,
         dateOfBirth: moment(
           new Date(volunteerData.birthdate).toISOString().split('T')[0],
           'YYYY-MM-DD',
@@ -43,8 +42,8 @@ const ProfileGeneralInfo = () => {
         contactMethod: volunteerData.preferred_contact_method,
         streetAddress: volunteerData.physical_address,
         city: volunteerData.city,
-        // TODO: state
-        // TODO: zip code
+        state: volunteerData.state,
+        zipcode: volunteerData.zipcode,
       });
     };
     getVolunteerData();
@@ -127,7 +126,7 @@ const ProfileGeneralInfo = () => {
             </Form.Item>
           </Col>
           <Col span={3}>
-            <Form.Item name="zip-code" label="Zip Code">
+            <Form.Item name="zipcode" label="Zip Code">
               <Input placeholder="" disabled={!isEditable} />
             </Form.Item>
           </Col>
@@ -135,6 +134,10 @@ const ProfileGeneralInfo = () => {
       </Form>
     </div>
   );
+};
+
+ProfileGeneralInfo.propTypes = {
+  userId: PropTypes.number.isRequired,
 };
 
 export default ProfileGeneralInfo;

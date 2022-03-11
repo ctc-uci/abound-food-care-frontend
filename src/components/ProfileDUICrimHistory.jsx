@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Radio, Form, Input } from 'antd';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 
 // const validateMessages = {
 //   // eslint-disable-next-line no-template-curly-in-string
 //   required: 'Answer to this question is required!',
 // };
 
-const ProfileDUIAndCrimHistory = () => {
+const ProfileDUIAndCrimHistory = ({ userId }) => {
   const [form] = Form.useForm();
 
   const [componentSize, setComponentSize] = useState('default');
@@ -23,7 +24,7 @@ const ProfileDUIAndCrimHistory = () => {
   React.useEffect(() => {
     const getVolunteerData = async () => {
       let data = {};
-      await axios.get('http://localhost:3001/users/121').then(res => {
+      await axios.get(`http://localhost:3001/users/${userId}`).then(res => {
         data = res.data;
       });
       const [volunteerData] = data;
@@ -94,6 +95,10 @@ const ProfileDUIAndCrimHistory = () => {
       </Form>
     </div>
   );
+};
+
+ProfileDUIAndCrimHistory.propTypes = {
+  userId: PropTypes.number.isRequired,
 };
 
 export default ProfileDUIAndCrimHistory;
