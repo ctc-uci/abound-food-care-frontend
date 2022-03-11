@@ -1,7 +1,7 @@
 import React from 'react';
-import './AdminNotifications.css';
 import { Card, Row, Col } from 'antd';
 import logo from '../../assets/img/afc-logo.png';
+import './AdminNotifications.css';
 
 const dummyData = [
   {

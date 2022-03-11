@@ -1,57 +1,31 @@
 import './UpcomingEvents.css';
 import { Card } from 'antd';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import utils from '../../util/utils';
 
-const dummyData = [
-  {
-    title: 'event1',
-    startDate: 'startDate1',
-    startTime: 'startTime1',
-    endTime: 'endTime1',
-  },
-  {
-    title: 'event1',
-    startDate: 'startDate1',
-    startTime: 'startTime1',
-    endTime: 'endTime1',
-  },
-  {
-    title: 'event1',
-    startDate: 'startDate1',
-    startTime: 'startTime1',
-    endTime: 'endTime1',
-  },
-  {
-    title: 'event1',
-    startDate: 'startDate1',
-    startTime: 'startTime1',
-    endTime: 'endTime1',
-  },
-  {
-    title: 'event1',
-    startDate: 'startDate1',
-    startTime: 'startTime1',
-    endTime: 'endTime1',
-  },
-  {
-    title: 'event1',
-    startDate: 'startDate1',
-    startTime: 'startTime1',
-    endTime: 'endTime1',
-  },
-];
 const UpcomingEvents = () => {
+  const [events, setEvents] = useState([]);
+  useEffect(async () => {
+    const response = await axios.get('http://localhost:3001/events/upcoming');
+    await setEvents(response.data);
+  }, []);
   return (
     <Card className="upcoming-events" title="Upcoming Events">
-      {dummyData.map(upcomingEvent => (
-        <Card.Grid key={upcomingEvent.title} className="upcoming-event">
+      {events.map(upcomingEvent => (
+        <Card.Grid key={upcomingEvent.name} className="upcoming-event">
           <div>
             <a className="upcoming-event-name" href="https://www.google.com">
-              {upcomingEvent.title}
+              {upcomingEvent.name}
             </a>
-            <p className="upcoming-event-start-date">{upcomingEvent.startDate}</p>
+            <p className="upcoming-event-start-date">
+              {utils.getMonthString(upcomingEvent.startDateTime)}{' '}
+              {new Date(upcomingEvent.startDateTime).getDate()},{' '}
+              {new Date(upcomingEvent.startDateTime).getFullYear()}
+            </p>
             <p>
-              {upcomingEvent.startTime} - {upcomingEvent.endTime}
+              {utils.getTimeInPST(upcomingEvent.startDateTime)} -{' '}
+              {utils.getTimeInPST(upcomingEvent.endDateTime)}
             </p>
           </div>
         </Card.Grid>

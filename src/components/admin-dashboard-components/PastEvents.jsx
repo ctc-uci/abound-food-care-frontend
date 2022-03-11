@@ -1,54 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './PastEvents.css';
 import { Card } from 'antd';
-
-const dummyData = [
-  {
-    title: 'event1',
-    startDate: 'startDate1',
-    startTime: 'startTime1',
-    endTime: 'endTime1',
-    totalHours: 230,
-  },
-  {
-    title: 'event1',
-    startDate: 'startDate1',
-    startTime: 'startTime1',
-    endTime: 'endTime1',
-    totalHours: 230,
-  },
-  {
-    title: 'event1',
-    startDate: 'startDate1',
-    startTime: 'startTime1',
-    endTime: 'endTime1',
-  },
-  {
-    title: 'event1',
-    startDate: 'startDate1',
-    startTime: 'startTime1',
-    endTime: 'endTime1',
-    totalHours: 230,
-  },
-];
+import axios from 'axios';
+import utils from '../../util/utils';
 
 const PastEvents = () => {
+  const [events, setEvents] = useState([]);
+  useEffect(async () => {
+    const response = await axios.get('http://localhost:3001/events/past');
+    await setEvents(response.data);
+  }, []);
   return (
     <div className="past-events-container">
       <Card title="Past Events">
-        {dummyData.map(pastEvent => (
-          <Card.Grid key={pastEvent.title} className="past-event">
+        {events.map(pastEvent => (
+          <Card.Grid key={pastEvent.name} className="past-event">
             <div>
               <a className="past-event-name" href="https://www.google.com">
-                {pastEvent.title}
+                {pastEvent.name}
               </a>
-              <p className="past-event-start-date">{pastEvent.startDate}</p>
+              <p className="past-event-start-date">
+                {' '}
+                {utils.getMonthString(pastEvent.startDateTime)}{' '}
+                {new Date(pastEvent.startDateTime).getDate()},{' '}
+                {new Date(pastEvent.startDateTime).getFullYear()}
+              </p>
               <p className="past-event-end">
-                {pastEvent.startTime} - {pastEvent.endTime}
+                {utils.getTimeInPST(pastEvent.startDateTime)} -{' '}
+                {utils.getTimeInPST(pastEvent.endDateTime)}
               </p>
               <p>
                 <span style={{ color: 'rgba(0, 0, 0, 0.45)' }}>Total Hours: </span>
-                {pastEvent.totalHours} hrs
+                {utils.getHourDiff(pastEvent.startDateTime, pastEvent.endDateTime)} hrs
               </p>
             </div>
           </Card.Grid>
