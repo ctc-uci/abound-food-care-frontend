@@ -1,0 +1,24 @@
+.notification {
+  width: 100%;
+  text-align: left;
+  border-right: none;
+  height: 80px;
+}
+
+.notification-card {
+  width: 100%;
+  margin-bottom: 50px;
+}
+
+.notification p {
+  display: inline;
+}
+
+.notification a {
+  color: #115740;
+}
+
+
+.notification-people {
+  display: inline;
+}
