@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import 'antd/dist/antd.css';
-import HeatMap from '../components/HeatMap';
-import Database from '../components/Database';
 import AdminDashboard from '../components/AdminDashboard';
+import HeatMap from '../components/volunteer-availabilities/HeatMap';
+import Database from '../components/volunteer-database/Database';
 import './Admin.css';
 
 function Admin() {
