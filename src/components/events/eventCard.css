@@ -10,9 +10,9 @@
 
 .event-card {
   margin: 10px;
-  border-color: #BFBFBF;
+  border-color: #bfbfbf;
   border-radius: 5px;
-  box-shadow: 0px 4px 4px #D3D3D3;
+  box-shadow: 0px 4px 4px #d3d3d3;
 }
 
 .event-date-time {

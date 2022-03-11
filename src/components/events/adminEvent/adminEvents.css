@@ -40,25 +40,28 @@
 }
 
 .distribution-radio-btn {
-  border-color: #009A44;
-  border-left-color: #009A44;
-  color: #009A44;
+  border-color: #009a44;
+  border-left-color: #009a44;
+  color: #009a44;
   margin-right: 1px;
   margin-left: 0px;
 }
 
 .food-radio-btn {
-  border-color: #FFA500;
-  border-left-color: #FFA500;
-  color: #FFA500;
+  border-color: #ffa500;
+  border-left-color: #ffa500;
+  color: #ffa500;
   margin-right: 1px;
 }
 
-.event-type-radio, .status-type-radio {
+.event-type-radio,
+.status-type-radio {
   margin: 10px;
 }
 
-.new-event-btn, .new-event-btn:hover, .new-event-btn:focus {
+.new-event-btn,
+.new-event-btn:hover,
+.new-event-btn:focus {
   background-color: var(--eden);
   border-color: var(--eden);
   color: white;
