@@ -5,7 +5,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 
 const PostEvent = props => {
-  const { name, date, time, eventId, setIsAddingPost } = props;
+  const { name, date, time, eventId, setIsAddingPost, isEdit, setIsLoading } = props;
   const [postEventSection, setPostEventSection] = useState('');
 
   ConfigProvider.config({
@@ -15,11 +15,23 @@ const PostEvent = props => {
   });
 
   const sendPostEvent = () => {
-    axios
-      .put(`http://localhost:3001/postevents/${eventId}`, { description: postEventSection })
-      .then(() => {
-        setIsAddingPost(false);
-      });
+    setIsLoading(true);
+    if (isEdit) {
+      axios
+        .put(`http://localhost:3001/postevents/${eventId}`, { description: postEventSection })
+        .then(() => {
+          setIsAddingPost(false);
+        });
+    } else {
+      axios
+        .post(`http://localhost:3001/postevents/create`, {
+          eventId,
+          description: postEventSection,
+        })
+        .then(() => {
+          setIsAddingPost(false);
+        });
+    }
   };
 
   return (
@@ -139,6 +151,8 @@ PostEvent.propTypes = {
   time: PropTypes.string,
   eventId: PropTypes.number,
   setIsAddingPost: PropTypes.func,
+  isEdit: PropTypes.bool,
+  setIsLoading: PropTypes.func,
 };
 
 PostEvent.defaultProps = {
@@ -147,4 +161,6 @@ PostEvent.defaultProps = {
   time: '',
   eventId: 0,
   setIsAddingPost: () => {},
+  setIsLoading: () => {},
+  isEdit: false,
 };

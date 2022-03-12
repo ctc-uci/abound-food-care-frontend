@@ -14,19 +14,44 @@ function EventPage() {
   const [eventData, setEventData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAddingPost, setIsAddingPost] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
   /*
   const [postEvent, setPostEvent] = useState(null);
   */
 
-  const eventId = 2;
+  const eventId = 8;
 
   useEffect(() => {
-    axios.get(`http://localhost:3001/events/${eventId}`).then(res => {
-      setEventData(res.data[0]);
-      res.data[0].volunteer_requirements = [1, 2, 3, 4, 5];
-      setLoading(false);
-    });
-  }, []);
+    axios
+      .get(`http://localhost:3001/events/${eventId}`)
+      .then(res => {
+        res.data[0].volunteer_requirements = ['Can Drive', '18+', 'Other requirement'];
+        res.data[0].notes = 'Lorem ipsum dolor sit amet.';
+        setEventData(res.data[0]);
+      })
+      .then(() => {
+        axios.get(`http://localhost:3001/postevents/${eventId}`).then(res => {
+          setEventData(eventData1_ => {
+            const eventData1 = eventData1_;
+            eventData1.recap = res.data.description;
+            return eventData1;
+          });
+          if (res.data.description !== undefined) {
+            setIsEdit(true);
+          }
+        });
+      })
+      .then(() => {
+        axios.get(`http://localhost:3001/volunteers/${eventId}`).then(volRes => {
+          setEventData(eventData2_ => {
+            const eventData2 = eventData2_;
+            eventData2.volunteersPresent = volRes.data.count;
+            return eventData2;
+          });
+          setLoading(false);
+        });
+      });
+  }, [isAddingPost]);
 
   /*
   useEffect(() => {
@@ -73,6 +98,35 @@ function EventPage() {
     return `${startTime} - ${endTime}`;
   };
 
+  const getPostEvent = () => {
+    if (eventData.recap) {
+      return (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            backgroundColor: 'white',
+            marginTop: '2.5em',
+          }}
+        >
+          <p className="header">Post-Event Recap</p>
+          <p
+            style={{
+              padding: 0,
+              color: 'black',
+              fontSize: '14px',
+              lineHeight: '28px',
+            }}
+          >
+            {eventData.recap}
+          </p>
+        </div>
+      );
+    }
+    return <></>;
+  };
+
   const getNotes = () => {
     if (eventData.notes) {
       return (
@@ -89,7 +143,6 @@ function EventPage() {
           <p
             style={{
               padding: 0,
-              marginTop: '1.5em',
               color: 'black',
               fontSize: '14px',
               lineHeight: '28px',
@@ -112,11 +165,13 @@ function EventPage() {
   if (isAddingPost) {
     return (
       <PostEvent
+        isEdit={isEdit}
         name={eventData.name}
         date={parseDate()}
         time={parseTimeRange()}
         eventId={eventId}
         setIsAddingPost={setIsAddingPost}
+        setIsLoading={setLoading}
       />
     );
   }
@@ -173,7 +228,7 @@ function EventPage() {
                   margin: 0,
                 }}
               >
-                XX/XX Volunteers Signed Up
+                {eventData.volunteersPresent}/{eventData.volunteer_capacity} Volunteers Signed Up
               </p>
             </div>
             <div
@@ -181,7 +236,7 @@ function EventPage() {
                 position: 'relative',
                 backgroundColor: 'white',
                 marginTop: '4em',
-                height: '7em',
+                height: '10em',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
@@ -249,6 +304,7 @@ function EventPage() {
                 </p>
               </div>
             </div>
+            {getPostEvent()}
             {getNotes()}
             <div
               style={{
@@ -307,7 +363,9 @@ function EventPage() {
                 type="primary"
                 onClick={() => setIsAddingPost(true)}
               >
-                <p style={{ padding: 0, margin: 0, fontSize: '14px' }}>Add Post-Event</p>
+                <p style={{ padding: 0, margin: 0, fontSize: '14px' }}>
+                  {eventData.recap ? 'Edit' : 'Add'} Post-Event
+                </p>
               </Button>
               <Button
                 style={{
