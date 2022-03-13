@@ -8,12 +8,14 @@ import {
 import { Button, Divider, ConfigProvider } from 'antd';
 import axios from 'axios';
 import PostEvent from './PostEvent';
+import VolunteersAtEvent from './VolunteersAtEvent';
 import './eventPage.css';
 
 function EventPage() {
   const [eventData, setEventData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAddingPost, setIsAddingPost] = useState(false);
+  const [viewVolunteers, setViewVolunteers] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   /*
   const [postEvent, setPostEvent] = useState(null);
@@ -107,7 +109,7 @@ function EventPage() {
             flexDirection: 'column',
             justifyContent: 'space-between',
             backgroundColor: 'white',
-            marginTop: '2.5em',
+            marginTop: '2em',
           }}
         >
           <p className="header">Post-Event Recap</p>
@@ -136,7 +138,7 @@ function EventPage() {
             flexDirection: 'column',
             justifyContent: 'space-between',
             backgroundColor: 'white',
-            marginTop: '2.5em',
+            marginTop: '2em',
           }}
         >
           <p className="header">Additional Notes</p>
@@ -176,9 +178,14 @@ function EventPage() {
     );
   }
 
+  if (viewVolunteers) {
+    return <VolunteersAtEvent name={eventData.name} type={eventData.ntype} eventId={eventId} />;
+  }
+
   return (
     !loading &&
-    !isAddingPost && (
+    !isAddingPost &&
+    !viewVolunteers && (
       <ConfigProvider>
         <div
           style={{
@@ -217,19 +224,37 @@ function EventPage() {
                   margin: 0,
                 }}
               >
-                {eventData.volunteer_type ? eventData.volunteer_type : 'General Event'}
+                {eventData.ntype ? eventData.ntype : 'General Event'}
               </p>
-              <p
-                style={{
-                  fontFamily: 'AvenirNextLTProBold',
-                  fontSize: '15px',
-                  color: '#000000',
-                  padding: 0,
-                  margin: 0,
-                }}
-              >
-                {eventData.volunteersPresent}/{eventData.volunteer_capacity} Volunteers Signed Up
-              </p>
+              <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                <p
+                  style={{
+                    fontFamily: 'AvenirNextLTProBold',
+                    fontSize: '15px',
+                    color: '#000000',
+                    padding: 0,
+                    margin: 0,
+                    paddingRight: '1.5em',
+                  }}
+                >
+                  {eventData.volunteersPresent}/{eventData.volunteer_capacity} Volunteers Signed Up
+                </p>
+                <button
+                  type="button"
+                  style={{
+                    backgroundColor: 'transparent',
+                    border: 'none',
+                    padding: 0,
+                    margin: 0,
+                    fontSize: '13px',
+                    cursor: 'pointer',
+                    color: '#115740',
+                  }}
+                  onClick={() => setViewVolunteers(true)}
+                >
+                  View Volunteers
+                </button>
+              </div>
             </div>
             <div
               style={{
