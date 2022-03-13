@@ -179,7 +179,14 @@ function EventPage() {
   }
 
   if (viewVolunteers) {
-    return <VolunteersAtEvent name={eventData.name} type={eventData.ntype} eventId={eventId} />;
+    return (
+      <VolunteersAtEvent
+        name={eventData.name}
+        type={eventData.ntype}
+        eventId={eventId}
+        setViewVolunteers={setViewVolunteers}
+      />
+    );
   }
 
   return (

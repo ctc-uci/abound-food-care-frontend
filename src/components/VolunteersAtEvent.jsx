@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Table, ConfigProvider } from 'antd';
+import { ArrowLeftOutlined } from '@ant-design/icons';
 import './eventPage.css';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
 const VolunteersAtEvent = props => {
-  const { name, type, eventId } = props;
+  const { name, type, eventId, setViewVolunteers } = props;
   const [volunteers, setVolunteers] = useState([]);
   const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     axios
@@ -22,6 +24,7 @@ const VolunteersAtEvent = props => {
           emailM += `${res.data[i].email};`;
         }
         setEmail(emailM);
+        setIsLoading(false);
       })
       .then(() => {});
   }, []);
@@ -71,72 +74,85 @@ const VolunteersAtEvent = props => {
     <ConfigProvider>
       <div
         style={{
-          width: '80vw',
           display: 'flex',
-          flexDirection: 'column',
-          marginLeft: '5%',
+          flexDirection: 'row',
+          width: '80vw',
+          paddingLeft: '5vw',
+          paddingTop: '1.5em',
         }}
       >
+        <ArrowLeftOutlined
+          style={{ fontSize: '24px', paddingRight: '1vw' }}
+          onClick={() => setViewVolunteers(false)}
+        />
         <div
           style={{
+            width: '100%',
             display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            height: '7vh',
-            marginTop: '1.5em',
+            flexDirection: 'column',
           }}
         >
           <div
             style={{
-              height: '50em',
               display: 'flex',
-              flexDirection: 'column',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              height: '7vh',
             }}
           >
             <div
               style={{
-                backgroundColor: 'white',
-                height: '4.5em',
+                height: '50em',
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'space-between',
               }}
             >
-              <p className="header">{name}</p>
-              <p
+              <div
                 style={{
-                  fontWeight: 500,
-                  fontSize: '16px',
-                  color: '#888888',
-                  padding: 0,
-                  margin: 0,
+                  height: '4.5em',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
                 }}
               >
-                {type}
-              </p>
+                <p className="header" style={{ lineHeight: '1em' }}>
+                  {name}
+                </p>
+                <p
+                  style={{
+                    fontWeight: 500,
+                    fontSize: '16px',
+                    color: '#888888',
+                    padding: 0,
+                    margin: 0,
+                  }}
+                >
+                  {type}
+                </p>
+              </div>
             </div>
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'flex-end',
-              flexWrap: 'wrap',
-            }}
-          >
-            <Button
-              type="primary"
-              style={{ marginRight: '2vw' }}
-              onClick={() => {
-                window.location = email;
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'flex-end',
+                flexWrap: 'wrap',
               }}
             >
-              Email Volunteers
-            </Button>
-            <Button type="primary">Download All Waivers</Button>
+              <Button
+                type="primary"
+                style={{ marginRight: '2vw' }}
+                onClick={() => {
+                  window.location = email;
+                }}
+              >
+                Email Volunteers
+              </Button>
+              <Button type="primary">Download All Waivers</Button>
+            </div>
           </div>
+          <Table dataSource={volunteers} columns={columns} loading={isLoading} />
         </div>
-        <Table dataSource={volunteers} columns={columns} />
       </div>
     </ConfigProvider>
   );
@@ -148,10 +164,12 @@ VolunteersAtEvent.propTypes = {
   name: PropTypes.string,
   type: PropTypes.string,
   eventId: PropTypes.number,
+  setViewVolunteers: PropTypes.number,
 };
 
 VolunteersAtEvent.defaultProps = {
   name: '',
   type: 'General Event',
   eventId: 0,
+  setViewVolunteers: () => {},
 };
