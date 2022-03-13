@@ -6,29 +6,83 @@ const VolunteerAvailability = () => {
   const [options, setOptions] = React.useState(null);
   const [series, setSeries] = React.useState(null);
 
-  const DUMMY_DATA = [
-    [1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-    [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-    [1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1],
-    [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-    [1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-    [2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  const ACTUAL_DUMMY_DATA = [
+    {
+      user_id: 1,
+      day_of_week: 'sunday',
+      start_time: '10:00am',
+      end_time: '4:30pm',
+    },
+    {
+      user_id: 1,
+      day_of_week: 'monday',
+      start_time: '9:00am',
+      end_time: '4:30pm',
+    },
+    {
+      user_id: 1,
+      day_of_week: 'tuesday',
+      start_time: '10:00am',
+      end_time: '3:00pm',
+    },
+    {
+      user_id: 1,
+      day_of_week: 'wednesday',
+      start_time: '11:30am',
+      end_time: '4:30pm',
+    },
+    {
+      user_id: 1,
+      day_of_week: 'thursday',
+      start_time: '11:00am',
+      end_time: '4:30pm',
+    },
+    {
+      user_id: 1,
+      day_of_week: 'friday',
+      start_time: '9:00am',
+      end_time: '12:00pm',
+    },
+    {
+      user_id: 1,
+      day_of_week: 'saturday',
+      start_time: '9:00am',
+      end_time: '12:00pm',
+    },
   ];
+  const convertData = times => {
+    const data = [];
+    const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    for (let day = 0; day < 7; day += 1) {
+      const dataAvailability = ACTUAL_DUMMY_DATA.filter(
+        availability => availability.day_of_week === days[day],
+      )[0];
+      const dayArray = [];
+      let available = false;
+      for (let i = 0; i < times.length; i += 1) {
+        if (times[i] === dataAvailability.start_time) available = true;
+        if (times[i] === dataAvailability.end_time) available = false;
+
+        if (available) dayArray.push(2);
+        else dayArray.push(1);
+      }
+      data.push(dayArray);
+    }
+    return data;
+  };
   const generateData = (count, data, index) => {
     const dayOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
     let i = 0;
     const generatedSeries = [];
     while (i < count) {
       const x = dayOfWeek[i];
-      const y = data[i][index];
+      const y = data[i][index]; // need to reverse this
       generatedSeries.push({
         x,
         y,
       });
       i += 1;
     }
-    console.log(generatedSeries);
     return generatedSeries;
   };
 
@@ -36,18 +90,17 @@ const VolunteerAvailability = () => {
     const times = [];
     for (let hour = startHour; hour <= endHour; hour += 1) {
       const formattedHour = hour % 12 === 0 ? '12' : (hour % 12).toString();
-      const period = hour > 12 ? 'pm' : 'am';
+      const period = hour >= 12 ? 'pm' : 'am';
       times.push(formattedHour.concat(':00').concat(period));
       if (hour !== endHour) {
         times.push(formattedHour.concat(':30').concat(period));
       }
     }
-
+    const data = convertData(times);
     const generatedSeries = times.reverse().map((time, i) => {
-      console.log(time, i);
       return {
         name: time,
-        data: generateData(7, DUMMY_DATA, i),
+        data: generateData(7, data, i),
       };
     });
     setSeries(generatedSeries);
