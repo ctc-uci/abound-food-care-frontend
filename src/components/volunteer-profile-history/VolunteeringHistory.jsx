@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FieldTimeOutlined, ScheduleOutlined } from '@ant-design/icons';
-import { ConfigProvider, Table, Button } from 'antd';
+import { FieldTimeOutlined, ScheduleOutlined, DownOutlined } from '@ant-design/icons';
+import { ConfigProvider, Table, Button, Collapse } from 'antd';
 import './VolunteeringHistory.css';
 import EditHours from './EditHours';
 import SuccessModal from './SuccessModal';
+
+const { Panel } = Collapse;
 
 function VolunteeringHistory() {
   const [userId, setUserId] = useState(121);
@@ -232,6 +234,12 @@ function VolunteeringHistory() {
     },
   });
 
+  const customExpandIcon = ({ isActive }) => {
+    return (
+      <DownOutlined style={{ color: '#115740', fontSize: '28px' }} rotate={isActive ? 180 : 0} />
+    );
+  };
+
   return (
     <ConfigProvider>
       {isSubmitted && (
@@ -274,24 +282,42 @@ function VolunteeringHistory() {
               </div>
               */}
           </div>
+          <Collapse
+            defaultActiveKey={['1']}
+            ghost
+            expandIcon={customExpandIcon}
+            expandIconPosition="right"
+            style={{ marginBottom: '2em', width: '100%' }}
+          >
+            <Panel className="tableHeader" header="Unsubmitted Hours" key="1">
+              <Table
+                className="table"
+                columns={unsubmittedColumns}
+                loading={isLoading}
+                dataSource={unsubmittedData}
+                pagination={false}
+              />
+            </Panel>
+          </Collapse>
 
-          <p className="tableHeader">Unsubmitted Hours</p>
-          <Table
-            className="table"
-            columns={unsubmittedColumns}
-            loading={isLoading}
-            dataSource={unsubmittedData}
-            pagination={false}
-          />
+          <Collapse
+            defaultActiveKey={['2']}
+            ghost
+            expandIcon={customExpandIcon}
+            expandIconPosition="right"
+            style={{ width: '100%' }}
+          >
+            <Panel className="tableHeader" header="Submitted Hours" key="2">
+              <Table
+                className="table"
+                columns={submittedColumns}
+                loading={isLoading}
+                dataSource={submittedData}
+                pagination={false}
+              />
+            </Panel>
+          </Collapse>
 
-          <p className="tableHeader">Submitted Hours</p>
-          <Table
-            className="table"
-            columns={submittedColumns}
-            loading={isLoading}
-            dataSource={submittedData}
-            pagination={false}
-          />
           <div className="spacer" />
         </div>
       </div>

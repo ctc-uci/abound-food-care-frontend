@@ -8,7 +8,7 @@ import VolunteeringHistory from '../components/volunteer-profile-history/Volunte
 import 'antd/dist/antd.variable.min.css';
 
 function Volunteers() {
-  const [currPage, setCurrPage] = useState(1);
+  const [currPage, setCurrPage] = useState(5);
   const [birthdate, setBirthdate] = useState('');
 
   const [firstName, setFirstName] = useState('');
