@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import 'antd/dist/antd.variable.min.css';
 import './database.css';
-import { Input, Button, Row, Col, Dropdown, Menu, Divider, Table, ConfigProvider } from 'antd';
+import { Input, Button, Row, Col, Dropdown, Menu, Divider, Table } from 'antd';
 import { SearchOutlined, FilterFilled, DownOutlined } from '@ant-design/icons';
 
 function Database() {
@@ -163,12 +163,6 @@ function Database() {
     </Menu>
   );
 
-  ConfigProvider.config({
-    theme: {
-      primaryColor: '#6CC24A',
-    },
-  });
-
   const filterIcon = () => {
     if (window.innerWidth > 1250) {
       return (
@@ -189,87 +183,85 @@ function Database() {
 
   return (
     <>
-      <ConfigProvider>
-        <div className="database-tab">
-          <div className="database-header">
-            <Row style={{ height: '50%', flexWrap: 'wrap' }} align="middle">
-              {filterIcon()}
-              <Col style={{ width: '40vw' }}>
-                <Input
-                  size="large"
-                  placeholder="Search by name, email, role..."
-                  onChange={onSearch}
-                  prefix={<SearchOutlined style={{ fontSize: '22px', color: '#BFBFBF' }} />}
-                />
-              </Col>
-              <Col span={3} />
-              <Col span={6} className="button-group">
-                <Button>View Heatmap</Button>
-                <Button>Export</Button>
-                <Button type="primary" style={{ backgroundColor: '#115740' }}>
-                  + Add User
-                </Button>
-              </Col>
-            </Row>
-            <Row style={{ height: '50%' }} align="middle">
-              {iconGap()}
-              <Col span={4}>
-                <div className="dropdown-box">
-                  <p className="dropdown-label">Event Types</p>
-                  <Dropdown overlay={menu}>
-                    <Button className="dropdown-button">
-                      <div className="dropdown-button-text">
-                        All
-                        <DownOutlined />
-                      </div>
-                    </Button>
-                  </Dropdown>
-                </div>
-              </Col>
-              <Col span={3} />
-              <Col span={4}>
-                <div className="dropdown-box">
-                  <p className="dropdown-label">Driving Ability</p>
-                  <Dropdown overlay={isDriverMenu}>
-                    <Button className="dropdown-button">
-                      <div className="dropdown-button-text">
-                        All
-                        <DownOutlined />
-                      </div>
-                    </Button>
-                  </Dropdown>
-                </div>
-              </Col>
-              <Col span={3} />
-              <Col span={4}>
-                <div className="dropdown-box">
-                  <p className="dropdown-label">Age</p>
-                  <Dropdown overlay={ageMenu}>
-                    <Button className="dropdown-button">
-                      <div className="dropdown-button-text">
-                        {currentDriverOption}
-                        <DownOutlined />
-                      </div>
-                    </Button>
-                  </Dropdown>
-                </div>
-              </Col>
-            </Row>
-          </div>
-          <Divider className="divider" />
-          <p className="table-label">Search Table</p>
-
-          <div className="table">
-            <Table
-              columns={columns}
-              dataSource={filteredData}
-              loading={isLoading}
-              size="small"
-              rowClassName="table-row"
-            />
-          </div>
+      <div className="database-tab">
+        <div className="database-header">
+          <Row style={{ height: '50%', flexWrap: 'wrap' }} align="middle">
+            {filterIcon()}
+            <Col style={{ width: '40vw' }}>
+              <Input
+                size="large"
+                placeholder="Search by name, email, role..."
+                onChange={onSearch}
+                prefix={<SearchOutlined style={{ fontSize: '22px', color: '#BFBFBF' }} />}
+              />
+            </Col>
+            <Col span={3} />
+            <Col span={6} className="button-group">
+              <Button>View Heatmap</Button>
+              <Button>Export</Button>
+              <Button type="primary" style={{ backgroundColor: '#115740' }}>
+                + Add User
+              </Button>
+            </Col>
+          </Row>
+          <Row style={{ height: '50%' }} align="middle">
+            {iconGap()}
+            <Col span={4}>
+              <div className="dropdown-box">
+                <p className="dropdown-label">Event Types</p>
+                <Dropdown overlay={menu}>
+                  <Button className="dropdown-button">
+                    <div className="dropdown-button-text">
+                      All
+                      <DownOutlined />
+                    </div>
+                  </Button>
+                </Dropdown>
+              </div>
+            </Col>
+            <Col span={3} />
+            <Col span={4}>
+              <div className="dropdown-box">
+                <p className="dropdown-label">Driving Ability</p>
+                <Dropdown overlay={isDriverMenu}>
+                  <Button className="dropdown-button">
+                    <div className="dropdown-button-text">
+                      All
+                      <DownOutlined />
+                    </div>
+                  </Button>
+                </Dropdown>
+              </div>
+            </Col>
+            <Col span={3} />
+            <Col span={4}>
+              <div className="dropdown-box">
+                <p className="dropdown-label">Age</p>
+                <Dropdown overlay={ageMenu}>
+                  <Button className="dropdown-button">
+                    <div className="dropdown-button-text">
+                      {currentDriverOption}
+                      <DownOutlined />
+                    </div>
+                  </Button>
+                </Dropdown>
+              </div>
+            </Col>
+          </Row>
         </div>
-      </ConfigProvider>
+        <Divider className="divider" />
+        <p className="table-label">Search Table</p>
+
+        <div className="table">
+          <Table
+            columns={columns}
+            dataSource={filteredData}
+            loading={isLoading}
+            size="small"
+            rowClassName="table-row"
+          />
+        </div>
+      </div>
     </>
   );
 }
