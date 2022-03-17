@@ -42,12 +42,11 @@ const ProfileRolesAndSkills = ({ userId }) => {
       });
       const [volunteerData] = data;
 
-      // TODO: request language data
       let languageData = [];
       await axios.get(`http://localhost:3001/users/getLanguages/${userId}`).then(res => {
         // check if any languages returned
         if (res.data.length > 0) {
-          languageData = res.data[0].language;
+          languageData = res.data.map(item => item.language);
         }
       });
 
