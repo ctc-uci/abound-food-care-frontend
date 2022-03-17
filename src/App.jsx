@@ -15,6 +15,7 @@ import Profile from './pages/Profile';
 import Event from './pages/Event';
 import Waivers from './pages/Waivers';
 import Admin from './pages/Admin';
+import VolunteerProfile from './pages/VolunteerProfile';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/solutions" exact element={<Solutions />} />
           <Route path="/events" exact element={<Events />} />
           <Route path="/volunteers" exact element={<Volunteers />} />
+          <Route path="/volunteer-profile" exact element={<VolunteerProfile />} />
           <Route path="/profile" exact element={<Profile />} />
           <Route path="/event" exact element={<Event />} />
           <Route path="/waivers" exact element={<Waivers />} />

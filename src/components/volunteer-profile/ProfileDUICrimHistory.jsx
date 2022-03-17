@@ -28,7 +28,6 @@ const ProfileDUIAndCrimHistory = ({ userId }) => {
         data = res.data;
       });
       const [volunteerData] = data;
-      // console.log(volunteerData);
       form.setFieldsValue({
         criminalHistory: volunteerData.criminal_history.toString(),
         criminalHistoryDetails: volunteerData.criminal_history_details,
@@ -42,7 +41,6 @@ const ProfileDUIAndCrimHistory = ({ userId }) => {
 
   return (
     <div>
-      <h1>PROFILE DUI/Criminal History</h1>
       <Form
         layout="vertical"
         labelCol={{ span: 20 }}

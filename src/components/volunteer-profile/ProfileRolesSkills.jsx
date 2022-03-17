@@ -78,7 +78,6 @@ const ProfileRolesAndSkills = ({ userId }) => {
 
   return (
     <div>
-      <h1>PROFILE Roles and Skills</h1>
       <Form
         layout="vertical"
         labelCol={{ span: 20 }}

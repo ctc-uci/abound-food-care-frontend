@@ -51,7 +51,6 @@ const ProfileGeneralInfo = ({ userId }) => {
 
   return (
     <div>
-      <h1> PROFILE General Information </h1>
       <Form
         layout="vertical"
         labelCol={{ span: 20 }}
