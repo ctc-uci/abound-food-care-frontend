@@ -3,13 +3,16 @@ import 'antd/dist/antd.variable.min.css';
 import './database.css';
 import { Input, Button, Row, Col, Dropdown, Menu, Divider, Table } from 'antd';
 import { SearchOutlined, FilterFilled, DownOutlined } from '@ant-design/icons';
+import PropTypes from 'prop-types';
 
-function Database() {
+function Database(props) {
   const [volunteerData, setVolunteerData] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [filteredData, setFilteredData] = useState([]);
   const [currentDriverOption, setCurrentDriverOption] = useState('All');
   const [searchCriterion, setSearchCriterion] = useState('');
+
+  const { handleHideDatabase } = props;
 
   useEffect(() => {
     const data = [];
@@ -197,7 +200,7 @@ function Database() {
             </Col>
             <Col span={3} />
             <Col span={6} className="button-group">
-              <Button>View Heatmap</Button>
+              <Button onClick={handleHideDatabase}>View Heatmap</Button>
               <Button>Export</Button>
               <Button type="primary" style={{ backgroundColor: '#115740' }}>
                 + Add User
@@ -265,5 +268,9 @@ function Database() {
     </>
   );
 }
+
+Database.propTypes = {
+  handleHideDatabase: PropTypes.func.isRequired,
+};
 
 export default Database;

@@ -53,7 +53,7 @@ const AdminNavMenu = () => {
             </Link>
           </Menu.Item>
           <Menu.Item className="menu-item" key="3" icon={<TableOutlined />}>
-            <Link to="/volunteers" className="link">
+            <Link to="/admin/volunteers/availability" className="link">
               Volunteers
             </Link>
           </Menu.Item>

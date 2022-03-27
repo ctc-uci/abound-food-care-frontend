@@ -17,6 +17,8 @@ import Event from './pages/Event';
 import Waivers from './pages/Waivers';
 import Admin from './pages/Admin';
 import AdminNavMenu from './components/navigation/AdminNavMenu';
+import Database from './components/volunteer-database/Database';
+import VolunteerAvailability from './components/volunteer-availabilities/VolunteerAvailability';
 // import VolunteerNavMenu from './components/navigation/VolunteerNavMenu';
 
 const { Content } = Layout;
@@ -48,6 +50,12 @@ function App() {
               <Route path="/event" exact element={<Event />} />
               <Route path="/waivers" exact element={<Waivers />} />
               <Route path="/admin" exact element={<Admin />} />
+              <Route path="/admin/database" exact element={<Database />} />
+              <Route
+                path="/admin/volunteers/availability"
+                exact
+                element={<VolunteerAvailability />}
+              />
             </Routes>
           </Content>
         </Router>
