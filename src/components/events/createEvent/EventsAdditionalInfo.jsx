@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Form, Input, Upload, Button } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 
@@ -11,8 +12,16 @@ import { RightOutlined } from '@ant-design/icons';
 //   },
 // };
 
-const EventsAdditionalInfo = () => {
+const EventsAdditionalInfo = ({ states, setStates }) => {
   const [componentSize, setComponentSize] = React.useState('default');
+
+  const { fileAttachments } = states;
+
+  const { setAdditionalInfo, setFileAttachments } = setStates;
+
+  const onFileUpload = fileList => {
+    setFileAttachments({ fileAttachments: [...fileList] });
+  };
 
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
@@ -30,12 +39,12 @@ const EventsAdditionalInfo = () => {
         size={componentSize}
         onValuesChange={onFormLayoutChange}
       >
-        <Form.Item label="Additional Info">
+        <Form.Item label="Additional Info" onChange={e => setAdditionalInfo(e.target.value)}>
           <Input placeholder="Ex. This event will take place on December 3, 2021 at 9:00AM." />
         </Form.Item>
 
         <Form.Item label="Upload Forms">
-          <Upload>
+          <Upload multiple fileList={fileAttachments} onChange={onFileUpload}>
             <Button
               icon={<RightOutlined />}
               style={{
@@ -52,6 +61,11 @@ const EventsAdditionalInfo = () => {
       </Form>
     </div>
   );
+};
+
+EventsAdditionalInfo.propTypes = {
+  states: PropTypes.objectOf(PropTypes.any).isRequired,
+  setStates: PropTypes.objectOf(PropTypes.any).isRequired,
 };
 
 export default EventsAdditionalInfo;
