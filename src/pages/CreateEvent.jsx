@@ -1,35 +1,46 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from 'antd';
+import useLocalStorage from '../util/useLocalStorage';
 // import axios from 'axios';
 import EventsGeneralInfo from '../components/events/createEvent/EventsGeneralInfo';
 import EventsAdditionalInfo from '../components/events/createEvent/EventsAdditionalInfo';
 
 function CreateEvent() {
-  const [formState, setFormState] = useState('general-info');
+  const [formState, setFormState] = useLocalStorage('formState', 'general-info');
 
-  const [eventName, setEventName] = useState('');
-  const [eventStartDate, setEventStartDate] = useState('');
-  const [eventStartTime, setEventStartTime] = useState('');
-  const [eventEndDate, setEventEndDate] = useState('');
-  const [eventEndTime, setEventEndTime] = useState('');
-  const [eventStartDateTime, setEventStartDateTime] = useState('');
-  const [eventEndDateTime, setEventEndDateTime] = useState('');
-  const [eventType, setEventType] = useState('');
-  const [volunteerCapacity, setVolunteerCapacity] = useState(null);
-  const [canDrive, setCanDrive] = useState(false);
-  const [isAdult, setIsAdult] = useState(false);
-  const [isMinor, setIsMinor] = useState(false);
-  const [firstAidTraining, setFirstAidTraining] = useState(false);
-  const [serveSafeKnowledge, setServeSafeKnowledge] = useState(false);
-  const [transportationExperience, setTransportationExperience] = useState(false);
-  const [warehouseExperience, setWarehouseExperience] = useState(false);
-  const [foodServiceKnowledge, setFoodServiceKnowledge] = useState(false);
-  const [eventAddressStreet, setEventAddressStreet] = useState('');
-  const [eventAddressCity, setEventAddressCity] = useState('');
-  const [eventAddressState, setEventAddressState] = useState('');
-  const [eventAddressZip, setEventAddressZip] = useState('');
-  const [additionalInfo, setAdditionalInfo] = useState('');
-  const [fileAttachments, setFileAttachments] = useState([]);
+  const [eventName, setEventName] = useLocalStorage('eventName', '');
+  const [eventStartDate, setEventStartDate] = useLocalStorage('eventStartDate', '');
+  const [eventStartTime, setEventStartTime] = useLocalStorage('eventStartTime', '');
+  const [eventEndDate, setEventEndDate] = useLocalStorage('eventEndDate', '');
+  const [eventEndTime, setEventEndTime] = useLocalStorage('eventEndTime', '');
+  const [eventStartDateTime, setEventStartDateTime] = useLocalStorage('eventStartDateTime', '');
+  const [eventEndDateTime, setEventEndDateTime] = useLocalStorage('eventEndDateTime', '');
+  const [eventType, setEventType] = useLocalStorage('eventType', '');
+  const [volunteerCapacity, setVolunteerCapacity] = useLocalStorage('volunteerCapacity', null);
+  const [canDrive, setCanDrive] = useLocalStorage('canDrive', false);
+  const [isAdult, setIsAdult] = useLocalStorage('isAdult', false);
+  const [isMinor, setIsMinor] = useLocalStorage('isMinor', false);
+  const [firstAidTraining, setFirstAidTraining] = useLocalStorage('firstAidTraining', false);
+  const [serveSafeKnowledge, setServeSafeKnowledge] = useLocalStorage('serveSafeKnowledge', false);
+  const [transportationExperience, setTransportationExperience] = useLocalStorage(
+    'transportationExperience',
+    false,
+  );
+  const [warehouseExperience, setWarehouseExperience] = useLocalStorage(
+    'warehouseExperience',
+    false,
+  );
+  const [foodServiceKnowledge, setFoodServiceKnowledge] = useLocalStorage(
+    'foodServiceKnowledge',
+    false,
+  );
+  const [eventAddressStreet, setEventAddressStreet] = useLocalStorage('eventAddressStreet', '');
+  const [eventAddressCity, setEventAddressCity] = useLocalStorage('eventAddressCity', '');
+  const [eventAddressState, setEventAddressState] = useLocalStorage('eventAddressState', '');
+  const [eventAddressZip, setEventAddressZip] = useLocalStorage('eventAddressZip', '');
+  const [additionalInfo, setAdditionalInfo] = useLocalStorage('additionalInfo', '');
+  const [fileAttachments, setFileAttachments] = useLocalStorage('fileAttachments', []);
 
   const states = {
     eventName,
@@ -83,13 +94,18 @@ function CreateEvent() {
     setFileAttachments,
   };
 
+  const setEventTimes = () => {
+    // datetime state not setting
+    const startDateTime = `${eventStartDate} ${eventStartTime}`;
+    const endDateTime = `${eventEndDate} ${eventEndTime}`;
+    console.log(startDateTime, endDateTime);
+    setEventStartDateTime(startDateTime);
+    setEventEndDateTime(endDateTime);
+  };
+
   const handlePublishEvent = () => {
     try {
-      // datetime state not setting
-      const startDateTime = `${eventStartDate} ${eventStartTime}`;
-      const endDateTime = `${eventEndDate} ${eventEndTime}`;
-      setEventStartDateTime(startDateTime);
-      setEventEndDateTime(endDateTime);
+      setEventTimes();
       const payload = {
         eventName,
         eventStartDateTime,
@@ -121,19 +137,19 @@ function CreateEvent() {
 
   return (
     <div>
-      {formState === 'general-info' && (
+      {formState === 'general-info' ? (
         <>
           <EventsGeneralInfo setStates={setStates} />
           <div>
-            <Button
-              style={{
-                background: '#F5F5F5',
-                color: 'rgba(0, 0, 0, 0.25)',
-                borderColor: '#D9D9D9',
-              }}
-            >
-              Cancel
-            </Button>
+            <Link to="/events">
+              <Button
+                style={{
+                  borderColor: '#D9D9D9',
+                }}
+              >
+                Cancel
+              </Button>
+            </Link>
             <Button
               onClick={() => setFormState('additional-info')}
               style={{
@@ -147,20 +163,17 @@ function CreateEvent() {
             </Button>
           </div>
         </>
-      )}
-
-      {formState === 'additional-info' && (
+      ) : (
         <>
           <EventsAdditionalInfo states={states} setStates={setStates} />
           <div>
             <Button
               style={{
-                background: '#F5F5F5',
-                color: 'rgba(0, 0, 0, 0.25)',
                 borderColor: '#D9D9D9',
               }}
+              onClick={() => setFormState('general-info')}
             >
-              Cancel
+              Previous
             </Button>
             <Button
               style={{

@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-prop-types */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -17,10 +18,6 @@ import EventTypeModal from './EventTypeModal';
 const { Option } = Select;
 
 const EventsGeneralInfo = ({ setStates }) => {
-  // const onFinish = values => {
-  //   console.log(values);
-  // };
-
   const {
     setEventName,
     setEventStartDate,
@@ -55,18 +52,6 @@ const EventsGeneralInfo = ({ setStates }) => {
     },
   ];
 
-  // const defaultVolunteerTypes = [
-  //   {
-  //     name: 'type1',
-  //   },
-  //   {
-  //     name: 'type2',
-  //   },
-  //   {
-  //     name: 'type3',
-  //   },
-  // ];
-
   const [componentSize, setComponentSize] = useState('default');
   const [eventTypeModal, setEventTypeModal] = useState(false); // visible, setVisible
   const [eventsData, setEventsData] = useState(defaultEventTypes);
@@ -80,29 +65,20 @@ const EventsGeneralInfo = ({ setStates }) => {
   };
 
   const handleStartDate = (date, dateString) => {
-    console.log(date);
     setEventStartDate(dateString);
   };
 
   const handleStartTime = (time, timeString) => {
-    console.log(time);
     setEventStartTime(timeString);
   };
 
   const handleEndDate = (date, dateString) => {
-    console.log(date);
     setEventEndDate(dateString);
   };
 
   const handleEndTime = (time, timeString) => {
-    console.log(time);
     setEventEndTime(timeString);
   };
-
-  // Volunteer Type
-  // const volunteerTypeMenu = defaultVolunteerTypes.map(event => {
-  //   return <Option key={event.name}>{event.name}</Option>;
-  // });
 
   // Event Type Menu
   const eventTypeMenu = eventsData.map(event => {
@@ -115,9 +91,6 @@ const EventsGeneralInfo = ({ setStates }) => {
       <Form
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 14 }}
-        // name="nest-messages"
-        // onFinish={onFinish}
-        // validateMessages={validateMessages}
         size={componentSize}
         onValuesChange={onFormLayoutChange}
       >
@@ -142,8 +115,7 @@ const EventsGeneralInfo = ({ setStates }) => {
           <Select
             placeholder="Type"
             style={{ width: '100px' }}
-            onSelect={(s, option) => {
-              console.log(option);
+            onSelect={s => {
               setEventType(s);
             }}
           >
@@ -168,18 +140,8 @@ const EventsGeneralInfo = ({ setStates }) => {
           <InputNumber onChange={v => setVolunteerCapacity(v)} />
         </Form.Item>
 
-        {/* <Form.Item label="Volunteer Type">
-          <Select placeholder="Type" style={{ width: '100px' }}>
-            {volunteerTypeMenu}
-          </Select>
-        </Form.Item> */}
-
         <Form.Item label="Requirements (optional)">
           <Checkbox.Group style={{ width: '100%' }}>
-            {' '}
-            {/* onChange={onChange}> */}
-            {/* Add color for when state of checkbox is checked */}
-            {/* Slightly change spacing */}
             <Row>
               <Col span={8}>
                 <Checkbox value="Can Drive" onChange={() => setCanDrive(true)}>
