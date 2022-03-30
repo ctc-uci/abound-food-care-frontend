@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { DatePicker, Form, Input, Radio, Row, Col } from 'antd';
 import axios from 'axios';
 import moment from 'moment';
@@ -11,8 +11,8 @@ const ProfileGeneralInfo = ({ userId }) => {
 
   const [form] = Form.useForm();
 
-  const [componentSize, setComponentSize] = React.useState('default');
-  const [isEditable] = React.useState(false);
+  const [componentSize, setComponentSize] = useState('default');
+  const [isEditable] = useState(false);
 
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
@@ -22,30 +22,35 @@ const ProfileGeneralInfo = ({ userId }) => {
     width: '50%',
   };
 
-  React.useEffect(() => {
-    const getVolunteerData = async () => {
-      let data = {};
-      await axios.get(`http://localhost:3001/users/${userId}`).then(res => {
-        data = res.data;
-      });
-      const [volunteerData] = data;
-      console.log(volunteerData.zipcode);
-      form.setFieldsValue({
-        firstName: volunteerData.first_name,
-        lastName: volunteerData.last_name,
-        dateOfBirth: moment(
-          new Date(volunteerData.birthdate).toISOString().split('T')[0],
-          'YYYY-MM-DD',
-        ),
-        email: volunteerData.email,
-        phoneNumber: volunteerData.phone,
-        contactMethod: volunteerData.preferred_contact_method,
-        streetAddress: volunteerData.physical_address,
-        city: volunteerData.city,
-        state: volunteerData.state,
-        zipcode: volunteerData.zipcode,
-      });
-    };
+  const getVolunteerData = async () => {
+    try {
+      let volunteerData = await axios.get(`http://localhost:3001/users/${userId}`);
+
+      if (volunteerData.status === 200) {
+        volunteerData = volunteerData.data;
+        console.log(volunteerData);
+        form.setFieldsValue({
+          firstName: volunteerData.firstName,
+          lastName: volunteerData.lastName,
+          dateOfBirth: moment(
+            new Date(volunteerData.birthdate).toISOString().split('T')[0],
+            'YYYY-MM-DD',
+          ),
+          email: volunteerData.email,
+          phoneNumber: volunteerData.phone,
+          contactMethod: volunteerData.preferredContactMethod,
+          streetAddress: volunteerData.addressStreet,
+          city: volunteerData.addressCity,
+          state: volunteerData.addressState,
+          zipcode: volunteerData.addressZip,
+        });
+      }
+    } catch (e) {
+      console.log('Error while getting volunteer data!');
+    }
+  };
+
+  useEffect(() => {
     getVolunteerData();
   }, []);
 
