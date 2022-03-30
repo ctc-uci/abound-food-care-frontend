@@ -6,7 +6,7 @@ import useLocalStorage from '../util/useLocalStorage';
 import EventsGeneralInfo from '../components/events/createEvent/EventsGeneralInfo';
 import EventsAdditionalInfo from '../components/events/createEvent/EventsAdditionalInfo';
 
-function CreateEvent() {
+const CreateEvent = () => {
   const [formState, setFormState] = useLocalStorage('formState', 'general-info');
 
   const [eventName, setEventName] = useLocalStorage('eventName', '');
@@ -94,18 +94,9 @@ function CreateEvent() {
     setFileAttachments,
   };
 
-  const setEventTimes = () => {
-    // datetime state not setting
-    const startDateTime = `${eventStartDate} ${eventStartTime}`;
-    const endDateTime = `${eventEndDate} ${eventEndTime}`;
-    console.log(startDateTime, endDateTime);
-    setEventStartDateTime(startDateTime);
-    setEventEndDateTime(endDateTime);
-  };
-
+  // eslint-disable-next-line consistent-return
   const handlePublishEvent = () => {
     try {
-      setEventTimes();
       const payload = {
         eventName,
         eventStartDateTime,
@@ -130,6 +121,7 @@ function CreateEvent() {
 
       // await axios.post('http://localhost:3001/events/create', payload);
       console.log(payload);
+      localStorage.clear();
     } catch (e) {
       console.log(e);
     }
@@ -139,7 +131,7 @@ function CreateEvent() {
     <div>
       {formState === 'general-info' ? (
         <>
-          <EventsGeneralInfo setStates={setStates} />
+          <EventsGeneralInfo states={states} setStates={setStates} />
           <div>
             <Link to="/events">
               <Button
@@ -175,22 +167,24 @@ function CreateEvent() {
             >
               Previous
             </Button>
-            <Button
-              style={{
-                background: '#115740',
-                color: 'white',
-                borderColor: '#115740',
-                float: 'right',
-              }}
-              onClick={handlePublishEvent}
-            >
-              Publish Event
-            </Button>
+            <Link to="/event">
+              <Button
+                style={{
+                  background: '#115740',
+                  color: 'white',
+                  borderColor: '#115740',
+                  float: 'right',
+                }}
+                onClick={handlePublishEvent}
+              >
+                Publish Event
+              </Button>
+            </Link>
           </div>
         </>
       )}
     </div>
   );
-}
+};
 
 export default CreateEvent;

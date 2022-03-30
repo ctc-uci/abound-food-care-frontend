@@ -16,7 +16,7 @@ import { RightOutlined } from '@ant-design/icons';
 const EventsAdditionalInfo = ({ states, setStates }) => {
   const [componentSize, setComponentSize] = React.useState('default');
 
-  const { fileAttachments } = states;
+  const { additionalInfo, fileAttachments } = states;
 
   const { setAdditionalInfo, setFileAttachments } = setStates;
 
@@ -41,7 +41,10 @@ const EventsAdditionalInfo = ({ states, setStates }) => {
         onValuesChange={onFormLayoutChange}
       >
         <Form.Item label="Additional Info" onChange={e => setAdditionalInfo(e.target.value)}>
-          <Input placeholder="Ex. This event will take place on December 3, 2021 at 9:00AM." />
+          <Input
+            value={additionalInfo}
+            placeholder="Ex. This event will take place on December 3, 2021 at 9:00AM."
+          />
         </Form.Item>
 
         <Form.Item label="Upload Forms">

@@ -17,9 +17,33 @@ import EventTypeModal from './EventTypeModal';
 
 const { Option } = Select;
 
-const EventsGeneralInfo = ({ setStates }) => {
+const EventsGeneralInfo = ({ states, setStates }) => {
+  const {
+    eventName,
+    eventStartDate,
+    eventStartTime,
+    eventEndDate,
+    eventEndTime,
+    eventType,
+    volunteerCapacity,
+    canDrive,
+    isAdult,
+    isMinor,
+    firstAidTraining,
+    serveSafeKnowledge,
+    transportationExperience,
+    warehouseExperience,
+    foodServiceKnowledge,
+    eventAddressStreet,
+    eventAddressCity,
+    eventAddressState,
+    eventAddressZip,
+  } = states;
+
   const {
     setEventName,
+    setEventStartDateTime,
+    setEventEndDateTime,
     setEventStartDate,
     setEventStartTime,
     setEventEndDate,
@@ -64,6 +88,15 @@ const EventsGeneralInfo = ({ setStates }) => {
     setEventTypeModal(true);
   };
 
+  const setEventTimes = () => {
+    // datetime state not setting
+    const startDateTime = `${eventStartDate} ${eventStartTime}`;
+    const endDateTime = `${eventEndDate} ${eventEndTime}`;
+    console.log(startDateTime, endDateTime);
+    setEventStartDateTime(startDateTime);
+    setEventEndDateTime(endDateTime);
+  };
+
   const handleStartDate = (date, dateString) => {
     setEventStartDate(dateString);
   };
@@ -78,6 +111,7 @@ const EventsGeneralInfo = ({ setStates }) => {
 
   const handleEndTime = (time, timeString) => {
     setEventEndTime(timeString);
+    setEventTimes();
   };
 
   // Event Type Menu
@@ -97,6 +131,7 @@ const EventsGeneralInfo = ({ setStates }) => {
         <Form.Item label="Event Name" rules={[{ required: true }]}>
           <Input
             placeholder="Ex. Food Running Event"
+            value={eventName}
             onChange={e => setEventName(e.target.value)}
           />
         </Form.Item>
@@ -114,6 +149,7 @@ const EventsGeneralInfo = ({ setStates }) => {
         <Form.Item label="Event Type" rules={[{ required: true }]}>
           <Select
             placeholder="Type"
+            value={eventType}
             style={{ width: '100px' }}
             onSelect={s => {
               setEventType(s);
@@ -137,43 +173,64 @@ const EventsGeneralInfo = ({ setStates }) => {
         </Form.Item>
 
         <Form.Item label="Num Volunteers" rules={[{ required: true }]}>
-          <InputNumber onChange={v => setVolunteerCapacity(v)} />
+          <InputNumber onChange={v => setVolunteerCapacity(v)} value={volunteerCapacity} />
         </Form.Item>
 
         <Form.Item label="Requirements (optional)">
           <Checkbox.Group style={{ width: '100%' }}>
             <Row>
               <Col span={8}>
-                <Checkbox value="Can Drive" onChange={() => setCanDrive(true)}>
+                <Checkbox
+                  value="Can Drive"
+                  onChange={() => setCanDrive(!canDrive)}
+                  checked={canDrive}
+                >
                   Can Drive
                 </Checkbox>
               </Col>
               <Col span={8}>
-                <Checkbox value="Adult (age 18+)" onChange={() => setIsAdult(true)}>
+                <Checkbox
+                  value="Adult (age 18+)"
+                  onChange={() => setIsAdult(!isAdult)}
+                  checked={isAdult}
+                >
                   Adult (age 18+)
                 </Checkbox>
               </Col>
               <Col span={8}>
-                <Checkbox value="Minor (age <18)" onChange={() => setIsMinor(true)}>
+                <Checkbox
+                  value="Minor (age <18)"
+                  onChange={() => setIsMinor(!isMinor)}
+                  checked={isMinor}
+                >
                   Minor (age &#60;18)
                 </Checkbox>
               </Col>
               <br />
               <br />
               <Col span={8}>
-                <Checkbox value="First Aid Training" onChange={() => setFirstAidTraining(true)}>
+                <Checkbox
+                  value="First Aid Training"
+                  onChange={() => setFirstAidTraining(!firstAidTraining)}
+                  checked={firstAidTraining}
+                >
                   First Aid Training
                 </Checkbox>
               </Col>
               <Col span={8}>
-                <Checkbox value="Serve Safe Knowledge" onChange={() => setServeSafeKnowledge(true)}>
+                <Checkbox
+                  value="Serve Safe Knowledge"
+                  onChange={() => setServeSafeKnowledge(!serveSafeKnowledge)}
+                  checked={serveSafeKnowledge}
+                >
                   Serve Safe Knowledge
                 </Checkbox>
               </Col>
               <Col span={8}>
                 <Checkbox
+                  checked={transportationExperience}
                   value="Transportation Experience"
-                  onChange={() => setTransportationExperience(true)}
+                  onChange={() => setTransportationExperience(!transportationExperience)}
                 >
                   Transportation Experience
                 </Checkbox>
@@ -182,16 +239,18 @@ const EventsGeneralInfo = ({ setStates }) => {
               <br />
               <Col span={8}>
                 <Checkbox
+                  checked={warehouseExperience}
                   value="Moving / Warehouse Experience"
-                  onChange={() => setWarehouseExperience(true)}
+                  onChange={() => setWarehouseExperience(!warehouseExperience)}
                 >
                   Moving / Warehouse Experience
                 </Checkbox>
               </Col>
               <Col span={8}>
                 <Checkbox
+                  checked={foodServiceKnowledge}
                   value="Food Service Industry Knowledge"
-                  onChange={() => setFoodServiceKnowledge(true)}
+                  onChange={() => setFoodServiceKnowledge(!foodServiceKnowledge)}
                 >
                   Food Service Industry Knowledge
                 </Checkbox>
@@ -202,14 +261,20 @@ const EventsGeneralInfo = ({ setStates }) => {
 
         <Form.Item label="Street Address" rules={[{ required: true }]}>
           <Input
+            value={eventAddressStreet}
             placeholder="Ex. 123 Banana St."
             onChange={e => setEventAddressStreet(e.target.value)}
           />
         </Form.Item>
         <Form.Item label="City" rules={[{ required: true }]}>
-          <Input placeholder="Austin" onChange={e => setEventAddressCity(e.target.value)} />
+          <Input
+            value={eventAddressCity}
+            placeholder="Austin"
+            onChange={e => setEventAddressCity(e.target.value)}
+          />
         </Form.Item>
         <Form.Item
+          value={eventAddressState}
           label="State"
           rules={[{ required: true }]}
           onChange={e => setEventAddressState(e.target.value)}
@@ -217,6 +282,7 @@ const EventsGeneralInfo = ({ setStates }) => {
           <Input placeholder="TX" />
         </Form.Item>
         <Form.Item
+          value={eventAddressZip}
           label="Zipcode"
           rules={[{ required: true }]}
           onChange={e => setEventAddressZip(e.target.value)}
@@ -229,6 +295,7 @@ const EventsGeneralInfo = ({ setStates }) => {
 };
 
 EventsGeneralInfo.propTypes = {
+  states: PropTypes.objectOf(PropTypes.any).isRequired,
   setStates: PropTypes.objectOf(PropTypes.any).isRequired,
 };
 
