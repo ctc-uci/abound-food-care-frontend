@@ -20,7 +20,7 @@ function Profile() {
           Availability
         </TabPane>
         <TabPane tab="Roles & Skills" key="3">
-          <ProfileRolesSkills userId={2} />
+          <ProfileRolesSkills userId={6} />
         </TabPane>
         <TabPane tab="DUI/Criminal History" key="4">
           <ProfileDUICrimHistory userId={2} />

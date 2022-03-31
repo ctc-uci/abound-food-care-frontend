@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Input, Radio, Form, Select, InputNumber, Col, Checkbox, Row, Tag } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Input, Radio, Form, Select, InputNumber, Col, Checkbox, Row } from 'antd';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
@@ -14,10 +14,10 @@ const ProfileRolesAndSkills = ({ userId }) => {
   const [form] = Form.useForm();
 
   const [componentSize, setComponentSize] = useState('default');
-  const [isEditable] = React.useState(false);
-  const [interestedRoles, setInterestedRoles] = React.useState([]);
-  const [weightliftingAbility, setWeightliftingAbility] = React.useState(0);
-  const [drivingDistance, setDrivingDistance] = React.useState(0);
+  const [isEditable] = useState(false);
+  // const [interestedRoles, setInterestedRoles] = useState([]);
+  const [weightliftingAbility, setWeightliftingAbility] = useState(0);
+  const [drivingDistance, setDrivingDistance] = useState(0);
 
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
@@ -28,52 +28,60 @@ const ProfileRolesAndSkills = ({ userId }) => {
   };
 
   // Pass in array of roles
-  const getVolunteerRoleTags = roles => {
-    return roles.map(role => {
-      return <Tag key={role}>{role}</Tag>;
-    });
+  // const getVolunteerRoleTags = roles => {
+  //   return roles.map(role => {
+  //     return <Tag key={role}>{role}</Tag>;
+  //   });
+  // };
+
+  const getDriverData = async () => {
+    try {
+      let volunteerData = await axios.get(`http://localhost:3001/users/${userId}`);
+
+      if (volunteerData.status === 200) {
+        volunteerData = volunteerData.data;
+        form.setFieldsValue({
+          accountType: volunteerData.role,
+          // interestedRoles: volunteerData.volunteering_roles_interest, // TODO: Backend currently only stores a single string
+          // skills: volunteerData.specializations,
+          foodMatchTraining: volunteerData.completedChowmatchTraining.toString(),
+          canDrive: volunteerData.canDrive.toString(),
+        });
+        // setInterestedRoles([volunteerData.volunteering_roles_interest]);
+        setWeightliftingAbility(volunteerData.weightLiftingAbility);
+        if (
+          volunteerData.status === 200 &&
+          volunteerData.canDrive === true &&
+          volunteerData.willingToDrive === true
+        ) {
+          form.setFieldsValue({
+            vehicleType: volunteerData.vehicleType,
+          });
+          setDrivingDistance(volunteerData.distance);
+        }
+      }
+    } catch (e) {
+      console.log('Error while getting volunteer data!');
+    }
   };
 
-  React.useEffect(() => {
-    const getVolunteerData = async () => {
-      let data = {};
-      await axios.get(`http://localhost:3001/users/${userId}`).then(res => {
-        data = res.data;
-      });
-      const [volunteerData] = data;
-
-      let languageData = [];
-      await axios.get(`http://localhost:3001/users/getLanguages/${userId}`).then(res => {
-        // check if any languages returned
-        if (res.data.length > 0) {
-          languageData = res.data.map(item => item.language);
-        }
-      });
-
-      form.setFieldsValue({
-        accountType: volunteerData.u_type,
-        interestedRoles: volunteerData.volunteering_roles_interest, // TODO: Backend currently only stores a single string
-        skills: volunteerData.specializations,
-        languagesSpoken: languageData,
-        foodMatchTraining: volunteerData.completed_chowmatch_training.toString(),
-        drive: volunteerData.can_drive.toString(),
-      });
-      setInterestedRoles([volunteerData.volunteering_roles_interest]);
-      setWeightliftingAbility(volunteerData.weight_lifting_ability);
-
-      // get driver data
-      if (volunteerData.can_drive === true) {
-        let driverData = {};
-        await axios.get(`http://localhost:3001/drivers/${121}`).then(res => {
-          driverData = res.data;
-        });
+  const getLanguageData = async () => {
+    try {
+      let languageData = await axios.get(`http://localhost:3001/users/getLanguages/${userId}`);
+      if (languageData.status === 200 && languageData.length > 0) {
+        languageData = languageData.data;
         form.setFieldsValue({
-          vehicleType: driverData.vehicle_type,
+          languagesSpoken: languageData,
         });
-        setDrivingDistance(driverData.distance);
       }
-    };
-    getVolunteerData();
+    } catch (e) {
+      console.log('Error while getting language data!');
+    }
+  };
+
+  useEffect(() => {
+    getDriverData();
+    getLanguageData();
   }, []);
 
   return (
@@ -83,7 +91,6 @@ const ProfileRolesAndSkills = ({ userId }) => {
         labelCol={{ span: 20 }}
         wrapperCol={{ span: 20 }}
         validateMessages={validateMessages}
-        name="roles_n_skills"
         size={componentSize}
         onValuesChange={onFormLayoutChange}
         form={form}
@@ -99,15 +106,15 @@ const ProfileRolesAndSkills = ({ userId }) => {
           </Select>
         </Form.Item>
 
-        <Form.Item name="interestedRoles" label="Volunteering Roles Interested In">
-          {getVolunteerRoleTags(interestedRoles)}
+        <Form.Item label="Volunteering Roles Interested In">
+          {/* {getVolunteerRoleTags(interestedRoles)} */}
         </Form.Item>
 
-        <Form.Item style={inputBoxStyle} name="skills" label="Special Talents/Skills">
+        <Form.Item style={inputBoxStyle} label="Special Talents/Skills">
           <Input.TextArea placeholder="Please enter your work goals" disabled={!isEditable} />
         </Form.Item>
 
-        <Form.Item name="languagesSpoken" label="Languages Spoken">
+        <Form.Item label="Languages Spoken">
           <Checkbox.Group style={{ width: '70%' }} disabled={!isEditable}>
             <Row>
               <Col span={4}>
@@ -217,7 +224,6 @@ const ProfileRolesAndSkills = ({ userId }) => {
         </Form.Item>
 
         <Form.Item
-          name="weightliftingAbility"
           label="Weight Lifting Ability"
           rules={[
             {
@@ -227,7 +233,6 @@ const ProfileRolesAndSkills = ({ userId }) => {
         >
           <InputNumber
             defaultValue={weightliftingAbility}
-            name="weightliftingAbility"
             disabled={!isEditable}
             value={weightliftingAbility}
           />
@@ -246,7 +251,7 @@ const ProfileRolesAndSkills = ({ userId }) => {
           </Radio.Group>
         </Form.Item>
 
-        <Form.Item name="drive" label="Able to Drive">
+        <Form.Item name="canDrive" label="Able to Drive">
           <Radio.Group disabled={!isEditable}>
             <Radio value="true">Yes</Radio>
             <Radio value="false">No</Radio>
@@ -269,7 +274,6 @@ const ProfileRolesAndSkills = ({ userId }) => {
         </Form.Item>
 
         <Form.Item
-          name="drivingMiles"
           label="Distance Comfortable Driving"
           rules={[
             {
@@ -277,7 +281,7 @@ const ProfileRolesAndSkills = ({ userId }) => {
             },
           ]}
         >
-          <InputNumber value={drivingDistance} name="drivingMiles" min={0} disabled={!isEditable} />
+          <InputNumber value={drivingDistance} min={0} disabled={!isEditable} />
           <span className="ant-form-text"> miles</span>
         </Form.Item>
       </Form>
