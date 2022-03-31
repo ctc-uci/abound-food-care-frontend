@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Radio, Form, Input } from 'antd';
 import axios from 'axios';
 import PropTypes from 'prop-types';
@@ -21,21 +21,26 @@ const ProfileDUIAndCrimHistory = ({ userId }) => {
     width: '50%',
   };
 
-  React.useEffect(() => {
-    const getVolunteerData = async () => {
-      let data = {};
-      await axios.get(`http://localhost:3001/users/${userId}`).then(res => {
-        data = res.data;
-      });
-      const [volunteerData] = data;
-      form.setFieldsValue({
-        criminalHistory: volunteerData.criminal_history.toString(),
-        criminalHistoryDetails: volunteerData.criminal_history_details,
-        duiHistory: volunteerData.dui_history.toString(),
-        duiHistoryDetails: volunteerData.dui_history_details,
-        additionalInformation: volunteerData.additional_information,
-      });
-    };
+  const getVolunteerData = async () => {
+    try {
+      let volunteerData = await axios.get(`http://localhost:3001/users/${userId}`);
+
+      if (volunteerData.status === 200) {
+        volunteerData = volunteerData.data;
+        form.setFieldsValue({
+          criminalHistory: volunteerData.criminalHistory.toString(),
+          criminalHistoryDetails: volunteerData.criminalHistoryDetails,
+          duiHistory: volunteerData.duiHistory.toString(),
+          duiHistoryDetails: volunteerData.duiHistoryDetails,
+          additionalInformation: volunteerData.additionalInformation,
+        });
+      }
+    } catch (e) {
+      console.log('Error while getting volunteer data!');
+    }
+  };
+
+  useEffect(() => {
     getVolunteerData();
   }, []);
 
