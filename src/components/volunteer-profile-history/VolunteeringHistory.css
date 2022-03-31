@@ -1,0 +1,89 @@
+@import '~antd/dist/antd.variable.min.css';
+@font-face {
+  font-family: 'Inter-Regular';
+  src: url('../../assets/fonts/Inter-Regular.ttf');
+}
+@font-face {
+  font-family: 'Inter-SemiBold';
+  src: url('../../assets/fonts/Inter-SemiBold.ttf');
+}
+@font-face {
+  font-family: 'Inter-Medium';
+  src: url('../../assets/fonts/Inter-Medium.ttf');
+}
+
+.historyTab {
+  width: 75vw;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-sizing: border-box;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+}
+
+.container {
+  width: 92%;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.header {
+  font-family: 'Inter-SemiBold';
+  font-size: 2.1em;
+  padding: 0;
+  margin: 0;
+  padding-top: 1.8em;
+}
+
+.tableHeader {
+  font-family: 'Inter-SemiBold';
+  font-size: 1.9em;
+  padding: 0;
+  margin: 0;
+  padding-bottom: 0.5em;
+}
+
+.iconDiv {
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+}
+
+.overviewDiv {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  padding-top: 1em;
+  width: 23em;
+  padding-right: 10em;
+}
+
+.iconTxt {
+  font-family: 'Inter-SemiBold';
+  font-size: 2em;
+  line-height: 1em;
+  color: #115740;
+  text-align: center;
+}
+
+.icon {
+  font-size: 13em;
+  color: #115740;
+}
+
+.table {
+  width: 100%;
+  padding-bottom: 2em;
+}
+
+.spacer {
+  height: 3em;
+}

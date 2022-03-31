@@ -1,0 +1,26 @@
+.admin-dashboard-header {
+  margin-bottom: 50px;
+  width: 1099px;
+  height: 97px;
+  position: relative;
+  font-size: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 12px 24px 16px 24px;
+  line-height: 24px;
+}
+
+.statistics-col {
+  font-size: 16px;
+  justify-content: right;
+  text-align: right;
+}
+
+.statistics-col p {
+  line-height: 19.2px;
+  color: rgba(0, 0, 0, 0.45);
+  margin-bottom: 0.5vh;
+}
+
+.statistics-col h3 {
+  font-size: 34px;
+}
