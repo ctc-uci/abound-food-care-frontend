@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import 'antd/dist/antd.variable.min.css';
-import './database.css';
+import '../volunteer-database/database.css';
 import {
   Space,
   Input,
