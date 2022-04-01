@@ -23,18 +23,14 @@ const ProfileDUIAndCrimHistory = ({ userId }) => {
 
   const getVolunteerData = async () => {
     try {
-      let volunteerData = await axios.get(`http://localhost:3001/users/${userId}`);
-
-      if (volunteerData.status === 200) {
-        volunteerData = volunteerData.data;
-        form.setFieldsValue({
-          criminalHistory: volunteerData.criminalHistory.toString(),
-          criminalHistoryDetails: volunteerData.criminalHistoryDetails,
-          duiHistory: volunteerData.duiHistory.toString(),
-          duiHistoryDetails: volunteerData.duiHistoryDetails,
-          additionalInformation: volunteerData.additionalInformation,
-        });
-      }
+      const { data: volunteerData } = await axios.get(`http://localhost:3001/users/${userId}`);
+      form.setFieldsValue({
+        criminalHistory: volunteerData.criminalHistory.toString(),
+        criminalHistoryDetails: volunteerData.criminalHistoryDetails,
+        duiHistory: volunteerData.duiHistory.toString(),
+        duiHistoryDetails: volunteerData.duiHistoryDetails,
+        additionalInformation: volunteerData.additionalInformation,
+      });
     } catch (e) {
       console.log('Error while getting volunteer data!');
     }

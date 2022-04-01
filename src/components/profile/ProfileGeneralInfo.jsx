@@ -24,27 +24,22 @@ const ProfileGeneralInfo = ({ userId }) => {
 
   const getVolunteerData = async () => {
     try {
-      let volunteerData = await axios.get(`http://localhost:3001/users/${userId}`);
-
-      if (volunteerData.status === 200) {
-        volunteerData = volunteerData.data;
-        console.log(volunteerData);
-        form.setFieldsValue({
-          firstName: volunteerData.firstName,
-          lastName: volunteerData.lastName,
-          dateOfBirth: moment(
-            new Date(volunteerData.birthdate).toISOString().split('T')[0],
-            'YYYY-MM-DD',
-          ),
-          email: volunteerData.email,
-          phoneNumber: volunteerData.phone,
-          contactMethod: volunteerData.preferredContactMethod,
-          streetAddress: volunteerData.addressStreet,
-          city: volunteerData.addressCity,
-          state: volunteerData.addressState,
-          zipcode: volunteerData.addressZip,
-        });
-      }
+      const { data: volunteerData } = await axios.get(`http://localhost:3001/users/${userId}`);
+      form.setFieldsValue({
+        firstName: volunteerData.firstName,
+        lastName: volunteerData.lastName,
+        dateOfBirth: moment(
+          new Date(volunteerData.birthdate).toISOString().split('T')[0],
+          'YYYY-MM-DD',
+        ),
+        email: volunteerData.email,
+        phoneNumber: volunteerData.phone,
+        contactMethod: volunteerData.preferredContactMethod,
+        streetAddress: volunteerData.addressStreet,
+        city: volunteerData.addressCity,
+        state: volunteerData.addressState,
+        zipcode: volunteerData.addressZip,
+      });
     } catch (e) {
       console.log('Error while getting volunteer data!');
     }

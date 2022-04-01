@@ -15,7 +15,7 @@ const ProfileRolesAndSkills = ({ userId }) => {
 
   const [componentSize, setComponentSize] = useState('default');
   const [isEditable] = useState(false);
-  // const [interestedRoles, setInterestedRoles] = useState([]);
+  // const [interestedRoles, setInterestedRoles] = useState([]); // check line 42!
   const [weightliftingAbility, setWeightliftingAbility] = useState(0);
   const [drivingDistance, setDrivingDistance] = useState(0);
 
@@ -36,29 +36,21 @@ const ProfileRolesAndSkills = ({ userId }) => {
 
   const getDriverData = async () => {
     try {
-      let volunteerData = await axios.get(`http://localhost:3001/users/${userId}`);
-
-      if (volunteerData.status === 200) {
-        volunteerData = volunteerData.data;
+      const { data: volunteerData } = await axios.get(`http://localhost:3001/users/${userId}`);
+      form.setFieldsValue({
+        accountType: volunteerData.role,
+        // interestedRoles: volunteerData.volunteeringRolesInterest, // TODO: stored as two booleans in backend (foodRunsInterest and distributionInterest)
+        // skills: volunteerData.specializations, // TODO: stored as separate boolean values in backend (check schema)
+        foodMatchTraining: volunteerData.completedChowmatchTraining.toString(),
+        canDrive: volunteerData.canDrive.toString(),
+      });
+      // setInterestedRoles([volunteerData.volunteering_roles_interest]); // TODO: will probably have to refactor to work with schema
+      setWeightliftingAbility(volunteerData.weightLiftingAbility);
+      if (volunteerData.canDrive === true && volunteerData.willingToDrive === true) {
         form.setFieldsValue({
-          accountType: volunteerData.role,
-          // interestedRoles: volunteerData.volunteering_roles_interest, // TODO: Backend currently only stores a single string
-          // skills: volunteerData.specializations,
-          foodMatchTraining: volunteerData.completedChowmatchTraining.toString(),
-          canDrive: volunteerData.canDrive.toString(),
+          vehicleType: volunteerData.vehicleType,
         });
-        // setInterestedRoles([volunteerData.volunteering_roles_interest]);
-        setWeightliftingAbility(volunteerData.weightLiftingAbility);
-        if (
-          volunteerData.status === 200 &&
-          volunteerData.canDrive === true &&
-          volunteerData.willingToDrive === true
-        ) {
-          form.setFieldsValue({
-            vehicleType: volunteerData.vehicleType,
-          });
-          setDrivingDistance(volunteerData.distance);
-        }
+        setDrivingDistance(volunteerData.distance);
       }
     } catch (e) {
       console.log('Error while getting volunteer data!');
