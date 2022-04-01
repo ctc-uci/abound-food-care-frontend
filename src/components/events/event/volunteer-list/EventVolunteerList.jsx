@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Table, ConfigProvider } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
-import './eventPage.css';
+import '../eventPage.css';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
-const VolunteersAtEvent = props => {
+const EventVolunteerList = props => {
   const { name, type, eventId, setViewVolunteers } = props;
   const [volunteers, setVolunteers] = useState([]);
   const [email, setEmail] = useState('');
@@ -13,7 +13,7 @@ const VolunteersAtEvent = props => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:3001/volunteers/getVolunteers/${eventId}`)
+      .get(`http://localhost:3001/events/${eventId}/volunteers`)
       .then(res => {
         for (let i = 0; i < res.data.length; i += 1) {
           res.data[i].name = `${res.data[i].first_name} ${res.data[i].last_name}`;
@@ -158,18 +158,18 @@ const VolunteersAtEvent = props => {
   );
 };
 
-export default VolunteersAtEvent;
-
-VolunteersAtEvent.propTypes = {
+EventVolunteerList.propTypes = {
   name: PropTypes.string,
   type: PropTypes.string,
   eventId: PropTypes.number,
   setViewVolunteers: PropTypes.number,
 };
 
-VolunteersAtEvent.defaultProps = {
+EventVolunteerList.defaultProps = {
   name: '',
   type: 'General Event',
   eventId: 0,
   setViewVolunteers: () => {},
 };
+
+export default EventVolunteerList;

@@ -7,13 +7,13 @@ import {
 } from '@ant-design/icons';
 import { Button, Divider, ConfigProvider } from 'antd';
 import axios from 'axios';
-import PostEvent from './PostEvent';
-import VolunteersAtEvent from './VolunteersAtEvent';
+import PostEvent from './postevent/PostEvent';
+import EventVolunteerList from './volunteer-list/EventVolunteerList';
 import './eventPage.css';
 
-function EventPage() {
-  const [eventData, setEventData] = useState(null);
-  const [loading, setLoading] = useState(true);
+const EventPage = () => {
+  const [eventData, setEventData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [isAddingPost, setIsAddingPost] = useState(false);
   const [viewVolunteers, setViewVolunteers] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -23,36 +23,72 @@ function EventPage() {
 
   const eventId = 8;
 
+  // const getEvent = async () => {
+  //   try {
+  //     const { data: eventResponse } = await axios.get(`http://localhost:3001/events/${eventId}`);
+  //     console.log(eventResponse);
+  //     eventResponse.requirements = ['Can Drive', '18+', 'Other requirement'];
+  //     eventResponse.notes = 'Lorem ipsum dolor sit amet.';
+  //     setEventData(eventResponse);
+  //     if (eventResponse.posteventText !== undefined) {
+  //       setIsEdit(true);
+  //     }
+  //     console.log(`is edit: ${isEdit}`);
+  //   } catch (e) {
+  //     console.log('Error getting event data!');
+  //   }
+  // };
+
+  // const getNumAttendees = async () => {
+  //   try {
+  //     const { data: volunteerData } = await axios.get(
+  //       `http://localhost:3001/volunteers/events/${eventId}`,
+  //     );
+  //     setEventData(eventData2_ => {
+  //       const eventData2 = eventData2_;
+  //       eventData2.volunteersPresent = volunteerData.length;
+  //       return eventData2;
+  //     });
+  //     console.log(eventData);
+  //   } catch (e) {
+  //     console.log('Error getting event attendee data!');
+  //   }
+  // };
+
+  // shouldn't need this bc postevent description is now a column in events
+  // const getPostEvent = async () => {
+  //   try {
+
+  //   } catch (e) {
+
+  //   }
+  // }
+
   useEffect(() => {
+    setLoading(true);
+    // getEvent();
+    // getNumAttendees();
     axios
       .get(`http://localhost:3001/events/${eventId}`)
       .then(res => {
-        res.data[0].volunteer_requirements = ['Can Drive', '18+', 'Other requirement'];
-        res.data[0].notes = 'Lorem ipsum dolor sit amet.';
-        setEventData(res.data[0]);
+        res.data.requirements = ['Can Drive', '18+', 'Other requirement'];
+        res.data.notes = 'Lorem ipsum dolor sit amet.';
+        setEventData(res.data);
+        if (res.data.posteventText !== undefined) {
+          setIsEdit(true);
+        }
       })
       .then(() => {
-        axios.get(`http://localhost:3001/postevents/${eventId}`).then(res => {
-          setEventData(eventData1_ => {
-            const eventData1 = eventData1_;
-            eventData1.recap = res.data.description;
-            return eventData1;
-          });
-          if (res.data.description !== undefined) {
-            setIsEdit(true);
-          }
-        });
-      })
-      .then(() => {
-        axios.get(`http://localhost:3001/volunteers/${eventId}`).then(volRes => {
+        axios.get(`http://localhost:3001/volunteers/events/${eventId}`).then(volRes => {
           setEventData(eventData2_ => {
             const eventData2 = eventData2_;
-            eventData2.volunteersPresent = volRes.data.count;
+            eventData2.volunteersPresent = volRes.data.length;
             return eventData2;
           });
           setLoading(false);
         });
       });
+    setLoading(false);
   }, [isAddingPost]);
 
   /*
@@ -61,47 +97,47 @@ function EventPage() {
     //axios.get(`http://localhost:3001/postevents/${eventId}`)
   }, [isAddingPost]);
   */
-  const parseDate = () => {
-    const months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-    const month = months[parseInt(eventData.start_datetime.substring(5, 7), 10) - 1];
-    const day = eventData.start_datetime.substring(8, 10);
-    const year = eventData.start_datetime.substring(0, 4);
-    return `${month} ${day}, ${year}`;
-  };
+  // const parseDate = () => {
+  //   const months = [
+  //     'January',
+  //     'February',
+  //     'March',
+  //     'April',
+  //     'May',
+  //     'June',
+  //     'July',
+  //     'August',
+  //     'September',
+  //     'October',
+  //     'November',
+  //     'December',
+  //   ];
+  //   const month = months[parseInt(eventData.startDatetime.substring(5, 7), 10) - 1];
+  //   const day = eventData.startDatetime.substring(8, 10);
+  //   const year = eventData.startDatetime.substring(0, 4);
+  //   return `${month} ${day}, ${year}`;
+  // };
 
-  const parseTimeRange = () => {
-    let startTime = eventData.start_datetime.substring(11, 16);
-    if (startTime[0] !== '0' && parseInt(startTime[1], 10) > 2) {
-      startTime = `${parseInt(startTime.substring(0, 2), 10) - 12}:${startTime.substring(3, 5)} pm`;
-    } else {
-      startTime = `${parseInt(startTime.substring(0, 2), 10)}:${startTime.substring(3, 5)} am`;
-    }
+  // const parseTimeRange = () => {
+  //   let startTime = eventData.startDatetime.substring(11, 16);
+  //   if (startTime[0] !== '0' && parseInt(startTime[1], 10) > 2) {
+  //     startTime = `${parseInt(startTime.substring(0, 2), 10) - 12}:${startTime.substring(3, 5)} pm`;
+  //   } else {
+  //     startTime = `${parseInt(startTime.substring(0, 2), 10)}:${startTime.substring(3, 5)} am`;
+  //   }
 
-    let endTime = eventData.end_datetime.substring(11, 16);
-    if (endTime[0] !== '0' && parseInt(endTime[1], 10) > 2) {
-      startTime = `${parseInt(endTime.substring(0, 2), 10)}:${endTime.substring(3, 5)} am`;
-    } else {
-      endTime = `${endTime.substring(0, 5)} am`;
-    }
+  //   let endTime = eventData.endDatetime.substring(11, 16);
+  //   if (endTime[0] !== '0' && parseInt(endTime[1], 10) > 2) {
+  //     startTime = `${parseInt(endTime.substring(0, 2), 10)}:${endTime.substring(3, 5)} am`;
+  //   } else {
+  //     endTime = `${endTime.substring(0, 5)} am`;
+  //   }
 
-    return `${startTime} - ${endTime}`;
-  };
+  //   return `${startTime} - ${endTime}`;
+  // };
 
   const getPostEvent = () => {
-    if (eventData.recap) {
+    if (eventData.posteventText) {
       return (
         <div
           style={{
@@ -121,7 +157,7 @@ function EventPage() {
               lineHeight: '28px',
             }}
           >
-            {eventData.recap}
+            {eventData.posteventText}
           </p>
         </div>
       );
@@ -169,8 +205,8 @@ function EventPage() {
       <PostEvent
         isEdit={isEdit}
         name={eventData.name}
-        date={parseDate()}
-        time={parseTimeRange()}
+        // date={parseDate()}
+        // time={parseTimeRange()}
         eventId={eventId}
         setIsAddingPost={setIsAddingPost}
         setIsLoading={setLoading}
@@ -180,9 +216,9 @@ function EventPage() {
 
   if (viewVolunteers) {
     return (
-      <VolunteersAtEvent
+      <EventVolunteerList
         name={eventData.name}
-        type={eventData.ntype}
+        type={eventData.eventType}
         eventId={eventId}
         setViewVolunteers={setViewVolunteers}
       />
@@ -231,7 +267,7 @@ function EventPage() {
                   margin: 0,
                 }}
               >
-                {eventData.ntype ? eventData.ntype : 'General Event'}
+                {eventData.eventType ? eventData.eventType : 'General Event'}
               </p>
               <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                 <p
@@ -244,7 +280,7 @@ function EventPage() {
                     paddingRight: '1.5em',
                   }}
                 >
-                  {eventData.volunteersPresent}/{eventData.volunteer_capacity} Volunteers Signed Up
+                  {eventData.volunteersPresent}/{eventData.volunteerCapacity} Volunteers Signed Up
                 </p>
                 <button
                   type="button"
@@ -292,7 +328,10 @@ function EventPage() {
                     fontSize: '16px',
                   }}
                 >
-                  {eventData.location}
+                  {eventData.addressStreet}
+                  {eventData.addressCity}
+                  {eventData.addressState}
+                  {eventData.addressZip}
                 </p>
               </div>
               <div
@@ -312,7 +351,7 @@ function EventPage() {
                     fontSize: '16px',
                   }}
                 >
-                  {parseDate()}
+                  {/* {parseDate()} */}
                 </p>
               </div>
               <div
@@ -332,7 +371,7 @@ function EventPage() {
                     fontSize: '16px',
                   }}
                 >
-                  {parseTimeRange()}
+                  {/* {parseTimeRange()} */}
                 </p>
               </div>
             </div>
@@ -396,7 +435,7 @@ function EventPage() {
                 onClick={() => setIsAddingPost(true)}
               >
                 <p style={{ padding: 0, margin: 0, fontSize: '14px' }}>
-                  {eventData.recap ? 'Edit' : 'Add'} Post-Event
+                  {eventData.posteventText ? 'Edit' : 'Add'} Post-Event
                 </p>
               </Button>
               <Button
@@ -470,7 +509,7 @@ function EventPage() {
                   paddingLeft: '1em',
                 }}
               >
-                {eventData.volunteer_requirements.map(e => {
+                {/* {eventData.requirements.map(e => {
                   return (
                     <div
                       key={e}
@@ -493,7 +532,7 @@ function EventPage() {
                       </p>
                     </div>
                   );
-                })}
+                })} */}
               </div>
             </div>
           </div>
@@ -501,6 +540,6 @@ function EventPage() {
       </ConfigProvider>
     )
   );
-}
+};
 
 export default EventPage;
