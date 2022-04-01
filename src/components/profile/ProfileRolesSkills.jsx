@@ -44,6 +44,12 @@ const ProfileRolesAndSkills = ({ userId }) => {
         foodMatchTraining: volunteerData.completedChowmatchTraining.toString(),
         canDrive: volunteerData.canDrive.toString(),
       });
+      if (volunteerData.languages.length > 0) {
+        // console.log(volunteerData.languages);
+        form.setFieldsValue({
+          languagesSpoken: volunteerData.languages, // TODO: languages is now a column in users table. it is an array of languages. please update code accordingly
+        });
+      }
       // setInterestedRoles([volunteerData.volunteering_roles_interest]); // TODO: will probably have to refactor to work with schema
       setWeightliftingAbility(volunteerData.weightLiftingAbility);
       if (volunteerData.canDrive === true && volunteerData.willingToDrive === true) {
@@ -57,23 +63,8 @@ const ProfileRolesAndSkills = ({ userId }) => {
     }
   };
 
-  const getLanguageData = async () => {
-    try {
-      let languageData = await axios.get(`http://localhost:3001/users/getLanguages/${userId}`);
-      if (languageData.status === 200 && languageData.length > 0) {
-        languageData = languageData.data;
-        form.setFieldsValue({
-          languagesSpoken: languageData,
-        });
-      }
-    } catch (e) {
-      console.log('Error while getting language data!');
-    }
-  };
-
   useEffect(() => {
     getDriverData();
-    getLanguageData();
   }, []);
 
   return (
