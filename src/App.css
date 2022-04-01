@@ -12,3 +12,8 @@
   --brown: #a1561c;
   --purple: #4b384c;
 }
+
+.site-background {
+  background: white;
+  height: 100vh;
+}
