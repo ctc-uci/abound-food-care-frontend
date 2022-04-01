@@ -17,16 +17,10 @@ const PostEvent = props => {
   const sendPostEvent = () => {
     setIsLoading(true);
     if (isEdit) {
+      console.log(postEventSection);
       axios
-        .put(`http://localhost:3001/postevents/${eventId}`, { description: postEventSection })
-        .then(() => {
-          setIsAddingPost(false);
-        });
-    } else {
-      axios
-        .post(`http://localhost:3001/postevents/create`, {
-          eventId,
-          description: postEventSection,
+        .put(`http://localhost:3001/events/add_post_text/${eventId}`, {
+          posteventText: postEventSection,
         })
         .then(() => {
           setIsAddingPost(false);
