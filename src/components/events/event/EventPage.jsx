@@ -7,12 +7,14 @@ import {
 } from '@ant-design/icons';
 import { Button, Divider, ConfigProvider } from 'antd';
 import axios from 'axios';
+import moment from 'moment';
 import PostEvent from './postevent/PostEvent';
 import EventVolunteerList from './volunteer-list/EventVolunteerList';
 import './eventPage.css';
 
 const EventPage = () => {
   const [eventData, setEventData] = useState([]);
+  const [numAttendees, setNumAttendees] = useState(0);
   const [loading, setLoading] = useState(false);
   const [isAddingPost, setIsAddingPost] = useState(false);
   const [viewVolunteers, setViewVolunteers] = useState(false);
@@ -21,73 +23,35 @@ const EventPage = () => {
   const [postEvent, setPostEvent] = useState(null);
   */
 
-  const eventId = 8;
+  const eventId = 11;
 
-  // const getEvent = async () => {
-  //   try {
-  //     const { data: eventResponse } = await axios.get(`http://localhost:3001/events/${eventId}`);
-  //     console.log(eventResponse);
-  //     eventResponse.requirements = ['Can Drive', '18+', 'Other requirement'];
-  //     eventResponse.notes = 'Lorem ipsum dolor sit amet.';
-  //     setEventData(eventResponse);
-  //     if (eventResponse.posteventText !== undefined) {
-  //       setIsEdit(true);
-  //     }
-  //     console.log(`is edit: ${isEdit}`);
-  //   } catch (e) {
-  //     console.log('Error getting event data!');
-  //   }
-  // };
+  const getEvent = async () => {
+    try {
+      const { data: eventResponse } = await axios.get(`http://localhost:3001/events/${eventId}`);
+      setEventData(eventResponse[0]);
+      if (eventResponse[0].posteventText !== undefined) {
+        setIsEdit(true);
+      }
+    } catch (e) {
+      console.log('Error getting event data!');
+    }
+  };
 
-  // const getNumAttendees = async () => {
-  //   try {
-  //     const { data: volunteerData } = await axios.get(
-  //       `http://localhost:3001/volunteers/events/${eventId}`,
-  //     );
-  //     setEventData(eventData2_ => {
-  //       const eventData2 = eventData2_;
-  //       eventData2.volunteersPresent = volunteerData.length;
-  //       return eventData2;
-  //     });
-  //     console.log(eventData);
-  //   } catch (e) {
-  //     console.log('Error getting event attendee data!');
-  //   }
-  // };
-
-  // shouldn't need this bc postevent description is now a column in events
-  // const getPostEvent = async () => {
-  //   try {
-
-  //   } catch (e) {
-
-  //   }
-  // }
+  const getNumAttendees = async () => {
+    try {
+      const { data: volunteerData } = await axios.get(
+        `http://localhost:3001/volunteers/events/${eventId}`,
+      );
+      setNumAttendees(volunteerData.length);
+    } catch (e) {
+      console.log('Error getting event attendee data!');
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
-    // getEvent();
-    // getNumAttendees();
-    axios
-      .get(`http://localhost:3001/events/${eventId}`)
-      .then(res => {
-        res.data.requirements = ['Can Drive', '18+', 'Other requirement'];
-        res.data.notes = 'Lorem ipsum dolor sit amet.';
-        setEventData(res.data);
-        if (res.data.posteventText !== undefined) {
-          setIsEdit(true);
-        }
-      })
-      .then(() => {
-        axios.get(`http://localhost:3001/volunteers/events/${eventId}`).then(volRes => {
-          setEventData(eventData2_ => {
-            const eventData2 = eventData2_;
-            eventData2.volunteersPresent = volRes.data.length;
-            return eventData2;
-          });
-          setLoading(false);
-        });
-      });
+    getEvent();
+    getNumAttendees();
     setLoading(false);
   }, [isAddingPost]);
 
@@ -97,44 +61,16 @@ const EventPage = () => {
     //axios.get(`http://localhost:3001/postevents/${eventId}`)
   }, [isAddingPost]);
   */
-  // const parseDate = () => {
-  //   const months = [
-  //     'January',
-  //     'February',
-  //     'March',
-  //     'April',
-  //     'May',
-  //     'June',
-  //     'July',
-  //     'August',
-  //     'September',
-  //     'October',
-  //     'November',
-  //     'December',
-  //   ];
-  //   const month = months[parseInt(eventData.startDatetime.substring(5, 7), 10) - 1];
-  //   const day = eventData.startDatetime.substring(8, 10);
-  //   const year = eventData.startDatetime.substring(0, 4);
-  //   return `${month} ${day}, ${year}`;
-  // };
 
-  // const parseTimeRange = () => {
-  //   let startTime = eventData.startDatetime.substring(11, 16);
-  //   if (startTime[0] !== '0' && parseInt(startTime[1], 10) > 2) {
-  //     startTime = `${parseInt(startTime.substring(0, 2), 10) - 12}:${startTime.substring(3, 5)} pm`;
-  //   } else {
-  //     startTime = `${parseInt(startTime.substring(0, 2), 10)}:${startTime.substring(3, 5)} am`;
-  //   }
-
-  //   let endTime = eventData.endDatetime.substring(11, 16);
-  //   if (endTime[0] !== '0' && parseInt(endTime[1], 10) > 2) {
-  //     startTime = `${parseInt(endTime.substring(0, 2), 10)}:${endTime.substring(3, 5)} am`;
-  //   } else {
-  //     endTime = `${endTime.substring(0, 5)} am`;
-  //   }
-
-  //   return `${startTime} - ${endTime}`;
-  // };
+  const parseDate = () => {
+    const startDateObj = new Date(Date.parse(eventData.startDatetime));
+    const endDateObj = new Date(Date.parse(eventData.endDatetime));
+    const startDate = moment(startDateObj).format('MMMM Do, YYYY');
+    const startTime = moment(startDateObj).format('hh:mm a');
+    const endDate = moment(endDateObj).format('MMMM Do, YYYY');
+    const endTime = moment(endDateObj).format('hh:mm a');
+    return { startDate, startTime, endDate, endTime };
+  };
 
   const getPostEvent = () => {
     if (eventData.posteventText) {
@@ -205,8 +141,8 @@ const EventPage = () => {
       <PostEvent
         isEdit={isEdit}
         name={eventData.name}
-        // date={parseDate()}
-        // time={parseTimeRange()}
+        date={parseDate().startDate}
+        time={`${parseDate().startTime}-${parseDate().endTime}`}
         eventId={eventId}
         setIsAddingPost={setIsAddingPost}
         setIsLoading={setLoading}
@@ -230,6 +166,9 @@ const EventPage = () => {
     !isAddingPost &&
     !viewVolunteers && (
       <ConfigProvider>
+        <div>
+          <h1>event id is currently hardcoded!</h1>
+        </div>
         <div
           style={{
             width: '80vw',
@@ -280,7 +219,7 @@ const EventPage = () => {
                     paddingRight: '1.5em',
                   }}
                 >
-                  {eventData.volunteersPresent}/{eventData.volunteerCapacity} Volunteers Signed Up
+                  {numAttendees}/{eventData.volunteerCapacity} Volunteers Signed Up
                 </p>
                 <button
                   type="button"
@@ -328,9 +267,7 @@ const EventPage = () => {
                     fontSize: '16px',
                   }}
                 >
-                  {eventData.addressStreet}
-                  {eventData.addressCity}
-                  {eventData.addressState}
+                  {eventData.addressStreet} {eventData.addressCity}, {eventData.addressState}{' '}
                   {eventData.addressZip}
                 </p>
               </div>
@@ -351,7 +288,7 @@ const EventPage = () => {
                     fontSize: '16px',
                   }}
                 >
-                  {/* {parseDate()} */}
+                  {parseDate().startDate}
                 </p>
               </div>
               <div
@@ -371,7 +308,7 @@ const EventPage = () => {
                     fontSize: '16px',
                   }}
                 >
-                  {/* {parseTimeRange()} */}
+                  {parseDate().startTime} - {parseDate().endTime}
                 </p>
               </div>
             </div>
@@ -438,7 +375,8 @@ const EventPage = () => {
                   {eventData.posteventText ? 'Edit' : 'Add'} Post-Event
                 </p>
               </Button>
-              <Button
+              {/* Thank you note to be implemented if time */}
+              {/* <Button
                 style={{
                   width: '9em',
                   display: 'flex',
@@ -448,45 +386,8 @@ const EventPage = () => {
                 type="primary"
               >
                 <p style={{ padding: 0, margin: 0, fontSize: '14px' }}>Send Thank You</p>
-              </Button>
+              </Button> */}
             </div>
-            {/*
-
-            <div
-              className="containerBorder"
-              style={{
-                backgroundColor: 'white',
-                display: 'flex',
-                flexDirection: 'column',
-                marginTop: '2.5em',
-              }}
-            >
-              <p
-                style={{
-                  color: 'black',
-                  fontWeight: 500,
-                  fontSize: '20px',
-                  padding: 0,
-                  margin: '1em',
-                }}
-              >
-                Event Location
-              </p>
-              <Divider style={{ padding: 0, margin: 0, marginBottom: '1em' }} />
-              <div
-                style={{
-                  backgroundColor: 'lightgrey',
-                  alignSelf: 'center',
-                  width: '85%',
-                  height: '12em',
-                  padding: 0,
-                  margin: 0,
-                  marginBottom: '1em',
-                }}
-              />
-            </div>
-              */}
-
             <div
               className="containerBorder"
               style={{
@@ -509,7 +410,8 @@ const EventPage = () => {
                   paddingLeft: '1em',
                 }}
               >
-                {/* {eventData.requirements.map(e => {
+                {/* TODO: fix this */}
+                {[eventData.requirements].map(e => {
                   return (
                     <div
                       key={e}
@@ -532,7 +434,7 @@ const EventPage = () => {
                       </p>
                     </div>
                   );
-                })} */}
+                })}
               </div>
             </div>
           </div>

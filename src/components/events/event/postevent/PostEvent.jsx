@@ -143,7 +143,6 @@ const PostEvent = props => {
     </ConfigProvider>
   );
 };
-export default PostEvent;
 
 PostEvent.propTypes = {
   name: PropTypes.string,
@@ -164,3 +163,5 @@ PostEvent.defaultProps = {
   setIsLoading: () => {},
   isEdit: false,
 };
+
+export default PostEvent;
