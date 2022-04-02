@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import 'antd/dist/antd.variable.min.css';
 import './database.css';
 import { Input, Button, Row, Col, Dropdown, Menu, Divider, Table } from 'antd';
@@ -11,41 +12,36 @@ function Database() {
   const [currentDriverOption, setCurrentDriverOption] = useState('All');
   const [searchCriterion, setSearchCriterion] = useState('');
 
-  useEffect(() => {
-    const data = [];
-    /*
-    fetch(BACKEND_URL)
-      .then((res) => {
-        setVolunteerData(res);
-      })
-    */
-    for (let i = 0; i < 100; i += 1) {
-      data.push({
-        key: i,
-        name: `Edward ${i}`,
-        role: 'Volunteer',
-        email: 'volunteer@gmail.com',
-        phone: '(949) 000-0000',
-        city: 'Irvine',
-        state: 'CA',
-        isDriver: true,
-      });
+  const getVolunteers = async () => {
+    try {
+      const { data: volunteerResponse } = await axios.get('http://localhost:3001/volunteers');
+      setVolunteerData(volunteerResponse);
+      setFilteredData(volunteerResponse);
+    } catch (e) {
+      console.log('Error getting volunteer data!');
     }
-    setVolunteerData(data);
-    setFilteredData(data);
+  };
+
+  useEffect(() => {
+    getVolunteers();
     setLoading(false);
   }, []);
 
   const columns = [
     {
-      title: 'User',
-      dataIndex: 'name',
-      key: 'name',
+      title: 'First Name',
+      dataIndex: 'firstName',
+      key: 'firstName',
       render: text => (
         <a style={{ color: '#115740' }} href="/volunteers">
           {text}
         </a>
       ),
+    },
+    {
+      title: 'Last Name',
+      dataIndex: 'lastName',
+      key: 'lastName',
     },
     {
       title: 'Role',
@@ -64,12 +60,12 @@ function Database() {
     },
     {
       title: 'City',
-      dataIndex: 'city',
+      dataIndex: 'addressCity',
       key: 'city',
     },
     {
       title: 'State',
-      dataIndex: 'state',
+      dataIndex: 'addressState',
       key: 'state',
     },
   ];
@@ -79,16 +75,17 @@ function Database() {
     for (let i = 0; i < volunteerData.length; i += 1) {
       const person = volunteerData[i];
       if (
-        person.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        person.firstName.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        person.lastName.toLowerCase().includes(e.target.value.toLowerCase()) ||
         person.role.toLowerCase().includes(e.target.value.toLowerCase()) ||
         person.email.toLowerCase().includes(e.target.value.toLowerCase()) ||
         person.phone.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        person.city.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        person.state.toLowerCase().includes(e.target.value.toLowerCase())
+        person.addressCity.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        person.addressState.toLowerCase().includes(e.target.value.toLowerCase())
       ) {
         if (
-          (currentDriverOption === 'Can Drive' && person.isDriver) ||
-          (currentDriverOption === "Can't Drive" && !person.isDriver) ||
+          (currentDriverOption === 'Can Drive' && person.canDrive) ||
+          (currentDriverOption === "Can't Drive" && !person.canDrive) ||
           currentDriverOption === 'All'
         ) {
           data.push(person);
@@ -104,16 +101,17 @@ function Database() {
     for (let i = 0; i < volunteerData.length; i += 1) {
       const person = volunteerData[i];
       if (
-        person.name.toLowerCase().includes(searchCriterion) ||
+        person.firstName.toLowerCase().includes(searchCriterion) ||
+        person.lastName.toLowerCase().includes(searchCriterion) ||
         person.role.toLowerCase().includes(searchCriterion) ||
         person.email.toLowerCase().includes(searchCriterion) ||
         person.phone.toLowerCase().includes(searchCriterion) ||
-        person.city.toLowerCase().includes(searchCriterion) ||
-        person.state.toLowerCase().includes(searchCriterion)
+        person.addressCity.toLowerCase().includes(searchCriterion) ||
+        person.addressState.toLowerCase().includes(searchCriterion)
       ) {
         if (
-          (option === 'Can Drive' && person.isDriver) ||
-          (option === "Can't Drive" && !person.isDriver) ||
+          (option === 'Can Drive' && person.canDrive) ||
+          (option === "Can't Drive" && !person.canDrive) ||
           option === 'All'
         ) {
           data.push(person);
@@ -124,16 +122,19 @@ function Database() {
     setFilteredData(data);
   };
 
-  const menu = (
+  const eventInterestMenu = (
     <Menu className="menu">
-      <Menu.Item key="1" className="menu">
-        1st menu item
+      <Menu.Item key="all" className="menu">
+        All
       </Menu.Item>
-      <Menu.Item key="2" className="menu">
-        1st menu item
+      <Menu.Item key="distribution" className="menu">
+        Distributions
       </Menu.Item>
-      <Menu.Item key="3" className="menu">
-        1st menu item
+      <Menu.Item key="food" className="menu">
+        Food Running
+      </Menu.Item>
+      <Menu.Item key="other" className="menu">
+        Other
       </Menu.Item>
     </Menu>
   );
@@ -143,7 +144,7 @@ function Database() {
       <Menu.Item key="1" className="menu" onClick={() => setDriver('All')}>
         All
       </Menu.Item>
-      <Menu.Item key="1" className="menu" onClick={() => setDriver('Can Drive')}>
+      <Menu.Item key="2" className="menu" onClick={() => setDriver('Can Drive')}>
         Can Drive
       </Menu.Item>
       <Menu.Item key="3" className="menu" onClick={() => setDriver("Can't Drive")}>
@@ -154,11 +155,14 @@ function Database() {
 
   const ageMenu = (
     <Menu className="menu">
-      <Menu.Item key="1" className="menu">
+      <Menu.Item key="all" className="menu">
         All
       </Menu.Item>
-      <Menu.Item key="1" className="menu">
-        18+
+      <Menu.Item key="adult" className="menu">
+        Adult (18 and older)
+      </Menu.Item>
+      <Menu.Item key="minor" className="menu">
+        Minor (17 and younger)
       </Menu.Item>
     </Menu>
   );
@@ -208,8 +212,8 @@ function Database() {
             {iconGap()}
             <Col span={4}>
               <div className="dropdown-box">
-                <p className="dropdown-label">Event Types</p>
-                <Dropdown overlay={menu}>
+                <p className="dropdown-label">Event Types Interested In</p>
+                <Dropdown overlay={eventInterestMenu}>
                   <Button className="dropdown-button">
                     <div className="dropdown-button-text">
                       All
