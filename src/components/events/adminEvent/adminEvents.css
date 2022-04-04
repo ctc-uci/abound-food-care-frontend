@@ -1,0 +1,87 @@
+@import '~antd/dist/antd.variable.min.css';
+@font-face {
+  font-family: 'Inter-Regular';
+  src: url('../../../assets/fonts/Inter-Regular.ttf');
+}
+@font-face {
+  font-family: 'Inter-SemiBold';
+  src: url('../../../assets/fonts/Inter-SemiBold.ttf');
+}
+
+.root {
+  max-height: 100vh;
+  overflow: auto;
+  font-family: Inter-Regular;
+}
+
+.title {
+  margin-left: 17px;
+}
+
+.events {
+  margin: auto;
+  width: 79vw;
+  border-width: 1px;
+  border-radius: 10px;
+  background-color: white;
+}
+
+.card {
+  margin: 15px;
+  border-radius: 5px;
+}
+
+.search-bar {
+  width: 750px;
+}
+
+.filters {
+  margin: 40px 5px 20px;
+}
+
+.distribution-radio-btn {
+  border-color: #009a44;
+  border-left-color: #009a44;
+  color: #009a44;
+  margin-right: 1px;
+  margin-left: 0px;
+}
+
+.food-radio-btn {
+  border-color: #ffa500;
+  border-left-color: #ffa500;
+  color: #ffa500;
+  margin-right: 1px;
+}
+
+.event-type-radio,
+.status-type-radio {
+  margin: 10px;
+}
+
+.new-event-btn,
+.new-event-btn:hover,
+.new-event-btn:focus {
+  background-color: var(--eden);
+  border-color: var(--eden);
+  color: white;
+  font-weight: 600;
+  margin-top: 15px;
+  float: right;
+}
+
+.events-grid {
+  max-height: 80vh;
+  overflow-y: scroll;
+  margin: 4px;
+}
+
+.events-grid::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 1050px) {
+  .search-bar {
+    width: 75%;
+  }
+}
