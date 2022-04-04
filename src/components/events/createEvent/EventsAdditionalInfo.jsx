@@ -1,6 +1,8 @@
 /* eslint-disable react/forbid-prop-types */
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+import { useFormContext } from 'react-hook-form';
+
+// import PropTypes from 'prop-types';
 import { Form, Input, Upload, Button } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 
@@ -13,20 +15,26 @@ import { RightOutlined } from '@ant-design/icons';
 //   },
 // };
 
-const EventsAdditionalInfo = ({ states, setStates }) => {
-  const [componentSize, setComponentSize] = React.useState('default');
+const EventsAdditionalInfo = () => {
+  const [componentSize, setComponentSize] = useState('default');
 
-  const { additionalInfo, fileAttachments } = states;
+  // const { additionalInfo, fileAttachments } = states;
 
-  const { setAdditionalInfo, setFileAttachments } = setStates;
+  // const { setAdditionalInfo, setFileAttachments } = setStates;
 
-  const onFileUpload = fileList => {
-    setFileAttachments({ fileAttachments: [...fileList] });
-  };
+  // const onFileUpload = fileList => {
+  //   setFileAttachments({ fileAttachments: [...fileList] });
+  // };
 
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
   };
+
+  const {
+    register,
+    // eslint-disable-next-line no-unused-vars
+    formState: { errors },
+  } = useFormContext();
 
   return (
     <div>
@@ -40,15 +48,24 @@ const EventsAdditionalInfo = ({ states, setStates }) => {
         size={componentSize}
         onValuesChange={onFormLayoutChange}
       >
-        <Form.Item label="Additional Info" onChange={e => setAdditionalInfo(e.target.value)}>
+        <Form.Item
+        // label="Additional Info"
+        // onChange={e => setAdditionalInfo(e.target.value)}
+        >
           <Input
-            value={additionalInfo}
+            // value={additionalInfo}
             placeholder="Ex. This event will take place on December 3, 2021 at 9:00AM."
+            {...register('additionalInfo')}
           />
         </Form.Item>
 
         <Form.Item label="Upload Forms">
-          <Upload multiple fileList={fileAttachments} onChange={onFileUpload}>
+          <Upload
+            multiple
+            // fileList={fileAttachments}
+            {...register('fileAttachments')}
+            // onChange={onFileUpload}
+          >
             <Button
               icon={<RightOutlined />}
               style={{
@@ -67,9 +84,9 @@ const EventsAdditionalInfo = ({ states, setStates }) => {
   );
 };
 
-EventsAdditionalInfo.propTypes = {
-  states: PropTypes.objectOf(PropTypes.any).isRequired,
-  setStates: PropTypes.objectOf(PropTypes.any).isRequired,
-};
+// EventsAdditionalInfo.propTypes = {
+//   states: PropTypes.objectOf(PropTypes.any).isRequired,
+//   setStates: PropTypes.objectOf(PropTypes.any).isRequired,
+// };
 
 export default EventsAdditionalInfo;
