@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Input, Radio, Form, Select, InputNumber, Col, Checkbox, Row } from 'antd';
+import { Input, Radio, Form, Select, InputNumber, Col, Checkbox, Row, Tag } from 'antd';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
@@ -15,7 +15,7 @@ const ProfileRolesAndSkills = ({ userId }) => {
 
   const [componentSize, setComponentSize] = useState('default');
   const [isEditable] = useState(false);
-  // const [interestedRoles, setInterestedRoles] = useState([]); // check line 42!
+  const [interestedRoles, setInterestedRoles] = useState([]);
   const [weightliftingAbility, setWeightliftingAbility] = useState(0);
   const [drivingDistance, setDrivingDistance] = useState(0);
 
@@ -28,30 +28,57 @@ const ProfileRolesAndSkills = ({ userId }) => {
   };
 
   // Pass in array of roles
-  // const getVolunteerRoleTags = roles => {
-  //   return roles.map(role => {
-  //     return <Tag key={role}>{role}</Tag>;
-  //   });
-  // };
+  const getVolunteerRoleTags = roles => {
+    return roles.map(role => {
+      return <Tag key={role}>{role}</Tag>;
+    });
+  };
 
   const getDriverData = async () => {
     try {
       const { data: volunteerData } = await axios.get(`http://localhost:3001/users/${userId}`);
+
+      const volunteerSkills = [];
+      if (volunteerData.firstAidTraining) {
+        volunteerSkills.push('First Aid Training');
+      }
+      if (volunteerData.serveSafeKnowledge) {
+        volunteerSkills.push('ServeSafe Knowledge');
+      }
+      if (volunteerData.transportationExperience) {
+        volunteerSkills.push('Transportation Experience');
+      }
+      if (volunteerData.movingWarehouseExperience) {
+        volunteerSkills.push('Moving / Warehouse Experience');
+      }
+      if (volunteerData.foodServiceIndustryKnowledge) {
+        volunteerSkills.push('Food Service Industry Knowledge');
+      }
+
       form.setFieldsValue({
         accountType: volunteerData.role,
-        // interestedRoles: volunteerData.volunteeringRolesInterest, // TODO: stored as two booleans in backend (foodRunsInterest and distributionInterest)
-        // skills: volunteerData.specializations, // TODO: stored as separate boolean values in backend (check schema)
+        skills: volunteerSkills.join(', '),
         foodMatchTraining: volunteerData.completedChowmatchTraining.toString(),
         canDrive: volunteerData.canDrive.toString(),
       });
+
       if (volunteerData.languages.length > 0) {
-        // console.log(volunteerData.languages);
         form.setFieldsValue({
-          languagesSpoken: volunteerData.languages, // TODO: languages is now a column in users table. it is an array of languages. please update code accordingly
+          languagesSpoken: volunteerData.languages,
         });
       }
-      // setInterestedRoles([volunteerData.volunteering_roles_interest]); // TODO: will probably have to refactor to work with schema
+
+      const volunteerRoles = [];
+      if (volunteerData.foodRunsInterest) {
+        volunteerRoles.push('Food Runner');
+      }
+      if (volunteerData.distributionInterest) {
+        volunteerRoles.push('Distribution Worker');
+      }
+      setInterestedRoles(volunteerRoles);
+
       setWeightliftingAbility(volunteerData.weightLiftingAbility);
+
       if (volunteerData.canDrive === true && volunteerData.willingToDrive === true) {
         form.setFieldsValue({
           vehicleType: volunteerData.vehicleType,
@@ -90,14 +117,14 @@ const ProfileRolesAndSkills = ({ userId }) => {
         </Form.Item>
 
         <Form.Item label="Volunteering Roles Interested In">
-          {/* {getVolunteerRoleTags(interestedRoles)} */}
+          {getVolunteerRoleTags(interestedRoles)}
         </Form.Item>
 
-        <Form.Item style={inputBoxStyle} label="Special Talents/Skills">
+        <Form.Item name="skills" style={inputBoxStyle} label="Special Talents/Skills">
           <Input.TextArea placeholder="Please enter your work goals" disabled={!isEditable} />
         </Form.Item>
 
-        <Form.Item label="Languages Spoken">
+        <Form.Item name="languagesSpoken" label="Languages Spoken">
           <Checkbox.Group style={{ width: '70%' }} disabled={!isEditable}>
             <Row>
               <Col span={4}>
