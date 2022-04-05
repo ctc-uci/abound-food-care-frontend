@@ -3,14 +3,14 @@ import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Link } from 'react-router-dom';
-import { Button } from 'antd';
+import { Form, Button } from 'antd';
 // import axios from 'axios';
 import EventsGeneralInfo from '../components/events/createEvent/EventsGeneralInfo';
 import EventsAdditionalInfo from '../components/events/createEvent/EventsAdditionalInfo';
 
 const CreateEvent = () => {
   const [formState, setFormState] = useState('general-info');
-  // yup schema
+
   const schema = yup
     .object({
       eventName: yup.string().required(),
@@ -82,65 +82,64 @@ const CreateEvent = () => {
 
   return (
     <div>
-      {formState === 'general-info' ? (
-        <>
-          <FormProvider {...methods}>
-            <EventsGeneralInfo />
-          </FormProvider>
-          <div>
-            <Link to="/events">
-              <Button
-                style={{
-                  borderColor: '#D9D9D9',
-                }}
-              >
-                Cancel
-              </Button>
-            </Link>
-            <Button
-              onClick={() => setFormState('additional-info')}
-              style={{
-                background: '#115740',
-                color: 'white',
-                borderColor: '#115740',
-                float: 'right',
-              }}
-            >
-              Next
-            </Button>
-          </div>
-        </>
-      ) : (
-        <>
-          <FormProvider {...methods}>
-            <EventsAdditionalInfo />
-          </FormProvider>
-          <div>
-            <Button
-              style={{
-                borderColor: '#D9D9D9',
-              }}
-              onClick={() => setFormState('general-info')}
-            >
-              Previous
-            </Button>
-            {/* <Link to="/event"> */}
-            <Button
-              style={{
-                background: '#115740',
-                color: 'white',
-                borderColor: '#115740',
-                float: 'right',
-              }}
-              type="submit"
-              onClick={methods.handleSubmit(onSubmit)}
-            >
-              Publish Event
-            </Button>
-            {/* </Link> */}
-          </div>
-        </>
-      )}
+      <FormProvider {...methods}>
+        <Form onSubmit={methods.handleSubmit(onSubmit)}>
+          {formState === 'general-info' ? (
+            <>
+              <EventsGeneralInfo />
+              <div>
+                <Link to="/events">
+                  <Button
+                    style={{
+                      borderColor: '#D9D9D9',
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </Link>
+                <Button
+                  onClick={() => setFormState('additional-info')}
+                  style={{
+                    background: '#115740',
+                    color: 'white',
+                    borderColor: '#115740',
+                    float: 'right',
+                  }}
+                >
+                  Next
+                </Button>
+              </div>
+            </>
+          ) : (
+            <>
+              <EventsAdditionalInfo />
+              <div>
+                <Button
+                  style={{
+                    borderColor: '#D9D9D9',
+                  }}
+                  onClick={() => setFormState('general-info')}
+                >
+                  Previous
+                </Button>
+                {/* <Link to="/event"> */}
+                <Button
+                  style={{
+                    background: '#115740',
+                    color: 'white',
+                    borderColor: '#115740',
+                    float: 'right',
+                  }}
+                  type="submit"
+                >
+                  Publish Event
+                </Button>
+                {/* </Link> */}
+              </div>
+            </>
+          )}
+        </Form>
+      </FormProvider>
     </div>
   );
 };
