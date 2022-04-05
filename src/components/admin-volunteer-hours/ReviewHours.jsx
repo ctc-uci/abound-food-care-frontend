@@ -17,47 +17,56 @@ import { SearchOutlined, DownOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
 function ReviewHours() {
-  const [hoursData, setHoursData] = useState([]);
   const [isLoading, setLoading] = useState(true);
+  const [unapprovedHours, setUnapprovedHours] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [sortCriterion, setSortCriterion] = useState('Date (most recent first)');
 
+  const getHoursData = async () => {
+    try {
+      const allHoursData = [];
+      const { data: hoursResponse } = await axios.get('http://localhost:3001/hours/');
+      for (let i = 0; i < hoursResponse.length; i += 1) {
+        allHoursData.push(hoursResponse[i]);
+      }
+      const unapprovedHoursData = allHoursData.filter(
+        hour => hour.submitted === true && hour.declined === false && hour.approved === false,
+      );
+      setUnapprovedHours(unapprovedHoursData);
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
+
   useEffect(async () => {
+    getHoursData();
+
     const data = [];
-    const unapprovedData = await axios.get('http://localhost:3001/hours/unapproved').then(res => {
-      return res.data;
-    });
     const namesPromises = [];
-    const eventsPromises = [];
+    const orgPromises = [];
     const names = [];
-    const events = [];
-    for (let i = 0; i < unapprovedData.length; i += 1) {
+    const organizations = [];
+    for (let i = 0; i < unapprovedHours.length; i += 1) {
       namesPromises.push(
         axios
-          .get(`http://localhost:3001/users/ ${unapprovedData[i].user_id.toString()}`)
+          .get(`http://localhost:3001/users/${unapprovedHours[i].userId.toString()}`)
           .then(res => {
-            names.push(res.data[0].name);
-          }),
-      );
-      eventsPromises.push(
-        axios
-          .get(`http://localhost:3001/events/ ${unapprovedData[i].event_id.toString()}`)
-          .then(res => {
-            events.push(res.data[0].name);
+            names.push(`${res.data.firstName} ${res.data.lastName}`);
+            organizations.push(res.data.organization);
           }),
       );
     }
     await Promise.all(namesPromises);
-    await Promise.all(eventsPromises);
+    await Promise.all(orgPromises);
 
-    for (let i = 0; i < unapprovedData.length; i += 1) {
-      const startDate = new Date(unapprovedData[i].start_datetime);
-      const endDate = new Date(unapprovedData[i].end_datetime);
+    for (let i = 0; i < unapprovedHours.length; i += 1) {
+      const startDate = new Date(unapprovedHours[i].startDatetime);
+      const endDate = new Date(unapprovedHours[i].endDatetime);
       data.push({
         key: i,
         name: names[i],
-        organization: '',
-        eventName: events[i],
+        organization: organizations[i],
+        eventName: unapprovedHours[i].event.name,
         date: startDate.toLocaleDateString(),
         start: startDate
           .toLocaleTimeString([], { hour12: true, hour: '2-digit', minute: '2-digit' })
@@ -67,8 +76,7 @@ function ReviewHours() {
           .toString(),
       });
     }
-
-    setHoursData(data);
+    setUnapprovedHours(data);
     setFilteredData(data);
     setLoading(false);
   }, []);
@@ -125,8 +133,8 @@ function ReviewHours() {
 
   const onSearch = e => {
     const data = [];
-    for (let i = 0; i < hoursData.length; i += 1) {
-      const volunteerHours = hoursData[i];
+    for (let i = 0; i < unapprovedHours.length; i += 1) {
+      const volunteerHours = unapprovedHours[i];
       if (
         volunteerHours.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
         volunteerHours.eventName.toLowerCase().includes(e.target.value.toLowerCase()) ||
