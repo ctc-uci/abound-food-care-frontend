@@ -18,15 +18,8 @@ const PostEvent = props => {
     setIsLoading(true);
     if (isEdit) {
       axios
-        .put(`http://localhost:3001/postevents/${eventId}`, { description: postEventSection })
-        .then(() => {
-          setIsAddingPost(false);
-        });
-    } else {
-      axios
-        .post(`http://localhost:3001/postevents/create`, {
-          eventId,
-          description: postEventSection,
+        .put(`http://localhost:3001/events/add_post_text/${eventId}`, {
+          posteventText: postEventSection,
         })
         .then(() => {
           setIsAddingPost(false);
@@ -143,7 +136,6 @@ const PostEvent = props => {
     </ConfigProvider>
   );
 };
-export default PostEvent;
 
 PostEvent.propTypes = {
   name: PropTypes.string,
@@ -164,3 +156,5 @@ PostEvent.defaultProps = {
   setIsLoading: () => {},
   isEdit: false,
 };
+
+export default PostEvent;

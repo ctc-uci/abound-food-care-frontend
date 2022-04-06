@@ -1,10 +1,10 @@
 @font-face {
   font-family: AvenirNextLTProReg;
-  src: url('../assets/fonts/AvenirNextLTProRegular.otf');
+  src: url('../../../assets/fonts/AvenirNextLTProRegular.otf');
 }
 @font-face {
   font-family: AvenirNextLTProBold;
-  src: url('../assets/fonts/AvenirNextLTProBold.otf');
+  src: url('../../../assets/fonts/AvenirNextLTProBold.otf');
 }
 
 * {

@@ -7,13 +7,15 @@ import {
 } from '@ant-design/icons';
 import { Button, Divider, ConfigProvider } from 'antd';
 import axios from 'axios';
-import PostEvent from './PostEvent';
-import VolunteersAtEvent from './VolunteersAtEvent';
+import moment from 'moment';
+import PostEvent from './postevent/PostEvent';
+import EventVolunteerList from './volunteer-list/EventVolunteerList';
 import './eventPage.css';
 
-function EventPage() {
-  const [eventData, setEventData] = useState(null);
-  const [loading, setLoading] = useState(true);
+const EventPage = () => {
+  const [eventData, setEventData] = useState([]);
+  const [numAttendees, setNumAttendees] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [isAddingPost, setIsAddingPost] = useState(false);
   const [viewVolunteers, setViewVolunteers] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -21,38 +23,36 @@ function EventPage() {
   const [postEvent, setPostEvent] = useState(null);
   */
 
-  const eventId = 8;
+  const eventId = 11;
+
+  const getEvent = async () => {
+    try {
+      const { data: eventResponse } = await axios.get(`http://localhost:3001/events/${eventId}`);
+      setEventData(eventResponse[0]);
+      if (eventResponse[0].posteventText !== undefined) {
+        setIsEdit(true);
+      }
+    } catch (e) {
+      console.log('Error getting event data!');
+    }
+  };
+
+  const getNumAttendees = async () => {
+    try {
+      const { data: volunteerData } = await axios.get(
+        `http://localhost:3001/volunteers/events/${eventId}`,
+      );
+      setNumAttendees(volunteerData.length);
+    } catch (e) {
+      console.log('Error getting event attendee data!');
+    }
+  };
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:3001/events/${eventId}`)
-      .then(res => {
-        res.data[0].volunteer_requirements = ['Can Drive', '18+', 'Other requirement'];
-        res.data[0].notes = 'Lorem ipsum dolor sit amet.';
-        setEventData(res.data[0]);
-      })
-      .then(() => {
-        axios.get(`http://localhost:3001/postevents/${eventId}`).then(res => {
-          setEventData(eventData1_ => {
-            const eventData1 = eventData1_;
-            eventData1.recap = res.data.description;
-            return eventData1;
-          });
-          if (res.data.description !== undefined) {
-            setIsEdit(true);
-          }
-        });
-      })
-      .then(() => {
-        axios.get(`http://localhost:3001/volunteers/${eventId}`).then(volRes => {
-          setEventData(eventData2_ => {
-            const eventData2 = eventData2_;
-            eventData2.volunteersPresent = volRes.data.count;
-            return eventData2;
-          });
-          setLoading(false);
-        });
-      });
+    setLoading(true);
+    getEvent();
+    getNumAttendees();
+    setLoading(false);
   }, [isAddingPost]);
 
   /*
@@ -61,47 +61,19 @@ function EventPage() {
     //axios.get(`http://localhost:3001/postevents/${eventId}`)
   }, [isAddingPost]);
   */
+
   const parseDate = () => {
-    const months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-    const month = months[parseInt(eventData.start_datetime.substring(5, 7), 10) - 1];
-    const day = eventData.start_datetime.substring(8, 10);
-    const year = eventData.start_datetime.substring(0, 4);
-    return `${month} ${day}, ${year}`;
-  };
-
-  const parseTimeRange = () => {
-    let startTime = eventData.start_datetime.substring(11, 16);
-    if (startTime[0] !== '0' && parseInt(startTime[1], 10) > 2) {
-      startTime = `${parseInt(startTime.substring(0, 2), 10) - 12}:${startTime.substring(3, 5)} pm`;
-    } else {
-      startTime = `${parseInt(startTime.substring(0, 2), 10)}:${startTime.substring(3, 5)} am`;
-    }
-
-    let endTime = eventData.end_datetime.substring(11, 16);
-    if (endTime[0] !== '0' && parseInt(endTime[1], 10) > 2) {
-      startTime = `${parseInt(endTime.substring(0, 2), 10)}:${endTime.substring(3, 5)} am`;
-    } else {
-      endTime = `${endTime.substring(0, 5)} am`;
-    }
-
-    return `${startTime} - ${endTime}`;
+    const startDateObj = new Date(Date.parse(eventData.startDatetime));
+    const endDateObj = new Date(Date.parse(eventData.endDatetime));
+    const startDate = moment(startDateObj).format('MMMM Do, YYYY');
+    const startTime = moment(startDateObj).format('hh:mm a');
+    const endDate = moment(endDateObj).format('MMMM Do, YYYY');
+    const endTime = moment(endDateObj).format('hh:mm a');
+    return { startDate, startTime, endDate, endTime };
   };
 
   const getPostEvent = () => {
-    if (eventData.recap) {
+    if (eventData.posteventText) {
       return (
         <div
           style={{
@@ -121,7 +93,7 @@ function EventPage() {
               lineHeight: '28px',
             }}
           >
-            {eventData.recap}
+            {eventData.posteventText}
           </p>
         </div>
       );
@@ -169,8 +141,8 @@ function EventPage() {
       <PostEvent
         isEdit={isEdit}
         name={eventData.name}
-        date={parseDate()}
-        time={parseTimeRange()}
+        date={parseDate().startDate}
+        time={`${parseDate().startTime}-${parseDate().endTime}`}
         eventId={eventId}
         setIsAddingPost={setIsAddingPost}
         setIsLoading={setLoading}
@@ -180,9 +152,9 @@ function EventPage() {
 
   if (viewVolunteers) {
     return (
-      <VolunteersAtEvent
+      <EventVolunteerList
         name={eventData.name}
-        type={eventData.ntype}
+        type={eventData.eventType}
         eventId={eventId}
         setViewVolunteers={setViewVolunteers}
       />
@@ -194,6 +166,9 @@ function EventPage() {
     !isAddingPost &&
     !viewVolunteers && (
       <ConfigProvider>
+        <div>
+          <h1>event id is currently hardcoded!</h1>
+        </div>
         <div
           style={{
             width: '80vw',
@@ -231,7 +206,7 @@ function EventPage() {
                   margin: 0,
                 }}
               >
-                {eventData.ntype ? eventData.ntype : 'General Event'}
+                {eventData.eventType ? eventData.eventType : 'General Event'}
               </p>
               <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                 <p
@@ -244,7 +219,7 @@ function EventPage() {
                     paddingRight: '1.5em',
                   }}
                 >
-                  {eventData.volunteersPresent}/{eventData.volunteer_capacity} Volunteers Signed Up
+                  {numAttendees}/{eventData.volunteerCapacity} Volunteers Signed Up
                 </p>
                 <button
                   type="button"
@@ -292,7 +267,8 @@ function EventPage() {
                     fontSize: '16px',
                   }}
                 >
-                  {eventData.location}
+                  {eventData.addressStreet} {eventData.addressCity}, {eventData.addressState}{' '}
+                  {eventData.addressZip}
                 </p>
               </div>
               <div
@@ -312,7 +288,7 @@ function EventPage() {
                     fontSize: '16px',
                   }}
                 >
-                  {parseDate()}
+                  {parseDate().startDate}
                 </p>
               </div>
               <div
@@ -332,7 +308,7 @@ function EventPage() {
                     fontSize: '16px',
                   }}
                 >
-                  {parseTimeRange()}
+                  {parseDate().startTime} - {parseDate().endTime}
                 </p>
               </div>
             </div>
@@ -396,10 +372,11 @@ function EventPage() {
                 onClick={() => setIsAddingPost(true)}
               >
                 <p style={{ padding: 0, margin: 0, fontSize: '14px' }}>
-                  {eventData.recap ? 'Edit' : 'Add'} Post-Event
+                  {eventData.posteventText ? 'Edit' : 'Add'} Post-Event
                 </p>
               </Button>
-              <Button
+              {/* Thank you note to be implemented if time */}
+              {/* <Button
                 style={{
                   width: '9em',
                   display: 'flex',
@@ -409,45 +386,8 @@ function EventPage() {
                 type="primary"
               >
                 <p style={{ padding: 0, margin: 0, fontSize: '14px' }}>Send Thank You</p>
-              </Button>
+              </Button> */}
             </div>
-            {/*
-
-            <div
-              className="containerBorder"
-              style={{
-                backgroundColor: 'white',
-                display: 'flex',
-                flexDirection: 'column',
-                marginTop: '2.5em',
-              }}
-            >
-              <p
-                style={{
-                  color: 'black',
-                  fontWeight: 500,
-                  fontSize: '20px',
-                  padding: 0,
-                  margin: '1em',
-                }}
-              >
-                Event Location
-              </p>
-              <Divider style={{ padding: 0, margin: 0, marginBottom: '1em' }} />
-              <div
-                style={{
-                  backgroundColor: 'lightgrey',
-                  alignSelf: 'center',
-                  width: '85%',
-                  height: '12em',
-                  padding: 0,
-                  margin: 0,
-                  marginBottom: '1em',
-                }}
-              />
-            </div>
-              */}
-
             <div
               className="containerBorder"
               style={{
@@ -470,7 +410,8 @@ function EventPage() {
                   paddingLeft: '1em',
                 }}
               >
-                {eventData.volunteer_requirements.map(e => {
+                {/* TODO: fix this */}
+                {[eventData.requirements].map(e => {
                   return (
                     <div
                       key={e}
@@ -501,6 +442,6 @@ function EventPage() {
       </ConfigProvider>
     )
   );
-}
+};
 
 export default EventPage;
