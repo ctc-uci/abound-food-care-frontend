@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { Input, Radio, Form, Select, InputNumber, Button, Col, Checkbox, Row } from 'antd';
 
 const { Option } = Select;
@@ -8,7 +9,13 @@ const validateMessages = {
   required: 'Answer to this question is required!',
 };
 
-const RolesAndSkills = () => {
+const RolesAndSkills = props => {
+  const { nextPage, prevPage, setRolesAndSkills } = props;
+  const onFinish = values => {
+    setRolesAndSkills(values);
+    nextPage();
+  };
+
   const [componentSize, setComponentSize] = useState('default');
   const [requiredMark, setRequiredMarkType] = useState('optional');
 
@@ -26,6 +33,7 @@ const RolesAndSkills = () => {
       <Form
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 14 }}
+        onFinish={onFinish}
         validateMessages={validateMessages}
         name="roles_n_skills"
         size={componentSize}
@@ -193,6 +201,17 @@ const RolesAndSkills = () => {
           </Radio.Group>
         </Form.Item>
 
+        <Form.Item
+          name="foodRunsInterest"
+          label="Are you interested in food runs?"
+          rules={[{ required: true }]}
+        >
+          <Radio.Group>
+            <Radio value="true">Yes</Radio>
+            <Radio value="false">No</Radio>
+          </Radio.Group>
+        </Form.Item>
+
         <Form.Item name="vehicleType" label="Vehicle Type:" rules={[{ required: true }]}>
           <Select mode="multiple" placeholder="Select all that apply.">
             <Option value="opt1">opt1</Option>
@@ -215,6 +234,9 @@ const RolesAndSkills = () => {
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 19 }}>
+          <Button type="primary" htmlType="button" onClick={prevPage}>
+            Previous
+          </Button>
           <Button type="primary" htmlType="submit">
             Next
           </Button>
@@ -222,6 +244,12 @@ const RolesAndSkills = () => {
       </Form>
     </div>
   );
+};
+
+RolesAndSkills.propTypes = {
+  nextPage: PropTypes.func.isRequired,
+  prevPage: PropTypes.func.isRequired,
+  setRolesAndSkills: PropTypes.func.isRequired,
 };
 
 export default RolesAndSkills;
