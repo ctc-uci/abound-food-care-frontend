@@ -1,17 +1,6 @@
 import React, { useState } from 'react';
-import { useFormContext } from 'react-hook-form';
-import {
-  Form,
-  DatePicker,
-  Input,
-  Select,
-  Button,
-  TimePicker,
-  InputNumber,
-  Checkbox,
-  Row,
-  Col,
-} from 'antd';
+import { useFormContext, Controller } from 'react-hook-form';
+import { Form, DatePicker, Input, Select, Button, TimePicker, Checkbox, Row, Col } from 'antd';
 import EventTypeModal from './EventTypeModal';
 
 const { Option } = Select;
@@ -19,6 +8,7 @@ const { Option } = Select;
 const EventsGeneralInfo = () => {
   const {
     register,
+    control,
     // eslint-disable-next-line no-unused-vars
     formState: { errors },
   } = useFormContext();
@@ -76,18 +66,28 @@ const EventsGeneralInfo = () => {
   return (
     <div>
       <h1> General Information </h1>
-      <Form.Item label="Event Name" rules={[{ required: true }]}>
+      <Form.Item label="Event Name">
         <Input
           placeholder="Ex. Food Running Event"
           // value={eventName}
-          {...register('eventName')}
+          {...register('eventName', { required: true })}
         />
       </Form.Item>
 
-      <Form.Item label="Start Date / Time" rules={[{ required: true }]}>
-        <DatePicker
-          placeholder="Select date"
-          // onChange={handleStartDate}
+      <Form.Item label="Start Date / Time">
+        <Controller
+          control={control}
+          name="eventStartDate"
+          render={({ field }) => (
+            <DatePicker
+              {...field}
+              placeholder="Select date"
+              onChange={e => {
+                field.onChange(e);
+              }}
+            />
+          )}
+          rules={{ required: true }}
         />
         <TimePicker
           placeholder="Select time"
@@ -95,10 +95,20 @@ const EventsGeneralInfo = () => {
         />
       </Form.Item>
 
-      <Form.Item label="End Date / Time" rules={[{ required: true }]}>
-        <DatePicker
-          placeholder="Select date"
-          // onChange={handleEndDate}
+      <Form.Item label="End Date / Time">
+        <Controller
+          control={control}
+          name="eventEndDate"
+          render={({ field }) => (
+            <DatePicker
+              {...field}
+              placeholder="Select date"
+              onChange={e => {
+                field.onChange(e);
+              }}
+            />
+          )}
+          rules={{ required: true }}
         />
         <TimePicker
           placeholder="Select time"
@@ -106,15 +116,19 @@ const EventsGeneralInfo = () => {
         />
       </Form.Item>
 
-      <Form.Item label="Event Type" rules={[{ required: true }]}>
-        <Select
-          placeholder="Type"
-          // value={eventType}
-          style={{ width: '100px' }}
-          // {...register('eventType')}
-        >
-          {eventTypeMenu}
-        </Select>
+      <Form.Item label="Event Type">
+        <Controller
+          control={control}
+          name="eventType"
+          render={({ field }) => (
+            <>
+              <Select placeholder="Type" defaultValue="" style={{ width: '100px' }} {...field}>
+                {eventTypeMenu}
+              </Select>
+            </>
+          )}
+        />
+
         <Button type="link" onClick={handleClickNewEventType} style={{ color: '#6CC24A' }}>
           New Event Type
         </Button>
@@ -130,93 +144,136 @@ const EventsGeneralInfo = () => {
         </div>
       </Form.Item>
 
-      <Form.Item label="Num Volunteers" rules={[{ required: true }]}>
-        <InputNumber
-        // onChange={v => setVolunteerCapacity(v)}
-        // {...register('volunteerCapacity')}
-        // value={volunteerCapacity}
-        />
+      <Form.Item label="Num Volunteers" style={{ width: '200px' }}>
+        <Input {...register('volunteerCapacity', { required: true })} />
       </Form.Item>
 
       <Form.Item label="Requirements (optional)">
         <Checkbox.Group style={{ width: '100%' }}>
           <Row>
             <Col span={8}>
-              <Checkbox
-                value="Can Drive"
-                // onChange={() => setCanDrive(!canDrive)}
-                // {...register('canDrive')}
-                // checked={canDrive}
-              >
-                Can Drive
-              </Checkbox>
+              <Controller
+                control={control}
+                name="canDrive"
+                render={({ field: { onChange, value } }) => (
+                  <Checkbox
+                    onChange={onChange}
+                    // {...register('canDrive')}
+                    checked={value}
+                  >
+                    Can Drive
+                  </Checkbox>
+                )}
+              />
             </Col>
             <Col span={8}>
-              <Checkbox
-                value="Adult (age 18+)"
-                // onChange={() => setIsAdult(!isAdult)}
-                // checked={isAdult}
-              >
-                Adult (age 18+)
-              </Checkbox>
+              <Controller
+                control={control}
+                name="isAdult"
+                render={({ field: { onChange, value } }) => (
+                  <Checkbox
+                    onChange={onChange}
+                    // {...register('canDrive')}
+                    checked={value}
+                  >
+                    Adult (18+)
+                  </Checkbox>
+                )}
+              />
             </Col>
             <Col span={8}>
-              <Checkbox
-                value="Minor (age <18)"
-                // onChange={() => setIsMinor(!isMinor)}
-                // checked={isMinor}
-              >
-                Minor (age &#60;18)
-              </Checkbox>
-            </Col>
-            <br />
-            <br />
-            <Col span={8}>
-              <Checkbox
-                value="First Aid Training"
-                // onChange={() => setFirstAidTraining(!firstAidTraining)}
-                // checked={firstAidTraining}
-              >
-                First Aid Training
-              </Checkbox>
-            </Col>
-            <Col span={8}>
-              <Checkbox
-                value="Serve Safe Knowledge"
-                // onChange={() => setServeSafeKnowledge(!serveSafeKnowledge)}
-                // checked={serveSafeKnowledge}
-              >
-                Serve Safe Knowledge
-              </Checkbox>
-            </Col>
-            <Col span={8}>
-              <Checkbox
-                // checked={transportationExperience}
-                value="Transportation Experience"
-                // onChange={() => setTransportationExperience(!transportationExperience)}
-              >
-                Transportation Experience
-              </Checkbox>
+              <Controller
+                control={control}
+                name="isMinor"
+                render={({ field: { onChange, value } }) => (
+                  <Checkbox
+                    onChange={onChange}
+                    // {...register('canDrive')}
+                    checked={value}
+                  >
+                    Minor (age &#60;18)
+                  </Checkbox>
+                )}
+              />
             </Col>
             <br />
             <br />
             <Col span={8}>
-              <Checkbox
-                // checked={warehouseExperience}
-                value="Moving / Warehouse Experience"
-                // onChange={() => setWarehouseExperience(!warehouseExperience)}
-              >
-                Moving / Warehouse Experience
-              </Checkbox>
+              <Controller
+                control={control}
+                name="firstAidTraining"
+                render={({ field: { onChange, value } }) => (
+                  <Checkbox
+                    onChange={onChange}
+                    // {...register('canDrive')}
+                    checked={value}
+                  >
+                    First Aid Training
+                  </Checkbox>
+                )}
+              />
             </Col>
             <Col span={8}>
-              <Checkbox
-                // checked={foodServiceKnowledge}
-                value="Food Service Industry Knowledge"
-                // onChange={() => setFoodServiceKnowledge(!foodServiceKnowledge)}
-              >
-                Food Service Industry Knowledge
-              </Checkbox>
+              <Controller
+                control={control}
+                name="serveSafeKnowledge"
+                render={({ field: { onChange, value } }) => (
+                  <Checkbox
+                    onChange={onChange}
+                    // {...register('canDrive')}
+                    checked={value}
+                  >
+                    Serve Safe Knowledge
+                  </Checkbox>
+                )}
+              />
+            </Col>
+            <Col span={8}>
+              <Controller
+                control={control}
+                name="transportaionExperience"
+                render={({ field: { onChange, value } }) => (
+                  <Checkbox
+                    onChange={onChange}
+                    // {...register('canDrive')}
+                    checked={value}
+                  >
+                    Transportation Experience
+                  </Checkbox>
+                )}
+              />
+            </Col>
+            <br />
+            <br />
+            <Col span={8}>
+              <Controller
+                control={control}
+                name="warehouseExperience"
+                render={({ field: { onChange, value } }) => (
+                  <Checkbox
+                    onChange={onChange}
+                    // {...register('canDrive')}
+                    checked={value}
+                  >
+                    Moving / Warehouse Experience
+                  </Checkbox>
+                )}
+              />
+            </Col>
+            <Col span={8}>
+              <Controller
+                control={control}
+                name="foodServiceKnowledge"
+                render={({ field: { onChange, value } }) => (
+                  <Checkbox
+                    onChange={onChange}
+                    // {...register('canDrive')}
+                    checked={value}
+                  >
+                    Food Service Industry Knowledge
+                  </Checkbox>
+                )}
+              />
             </Col>
           </Row>
         </Checkbox.Group>
