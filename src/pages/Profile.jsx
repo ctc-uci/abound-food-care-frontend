@@ -4,6 +4,7 @@ import { Tabs } from 'antd';
 import ProfileGeneralInfo from '../components/profile/ProfileGeneralInfo';
 import ProfileDUICrimHistory from '../components/profile/ProfileDUICrimHistory';
 import ProfileRolesSkills from '../components/profile/ProfileRolesSkills';
+import TrainingAndForms from '../components/profile/profile-training-forms/TrainingAndForms';
 import '../components/profile/profile.css';
 
 const { TabPane } = Tabs;
@@ -26,7 +27,7 @@ function Profile() {
           <ProfileDUICrimHistory userId={2} />
         </TabPane>
         <TabPane tab="Training & Forms" key="5">
-          <p>Training and Forms go here</p>
+          <TrainingAndForms />
         </TabPane>
       </Tabs>
     </div>
