@@ -75,21 +75,21 @@ const AdminEvents = () => {
       const fieldToFilterBy = type !== 'all' ? type : status;
       filteredEvents = filteredEvents.filter(
         event =>
-          event.ntype === fieldToFilterBy ||
-          determineStatus(event.startDateTime) === fieldToFilterBy,
+          event.eventType === fieldToFilterBy ||
+          determineStatus(event.startDatetime) === fieldToFilterBy,
       );
     } else if (
       (type === 'distribution' || type === 'food') &&
       (status === 'upcoming' || status === 'past')
     ) {
       filteredEvents = filteredEvents.filter(
-        event => event.ntype === type && determineStatus(event.startDateTime) === status,
+        event => event.eventType === type && determineStatus(event.startDatetime) === status,
       );
     } else {
       filteredEvents = filteredEvents.filter(
         event =>
-          (event.ntype === type || event.ntype === 'null') &&
-          determineStatus(event.startDateTime) === status,
+          (event.eventType === type || event.eventType === 'null') &&
+          determineStatus(event.startDatetime) === status,
       );
     }
     setEventsData(filteredEvents);
@@ -107,13 +107,13 @@ const AdminEvents = () => {
 
   const renderEventsGrid = events => {
     const rows = events.map(event => (
-      <Col key={event.id} span={8}>
+      <Col key={event.eventId} span={8}>
         <EventCard
-          id={event.id}
+          id={event.eventId}
           name={event.name}
-          type={event.ntype}
-          startDateTime={event.startDateTime}
-          endDateTime={event.endDateTime}
+          type={event.eventType}
+          startDateTime={event.startDatetime}
+          endDateTime={event.endDatetime}
           volunteerCapacity={event.volunteerCapacity}
         />
       </Col>
