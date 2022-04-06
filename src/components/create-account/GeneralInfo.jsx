@@ -1,10 +1,13 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { DatePicker, Form, Input, Radio, Button } from 'antd';
 
-const GeneralInfo = () => {
-  // const onFinish = values => {
-  //   console.log(values);
-  // };
+const GeneralInfo = props => {
+  const { nextPage, setGeneralInfo } = props;
+  const onFinish = values => {
+    setGeneralInfo(values);
+    nextPage();
+  };
 
   const [componentSize, setComponentSize] = React.useState('default');
 
@@ -19,7 +22,7 @@ const GeneralInfo = () => {
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 14 }}
         name="nest-messages"
-        // onFinish={onFinish}
+        onFinish={onFinish}
         // validateMessages={validateMessages}
         size={componentSize}
         onValuesChange={onFormLayoutChange}
@@ -48,7 +51,7 @@ const GeneralInfo = () => {
           <Input placeholder="Give the target a name" />
         </Form.Item>
 
-        <Form.Item label="Birthday" required>
+        <Form.Item name="birthdate" label="Birthday" required>
           <DatePicker placeholder="Select date" />
         </Form.Item>
 
@@ -104,6 +107,11 @@ const GeneralInfo = () => {
       </Form>
     </div>
   );
+};
+
+GeneralInfo.propTypes = {
+  nextPage: PropTypes.func.isRequired,
+  setGeneralInfo: PropTypes.func.isRequired,
 };
 
 export default GeneralInfo;

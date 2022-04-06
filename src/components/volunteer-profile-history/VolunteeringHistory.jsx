@@ -7,7 +7,7 @@ import EditHours from './EditHours';
 import SuccessModal from './SuccessModal';
 
 function VolunteeringHistory() {
-  const [userId, setUserId] = useState(2);
+  const [userId, setUserId] = useState(121);
   const [totalHours, setTotalHours] = useState(0);
   const [eventCount, setEventCount] = useState(0);
   const [unsubmittedData, setUnsubmittedData] = useState([]);
@@ -62,7 +62,7 @@ function VolunteeringHistory() {
   };
 
   useEffect(() => {
-    setUserId(2);
+    setUserId(121);
     axios.get(`http://localhost:3001/hours/statistics/${userId}`).then(res => {
       setEventCount(res.data[0].event_count);
       setTotalHours(res.data[0].hours);
@@ -101,7 +101,7 @@ function VolunteeringHistory() {
       approved: false,
       notes: unsubmittedData[i].notes,
     };
-    axios.post('http://localhost:3001/hours/submit/', body).then(res => {
+    axios.put('http://localhost:3001/hours/submit', body).then(res => {
       setIsSubmitted(true);
       setSubmittedHours(res.data[0].num_hours);
       removeFromUnsubmitted(i);

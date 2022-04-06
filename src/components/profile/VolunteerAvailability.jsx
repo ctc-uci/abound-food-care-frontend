@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Chart from 'react-apexcharts';
 // import ApexCharts from 'apexcharts';
 
 const VolunteerAvailability = () => {
-  const [options, setOptions] = React.useState(null);
-  const [series, setSeries] = React.useState(null);
+  const [options, setOptions] = useState(null);
+  const [series, setSeries] = useState(null);
 
   const ACTUAL_DUMMY_DATA = [
     {
@@ -50,6 +50,7 @@ const VolunteerAvailability = () => {
       end_time: '12:00pm',
     },
   ];
+
   const convertData = times => {
     const data = [];
     const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
@@ -106,7 +107,7 @@ const VolunteerAvailability = () => {
     setSeries(generatedSeries);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const values = {
       xaxis: {
         position: 'top',
