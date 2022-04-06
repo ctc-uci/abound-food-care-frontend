@@ -41,7 +41,7 @@ const AdminNavMenu = () => {
             {menuTitle}
           </div>
         </Link>
-        <Menu defaultSelectedKeys={['1']} inlineCollapsed={collapsed} mode="inline">
+        <Menu defaultSelectedKeys={['1']} mode="inline">
           <Menu.Item className="menu-item" key="1" icon={<DashboardOutlined />}>
             <Link to="/admin" className="link">
               Dashboard
