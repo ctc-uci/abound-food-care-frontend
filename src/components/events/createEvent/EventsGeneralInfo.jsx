@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import { Form, DatePicker, Input, Select, Button, TimePicker, Checkbox, Row, Col } from 'antd';
@@ -9,7 +10,6 @@ const EventsGeneralInfo = () => {
   const {
     register,
     control,
-    // eslint-disable-next-line no-unused-vars
     formState: { errors },
   } = useFormContext();
 
@@ -60,258 +60,211 @@ const EventsGeneralInfo = () => {
 
   // Event Type Menu
   const eventTypeMenu = eventsData.map(event => {
+    // eslint-disable-next-line react/no-array-index-key
     return <Option key={event.name}>{event.name}</Option>;
   });
 
   return (
     <div>
       <h1> General Information </h1>
-      <Form.Item label="Event Name">
-        <Input
-          placeholder="Ex. Food Running Event"
-          // value={eventName}
-          {...register('eventName', { required: true })}
-        />
-      </Form.Item>
-
-      <Form.Item label="Start Date / Time">
-        <Controller
-          control={control}
-          name="eventStartDate"
-          render={({ field }) => (
-            <DatePicker
-              {...field}
-              placeholder="Select date"
-              onChange={e => {
-                field.onChange(e);
-              }}
-            />
-          )}
-          rules={{ required: true }}
-        />
-        <TimePicker
-          placeholder="Select time"
-          // onChange={handleStartTime}
-        />
-      </Form.Item>
-
-      <Form.Item label="End Date / Time">
-        <Controller
-          control={control}
-          name="eventEndDate"
-          render={({ field }) => (
-            <DatePicker
-              {...field}
-              placeholder="Select date"
-              onChange={e => {
-                field.onChange(e);
-              }}
-            />
-          )}
-          rules={{ required: true }}
-        />
-        <TimePicker
-          placeholder="Select time"
-          // onChange={handleEndTime}
-        />
-      </Form.Item>
-
-      <Form.Item label="Event Type">
-        <Controller
-          control={control}
-          name="eventType"
-          render={({ field }) => (
-            <>
-              <Select placeholder="Type" defaultValue="" style={{ width: '100px' }} {...field}>
-                {eventTypeMenu}
-              </Select>
-            </>
-          )}
-        />
-
-        <Button type="link" onClick={handleClickNewEventType} style={{ color: '#6CC24A' }}>
-          New Event Type
-        </Button>
-        <div>
-          {eventTypeModal && (
-            <EventTypeModal
-              visible={eventTypeModal}
-              setVisible={setEventTypeModal}
-              eventsData={eventsData}
-              setEventsData={setEventsData}
-            />
-          )}
-        </div>
-      </Form.Item>
-
-      <Form.Item label="Num Volunteers" style={{ width: '200px' }}>
-        <Input {...register('volunteerCapacity', { required: true })} />
-      </Form.Item>
-
-      <Form.Item label="Requirements (optional)">
-        <Checkbox.Group style={{ width: '100%' }}>
+      <Controller
+        control={control}
+        name="eventName"
+        render={({ field: { onChange, ref } }) => (
+          <Form.Item label="Event Name">
+            <Input placeholder="Ex. Food Running Event" ref={ref} onChange={onChange} />
+            {errors.eventName && <p>{errors.eventName.message}</p>}
+          </Form.Item>
+        )}
+      />
+      <Controller
+        control={control}
+        name="eventStartDateTime"
+        render={({ field: { onChange, ref } }) => (
+          <Form.Item label="Start Date / Time">
+            <DatePicker placeholder="Select date" onChange={onChange} ref={ref} />
+            <TimePicker placeholder="Select time" onChange={onChange} ref={ref} />
+            {errors.eventStartDateTime && <p>{errors.eventStartDateTime.message}</p>}
+          </Form.Item>
+        )}
+      />
+      <Controller
+        control={control}
+        name="eventEndDateTime"
+        render={({ field: { onChange, ref } }) => (
+          <Form.Item label="End Date / Time">
+            <DatePicker placeholder="Select date" onChange={onChange} ref={ref} />
+            <TimePicker placeholder="Select time" onChange={onChange} ref={ref} />
+            {errors.eventEndDateTime && <p>{errors.eventEndDateTime.message}</p>}
+          </Form.Item>
+        )}
+      />
+      <Controller
+        control={control}
+        name="eventType"
+        render={({ field: { onChange, ref } }) => (
+          <Form.Item label="Event Type">
+            <Select placeholder="Type" style={{ width: '100px' }} onChange={onChange} ref={ref}>
+              {eventTypeMenu}
+            </Select>
+            <Button type="link" onClick={handleClickNewEventType} style={{ color: '#6CC24A' }}>
+              New Event Type
+            </Button>
+            <div>
+              {eventTypeModal && (
+                <EventTypeModal
+                  visible={eventTypeModal}
+                  setVisible={setEventTypeModal}
+                  eventsData={eventsData}
+                  setEventsData={setEventsData}
+                />
+              )}
+            </div>
+          </Form.Item>
+        )}
+      />
+      <Controller
+        control={control}
+        name="volunteerCapacity"
+        render={({ field: { onChange, ref } }) => (
+          <Form.Item label="Num Volunteers">
+            <Input style={{ width: '200px' }} onChange={onChange} ref={ref} />
+            {errors.volunteerCapacity && <p>{errors.volunteerCapacity.message}</p>}
+          </Form.Item>
+        )}
+      />
+      <section>
+        <Form.Item label="Requirements (optional)">
           <Row>
             <Col span={8}>
               <Controller
                 control={control}
                 name="canDrive"
-                render={({ field: { onChange, value } }) => (
-                  <Checkbox
-                    onChange={onChange}
-                    // {...register('canDrive')}
-                    checked={value}
-                  >
-                    Can Drive
-                  </Checkbox>
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item label="Can Drive">
+                    <Checkbox onChange={onChange} ref={ref} checked={value} />
+                  </Form.Item>
                 )}
               />
-            </Col>
-            <Col span={8}>
               <Controller
                 control={control}
                 name="isAdult"
-                render={({ field: { onChange, value } }) => (
-                  <Checkbox
-                    onChange={onChange}
-                    // {...register('canDrive')}
-                    checked={value}
-                  >
-                    Adult (18+)
-                  </Checkbox>
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item label="Adult (age 18+)">
+                    <Checkbox onChange={onChange} ref={ref} checked={value} />
+                  </Form.Item>
                 )}
               />
-            </Col>
-            <Col span={8}>
               <Controller
                 control={control}
                 name="isMinor"
-                render={({ field: { onChange, value } }) => (
-                  <Checkbox
-                    onChange={onChange}
-                    // {...register('canDrive')}
-                    checked={value}
-                  >
-                    Minor (age &#60;18)
-                  </Checkbox>
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item label="Minor (age <18)">
+                    <Checkbox onChange={onChange} ref={ref} checked={value} />
+                  </Form.Item>
                 )}
               />
             </Col>
-            <br />
             <br />
             <Col span={8}>
               <Controller
                 control={control}
                 name="firstAidTraining"
-                render={({ field: { onChange, value } }) => (
-                  <Checkbox
-                    onChange={onChange}
-                    // {...register('canDrive')}
-                    checked={value}
-                  >
-                    First Aid Training
-                  </Checkbox>
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item label="First Aid Training">
+                    <Checkbox onChange={onChange} ref={ref} checked={value} />
+                  </Form.Item>
                 )}
               />
-            </Col>
-            <Col span={8}>
               <Controller
                 control={control}
                 name="serveSafeKnowledge"
-                render={({ field: { onChange, value } }) => (
-                  <Checkbox
-                    onChange={onChange}
-                    // {...register('canDrive')}
-                    checked={value}
-                  >
-                    Serve Safe Knowledge
-                  </Checkbox>
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item label="Serve Safe Knowledge">
+                    <Checkbox onChange={onChange} ref={ref} checked={value} />
+                  </Form.Item>
                 )}
               />
-            </Col>
-            <Col span={8}>
               <Controller
                 control={control}
-                name="transportaionExperience"
-                render={({ field: { onChange, value } }) => (
-                  <Checkbox
-                    onChange={onChange}
-                    // {...register('canDrive')}
-                    checked={value}
-                  >
-                    Transportation Experience
-                  </Checkbox>
+                name="transportationExperience"
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item label="Transportation Experience">
+                    <Checkbox onChange={onChange} ref={ref} checked={value} />
+                  </Form.Item>
                 )}
               />
             </Col>
             <br />
-            <br />
             <Col span={8}>
               <Controller
                 control={control}
-                name="warehouseExperience"
-                render={({ field: { onChange, value } }) => (
-                  <Checkbox
-                    onChange={onChange}
-                    // {...register('canDrive')}
-                    checked={value}
-                  >
-                    Moving / Warehouse Experience
-                  </Checkbox>
+                name="movingWarehouseExperience"
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item label="Moving / Warehouse Experience">
+                    <Checkbox onChange={onChange} ref={ref} checked={value} />
+                  </Form.Item>
                 )}
               />
-            </Col>
-            <Col span={8}>
               <Controller
                 control={control}
-                name="foodServiceKnowledge"
-                render={({ field: { onChange, value } }) => (
-                  <Checkbox
-                    onChange={onChange}
-                    // {...register('canDrive')}
-                    checked={value}
-                  >
-                    Food Service Industry Knowledge
-                  </Checkbox>
+                name="foodServiceIndustryKnowledge"
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item label="Food Service Industry Knowledge">
+                    <Checkbox onChange={onChange} ref={ref} checked={value} />
+                  </Form.Item>
                 )}
               />
             </Col>
           </Row>
-        </Checkbox.Group>
-      </Form.Item>
-
-      <Form.Item label="Street Address" rules={[{ required: true }]}>
-        <Input
-          // value={eventAddressStreet}
-          placeholder="Ex. 123 Banana St."
-          // onChange={e => setEventAddressStreet(e.target.value)}
-        />
-      </Form.Item>
-      <Form.Item label="City" rules={[{ required: true }]}>
-        <Input
-          // value={eventAddressCity}
-          placeholder="Austin"
-          {...register('eventAddressCity')}
-          // onChange={e => setEventAddressCity(e.target.value)}
-        />
-      </Form.Item>
-      <Form.Item
-        // value={eventAddressState}
-        label="State"
-        rules={[{ required: true }]}
-        {...register('eventAddressState')}
-        // onChange={e => setEventAddressState(e.target.value)}
-      >
-        <Input placeholder="TX" />
-      </Form.Item>
-      <Form.Item
-        // value={eventAddressZip}
-        {...register('eventAddressZip')}
-        label="Zipcode"
-        rules={[{ required: true }]}
-        // onChange={e => setEventAddressZip(e.target.value)}
-      >
-        <Input placeholder="73301" />
-      </Form.Item>
+        </Form.Item>
+      </section>
+      <section>
+        <Form.Item label="Location">
+          <br />
+          <br />
+          <Controller
+            control={control}
+            name="addressStreet"
+            render={({ field: { onChange, value, ref } }) => (
+              <Form.Item label="Street Address">
+                <Input placeholder="200 N Tustin Ave" onChange={onChange} ref={ref} />
+                {errors.addressStreet && <p>{errors.addressStreet.message}</p>}
+              </Form.Item>
+            )}
+          />
+          <Controller
+            control={control}
+            name="addressCity"
+            render={({ field: { onChange, value, ref } }) => (
+              <Form.Item label="City">
+                <Input placeholder="Ex. Santa Ana" onChange={onChange} ref={ref} />
+                {errors.addressCity && <p>{errors.addressCity.message}</p>}
+              </Form.Item>
+            )}
+          />
+          <Controller
+            control={control}
+            name="addressState"
+            render={({ field: { onChange, value, ref } }) => (
+              <Form.Item label="State">
+                <Input placeholder="Ex. CA" onChange={onChange} ref={ref} />
+                {errors.addressState && <p>{errors.addressState.message}</p>}
+              </Form.Item>
+            )}
+          />
+          <Controller
+            control={control}
+            name="addressZip"
+            render={({ field: { onChange, value, ref } }) => (
+              <Form.Item label="Zipcode">
+                <Input placeholder="Ex. 92705" onChange={onChange} ref={ref} />
+                {errors.addressZip && <p>{errors.addressZip.message}</p>}
+              </Form.Item>
+            )}
+          />
+        </Form.Item>
+      </section>
     </div>
   );
 };
