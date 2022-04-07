@@ -12,7 +12,7 @@ const ProfileGeneralInfo = ({ userId }) => {
   const [form] = Form.useForm();
 
   const [componentSize, setComponentSize] = useState('default');
-  const [isEditable] = useState(false);
+  const [isEditable] = useState(true);
 
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
@@ -99,7 +99,7 @@ const ProfileGeneralInfo = ({ userId }) => {
         </Form.Item>
 
         <Form.Item name="contactMethod" label="Preferred Contact Method">
-          <Radio.Group disabled>
+          <Radio.Group disabled={!isEditable}>
             <Radio value="email">Email</Radio>
             <Radio value="phone">Phone</Radio>
           </Radio.Group>

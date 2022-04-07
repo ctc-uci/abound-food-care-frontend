@@ -14,7 +14,7 @@ const ProfileRolesAndSkills = ({ userId }) => {
   const [form] = Form.useForm();
 
   const [componentSize, setComponentSize] = useState('default');
-  const [isEditable] = useState(false);
+  const [isEditable] = useState(true);
   const [interestedRoles, setInterestedRoles] = useState([]);
   const [weightliftingAbility, setWeightliftingAbility] = useState(0);
   const [drivingDistance, setDrivingDistance] = useState(0);

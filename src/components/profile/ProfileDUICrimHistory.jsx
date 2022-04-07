@@ -12,6 +12,7 @@ const ProfileDUIAndCrimHistory = ({ userId }) => {
   const [form] = Form.useForm();
 
   const [componentSize, setComponentSize] = useState('default');
+  const [isEditable] = useState(true);
 
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
@@ -56,7 +57,7 @@ const ProfileDUIAndCrimHistory = ({ userId }) => {
           name="criminalHistory"
           label="Have you ever been convicted of violation of any law?"
         >
-          <Radio.Group disabled>
+          <Radio.Group disabled={!isEditable}>
             <Radio value="true">Yes</Radio>
             <Radio value="false">No</Radio>
             <Radio value="prefer not to say">Prefer not to say</Radio>
@@ -67,11 +68,11 @@ const ProfileDUIAndCrimHistory = ({ userId }) => {
           name="criminalHistoryDetails"
           label="If you replied YES to the previous question, please specify your most recent violation."
         >
-          <Input.TextArea style={inputBoxStyle} disabled />
+          <Input.TextArea style={inputBoxStyle} disabled={!isEditable} />
         </Form.Item>
 
         <Form.Item name="duiHistory" label="Do you have any DUI history?">
-          <Radio.Group disabled>
+          <Radio.Group disabled={!isEditable}>
             <Radio value="true">Yes</Radio>
             <Radio value="false">No</Radio>
             <Radio value="prefer not to say">Prefer not to say</Radio>
@@ -82,14 +83,14 @@ const ProfileDUIAndCrimHistory = ({ userId }) => {
           name="duiHistoryDetails"
           label="If you replied YES to the previous question, please specify your most recent DUI violation."
         >
-          <Input.TextArea style={inputBoxStyle} disabled />
+          <Input.TextArea style={inputBoxStyle} disabled={!isEditable} />
         </Form.Item>
 
         <Form.Item
           name="additionalInformation"
           label="Please write down any additional information you would like us to know:"
         >
-          <Input.TextArea style={inputBoxStyle} disabled />
+          <Input.TextArea style={inputBoxStyle} disabled={!isEditable} />
         </Form.Item>
       </Form>
     </div>

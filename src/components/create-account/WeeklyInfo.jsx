@@ -145,6 +145,11 @@ const WeeklyInfo = props => {
 WeeklyInfo.propTypes = {
   nextPage: PropTypes.func.isRequired,
   prevPage: PropTypes.func.isRequired,
+  // createAccountVersion: PropTypes.bool,
 };
+
+// WeeklyInfo.defaultProps = {
+//   createAccountVersion: true,
+// };
 
 export default WeeklyInfo;
