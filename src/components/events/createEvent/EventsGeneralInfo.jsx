@@ -11,6 +11,7 @@ import {
   Row,
   Col,
   Space,
+  Radio,
 } from 'antd';
 // import useMobileWidth from '../../../common/useMobileWidth';
 import EventTypeModal from './EventTypeModal';
@@ -68,12 +69,6 @@ const EventsGeneralInfo = () => {
     return <Option key={event.name}>{event.name}</Option>;
   });
 
-  const [disabled, setDisabled] = React.useState(true);
-
-  const toggle = () => {
-    setDisabled(!disabled);
-  };
-
   return (
     <div>
       <h1> General Information </h1>
@@ -129,11 +124,23 @@ const EventsGeneralInfo = () => {
               </Button>
             </div>
             <Form.Item label="Requirements">
-              <Button onClick={toggle}>First Aid Training</Button>
+              <Radio.Group defaultValue="c" buttonStyle="solid">
+                <Radio.Button value="a">First Aid Training</Radio.Button>
+              </Radio.Group>
+              <Radio.Group defaultValue="c" buttonStyle="solid" style={{ marginTop: 16 }}>
+                <Radio.Button value="a">Can Drive</Radio.Button>
+              </Radio.Group>
+              <Radio.Group defaultValue="c" buttonStyle="solid" style={{ marginTop: 16 }}>
+                <Radio.Button value="a">Adult(Age 18+)</Radio.Button>
+              </Radio.Group>
+              <Radio.Group defaultValue="c" buttonStyle="solid" style={{ marginTop: 16 }}>
+                <Radio.Button value="a">First Aid Training</Radio.Button>
+              </Radio.Group>
+              {/* <Button onClick={toggle}>First Aid Training</Button>
               <Button>Can Drive</Button>
               <br />
               <Button>Adult(Age 18+)</Button>
-              <Button>First Aid Training</Button>
+              <Button>First Aid Training</Button> */}
             </Form.Item>
 
             <Form.Item label="Location" rules={[{ required: true }]}>
