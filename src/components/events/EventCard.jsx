@@ -24,9 +24,11 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
       setLoading(true);
       try {
         const { data: volunteerResponse } = await axios.get(
-          `http://localhost:3001/volunteers/${id}`,
+          `http://localhost:3001/volunteers/events/${id}`,
         );
-        setNumVolunteers(volunteerResponse.count);
+        if (volunteerResponse.status === 200 && volunteerResponse.length > 0) {
+          setNumVolunteers(volunteerResponse.userIds.length);
+        }
       } catch (err) {
         console.error(err.message);
       }
@@ -88,7 +90,7 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
               </p>
             </Card>
           )}
-          {(type === 'other' || type === null) && (
+          {type !== 'distribution' && type !== 'food' && (
             <Card
               className="event-card"
               title={name}
