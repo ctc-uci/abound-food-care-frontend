@@ -10,9 +10,10 @@
   ],
   "parserOptions": {
     "ecmaFeatures": {
-        "jsx": true
+        "jsx": true,
+        "experimentalObjectRestSpread": true
     },
-    "ecmaVersion": 8,
+    "ecmaVersion": 2020,
     "sourceType": "module"
   },
   "plugins": [
@@ -21,6 +22,7 @@
   "rules": {
     "prettier/prettier": ["error", {
       "endOfLine": "auto"}
-    ]
+    ],
+    "react/jsx-props-no-spreading": "off"
   }
 }
