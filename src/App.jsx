@@ -16,7 +16,7 @@ import Profile from './pages/Profile';
 import Event from './pages/Event';
 import Waivers from './pages/Waivers';
 import Admin from './pages/Admin';
-import AdminNavMenu from './components/navigation/AdminNavMenu';
+// import AdminNavMenu from './components/navigation/AdminNavMenu';
 // import VolunteerNavMenu from './components/navigation/VolunteerNavMenu';
 
 const { Content } = Layout;
@@ -26,7 +26,7 @@ function App() {
     <div>
       <Layout>
         <Router>
-          <AdminNavMenu />
+          {/* <AdminNavMenu /> */}
           <Content
             className="site-background"
             style={{
