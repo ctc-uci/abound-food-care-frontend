@@ -5,6 +5,7 @@ import { Layout } from 'antd';
 
 // Pages
 import Login from './pages/Login';
+import CreateAccount from './pages/CreateAccount';
 import About from './pages/About';
 import Partners from './pages/Partners';
 import Solutions from './pages/Solutions';
@@ -38,6 +39,7 @@ function App() {
           >
             <Routes>
               <Route path="/login" exact element={<Login />} />
+              <Route path="/createAccount" exact element={<CreateAccount />} />
               <Route path="/about" exact element={<About />} />
               <Route path="/partners" exact element={<Partners />} />
               <Route path="/solutions" exact element={<Solutions />} />

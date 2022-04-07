@@ -1,14 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Chart from 'react-apexcharts';
 import ApexCharts from 'apexcharts';
-import PropTypes from 'prop-types';
-import { Form, Button } from 'antd';
+// import PropTypes from 'prop-types';
 
-const WeeklyInfo = props => {
-  const { nextPage, prevPage } = props;
+const WeeklyInfo = () => {
+  // const { nextPage, prevPage } = props;
 
-  const [options, setOptions] = React.useState(null);
-  const [series, setSeries] = React.useState(null);
+  const [options, setOptions] = useState(null);
+  const [series, setSeries] = useState(null);
   const generateData = count => {
     const dayOfWeek = [
       'Sunday',
@@ -66,7 +65,7 @@ const WeeklyInfo = props => {
     ApexCharts.exec('availability', 'updateSeries', updatedSeries);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const values = {
       chart: {
         id: 'availability',
@@ -130,21 +129,13 @@ const WeeklyInfo = props => {
       <div className="row">
         <div className="mixed-chart"> {renderChart()} </div>
       </div>
-      <Form.Item wrapperCol={{ offset: 19 }}>
-        <Button type="primary" htmlType="button" onClick={prevPage}>
-          Previous
-        </Button>
-        <Button type="primary" onClick={nextPage}>
-          Next
-        </Button>
-      </Form.Item>
     </div>
   );
 };
 
-WeeklyInfo.propTypes = {
-  nextPage: PropTypes.func.isRequired,
-  prevPage: PropTypes.func.isRequired,
-};
+// WeeklyInfo.propTypes = {
+//   nextPage: PropTypes.func.isRequired,
+//   prevPage: PropTypes.func.isRequired,
+// };
 
 export default WeeklyInfo;

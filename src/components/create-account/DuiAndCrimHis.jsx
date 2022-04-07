@@ -1,33 +1,38 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { Radio, Form, Input, Button } from 'antd';
+/* eslint-disable no-unused-vars */
+import React from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
+import { Radio, Form, Input } from 'antd';
 
 const validateMessages = {
   // eslint-disable-next-line no-template-curly-in-string
   required: 'Answer to this question is required!',
 };
 
-const DuiAndCrimHis = props => {
-  const { prevPage, setDuiAndCrimHis } = props;
-  const onFinish = async values => {
-    await setDuiAndCrimHis(values);
-  };
+const DuiAndCrimHis = () => {
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext();
+  // const { prevPage, setDuiAndCrimHis } = props;
+  // const onFinish = async values => {
+  //   await setDuiAndCrimHis(values);
+  // };
 
-  const [componentSize, setComponentSize] = useState('default');
-  const [requiredMark, setRequiredMarkType] = useState('optional');
+  // const [componentSize, setComponentSize] = useState('default');
+  // const [requiredMark, setRequiredMarkType] = useState('optional');
 
-  const onRequiredTypeChange = ({ requiredMarkValue }) => {
-    setRequiredMarkType(requiredMarkValue);
-  };
+  // const onRequiredTypeChange = ({ requiredMarkValue }) => {
+  //   setRequiredMarkType(requiredMarkValue);
+  // };
 
-  const onFormLayoutChange = ({ size }) => {
-    setComponentSize(size);
-  };
+  // const onFormLayoutChange = ({ size }) => {
+  //   setComponentSize(size);
+  // };
 
   return (
     <div>
       <h1>DUI/Criminal History, Training, & Additional History</h1>
-      <Form
+      {/* <Form
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 14 }}
         name="dui_criminal_history"
@@ -39,76 +44,78 @@ const DuiAndCrimHis = props => {
         }}
         onValuesChange={(onRequiredTypeChange, onFormLayoutChange)}
         requiredMark={requiredMark}
-      >
-        <Form.Item
-          name="duiHistory"
-          label="Do you have a DUI (Driving Under Influence) history?"
-          rules={[{ required: true }]}
-        >
-          <Radio.Group>
-            <Radio value="true">Yes</Radio>
-            <Radio value="false">No</Radio>
-          </Radio.Group>
-        </Form.Item>
-
-        <Form.Item
-          name="duiElaboration"
-          label="If yes, please elaborate:"
-          rules={[{ required: true }]}
-        >
-          <Input.TextArea />
-        </Form.Item>
-
-        <Form.Item
-          name="crimHistory"
-          label="Do you have a criminal history?"
-          rules={[{ required: true }]}
-        >
-          <Radio.Group>
-            <Radio value="true">Yes</Radio>
-            <Radio value="false">No</Radio>
-          </Radio.Group>
-        </Form.Item>
-
-        <Form.Item
-          name="crimHisElaboration"
-          label="If yes, please elaborate:"
-          rules={[{ required: true }]}
-        >
-          <Input.TextArea />
-        </Form.Item>
-
-        <Form.Item
-          name="chowmatchTraining"
-          label="Have you completed the Chowmatch Training?"
-          rules={[{ required: true }]}
-        >
-          <Radio.Group>
-            <Radio value="true">Yes</Radio>
-            <Radio value="false">No</Radio>
-          </Radio.Group>
-        </Form.Item>
-
-        <Form.Item label="Additional Information:">
-          <Input.TextArea placeholder="Please write anything we should know." />
-        </Form.Item>
-
-        <Form.Item wrapperCol={{ offset: 19 }}>
-          <Button type="primary" htmlType="button" onClick={prevPage}>
-            Previous
-          </Button>
-          <Button type="primary" htmlType="submit">
-            Finish
-          </Button>
-        </Form.Item>
-      </Form>
+      > */}
+      <Controller
+        control={control}
+        name="duiHistory"
+        render={({ field: { onChange, ref, value } }) => (
+          <Form.Item label="Do you have a DUI (Driving Under Influence) history?">
+            <Radio.Group onChange={onChange} ref={ref} value={value}>
+              <Radio value="true">Yes</Radio>
+              <Radio value="false">No</Radio>
+            </Radio.Group>
+          </Form.Item>
+        )}
+      />
+      <Controller
+        control={control}
+        name="duiHistoryDetails"
+        render={({ field: { onChange, ref } }) => (
+          <Form.Item label="If yes, please elaborate:">
+            <Input.TextArea onChange={onChange} ref={ref} />
+          </Form.Item>
+        )}
+      />
+      <Controller
+        control={control}
+        name="criminalHistory"
+        render={({ field: { onChange, ref, value } }) => (
+          <Form.Item label="Do you have a criminal history?">
+            <Radio.Group onChange={onChange} ref={ref} value={value}>
+              <Radio value="true">Yes</Radio>
+              <Radio value="false">No</Radio>
+            </Radio.Group>
+          </Form.Item>
+        )}
+      />
+      <Controller
+        control={control}
+        name="criminalHistoryDetails"
+        render={({ field: { onChange, ref } }) => (
+          <Form.Item label="If yes, please elaborate:">
+            <Input.TextArea onChange={onChange} ref={ref} />
+          </Form.Item>
+        )}
+      />
+      <Controller
+        control={control}
+        name="completedChowmatch"
+        render={({ field: { onChange, ref, value } }) => (
+          <Form.Item label="Completed Chowmatch Training?">
+            <Radio.Group onChange={onChange} ref={ref} value={value}>
+              <Radio value="true">Yes</Radio>
+              <Radio value="false">No</Radio>
+            </Radio.Group>
+          </Form.Item>
+        )}
+      />
+      <Controller
+        control={control}
+        name="additionalInfo"
+        render={({ field: { onChange, ref } }) => (
+          <Form.Item label="Additional Information (optional)">
+            <Input.TextArea onChange={onChange} ref={ref} />
+          </Form.Item>
+        )}
+      />
+      {/* </Form> */}
     </div>
   );
 };
 
-DuiAndCrimHis.propTypes = {
-  prevPage: PropTypes.func.isRequired,
-  setDuiAndCrimHis: PropTypes.func.isRequired,
-};
+// DuiAndCrimHis.propTypes = {
+//   prevPage: PropTypes.func.isRequired,
+//   setDuiAndCrimHis: PropTypes.func.isRequired,
+// };
 
 export default DuiAndCrimHis;
