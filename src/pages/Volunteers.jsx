@@ -4,7 +4,6 @@ import GeneralInfo from '../components/create-account/GeneralInfo';
 import WeeklyInfo from '../components/create-account/WeeklyInfo';
 import RolesAndSkills from '../components/create-account/RolesAndSkills';
 import DuiAndCrimHis from '../components/create-account/DuiAndCrimHis';
-import VolunteeringHistory from '../components/volunteer-profile-history/VolunteeringHistory';
 import 'antd/dist/antd.variable.min.css';
 
 function Volunteers() {
@@ -116,7 +115,6 @@ function Volunteers() {
         />
       )}
       {currPage === 4 && <DuiAndCrimHis prevPage={prevPage} setDuiAndCrimHis={setDuiAndCrimHis} />}
-      {currPage === 5 && <VolunteeringHistory />}
     </div>
   );
 }
