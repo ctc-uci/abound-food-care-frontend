@@ -1,10 +1,10 @@
 import '../styles/AdminDashboard.css';
 import { Row, Col } from 'antd';
 import React from 'react';
-import UpcomingEvents from './admin-dashboard-components/UpcomingEvents';
-import AdminNotifications from './admin-dashboard-components/AdminNotifications';
-import DashboardHeader from './admin-dashboard-components/DashboardHeader';
-import PastEvents from './admin-dashboard-components/PastEvents';
+import UpcomingEvents from '../components/admin-dashboard-components/UpcomingEvents';
+import AdminNotifications from '../components/admin-dashboard-components/AdminNotifications';
+import DashboardHeader from '../components/admin-dashboard-components/DashboardHeader';
+import PastEvents from '../components/admin-dashboard-components/PastEvents';
 
 const AdminDashboard = () => {
   return (
