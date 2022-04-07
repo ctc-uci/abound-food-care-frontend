@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Link } from 'react-router-dom';
 import { Form, Button } from 'antd';
-// import axios from 'axios';
+import moment from 'moment';
+import axios from 'axios';
 import EventsGeneralInfo from '../components/events/createEvent/EventsGeneralInfo';
 import EventsAdditionalInfo from '../components/events/createEvent/EventsAdditionalInfo';
 
@@ -13,8 +14,10 @@ const CreateEvent = () => {
 
   const schema = yup.object({
     eventName: yup.string().required(),
-    eventStartDateTime: yup.date().required(),
-    eventEndDateTime: yup.date().required(),
+    eventStartDate: yup.date().required(),
+    eventStartTime: yup.date().required(),
+    eventEndDate: yup.date().required(),
+    eventEndTime: yup.date().required(),
     eventType: yup.string().required(),
     volunteerCapacity: yup.number().integer().required(),
     canDrive: yup.bool(),
@@ -27,17 +30,26 @@ const CreateEvent = () => {
     foodServiceIndustryKnowledge: yup.bool(),
     addressStreet: yup.string().required(),
     addressCity: yup.string().required(),
-    addressState: yup.string().required(),
-    addressZip: yup.string().required(),
+    addressState: yup
+      .string()
+      .test('len', 'Must be a 2-letter state code', val => val.length === 2)
+      .required(),
+    addressZip: yup
+      .string()
+      .test('len', 'Zipcode must contain only 5 digits', val => val.length === 5)
+      .required(),
     notes: yup.string(),
-    fileAttachments: yup.array().of(yup.string()),
+    // fileAttachments: yup.array().of(yup.string()), TODO: update once waivers storing decided
+    fileAttachments: yup.string(),
   });
 
   const methods = useForm({
     defaultValues: {
       eventName: '',
-      eventStartDateTime: '',
-      eventEndDateTime: '',
+      eventStartDate: '',
+      eventStartTime: '',
+      eventEndDate: '',
+      eventEndTime: '',
       eventType: '',
       volunteerCapacity: null,
       canDrive: false,
@@ -53,11 +65,11 @@ const CreateEvent = () => {
       addressState: '',
       addressZip: '',
       notes: '',
-      fileAttachments: [null],
+      fileAttachments: '',
     },
     resolver: yupResolver(schema),
     mode: 'onChange',
-    // delayError: 750,
+    delayError: 750,
   });
 
   const setGivenValue = field => {
@@ -67,8 +79,10 @@ const CreateEvent = () => {
   const incrementFormStep = () => {
     setFormStep(cur => cur + 1);
     setGivenValue('eventName');
-    setGivenValue('eventStartDateTime');
-    setGivenValue('eventEndDateTime');
+    setGivenValue('eventStartDate');
+    setGivenValue('eventStartTime');
+    setGivenValue('eventEndDate');
+    setGivenValue('eventEndTime');
     setGivenValue('eventType');
     setGivenValue('volunteerCapacity');
     setGivenValue('canDrive');
@@ -91,19 +105,73 @@ const CreateEvent = () => {
     setGivenValue('fileAttachments');
   };
 
-  const onSubmit = values => {
+  const buildRequirementsArray = values => {
+    const requirements = [];
+
+    if (values.canDrive) {
+      requirements.push('drive');
+    }
+    if (values.isAdult) {
+      requirements.push('adult');
+    }
+    if (values.isMinor) {
+      requirements.push('minor');
+    }
+    if (values.firstAidTraining) {
+      requirements.push('first aid');
+    }
+    if (values.serveSafeKnowledge) {
+      requirements.push('serve safe');
+    }
+    if (values.transportationExperience) {
+      requirements.push('transportation');
+    }
+    if (values.movingWarehouseExperience) {
+      requirements.push('warehouse');
+    }
+    if (values.foodServiceIndustryKnowledge) {
+      requirements.push('food service');
+    }
+
+    return requirements;
+  };
+
+  const onSubmit = async values => {
     try {
-      // await axios.post('http://localhost:3001/events/create', data);
-      console.log(JSON.stringify(values, null, 2));
+      const requirements = buildRequirementsArray(values);
+
+      const startDate = moment(values.eventStartDate).format('L');
+      const startTime = moment(values.eventStartTime).format('LTS');
+      const endDate = moment(values.eventEndDate).format('L');
+      const endTime = moment(values.eventEndTime).format('LTS');
+
+      const startDatetime = `${startDate} ${startTime}`;
+      const endDatetime = `${endDate} ${endTime}`;
+
+      const payload = {
+        name: values.eventName,
+        eventType: values.eventType,
+        addressStreet: values.addressStreet,
+        addressZip: values.addressZip,
+        addressCity: values.addressCity,
+        addressState: values.addressState,
+        startDatetime,
+        endDatetime,
+        volunteerCapacity: values.volunteerCapacity,
+        requirements,
+      };
+      await axios.post('http://localhost:3001/events/', payload);
     } catch (e) {
       console.log(e.message);
     }
   };
 
+  const onError = (errors, e) => console.log(errors, e);
+
   return (
     <div>
       <FormProvider {...methods}>
-        <Form onFinish={methods.handleSubmit(onSubmit)}>
+        <Form onFinish={methods.handleSubmit(onSubmit, onError)}>
           {formStep >= 0 && (
             <section hidden={formStep !== 0}>
               <EventsGeneralInfo />
@@ -144,9 +212,7 @@ const CreateEvent = () => {
                 >
                   Previous
                 </Button>
-                {/* <Link to="/event"> */}
                 <Button
-                  // disabled={!methods.isValid}
                   style={{
                     background: '#115740',
                     color: 'white',
@@ -157,16 +223,9 @@ const CreateEvent = () => {
                 >
                   Publish Event
                 </Button>
-                {/* </Link> */}
               </div>
             </section>
           )}
-          {formStep >= 2 && (
-            <section hidden={formStep !== 2}>
-              <p>Event created!</p>
-            </section>
-          )}
-          {/* <pre>{JSON.stringify(methods.watch(), null, 2)}</pre> */}
         </Form>
       </FormProvider>
     </div>

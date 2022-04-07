@@ -1,14 +1,24 @@
-/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
-import { Form, DatePicker, Input, Select, Button, TimePicker, Checkbox, Row, Col } from 'antd';
+import {
+  Form,
+  DatePicker,
+  Input,
+  Select,
+  Button,
+  TimePicker,
+  Checkbox,
+  Row,
+  Col,
+  Typography,
+} from 'antd';
 import EventTypeModal from './EventTypeModal';
 
 const { Option } = Select;
+const { Text } = Typography;
 
 const EventsGeneralInfo = () => {
   const {
-    register,
     control,
     formState: { errors },
   } = useFormContext();
@@ -32,35 +42,8 @@ const EventsGeneralInfo = () => {
     setEventTypeModal(true);
   };
 
-  // const setEventTimes = () => {
-  //   // datetime state not setting
-  //   const startDateTime = `${eventStartDate} ${eventStartTime}`;
-  //   const endDateTime = `${eventEndDate} ${eventEndTime}`;
-  //   console.log(startDateTime, endDateTime);
-  //   setEventStartDateTime(startDateTime);
-  //   setEventEndDateTime(endDateTime);
-  // };
-
-  // const handleStartDate = (date, dateString) => {
-  //   setEventStartDate(dateString);
-  // };
-
-  // const handleStartTime = (time, timeString) => {
-  //   setEventStartTime(timeString);
-  // };
-
-  // const handleEndDate = (date, dateString) => {
-  //   setEventEndDate(dateString);
-  // };
-
-  // const handleEndTime = (time, timeString) => {
-  //   setEventEndTime(timeString);
-  //   setEventTimes();
-  // };
-
   // Event Type Menu
   const eventTypeMenu = eventsData.map(event => {
-    // eslint-disable-next-line react/no-array-index-key
     return <Option key={event.name}>{event.name}</Option>;
   });
 
@@ -73,29 +56,51 @@ const EventsGeneralInfo = () => {
         render={({ field: { onChange, ref } }) => (
           <Form.Item label="Event Name">
             <Input placeholder="Ex. Food Running Event" ref={ref} onChange={onChange} />
-            {errors.eventName && <p>{errors.eventName.message}</p>}
+            <Text type="danger">{errors.eventName && <p>{errors.eventName.message}</p>}</Text>
           </Form.Item>
         )}
       />
       <Controller
         control={control}
-        name="eventStartDateTime"
+        name="eventStartDate"
         render={({ field: { onChange, ref } }) => (
-          <Form.Item label="Start Date / Time">
+          <Form.Item label="Start Date">
             <DatePicker placeholder="Select date" onChange={onChange} ref={ref} />
-            <TimePicker placeholder="Select time" onChange={onChange} ref={ref} />
-            {errors.eventStartDateTime && <p>{errors.eventStartDateTime.message}</p>}
+            <Text type="danger">
+              {errors.eventStartDate && <p>{errors.eventStartDate.message}</p>}
+            </Text>
           </Form.Item>
         )}
       />
       <Controller
         control={control}
-        name="eventEndDateTime"
+        name="eventStartTime"
         render={({ field: { onChange, ref } }) => (
-          <Form.Item label="End Date / Time">
-            <DatePicker placeholder="Select date" onChange={onChange} ref={ref} />
+          <Form.Item label="Start Time">
             <TimePicker placeholder="Select time" onChange={onChange} ref={ref} />
-            {errors.eventEndDateTime && <p>{errors.eventEndDateTime.message}</p>}
+            <Text type="danger">
+              {errors.eventStartTime && <p>{errors.eventStartTime.message}</p>}
+            </Text>
+          </Form.Item>
+        )}
+      />
+      <Controller
+        control={control}
+        name="eventEndDate"
+        render={({ field: { onChange, ref } }) => (
+          <Form.Item label="End Date">
+            <DatePicker placeholder="Select date" onChange={onChange} ref={ref} />
+            <Text type="danger">{errors.eventEndDate && <p>{errors.eventEndDate.message}</p>}</Text>
+          </Form.Item>
+        )}
+      />
+      <Controller
+        control={control}
+        name="eventEndTime"
+        render={({ field: { onChange, ref } }) => (
+          <Form.Item label="End Time">
+            <TimePicker placeholder="Select time" onChange={onChange} ref={ref} />
+            <Text type="danger">{errors.eventEndTime && <p>{errors.eventEndTime.message}</p>}</Text>
           </Form.Item>
         )}
       />
@@ -129,7 +134,9 @@ const EventsGeneralInfo = () => {
         render={({ field: { onChange, ref } }) => (
           <Form.Item label="Num Volunteers">
             <Input style={{ width: '200px' }} onChange={onChange} ref={ref} />
-            {errors.volunteerCapacity && <p>{errors.volunteerCapacity.message}</p>}
+            <Text type="danger">
+              {errors.volunteerCapacity && <p>{errors.volunteerCapacity.message}</p>}
+            </Text>
           </Form.Item>
         )}
       />
@@ -226,40 +233,46 @@ const EventsGeneralInfo = () => {
           <Controller
             control={control}
             name="addressStreet"
-            render={({ field: { onChange, value, ref } }) => (
+            render={({ field: { onChange, ref } }) => (
               <Form.Item label="Street Address">
                 <Input placeholder="200 N Tustin Ave" onChange={onChange} ref={ref} />
-                {errors.addressStreet && <p>{errors.addressStreet.message}</p>}
+                <Text type="danger">
+                  {errors.addressStreet && <p>{errors.addressStreet.message}</p>}
+                </Text>
               </Form.Item>
             )}
           />
           <Controller
             control={control}
             name="addressCity"
-            render={({ field: { onChange, value, ref } }) => (
+            render={({ field: { onChange, ref } }) => (
               <Form.Item label="City">
                 <Input placeholder="Ex. Santa Ana" onChange={onChange} ref={ref} />
-                {errors.addressCity && <p>{errors.addressCity.message}</p>}
+                <Text type="danger">
+                  {errors.addressCity && <p>{errors.addressCity.message}</p>}
+                </Text>
               </Form.Item>
             )}
           />
           <Controller
             control={control}
             name="addressState"
-            render={({ field: { onChange, value, ref } }) => (
+            render={({ field: { onChange, ref } }) => (
               <Form.Item label="State">
                 <Input placeholder="Ex. CA" onChange={onChange} ref={ref} />
-                {errors.addressState && <p>{errors.addressState.message}</p>}
+                <Text type="danger">
+                  {errors.addressState && <p>{errors.addressState.message}</p>}
+                </Text>
               </Form.Item>
             )}
           />
           <Controller
             control={control}
             name="addressZip"
-            render={({ field: { onChange, value, ref } }) => (
+            render={({ field: { onChange, ref } }) => (
               <Form.Item label="Zipcode">
                 <Input placeholder="Ex. 92705" onChange={onChange} ref={ref} />
-                {errors.addressZip && <p>{errors.addressZip.message}</p>}
+                <Text type="danger">{errors.addressZip && <p>{errors.addressZip.message}</p>}</Text>
               </Form.Item>
             )}
           />
