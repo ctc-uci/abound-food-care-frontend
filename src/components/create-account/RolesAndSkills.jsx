@@ -1,37 +1,17 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-// import PropTypes from 'prop-types';
-import { Input, Radio, Form, Select, Checkbox, Row } from 'antd';
+import { Input, Radio, Form, Select, Checkbox, Row, Typography } from 'antd';
+
+const { Text } = Typography;
 
 const { Option } = Select;
-
-const validateMessages = {
-  // eslint-disable-next-line no-template-curly-in-string
-  required: 'Answer to this question is required!',
-};
 
 const RolesAndSkills = () => {
   const {
     control,
     formState: { errors },
   } = useFormContext();
-  // const { nextPage, prevPage, setRolesAndSkills } = props;
-  // const onFinish = values => {
-  //   setRolesAndSkills(values);
-  //   nextPage();
-  // };
-
-  // const [componentSize, setComponentSize] = useState('default');
-  // const [requiredMark, setRequiredMarkType] = useState('optional');
-
-  // const onRequiredTypeChange = ({ requiredMarkValue }) => {
-  //   setRequiredMarkType(requiredMarkValue);
-  // };
-
-  // const onFormLayoutChange = ({ size }) => {
-  //   setComponentSize(size);
-  // };
 
   return (
     <div>
@@ -60,6 +40,9 @@ const RolesAndSkills = () => {
                   <Checkbox onChange={onChange} ref={ref} checked={value}>
                     Food Running
                   </Checkbox>
+                  <Text type="danger">
+                    {errors.foodRunning && <p>{errors.foodRunning.message}</p>}
+                  </Text>
                 </Form.Item>
               )}
             />
@@ -71,6 +54,9 @@ const RolesAndSkills = () => {
                   <Checkbox onChange={onChange} ref={ref} checked={value}>
                     Distribution
                   </Checkbox>
+                  <Text type="danger">
+                    {errors.distribution && <p>{errors.distribution.message}</p>}
+                  </Text>
                 </Form.Item>
               )}
             />
@@ -88,6 +74,9 @@ const RolesAndSkills = () => {
                   <Checkbox onChange={onChange} ref={ref} checked={value}>
                     First Aid Training
                   </Checkbox>
+                  <Text type="danger">
+                    {errors.firstAidTraining && <p>{errors.firstAidTraining.message}</p>}
+                  </Text>
                 </Form.Item>
               )}
             />
@@ -99,6 +88,9 @@ const RolesAndSkills = () => {
                   <Checkbox onChange={onChange} ref={ref} checked={value}>
                     Serve Safe Knowledge
                   </Checkbox>
+                  <Text type="danger">
+                    {errors.serveSafeKnowledge && <p>{errors.serveSafeKnowledge.message}</p>}
+                  </Text>
                 </Form.Item>
               )}
             />
@@ -110,6 +102,11 @@ const RolesAndSkills = () => {
                   <Checkbox onChange={onChange} ref={ref} checked={value}>
                     Transportation Experience
                   </Checkbox>
+                  <Text type="danger">
+                    {errors.transportationExperience && (
+                      <p>{errors.transportationExperience.message}</p>
+                    )}
+                  </Text>
                 </Form.Item>
               )}
             />
@@ -121,6 +118,11 @@ const RolesAndSkills = () => {
                   <Checkbox onChange={onChange} ref={ref} checked={value}>
                     Moving/Warehouse Experience
                   </Checkbox>
+                  <Text type="danger">
+                    {errors.movingWarehouseExperience && (
+                      <p>{errors.movingWarehouseExperience.message}</p>
+                    )}
+                  </Text>
                 </Form.Item>
               )}
             />
@@ -132,6 +134,11 @@ const RolesAndSkills = () => {
                   <Checkbox onChange={onChange} ref={ref} checked={value}>
                     Food Service Industry Knowledge
                   </Checkbox>
+                  <Text type="danger">
+                    {errors.foodServiceIndustryKnowledge && (
+                      <p>{errors.foodServiceIndustryKnowledge.message}</p>
+                    )}
+                  </Text>
                 </Form.Item>
               )}
             />
@@ -149,6 +156,7 @@ const RolesAndSkills = () => {
                   <Checkbox onChange={onChange} ref={ref} checked={value}>
                     English
                   </Checkbox>
+                  <Text type="danger">{errors.english && <p>{errors.english.message}</p>}</Text>
                 </Form.Item>
               )}
             />
@@ -160,6 +168,7 @@ const RolesAndSkills = () => {
                   <Checkbox onChange={onChange} ref={ref} checked={value}>
                     Spanish
                   </Checkbox>
+                  <Text type="danger">{errors.spanish && <p>{errors.spanish.message}</p>}</Text>
                 </Form.Item>
               )}
             />
@@ -171,6 +180,7 @@ const RolesAndSkills = () => {
                   <Checkbox onChange={onChange} ref={ref} checked={value}>
                     French
                   </Checkbox>
+                  {errors.french && <p>{errors.french.message}</p>}
                 </Form.Item>
               )}
             />
@@ -182,6 +192,7 @@ const RolesAndSkills = () => {
                   <Checkbox onChange={onChange} ref={ref} checked={value}>
                     Chinese
                   </Checkbox>
+                  <Text type="danger">{errors.chinese && <p>{errors.chinese.message}</p>}</Text>
                 </Form.Item>
               )}
             />
@@ -193,6 +204,8 @@ const RolesAndSkills = () => {
                   <Checkbox onChange={onChange} ref={ref} checked={value}>
                     Tagalog
                   </Checkbox>
+                  <Text type="danger" />
+                  {errors.tagalog && <p>{errors.tagalog.message}</p>}
                 </Form.Item>
               )}
             />
@@ -204,6 +217,7 @@ const RolesAndSkills = () => {
                   <Checkbox onChange={onChange} ref={ref} checked={value}>
                     Korean
                   </Checkbox>
+                  <Text type="danger">{errors.korean && <p>{errors.korean.message}</p>}</Text>
                 </Form.Item>
               )}
             />
@@ -215,6 +229,7 @@ const RolesAndSkills = () => {
                   <Checkbox onChange={onChange} ref={ref} checked={value}>
                     Arabic
                   </Checkbox>
+                  <Text type="danger">{errors.arabic && <p>{errors.arabic.message}</p>}</Text>
                 </Form.Item>
               )}
             />
@@ -226,6 +241,7 @@ const RolesAndSkills = () => {
                   <Checkbox onChange={onChange} ref={ref} checked={value}>
                     German
                   </Checkbox>
+                  <Text type="danger">{errors.german && <p>{errors.german.message}</p>}</Text>
                 </Form.Item>
               )}
             />
@@ -237,6 +253,9 @@ const RolesAndSkills = () => {
                   <Checkbox onChange={onChange} ref={ref} checked={value}>
                     Vietnamese
                   </Checkbox>
+                  <Text type="danger">
+                    {errors.vietnamese && <p>{errors.vietnamese.message}</p>}
+                  </Text>
                 </Form.Item>
               )}
             />
@@ -249,6 +268,9 @@ const RolesAndSkills = () => {
         render={({ field: { onChange, ref } }) => (
           <Form.Item label="Weightlifting Ability">
             <Input onChange={onChange} ref={ref} placeholder="0 lbs" />
+            <Text type="danger">
+              {errors.weightLiftingAbility && <p>{errors.weightLiftingAbility.message}</p>}
+            </Text>
           </Form.Item>
         )}
       />
@@ -261,6 +283,7 @@ const RolesAndSkills = () => {
               <Radio value="true">Yes</Radio>
               <Radio value="false">No</Radio>
             </Radio.Group>
+            <Text type="danger">{errors.canDrive && <p>{errors.canDrive.message}</p>}</Text>
           </Form.Item>
         )}
       />
@@ -273,6 +296,9 @@ const RolesAndSkills = () => {
               <Radio value="true">Yes</Radio>
               <Radio value="false">No</Radio>
             </Radio.Group>
+            <Text type="danger">
+              {errors.willingToDrive && <p>{errors.willingToDrive.message}</p>}
+            </Text>
           </Form.Item>
         )}
       />
@@ -288,6 +314,7 @@ const RolesAndSkills = () => {
               <Option value="Mid-Size Vehicle">Mid-Size Vehicle</Option>
               <Option value="Small Vehicle (Compact, Sedan)">Small Vehicle (Compact, Sedan)</Option>
             </Select>
+            <Text type="danger">{errors.vehicleType && <p>{errors.vehicleType.message}</p>}</Text>
           </Form.Item>
         )}
       />
@@ -297,18 +324,12 @@ const RolesAndSkills = () => {
         render={({ field: { onChange, ref } }) => (
           <Form.Item label="How many miles are you comfortable driving?">
             <Input placeholder="0 miles" onChange={onChange} ref={ref} />
+            <Text type="danger">{errors.distance && <p>{errors.distance.message}</p>}</Text>
           </Form.Item>
         )}
       />
-      {/* </Form> */}
     </div>
   );
 };
-
-// RolesAndSkills.propTypes = {
-//   nextPage: PropTypes.func.isRequired,
-//   prevPage: PropTypes.func.isRequired,
-//   setRolesAndSkills: PropTypes.func.isRequired,
-// };
 
 export default RolesAndSkills;
