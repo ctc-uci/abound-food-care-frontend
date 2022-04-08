@@ -1,13 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import Chart from 'react-apexcharts';
+import { Controller, useFormContext } from 'react-hook-form';
 import ApexCharts from 'apexcharts';
-// import PropTypes from 'prop-types';
+import { Form, Typography } from 'antd';
+
+const { Text } = Typography;
+// TODO: correctly link availability data with react hook form
 
 const WeeklyInfo = () => {
-  // const { nextPage, prevPage } = props;
+  const {
+    setValue,
+    control,
+    formState: { errors },
+  } = useFormContext();
 
   const [options, setOptions] = useState(null);
   const [series, setSeries] = useState(null);
+  const [availability, setAvailability] = useState([]);
+
   const generateData = count => {
     const dayOfWeek = [
       'Sunday',
@@ -52,6 +62,82 @@ const WeeklyInfo = () => {
     setSeries(generatedSeries);
   };
 
+  const toMilitary = time => {
+    const justTime = time.slice(0, -2);
+    let militaryTime = '';
+    switch (justTime) {
+      case '1:00':
+        militaryTime = '13:00';
+        break;
+      case '1:30':
+        militaryTime = '13:30';
+        break;
+      case '2:00':
+        militaryTime = '14:00';
+        break;
+      case '2:30':
+        militaryTime = '14:30';
+        break;
+      case '3:00':
+        militaryTime = '15:00';
+        break;
+      case '3:30':
+        militaryTime = '15:30';
+        break;
+      case '4:00':
+        militaryTime = '16:00';
+        break;
+      case '4:30':
+        militaryTime = '16:30';
+        break;
+      case '5:00':
+        militaryTime = '17:00';
+        break;
+      default:
+        militaryTime = '12:00';
+    }
+    return militaryTime;
+  };
+
+  const getEndTime = startTime => {
+    const startMinutes = startTime.slice(startTime.indexOf(':') + 1, startTime.lastIndexOf(':'));
+    let startHour = startTime.split(':')[0];
+    let endMinutes = '';
+    switch (startMinutes) {
+      case '00':
+        endMinutes = '30';
+        break;
+      case '30':
+        endMinutes = '00';
+        break;
+      default:
+        endMinutes = '00';
+    }
+    if (endMinutes === '00') {
+      startHour = (parseInt(startHour, 10) + 1).toString();
+    }
+    return `1970-01-01 ${startHour}:${endMinutes}:00 America/Los_Angeles`;
+  };
+
+  const updateAvailability = (heatmapSeries, rowIndex, colIndex) => {
+    let startTime = heatmapSeries[rowIndex].name;
+    if (startTime.slice(-2) === 'PM') {
+      startTime = toMilitary(startTime);
+      startTime = `${startTime}:00`;
+    } else {
+      startTime = `${startTime.slice(0, -2)}:00`;
+    }
+    const endTime = getEndTime(startTime);
+    startTime = `1970-01-01 ${startTime} America/Los_Angeles`;
+    const dayOfWeek = heatmapSeries[rowIndex].data[colIndex].x;
+    const availabilityObject = {
+      dayOfWeek,
+      startTime,
+      endTime,
+    };
+    setAvailability(avail => [...avail, availabilityObject]);
+  };
+
   const onSquareClick = (event, chartContext, config) => {
     // Get square coordinates
     const rowIndex = config.seriesIndex;
@@ -62,6 +148,7 @@ const WeeklyInfo = () => {
     // toggle that value
     const newValue = curValue === 2 ? 1 : 2;
     updatedSeries[rowIndex].data[colIndex].y = newValue;
+    updateAvailability(updatedSeries, rowIndex, colIndex);
     ApexCharts.exec('availability', 'updateSeries', updatedSeries);
   };
 
@@ -118,7 +205,26 @@ const WeeklyInfo = () => {
 
   const renderChart = () => {
     if (options) {
-      return <Chart options={options} series={series} type="heatmap" width="800" height="500" />;
+      return (
+        <Controller
+          control={control}
+          name="availabilities"
+          render={({ field: { ref } }) => (
+            <Form.Item>
+              <Chart
+                options={options}
+                series={series}
+                type="heatmap"
+                width="800"
+                height="500"
+                onChange={() => setValue('availabilities', availability)}
+                ref={ref}
+              />
+              <Text type="danger">{errors.availabilities && errors.availabilities.message}</Text>
+            </Form.Item>
+          )}
+        />
+      );
     }
     return null;
   };
@@ -128,14 +234,10 @@ const WeeklyInfo = () => {
       <h1>Weekly Availability</h1>
       <div className="row">
         <div className="mixed-chart"> {renderChart()} </div>
+        <pre>{JSON.stringify(availability, null, 2)}</pre>
       </div>
     </div>
   );
 };
-
-// WeeklyInfo.propTypes = {
-//   nextPage: PropTypes.func.isRequired,
-//   prevPage: PropTypes.func.isRequired,
-// };
 
 export default WeeklyInfo;
