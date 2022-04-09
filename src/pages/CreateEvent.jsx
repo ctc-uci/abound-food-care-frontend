@@ -4,7 +4,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, Button } from 'antd';
-// import moment from 'moment';
+import moment from 'moment';
 import axios from 'axios';
 import EventsGeneralInfo from '../components/events/createEvent/EventsGeneralInfo';
 import EventsAdditionalInfo from '../components/events/createEvent/EventsAdditionalInfo';
@@ -13,29 +13,6 @@ const CreateEvent = () => {
   const [formStep, setFormStep] = useState(0);
   const { id } = useParams();
   const [isEdit] = useState(id);
-  const [defaultValues, setDefaultValues] = useState({
-    eventName: '',
-    eventStartDate: '',
-    eventStartTime: '',
-    eventEndDate: '',
-    eventEndTime: '',
-    eventType: '',
-    volunteerCapacity: null,
-    canDrive: false,
-    isAdult: false,
-    isMinor: false,
-    firstAidTraining: false,
-    serveSafeKnowledge: false,
-    transportationExperience: false,
-    movingWarehouseExperience: false,
-    foodServiceIndustryKnowledge: false,
-    addressStreet: '',
-    addressCity: '',
-    addressState: '',
-    addressZip: '',
-    notes: '',
-    fileAttachments: '',
-  });
 
   const schema = yup.object({
     eventName: yup.string().required(),
@@ -68,34 +45,62 @@ const CreateEvent = () => {
     fileAttachments: yup.string(),
   });
 
+  const methods = useForm({
+    defaultValues: {
+      eventName: '',
+      eventStartDate: '',
+      eventStartTime: '',
+      eventEndDate: '',
+      eventEndTime: '',
+      eventType: '',
+      volunteerCapacity: null,
+      canDrive: false,
+      isAdult: false,
+      isMinor: false,
+      firstAidTraining: false,
+      serveSafeKnowledge: false,
+      transportationExperience: false,
+      movingWarehouseExperience: false,
+      foodServiceIndustryKnowledge: false,
+      addressStreet: '',
+      addressCity: '',
+      addressState: '',
+      addressZip: '',
+      notes: '',
+      fileAttachments: '',
+    },
+    resolver: yupResolver(schema),
+    delayError: 750,
+  });
+
   const getEventData = async () => {
     try {
       const eventResponse = await axios.get(`http://localhost:3001/events/${id}`);
       const eventData = eventResponse.data[0];
-      setDefaultValues({
-        eventName: eventData.name,
-        eventStartDate: '',
-        eventStartTime: '',
-        eventEndDate: '',
-        eventEndTime: '',
-        eventType: eventData.eventType,
-        volunteerCapacity: eventData.volunteerCapacity,
-        canDrive: '',
-        isAdult: '',
-        isMinor: '',
-        firstAidTraining: '',
-        serveSafeKnowledge: '',
-        transportationExperience: '',
-        movingWarehouseExperience: '',
-        foodServiceIndustryKnowledge: '',
-        addressStreet: eventData.addressStreet,
-        addressCity: eventData.addressCity,
-        addressState: eventData.addressState,
-        addressZip: eventData.addressZip,
-        notes: eventData.notes,
-        fileAttachments: eventData.fileAttachments,
-      });
-      console.log(defaultValues);
+      console.log(eventData);
+      methods.setValue('eventName', eventData.name);
+      methods.setValue('eventType', eventData.eventType);
+      methods.setValue('volunteerCapacity', eventData.volunteerCapacity);
+      methods.setValue('addressStreet', eventData.addressStreet);
+      methods.setValue('addressCity', eventData.addressCity);
+      methods.setValue('addressState', eventData.addressState);
+      methods.setValue('addressZip', eventData.addressZip);
+      methods.setValue('notes', eventData.notes);
+      methods.setValue('addressStreet', eventData.addressStreet);
+      // eventStartDate: '',
+      // eventStartTime: '',
+      // eventEndDate: '',
+      // eventEndTime: '',
+      // canDrive: '',
+      // isAdult: '',
+      // isMinor: '',
+      // firstAidTraining: '',
+      // serveSafeKnowledge: '',
+      // transportationExperience: '',
+      // movingWarehouseExperience: '',
+      // foodServiceIndustryKnowledge: '',
+
+      // 'fileAttachments': 'eventData.fileAttachments)'; TBD once waivers set up in db
     } catch (e) {
       console.log('Error while getting event data!');
     }
@@ -106,13 +111,7 @@ const CreateEvent = () => {
     if (isEdit) {
       getEventData();
     }
-  }, []);
-
-  const methods = useForm({
-    defaultValues,
-    resolver: yupResolver(schema),
-    delayError: 750,
-  });
+  }, [isEdit]);
 
   const setGivenValue = field => {
     methods.setValue(field, methods.getValues(field));
@@ -147,62 +146,62 @@ const CreateEvent = () => {
     setGivenValue('fileAttachments');
   };
 
-  // const buildRequirementsArray = values => {
-  //   const requirements = [];
+  const buildRequirementsArray = values => {
+    const requirements = [];
 
-  //   if (values.canDrive) {
-  //     requirements.push('drive');
-  //   }
-  //   if (values.isAdult) {
-  //     requirements.push('adult');
-  //   }
-  //   if (values.isMinor) {
-  //     requirements.push('minor');
-  //   }
-  //   if (values.firstAidTraining) {
-  //     requirements.push('first aid');
-  //   }
-  //   if (values.serveSafeKnowledge) {
-  //     requirements.push('serve safe');
-  //   }
-  //   if (values.transportationExperience) {
-  //     requirements.push('transportation');
-  //   }
-  //   if (values.movingWarehouseExperience) {
-  //     requirements.push('warehouse');
-  //   }
-  //   if (values.foodServiceIndustryKnowledge) {
-  //     requirements.push('food service');
-  //   }
+    if (values.canDrive) {
+      requirements.push('drive');
+    }
+    if (values.isAdult) {
+      requirements.push('adult');
+    }
+    if (values.isMinor) {
+      requirements.push('minor');
+    }
+    if (values.firstAidTraining) {
+      requirements.push('first aid');
+    }
+    if (values.serveSafeKnowledge) {
+      requirements.push('serve safe');
+    }
+    if (values.transportationExperience) {
+      requirements.push('transportation');
+    }
+    if (values.movingWarehouseExperience) {
+      requirements.push('warehouse');
+    }
+    if (values.foodServiceIndustryKnowledge) {
+      requirements.push('food service');
+    }
 
-  //   return requirements;
-  // };
+    return requirements;
+  };
 
-  const onSubmit = values => {
+  const onSubmit = async values => {
     try {
-      // const requirements = buildRequirementsArray(values);
+      const requirements = buildRequirementsArray(values);
 
-      // const startDate = moment(values.eventStartDate).format('L');
-      // const startTime = moment(values.eventStartTime).format('LTS');
-      // const endDate = moment(values.eventEndDate).format('L');
-      // const endTime = moment(values.eventEndTime).format('LTS');
+      const startDate = moment(values.eventStartDate).format('L');
+      const startTime = moment(values.eventStartTime).format('LTS');
+      const endDate = moment(values.eventEndDate).format('L');
+      const endTime = moment(values.eventEndTime).format('LTS');
 
-      // const startDatetime = `${startDate} ${startTime}`;
-      // const endDatetime = `${endDate} ${endTime}`;
+      const startDatetime = `${startDate} ${startTime}`;
+      const endDatetime = `${endDate} ${endTime}`;
 
-      // const payload = {
-      //   name: values.eventName,
-      //   eventType: values.eventType,
-      //   addressStreet: values.addressStreet,
-      //   addressZip: values.addressZip,
-      //   addressCity: values.addressCity,
-      //   addressState: values.addressState,
-      //   startDatetime,
-      //   endDatetime,
-      //   volunteerCapacity: values.volunteerCapacity,
-      //   requirements,
-      // };
-      // await axios.post('http://localhost:3001/events/', payload);
+      const payload = {
+        name: values.eventName,
+        eventType: values.eventType,
+        addressStreet: values.addressStreet,
+        addressZip: values.addressZip,
+        addressCity: values.addressCity,
+        addressState: values.addressState,
+        startDatetime,
+        endDatetime,
+        volunteerCapacity: values.volunteerCapacity,
+        requirements,
+      };
+      await axios.post('http://localhost:3001/events/', payload);
       console.log(values);
     } catch (e) {
       console.log(e.message);
