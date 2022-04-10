@@ -1,22 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Chart from 'react-apexcharts';
-import { Controller, useFormContext } from 'react-hook-form';
 import ApexCharts from 'apexcharts';
-import { Form, Typography } from 'antd';
+import PropTypes from 'prop-types';
 
-const { Text } = Typography;
 // TODO: correctly link availability data with react hook form
 
-const WeeklyInfo = () => {
-  const {
-    setValue,
-    control,
-    formState: { errors },
-  } = useFormContext();
-
+const WeeklyInfo = ({ availability, setAvailability }) => {
   const [options, setOptions] = useState(null);
   const [series, setSeries] = useState(null);
-  const [availability, setAvailability] = useState([]);
+  // const [availability, setAvailability] = useState([]);
 
   const generateData = count => {
     const dayOfWeek = [
@@ -119,23 +111,27 @@ const WeeklyInfo = () => {
     return `1970-01-01 ${startHour}:${endMinutes}:00 America/Los_Angeles`;
   };
 
-  const updateAvailability = (heatmapSeries, rowIndex, colIndex) => {
-    let startTime = heatmapSeries[rowIndex].name;
-    if (startTime.slice(-2) === 'PM') {
-      startTime = toMilitary(startTime);
-      startTime = `${startTime}:00`;
+  const updateAvailability = (heatmapSeries, rowIndex, colIndex, value) => {
+    if (value === 2) {
+      let startTime = heatmapSeries[rowIndex].name;
+      if (startTime.slice(-2) === 'PM') {
+        startTime = toMilitary(startTime);
+        startTime = `${startTime}:00`;
+      } else {
+        startTime = `${startTime.slice(0, -2)}:00`;
+      }
+      const endTime = getEndTime(startTime);
+      startTime = `1970-01-01 ${startTime} America/Los_Angeles`;
+      const dayOfWeek = heatmapSeries[rowIndex].data[colIndex].x;
+      const availabilityObject = {
+        dayOfWeek,
+        startTime,
+        endTime,
+      };
+      setAvailability(avail => [...avail, availabilityObject]);
     } else {
-      startTime = `${startTime.slice(0, -2)}:00`;
+      // TODO: remove availabilityObject from availability if cell deselected
     }
-    const endTime = getEndTime(startTime);
-    startTime = `1970-01-01 ${startTime} America/Los_Angeles`;
-    const dayOfWeek = heatmapSeries[rowIndex].data[colIndex].x;
-    const availabilityObject = {
-      dayOfWeek,
-      startTime,
-      endTime,
-    };
-    setAvailability(avail => [...avail, availabilityObject]);
   };
 
   const onSquareClick = (event, chartContext, config) => {
@@ -148,7 +144,7 @@ const WeeklyInfo = () => {
     // toggle that value
     const newValue = curValue === 2 ? 1 : 2;
     updatedSeries[rowIndex].data[colIndex].y = newValue;
-    updateAvailability(updatedSeries, rowIndex, colIndex);
+    updateAvailability(updatedSeries, rowIndex, colIndex, newValue);
     ApexCharts.exec('availability', 'updateSeries', updatedSeries);
   };
 
@@ -205,26 +201,7 @@ const WeeklyInfo = () => {
 
   const renderChart = () => {
     if (options) {
-      return (
-        <Controller
-          control={control}
-          name="availabilities"
-          render={({ field: { ref } }) => (
-            <Form.Item>
-              <Chart
-                options={options}
-                series={series}
-                type="heatmap"
-                width="800"
-                height="500"
-                onChange={() => setValue('availabilities', availability)}
-                ref={ref}
-              />
-              <Text type="danger">{errors.availabilities && errors.availabilities.message}</Text>
-            </Form.Item>
-          )}
-        />
-      );
+      return <Chart options={options} series={series} type="heatmap" width="800" height="500" />;
     }
     return null;
   };
@@ -238,6 +215,11 @@ const WeeklyInfo = () => {
       </div>
     </div>
   );
+};
+
+WeeklyInfo.propTypes = {
+  availability: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
+  setAvailability: PropTypes.func.isRequired,
 };
 
 export default WeeklyInfo;

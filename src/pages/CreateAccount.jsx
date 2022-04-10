@@ -11,26 +11,35 @@ import WeeklyInfo from '../components/create-account/WeeklyInfo';
 
 const CreateAccount = () => {
   const [formStep, setFormStep] = useState(0);
+  const [availability, setAvailability] = useState([]);
+
+  const phoneRegExp =
+    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+  const zipRegExp = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
 
   const schema = yup.object({
-    firstName: yup.string().required(),
-    lastName: yup.string().required(),
+    firstName: yup.string().required('First name is a required field'),
+    lastName: yup.string().required('Last name is a required field'),
     role: yup.string().required(),
     organization: yup.string().required(),
     birthdate: yup.date().required(),
-    email: yup.string().required(),
-    phone: yup.string().required(),
+    email: yup.string().email('Must be a valid email').required('Email is required'),
+    phone: yup
+      .string()
+      .matches(phoneRegExp, 'Phone number is not valid')
+      .required('Phone number is a required field'),
     preferredContactMethod: yup.string().required(),
-    addressStreet: yup.string().required(),
+    addressStreet: yup.string().required('Street address is a required field'),
     addressZip: yup
       .string()
-      .test('len', 'Zipcode must contain only 5 digits', val => val.length === 5)
-      .required(),
-    addressCity: yup.string().required(),
+      .matches(zipRegExp, 'Zipcode is not valid')
+      .required('Zipcode is required')
+      .test('len', 'Zipcode must contain only 5 digits', val => val.length === 5),
+    addressCity: yup.string().required('City is a required field'),
     addressState: yup
       .string()
       .test('len', 'Must be a 2-letter state code', val => val.length === 2)
-      .required(),
+      .required('State is a required field'),
     weightLiftingAbility: yup.number().integer().required(),
     criminalHistory: yup.bool().required(),
     criminalHistoryDetails: yup.string(),
@@ -41,8 +50,8 @@ const CreateAccount = () => {
     distributionInterest: yup.bool().required(),
     canDrive: yup.bool().required(),
     willingToDrive: yup.bool().required(),
-    vehicleType: yup.string().required(),
-    distance: yup.number().integer().required(),
+    vehicleType: yup.string(),
+    distance: yup.number().integer(),
     firstAidTraining: yup.bool().required(),
     serveSafeKnowledge: yup.bool().required(),
     transportationExperience: yup.bool().required(),
@@ -50,13 +59,6 @@ const CreateAccount = () => {
     foodServiceIndustryKnowledge: yup.bool().required(),
     languages: yup.array().of(yup.string()),
     additionalInformation: yup.string(),
-    availabilities: yup.array(
-      yup.object({
-        dayOfWeek: yup.string().required(),
-        startTime: yup.date().required(),
-        endTime: yup.date().required(),
-      }),
-    ),
   });
 
   const methods = useForm({
@@ -92,7 +94,6 @@ const CreateAccount = () => {
       foodServiceIndustryKnowledge: false,
       languages: [],
       additionalInformation: '',
-      availabilities: [],
     },
     resolver: yupResolver(schema),
     mode: 'onChange',
@@ -142,7 +143,6 @@ const CreateAccount = () => {
 
   const onSubmit = values => {
     try {
-      // TODO: build languages array, availabilities array
       const languages = buildLanguagesArray(values);
 
       const payload = {
@@ -177,7 +177,7 @@ const CreateAccount = () => {
         foodServiceIndustryKnowledge: values.foodServiceIndustryKnowledge,
         languages,
         additionalInformation: values.additionalInformation,
-        availabilities: values.availabilities,
+        availabilities: availability,
       };
 
       console.log(payload);
@@ -213,7 +213,7 @@ const CreateAccount = () => {
           )}
           {formStep >= 1 && (
             <section hidden={formStep !== 1}>
-              <WeeklyInfo />
+              <WeeklyInfo availability={availability} setAvailability={setAvailability} />
               <div>
                 <Button
                   style={{
@@ -289,7 +289,7 @@ const CreateAccount = () => {
               </div>
             </section>
           )}
-          <pre>{JSON.stringify(methods.watch(), null, 2)}</pre>
+          {/* <pre>{JSON.stringify(methods.watch(), null, 2)}</pre> */}
         </Form>
       </FormProvider>
     </div>
