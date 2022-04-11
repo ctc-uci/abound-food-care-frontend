@@ -73,11 +73,34 @@ const CreateEvent = () => {
     delayError: 750,
   });
 
+  function setRequirements(value) {
+    if (value === 'drive') {
+      methods.setValue('canDrive', true);
+    } else if (value === 'adult') {
+      methods.setValue('isAdult', true);
+    } else if (value === 'minor') {
+      methods.setValue('isMinor', true);
+    } else if (value === 'first aid') {
+      methods.setValue('firstAidTraining', true);
+    } else if (value === 'serve safe') {
+      methods.setValue('serveSafeKnowledge', true);
+    } else if (value === 'transportation') {
+      methods.setValue('transportationExperience', true);
+    } else if (value === 'warehouse') {
+      methods.setValue('movingWarehouseExperience', true);
+    } else if (value === 'food service') {
+      methods.setValue('foodServiceIndustryKnowledge', true);
+    }
+  }
+
   const getEventData = async () => {
     try {
       const eventResponse = await axios.get(`http://localhost:3001/events/${id}`);
       const eventData = eventResponse.data[0];
-      console.log(eventData);
+      // console.log(eventData);
+      // console.log(new Date(eventData.endDatetime));
+      // const endDateTime = new Date(eventData.endDatetime);
+      // const startDateTime = new Date(eventData.startDatetime);
       methods.setValue('eventName', eventData.name);
       methods.setValue('eventType', eventData.eventType);
       methods.setValue('volunteerCapacity', eventData.volunteerCapacity);
@@ -87,18 +110,13 @@ const CreateEvent = () => {
       methods.setValue('addressZip', eventData.addressZip);
       methods.setValue('notes', eventData.notes);
       methods.setValue('addressStreet', eventData.addressStreet);
-      // eventStartDate: '',
-      // eventStartTime: '',
-      // eventEndDate: '',
-      // eventEndTime: '',
-      // canDrive: '',
-      // isAdult: '',
-      // isMinor: '',
-      // firstAidTraining: '',
-      // serveSafeKnowledge: '',
-      // transportationExperience: '',
-      // movingWarehouseExperience: '',
-      // foodServiceIndustryKnowledge: '',
+      // methods.setValue('eventEndTime', '23:15:30 GMT-11:00');
+      // methods.setValue('eventStartDate', );
+      // methods.setValue('eventEndTime', )
+      // methods.setValue('eventStartTime', );
+      let { requirements } = eventData;
+      requirements = requirements ? requirements.slice(1, requirements.length - 1).split(',') : [];
+      requirements.forEach(r => setRequirements(r));
 
       // 'fileAttachments': 'eventData.fileAttachments)'; TBD once waivers set up in db
     } catch (e) {
