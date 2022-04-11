@@ -15,41 +15,46 @@ import {
 } from 'antd';
 import { SearchOutlined, DownOutlined } from '@ant-design/icons';
 import axios from 'axios';
+import DeclinePopup from './DeclinePopup';
 
 function ReviewHours() {
   const [isLoading, setLoading] = useState(true);
   const [unapprovedHours, setUnapprovedHours] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [sortCriterion, setSortCriterion] = useState('Date (most recent first)');
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalKey, setModalKey] = useState(0);
 
   const getHoursData = async () => {
+    const allHoursData = [];
+    let unapprovedHoursData = [];
     try {
-      const allHoursData = [];
       const { data: hoursResponse } = await axios.get('http://localhost:3001/hours/');
       for (let i = 0; i < hoursResponse.length; i += 1) {
         allHoursData.push(hoursResponse[i]);
       }
-      const unapprovedHoursData = allHoursData.filter(
+      unapprovedHoursData = allHoursData.filter(
         hour => hour.submitted === true && hour.declined === false && hour.approved === false,
       );
-      setUnapprovedHours(unapprovedHoursData);
     } catch (e) {
       console.log(e.message);
     }
+
+    return unapprovedHoursData;
   };
 
   useEffect(async () => {
-    getHoursData();
+    const unapprovedHoursData = await getHoursData();
 
     const data = [];
     const namesPromises = [];
     const orgPromises = [];
     const names = [];
     const organizations = [];
-    for (let i = 0; i < unapprovedHours.length; i += 1) {
+    for (let i = 0; i < unapprovedHoursData.length; i += 1) {
       namesPromises.push(
         axios
-          .get(`http://localhost:3001/users/${unapprovedHours[i].userId.toString()}`)
+          .get(`http://localhost:3001/users/${unapprovedHoursData[i].userId.toString()}`)
           .then(res => {
             names.push(`${res.data.firstName} ${res.data.lastName}`);
             organizations.push(res.data.organization);
@@ -59,14 +64,14 @@ function ReviewHours() {
     await Promise.all(namesPromises);
     await Promise.all(orgPromises);
 
-    for (let i = 0; i < unapprovedHours.length; i += 1) {
-      const startDate = new Date(unapprovedHours[i].startDatetime);
-      const endDate = new Date(unapprovedHours[i].endDatetime);
+    for (let i = 0; i < unapprovedHoursData.length; i += 1) {
+      const startDate = new Date(unapprovedHoursData[i].startDatetime);
+      const endDate = new Date(unapprovedHoursData[i].endDatetime);
       data.push({
         key: i,
         name: names[i],
         organization: organizations[i],
-        eventName: unapprovedHours[i].event.name,
+        eventName: unapprovedHoursData[i].event.name,
         date: startDate.toLocaleDateString(),
         start: startDate
           .toLocaleTimeString([], { hour12: true, hour: '2-digit', minute: '2-digit' })
@@ -120,9 +125,16 @@ function ReviewHours() {
     {
       title: 'Approved or Declined',
       key: 'review',
-      render: () => (
+      render: (_, record) => (
         <Space>
-          <Button>Decline</Button>
+          <Button
+            onClick={() => {
+              setModalKey(record.key);
+              setIsModalVisible(true);
+            }}
+          >
+            Decline
+          </Button>
           <Button type="primary" style={{ backgroundColor: '#115740' }}>
             Approve
           </Button>
@@ -222,6 +234,7 @@ function ReviewHours() {
 
         <div className="table">
           <Table
+            rowSelection={{ type: 'checkbox' }}
             columns={columns}
             dataSource={filteredData}
             loading={isLoading}
@@ -230,6 +243,17 @@ function ReviewHours() {
           />
         </div>
       </div>
+      {isModalVisible ? (
+        <DeclinePopup
+          setIsModalVisible={setIsModalVisible}
+          name={filteredData[modalKey].name}
+          organization={filteredData[modalKey].organization}
+          event={filteredData[modalKey].eventName}
+          date={filteredData[modalKey].date}
+          start={filteredData[modalKey].start}
+          end={filteredData[modalKey].end}
+        />
+      ) : null}
     </ConfigProvider>
   );
 }
