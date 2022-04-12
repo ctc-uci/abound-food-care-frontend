@@ -98,9 +98,8 @@ const CreateEvent = () => {
       const eventResponse = await axios.get(`http://localhost:3001/events/${id}`);
       const eventData = eventResponse.data[0];
       // console.log(eventData);
-      // console.log(new Date(eventData.endDatetime));
-      // const endDateTime = new Date(eventData.endDatetime);
-      // const startDateTime = new Date(eventData.startDatetime);
+      const endDateTime = new Date(eventData.endDatetime);
+      const startDateTime = new Date(eventData.startDatetime);
       methods.setValue('eventName', eventData.name);
       methods.setValue('eventType', eventData.eventType);
       methods.setValue('volunteerCapacity', eventData.volunteerCapacity);
@@ -110,10 +109,10 @@ const CreateEvent = () => {
       methods.setValue('addressZip', eventData.addressZip);
       methods.setValue('notes', eventData.notes);
       methods.setValue('addressStreet', eventData.addressStreet);
-      // methods.setValue('eventEndTime', '23:15:30 GMT-11:00');
-      // methods.setValue('eventStartDate', );
-      // methods.setValue('eventEndTime', )
-      // methods.setValue('eventStartTime', );
+      methods.setValue('eventEndTime', moment(endDateTime));
+      methods.setValue('eventStartDate', moment(startDateTime));
+      methods.setValue('eventEndDate', moment(endDateTime));
+      methods.setValue('eventStartTime', moment(startDateTime));
       let { requirements } = eventData;
       requirements = requirements ? requirements.slice(1, requirements.length - 1).split(',') : [];
       requirements.forEach(r => setRequirements(r));
