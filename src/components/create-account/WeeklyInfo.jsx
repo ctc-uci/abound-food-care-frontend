@@ -3,12 +3,10 @@ import Chart from 'react-apexcharts';
 import ApexCharts from 'apexcharts';
 import PropTypes from 'prop-types';
 
-// TODO: correctly link availability data with react hook form
-
 const WeeklyInfo = ({ availability, setAvailability }) => {
   const [options, setOptions] = useState(null);
   const [series, setSeries] = useState(null);
-  // const [availability, setAvailability] = useState([]);
+  const [deselected, setDeselected] = useState([]);
 
   const generateData = count => {
     const dayOfWeek = [
@@ -112,25 +110,25 @@ const WeeklyInfo = ({ availability, setAvailability }) => {
   };
 
   const updateAvailability = (heatmapSeries, rowIndex, colIndex, value) => {
+    let startTime = heatmapSeries[rowIndex].name;
+    if (startTime.slice(-2) === 'PM') {
+      startTime = toMilitary(startTime);
+      startTime = `${startTime}:00`;
+    } else {
+      startTime = `${startTime.slice(0, -2)}:00`;
+    }
+    const endTime = getEndTime(startTime);
+    startTime = `1970-01-01 ${startTime} America/Los_Angeles`;
+    const dayOfWeek = heatmapSeries[rowIndex].data[colIndex].x;
+    const availabilityObject = {
+      dayOfWeek,
+      startTime,
+      endTime,
+    };
     if (value === 2) {
-      let startTime = heatmapSeries[rowIndex].name;
-      if (startTime.slice(-2) === 'PM') {
-        startTime = toMilitary(startTime);
-        startTime = `${startTime}:00`;
-      } else {
-        startTime = `${startTime.slice(0, -2)}:00`;
-      }
-      const endTime = getEndTime(startTime);
-      startTime = `1970-01-01 ${startTime} America/Los_Angeles`;
-      const dayOfWeek = heatmapSeries[rowIndex].data[colIndex].x;
-      const availabilityObject = {
-        dayOfWeek,
-        startTime,
-        endTime,
-      };
       setAvailability(avail => [...avail, availabilityObject]);
     } else {
-      // TODO: remove availabilityObject from availability if cell deselected
+      setDeselected(deselectedAvail => [...deselectedAvail, availabilityObject]);
     }
   };
 
@@ -147,6 +145,18 @@ const WeeklyInfo = ({ availability, setAvailability }) => {
     updateAvailability(updatedSeries, rowIndex, colIndex, newValue);
     ApexCharts.exec('availability', 'updateSeries', updatedSeries);
   };
+
+  useEffect(() => {
+    const updatedAvailability = availability.filter(availabilityObject => {
+      return !deselected.find(
+        rm =>
+          rm.dayOfWeek === availabilityObject.dayOfWeek &&
+          rm.startTime === availabilityObject.startTime &&
+          rm.endTime === availabilityObject.endTime,
+      );
+    });
+    setAvailability(updatedAvailability);
+  }, [deselected]);
 
   useEffect(() => {
     const values = {

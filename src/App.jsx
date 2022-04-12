@@ -38,7 +38,7 @@ function App() {
             }}
           >
             <Routes>
-              <Route path="/login" exact element={<Login />} />
+              <Route path="/" exact element={<Login />} />
               <Route path="/createAccount" exact element={<CreateAccount />} />
               <Route path="/about" exact element={<About />} />
               <Route path="/partners" exact element={<Partners />} />

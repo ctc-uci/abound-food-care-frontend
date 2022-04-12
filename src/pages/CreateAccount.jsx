@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 // import axios from 'axios';
-import { Form, Button } from 'antd';
+import { Form, Button, Alert } from 'antd';
 import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -187,7 +187,19 @@ const CreateAccount = () => {
     }
   };
 
-  const onError = (errors, e) => console.log(errors, e);
+  const onError = (errors, e) => {
+    console.log(errors, e);
+    return (
+      <>
+        <Alert
+          message="Error"
+          description="Some form fields were not filled correctly"
+          type="error"
+          showIcon
+        />
+      </>
+    );
+  };
 
   return (
     <div>
