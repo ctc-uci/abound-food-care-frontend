@@ -205,6 +205,7 @@ const CreateEvent = () => {
 
       const startDatetime = `${startDate} ${startTime}`;
       const endDatetime = `${endDate} ${endTime}`;
+      console.log(values);
 
       const payload = {
         name: values.eventName,
@@ -217,8 +218,16 @@ const CreateEvent = () => {
         endDatetime,
         volunteerCapacity: values.volunteerCapacity,
         requirements,
+        notes: values.notes,
       };
-      await axios.post('http://localhost:3001/events/', payload);
+
+      // Check if this is editing or creating a new event
+      if (isEdit) {
+        await axios.put(`http://localhost:3001/events/${id}`, payload);
+      } else {
+        await axios.post('http://localhost:3001/events/', payload);
+      }
+
       console.log(values);
     } catch (e) {
       console.log(e.message);
@@ -285,7 +294,7 @@ const CreateEvent = () => {
               </div>
             </section>
           )}
-          <pre>{JSON.stringify(methods.watch(), null, 2)}</pre>
+          {/* <pre>{JSON.stringify(methods.watch(), null, 2)}</pre> */}
         </Form>
       </FormProvider>
     </div>
