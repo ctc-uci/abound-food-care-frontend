@@ -97,7 +97,7 @@ const CreateEvent = () => {
     try {
       const eventResponse = await axios.get(`http://localhost:3001/events/${id}`);
       const eventData = eventResponse.data[0];
-      // console.log(eventData);
+      console.log(eventData);
       const endDateTime = new Date(eventData.endDatetime);
       const startDateTime = new Date(eventData.startDatetime);
       methods.setValue('eventName', eventData.name);
@@ -114,9 +114,11 @@ const CreateEvent = () => {
       methods.setValue('eventEndDate', moment(endDateTime));
       methods.setValue('eventStartTime', moment(startDateTime));
       let { requirements } = eventData;
-      requirements = requirements ? requirements.slice(1, requirements.length - 1).split(',') : [];
-      requirements.forEach(r => setRequirements(r));
-
+      if (requirements) {
+        requirements = requirements.replaceAll('"', ''); // requirements that are two words are returned in quotes - must remove
+        requirements = requirements.slice(1, requirements.length - 1).split(',');
+        requirements.forEach(r => setRequirements(r));
+      }
       // 'fileAttachments': 'eventData.fileAttachments)'; TBD once waivers set up in db
     } catch (e) {
       console.log('Error while getting event data!');
@@ -206,6 +208,7 @@ const CreateEvent = () => {
       const startDatetime = `${startDate} ${startTime}`;
       const endDatetime = `${endDate} ${endTime}`;
       console.log(values);
+      console.log(requirements);
 
       const payload = {
         name: values.eventName,
@@ -228,7 +231,7 @@ const CreateEvent = () => {
         await axios.post('http://localhost:3001/events/', payload);
       }
 
-      console.log(values);
+      // console.log(values);
     } catch (e) {
       console.log(e.message);
     }
