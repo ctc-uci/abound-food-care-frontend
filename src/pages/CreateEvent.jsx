@@ -292,7 +292,7 @@ const CreateEvent = () => {
                   }}
                   htmlType="submit"
                 >
-                  Publish Event
+                  {isEdit ? 'Update Event' : 'Publish Event'}
                 </Button>
               </div>
             </section>
