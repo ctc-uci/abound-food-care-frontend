@@ -1,10 +1,10 @@
 import React from 'react';
 import { Form, Input, Upload, Button } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
+import useViewPort from '../../../common/useViewPort';
+import './createEvent.css';
 
 const { TextArea } = Input;
-
-// import useMobileWidth from '../../../common/useMobileWidth';
 
 // const layout = {
 //   labelCol: {
@@ -15,9 +15,10 @@ const { TextArea } = Input;
 //   },
 // };
 
-const isMobile = true;
-
 const EventsAdditionalInfo = () => {
+  const { width } = useViewPort();
+  const breakpoint = 720;
+
   const [componentSize, setComponentSize] = React.useState('default');
 
   const onFormLayoutChange = ({ size }) => {
@@ -26,9 +27,10 @@ const EventsAdditionalInfo = () => {
 
   return (
     <div>
-      <h1> Additional Information </h1>
-      <h1>Include additional information you would like your volunteers to know.</h1>
-
+      <h1> Additional Info </h1>
+      <div className="description">
+        <h2>Include additional information you would like your volunteers to know.</h2>
+      </div>
       <Form
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 14 }}
@@ -38,10 +40,14 @@ const EventsAdditionalInfo = () => {
         size={componentSize}
         onValuesChange={onFormLayoutChange}
       >
-        {isMobile ? (
+        {width < breakpoint ? (
           <>
-            <Form.Item label="Additional Info">
-              <TextArea placeholder="Controlled autosize" autoSize={{ minRows: 7, maxRows: 7 }} />
+            <br />
+            <Form.Item label="">
+              <TextArea
+                placeholder="Ex: This event will take place on December 3, 2021 at 9:00AM"
+                autoSize={{ minRows: 7, maxRows: 7 }}
+              />
             </Form.Item>
             <Form.Item label="Upload Forms">
               <Upload>

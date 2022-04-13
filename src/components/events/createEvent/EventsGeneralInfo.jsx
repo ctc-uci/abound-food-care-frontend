@@ -13,16 +13,16 @@ import {
   Space,
   Radio,
 } from 'antd';
-// import useMobileWidth from '../../../common/useMobileWidth';
+import useViewPort from '../../../common/useViewPort';
 import EventTypeModal from './EventTypeModal';
+import './createEvent.css';
 
-const isMobile = true;
 const { Option } = Select;
 
 const EventsGeneralInfo = () => {
-  // const onFinish = values => {
-  //   console.log(values);
-  // };
+  const { width } = useViewPort();
+  const breakpoint = 720;
+
   const defaultEventTypes = [
     {
       name: 'Distribution',
@@ -81,7 +81,7 @@ const EventsGeneralInfo = () => {
         size={componentSize}
         onValuesChange={onFormLayoutChange}
       >
-        {isMobile ? (
+        {width < breakpoint ? (
           <>
             <Form.Item label="Event Name" rules={[{ required: true }]}>
               <Input placeholder="Ex. Food Running Event" />
@@ -107,7 +107,12 @@ const EventsGeneralInfo = () => {
                 )}
               </div>
               <div>
-                <Button type="link" onClick={handleClickNewEventType} style={{ color: '#6CC24A' }}>
+                <Button
+                  className="btn1"
+                  type="link"
+                  onClick={handleClickNewEventType}
+                  style={{ color: '#6CC24A' }}
+                >
                   + New Event Type
                 </Button>
               </div>
@@ -117,12 +122,17 @@ const EventsGeneralInfo = () => {
             </Form.Item>
             <Form.Item label="Volunteer Type">
               <Select placeholder="Type"> {volunteerTypeMenu} </Select>
+              <div>
+                <Button
+                  className="btn1"
+                  type="link"
+                  onClick={handleClickNewEventType}
+                  style={{ color: '#6CC24A' }}
+                >
+                  + New Volunteer Type
+                </Button>
+              </div>
             </Form.Item>
-            <div>
-              <Button type="link" onClick={handleClickNewEventType} style={{ color: '#6CC24A' }}>
-                + New Volunteer Type
-              </Button>
-            </div>
             <Form.Item label="Requirements">
               <Radio.Group defaultValue="c" buttonStyle="solid">
                 <Radio.Button value="a">First Aid Training</Radio.Button>
@@ -136,8 +146,8 @@ const EventsGeneralInfo = () => {
               <Radio.Group defaultValue="c" buttonStyle="solid" style={{ marginTop: 16 }}>
                 <Radio.Button value="a">First Aid Training</Radio.Button>
               </Radio.Group>
-              {/* <Button onClick={toggle}>First Aid Training</Button>
-              <Button>Can Drive</Button>
+              {/* <Button className="slider">First Aid Training</Button> */}
+              {/* <Button>Can Drive</Button>
               <br />
               <Button>Adult(Age 18+)</Button>
               <Button>First Aid Training</Button> */}
@@ -164,9 +174,16 @@ const EventsGeneralInfo = () => {
               <Select placeholder="Type" style={{ width: '100px' }}>
                 {eventTypeMenu}
               </Select>
-              <Button type="link" onClick={handleClickNewEventType} style={{ color: '#6CC24A' }}>
-                New Event Type
-              </Button>
+              <div>
+                <Button
+                  className="newEventType"
+                  type="link"
+                  onClick={handleClickNewEventType}
+                  style={{ color: '#6CC24A' }}
+                >
+                  New Event Type
+                </Button>
+              </div>
               <div>
                 {eventTypeModal && (
                   <EventTypeModal
