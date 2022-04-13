@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 // import axios from 'axios';
-import { Form, Button, Alert } from 'antd';
+import { Form, Button } from 'antd';
 import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -12,6 +12,11 @@ import WeeklyInfo from '../components/create-account/WeeklyInfo';
 const CreateAccount = () => {
   const [formStep, setFormStep] = useState(0);
   const [availability, setAvailability] = useState([]);
+  const [componentSize, setComponentSize] = useState('default');
+
+  const onFormLayoutChange = ({ size }) => {
+    setComponentSize(size);
+  };
 
   const phoneRegExp =
     /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -51,7 +56,7 @@ const CreateAccount = () => {
     canDrive: yup.bool().required(),
     willingToDrive: yup.bool().required(),
     vehicleType: yup.string(),
-    distance: yup.number().integer(),
+    distance: yup.number().integer().nullable(true),
     firstAidTraining: yup.bool().required(),
     serveSafeKnowledge: yup.bool().required(),
     transportationExperience: yup.bool().required(),
@@ -141,6 +146,7 @@ const CreateAccount = () => {
     return languages;
   };
 
+  // TODO: backend connection once auth is finalized
   const onSubmit = values => {
     try {
       const languages = buildLanguagesArray(values);
@@ -179,7 +185,6 @@ const CreateAccount = () => {
         additionalInformation: values.additionalInformation,
         availabilities: availability,
       };
-
       console.log(payload);
       // await axios.post('http://localhost:3001/users/', payload);
     } catch (e) {
@@ -189,22 +194,19 @@ const CreateAccount = () => {
 
   const onError = (errors, e) => {
     console.log(errors, e);
-    return (
-      <>
-        <Alert
-          message="Error"
-          description="Some form fields were not filled correctly"
-          type="error"
-          showIcon
-        />
-      </>
-    );
   };
 
   return (
     <div>
       <FormProvider {...methods}>
-        <Form onFinish={methods.handleSubmit(onSubmit, onError)}>
+        <Form
+          labelWrap
+          labelCol={{ span: 6 }}
+          wrapperCol={{ span: 8 }}
+          size={componentSize}
+          onValuesChange={onFormLayoutChange}
+          onFinish={methods.handleSubmit(onSubmit, onError)}
+        >
           {formStep >= 0 && (
             <section hidden={formStep !== 0}>
               <GeneralInfo />
@@ -301,7 +303,6 @@ const CreateAccount = () => {
               </div>
             </section>
           )}
-          {/* <pre>{JSON.stringify(methods.watch(), null, 2)}</pre> */}
         </Form>
       </FormProvider>
     </div>

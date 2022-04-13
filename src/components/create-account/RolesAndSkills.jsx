@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Input, Radio, Form, Select, Checkbox, Row, Typography } from 'antd';
@@ -16,19 +15,6 @@ const RolesAndSkills = () => {
   return (
     <div>
       <h1>Interested Roles and Skills</h1>
-      {/* <Form
-        labelCol={{ span: 6 }}
-        wrapperCol={{ span: 14 }}
-        onFinish={onFinish}
-        validateMessages={validateMessages}
-        name="roles_n_skills"
-        size={componentSize}
-        initialValues={{
-          requiredMarkValue: requiredMark,
-        }}
-        onValuesChange={(onRequiredTypeChange, onFormLayoutChange)}
-        requiredMark={requiredMark}
-      > */}
       <section>
         <Form.Item label="Events Interested In">
           <Row>
@@ -266,7 +252,7 @@ const RolesAndSkills = () => {
         control={control}
         name="weightLiftingAbility"
         render={({ field: { onChange, ref } }) => (
-          <Form.Item label="Weightlifting Ability">
+          <Form.Item label="Weightlifting Ability" required>
             <Input onChange={onChange} ref={ref} placeholder="0 lbs" />
             <Text type="danger">
               {errors.weightLiftingAbility && <p>{errors.weightLiftingAbility.message}</p>}
@@ -278,7 +264,7 @@ const RolesAndSkills = () => {
         control={control}
         name="canDrive"
         render={({ field: { onChange, ref, value } }) => (
-          <Form.Item label="Can you drive?">
+          <Form.Item label="Can you drive?" required>
             <Radio.Group onChange={onChange} ref={ref} value={value}>
               <Radio value="true">Yes</Radio>
               <Radio value="false">No</Radio>
@@ -291,7 +277,7 @@ const RolesAndSkills = () => {
         control={control}
         name="willingToDrive"
         render={({ field: { onChange, ref, value } }) => (
-          <Form.Item label="Are you willing to drive?">
+          <Form.Item label="Are you willing to drive?" required>
             <Radio.Group onChange={onChange} ref={ref} value={value}>
               <Radio value="true">Yes</Radio>
               <Radio value="false">No</Radio>
@@ -323,7 +309,12 @@ const RolesAndSkills = () => {
         name="distance"
         render={({ field: { onChange, ref } }) => (
           <Form.Item label="How many miles are you comfortable driving?">
-            <Input placeholder="0 miles" onChange={onChange} ref={ref} />
+            <Input
+              placeholder="Ex. 0, 10, 15, 20"
+              onChange={onChange}
+              ref={ref}
+              style={{ width: '200px' }}
+            />
             <Text type="danger">{errors.distance && <p>{errors.distance.message}</p>}</Text>
           </Form.Item>
         )}

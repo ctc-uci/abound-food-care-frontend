@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { DatePicker, Form, Input, Radio, Typography } from 'antd';

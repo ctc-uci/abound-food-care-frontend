@@ -18,7 +18,7 @@ const DuiAndCrimHis = () => {
         control={control}
         name="duiHistory"
         render={({ field: { onChange, ref, value } }) => (
-          <Form.Item label="Do you have a DUI (Driving Under Influence) history?">
+          <Form.Item label="Do you have a DUI (Driving Under Influence) history?" required>
             <Radio.Group onChange={onChange} ref={ref} value={value}>
               <Radio value="true">Yes</Radio>
               <Radio value="false">No</Radio>
@@ -43,7 +43,7 @@ const DuiAndCrimHis = () => {
         control={control}
         name="criminalHistory"
         render={({ field: { onChange, ref, value } }) => (
-          <Form.Item label="Do you have a criminal history?">
+          <Form.Item label="Do you have a criminal history?" required>
             <Radio.Group onChange={onChange} ref={ref} value={value}>
               <Radio value="true">Yes</Radio>
               <Radio value="false">No</Radio>
@@ -70,7 +70,7 @@ const DuiAndCrimHis = () => {
         control={control}
         name="completedChowmatch"
         render={({ field: { onChange, ref, value } }) => (
-          <Form.Item label="Completed Chowmatch Training?">
+          <Form.Item label="Completed Chowmatch Training?" required>
             <Radio.Group onChange={onChange} ref={ref} value={value}>
               <Radio value="true">Yes</Radio>
               <Radio value="false">No</Radio>

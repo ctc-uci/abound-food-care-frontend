@@ -221,7 +221,6 @@ const WeeklyInfo = ({ availability, setAvailability }) => {
       <h1>Weekly Availability</h1>
       <div className="row">
         <div className="mixed-chart"> {renderChart()} </div>
-        <pre>{JSON.stringify(availability, null, 2)}</pre>
       </div>
     </div>
   );
