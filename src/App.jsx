@@ -16,17 +16,21 @@ import Profile from './pages/Profile';
 import Event from './pages/Event';
 import Waivers from './pages/Waivers';
 import Admin from './pages/Admin';
-// import AdminNavMenu from './components/navigation/AdminNavMenu';
+import useViewPort from './common/useViewPort';
+
+import AdminNavMenu from './components/navigation/AdminNavMenu';
 // import VolunteerNavMenu from './components/navigation/VolunteerNavMenu';
 
 const { Content } = Layout;
 
 function App() {
+  const { width } = useViewPort();
+  const breakpoint = 720;
   return (
     <div>
       <Layout>
         <Router>
-          {/* <AdminNavMenu /> */}
+          {width > breakpoint ? <AdminNavMenu /> : <></>}
           <Content
             className="site-background"
             style={{
