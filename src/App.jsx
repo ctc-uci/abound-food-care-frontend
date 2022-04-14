@@ -46,7 +46,7 @@ function App() {
               <Route path="/events" exact element={<Events />} />
               <Route path="/events/create" exact element={<CreateEvent />} />
               <Route path="/event" exact element={<Event />} />
-              <Route path="/volunteers" exact element={<Volunteers />} />
+              <Route path="/admin/volunteers" exact element={<Volunteers />} />
               <Route path="/profile" exact element={<Profile />} />
               <Route path="/event" exact element={<Event />} />
               <Route path="/waivers" exact element={<Waivers />} />

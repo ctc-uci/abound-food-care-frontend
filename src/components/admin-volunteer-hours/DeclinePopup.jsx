@@ -1,4 +1,6 @@
-import React from 'react';
+/* eslint-disable no-unused-vars */
+import React, { useState } from 'react';
+import axios from 'axios';
 import 'antd/dist/antd.variable.min.css';
 import '../volunteer-database/database.css';
 import { Input, Button, Row, Col, Modal } from 'antd';
@@ -6,7 +8,40 @@ import PropTypes from 'prop-types';
 
 const { TextArea } = Input;
 
-function DeclinePopup({ setIsModalVisible, name, organization, event, date, start, end }) {
+const DeclinePopup = ({
+  setIsModalVisible,
+  name,
+  userId,
+  organization,
+  eventName,
+  eventId,
+  startDate,
+  endDate,
+  startTime,
+  endTime,
+}) => {
+  const [notes, setNotes] = useState('');
+  const handleNotes = e => {
+    setNotes(e.target.value);
+  };
+  const handleDecline = async () => {
+    try {
+      const startDatetime = `${startDate} ${startTime}`;
+      const endDatetime = `${endDate} ${endTime}`;
+      const payload = {
+        startDatetime,
+        endDatetime,
+        submitted: false,
+        approved: false,
+        declined: true,
+        notes,
+      };
+      await axios.post(`http://localhost:3001/hours/${userId}/${eventId}`, payload);
+      setIsModalVisible(false);
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
   return (
     <Modal
       title="Decline Volunteer Hours"
@@ -17,7 +52,12 @@ function DeclinePopup({ setIsModalVisible, name, organization, event, date, star
         <Button key="cancel" onClick={() => setIsModalVisible(false)}>
           Cancel
         </Button>,
-        <Button type="primary" style={{ backgroundColor: '#115740' }} key="send">
+        <Button
+          type="primary"
+          style={{ backgroundColor: '#115740' }}
+          key="send"
+          onClick={handleDecline}
+        >
           Send
         </Button>,
       ]}
@@ -44,7 +84,7 @@ function DeclinePopup({ setIsModalVisible, name, organization, event, date, star
           <p style={{ textAlign: 'right', marginRight: '10%' }}>Event</p>
         </Col>
         <Col xs={24} xl={21}>
-          <Input placeholder={event} disabled />
+          <Input placeholder={eventName} disabled />
         </Col>
       </Row>
       <Row>
@@ -52,21 +92,21 @@ function DeclinePopup({ setIsModalVisible, name, organization, event, date, star
           <p style={{ textAlign: 'right', marginRight: '10%' }}>Date</p>
         </Col>
         <Col xs={24} xl={4}>
-          <Input placeholder={date} disabled />
+          <Input placeholder={startDate} disabled />
         </Col>
         <Col span={1} />
         <Col span={3}>
           <p style={{ textAlign: 'right', marginRight: '10%' }}>Time In</p>
         </Col>
         <Col xs={24} xl={3}>
-          <Input placeholder={start} disabled />
+          <Input placeholder={startTime} disabled />
         </Col>
         <Col span={1} />
         <Col span={3}>
           <p style={{ textAlign: 'right', marginRight: '10%' }}>Time Out</p>
         </Col>
         <Col xs={24} xl={3}>
-          <Input placeholder={end} disabled />
+          <Input placeholder={endTime} disabled />
         </Col>
       </Row>
       <h4>Feedback</h4>
@@ -77,31 +117,28 @@ function DeclinePopup({ setIsModalVisible, name, organization, event, date, star
         </Col>
         <Col span={1} />
         <Col xs={24} xl={20}>
-          <TextArea placeholder="Add any additional information here." autoSize={{ minRows: 2 }} />
+          <TextArea
+            placeholder="Add any additional information here."
+            autoSize={{ minRows: 2 }}
+            onChange={handleNotes}
+          />
         </Col>
       </Row>
     </Modal>
   );
-}
-
-DeclinePopup.defaultProps = {
-  setIsModalVisible: null,
-  name: '',
-  organization: '',
-  event: '',
-  date: '',
-  start: '',
-  end: '',
 };
 
 DeclinePopup.propTypes = {
-  setIsModalVisible: PropTypes.func,
-  name: PropTypes.string,
-  organization: PropTypes.string,
-  event: PropTypes.string,
-  date: PropTypes.string,
-  start: PropTypes.string,
-  end: PropTypes.string,
+  setIsModalVisible: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  userId: PropTypes.number.isRequired,
+  organization: PropTypes.string.isRequired,
+  eventName: PropTypes.string.isRequired,
+  eventId: PropTypes.number.isRequired,
+  startDate: PropTypes.string.isRequired,
+  endDate: PropTypes.string.isRequired,
+  startTime: PropTypes.string.isRequired,
+  endTime: PropTypes.string.isRequired,
 };
 
 export default DeclinePopup;

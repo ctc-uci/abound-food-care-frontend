@@ -17,19 +17,32 @@ import { SearchOutlined, DownOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import DeclinePopup from './DeclinePopup';
 
-function ReviewHours() {
+const ReviewHours = () => {
   const [isLoading, setLoading] = useState(true);
   const [unapprovedHours, setUnapprovedHours] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [sortCriterion, setSortCriterion] = useState('Date (most recent first)');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalKey, setModalKey] = useState(0);
+  const [selectedRows, setSelectedRows] = useState([]);
+
+  ConfigProvider.config({
+    theme: {
+      primaryColor: '#6CC24A',
+    },
+  });
+
+  const rowSelection = {
+    onChange: (selectedKeys, selectedRows_) => {
+      setSelectedRows(selectedRows_);
+    },
+  };
 
   const getHoursData = async () => {
     const allHoursData = [];
     let unapprovedHoursData = [];
     try {
-      const { data: hoursResponse } = await axios.get('http://localhost:3001/hours/');
+      const { data: hoursResponse } = await axios.get('http://localhost:3001/hours');
       for (let i = 0; i < hoursResponse.length; i += 1) {
         allHoursData.push(hoursResponse[i]);
       }
@@ -43,9 +56,39 @@ function ReviewHours() {
     return unapprovedHoursData;
   };
 
+  const handleApprove = async (userId, eventId, startDate, startTime, endDate, endTime) => {
+    try {
+      const startDatetime = `${startDate} ${startTime}`;
+      const endDatetime = `${endDate} ${endTime}`;
+      const payload = {
+        startDatetime,
+        endDatetime,
+        submitted: true,
+        approved: true,
+        declined: false,
+      };
+      await axios.post(`http://localhost:3001/hours/${userId}/${eventId}`, payload);
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
+
+  const handleApproveSelected = async () => {
+    for (let i = 0; i < selectedRows.length; i += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      await handleApprove(
+        selectedRows[i].userId,
+        selectedRows[i].eventId,
+        selectedRows[i].startDate,
+        selectedRows[i].startTime,
+        selectedRows[i].endDate,
+        selectedRows[i].endTime,
+      );
+    }
+  };
+
   useEffect(async () => {
     const unapprovedHoursData = await getHoursData();
-
     const data = [];
     const namesPromises = [];
     const orgPromises = [];
@@ -69,14 +112,17 @@ function ReviewHours() {
       const endDate = new Date(unapprovedHoursData[i].endDatetime);
       data.push({
         key: i,
+        userId: unapprovedHoursData[i].userId,
         name: names[i],
         organization: organizations[i],
+        eventId: unapprovedHoursData[i].eventId,
         eventName: unapprovedHoursData[i].event.name,
-        date: startDate.toLocaleDateString(),
-        start: startDate
+        startDate: startDate.toLocaleDateString(),
+        endDate: endDate.toLocaleDateString(),
+        startTime: startDate
           .toLocaleTimeString([], { hour12: true, hour: '2-digit', minute: '2-digit' })
           .toString(),
-        end: endDate
+        endTime: endDate
           .toLocaleTimeString([], { hour12: true, hour: '2-digit', minute: '2-digit' })
           .toString(),
       });
@@ -84,7 +130,7 @@ function ReviewHours() {
     setUnapprovedHours(data);
     setFilteredData(data);
     setLoading(false);
-  }, []);
+  }, [unapprovedHours]);
 
   const columns = [
     {
@@ -109,18 +155,18 @@ function ReviewHours() {
     },
     {
       title: 'Date',
-      dataIndex: 'date',
-      key: 'date',
+      dataIndex: 'startDate',
+      key: 'startDate',
     },
     {
       title: 'Start (PST)',
-      dataIndex: 'start',
-      key: 'start',
+      dataIndex: 'startTime',
+      key: 'startTime',
     },
     {
       title: 'End (PST)',
-      dataIndex: 'end',
-      key: 'end',
+      dataIndex: 'endTime',
+      key: 'endTime',
     },
     {
       title: 'Approved or Declined',
@@ -135,7 +181,20 @@ function ReviewHours() {
           >
             Decline
           </Button>
-          <Button type="primary" style={{ backgroundColor: '#115740' }}>
+          <Button
+            type="primary"
+            style={{ backgroundColor: '#115740' }}
+            onClick={() =>
+              handleApprove(
+                filteredData[modalKey].userId,
+                filteredData[modalKey].eventId,
+                filteredData[modalKey].startDate,
+                filteredData[modalKey].startTime,
+                filteredData[modalKey].endDate,
+                filteredData[modalKey].endTime,
+              )
+            }
+          >
             Approve
           </Button>
         </Space>
@@ -150,9 +209,9 @@ function ReviewHours() {
       if (
         volunteerHours.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
         volunteerHours.eventName.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        volunteerHours.date.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        volunteerHours.timeIn.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        volunteerHours.timeOut.toLowerCase().includes(e.target.value.toLowerCase())
+        volunteerHours.startDate.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        volunteerHours.startTime.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        volunteerHours.endTime.toLowerCase().includes(e.target.value.toLowerCase())
       ) {
         data.push(volunteerHours);
       }
@@ -161,11 +220,11 @@ function ReviewHours() {
     setFilteredData(data);
   };
 
-  ConfigProvider.config({
-    theme: {
-      primaryColor: '#6CC24A',
-    },
-  });
+  const onChange = e => {
+    if (e.target.value === '') {
+      onSearch(e);
+    }
+  };
 
   const sortMenu = (
     <Menu>
@@ -194,7 +253,9 @@ function ReviewHours() {
               <Input
                 size="large"
                 placeholder="Search by event, name, date..."
-                onChange={onSearch}
+                onPressEnter={onSearch}
+                onChange={onChange}
+                allowClear
                 prefix={<SearchOutlined style={{ fontSize: '22px', color: '#BFBFBF' }} />}
               />
             </Col>
@@ -225,7 +286,11 @@ function ReviewHours() {
           <Col span={12} />
           <Col span={4}>
             <Space>
-              <Button type="primary" style={{ backgroundColor: '#115740' }}>
+              <Button
+                type="primary"
+                style={{ backgroundColor: '#115740' }}
+                onClick={handleApproveSelected}
+              >
                 Approve Selected
               </Button>
             </Space>
@@ -234,7 +299,7 @@ function ReviewHours() {
 
         <div className="table">
           <Table
-            rowSelection={{ type: 'checkbox' }}
+            rowSelection={{ type: 'checkbox', ...rowSelection }}
             columns={columns}
             dataSource={filteredData}
             loading={isLoading}
@@ -246,16 +311,19 @@ function ReviewHours() {
       {isModalVisible ? (
         <DeclinePopup
           setIsModalVisible={setIsModalVisible}
+          userId={filteredData[modalKey].userId}
           name={filteredData[modalKey].name}
           organization={filteredData[modalKey].organization}
+          eventId={filteredData[modalKey].eventId}
           event={filteredData[modalKey].eventName}
-          date={filteredData[modalKey].date}
-          start={filteredData[modalKey].start}
-          end={filteredData[modalKey].end}
+          startDate={filteredData[modalKey].startDate}
+          endDate={filteredData[modalKey].endDate}
+          startTime={filteredData[modalKey].startTime}
+          endTime={filteredData[modalKey].endTime}
         />
       ) : null}
     </ConfigProvider>
   );
-}
+};
 
 export default ReviewHours;
