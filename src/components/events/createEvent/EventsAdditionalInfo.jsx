@@ -1,15 +1,10 @@
-/* eslint-disable no-unused-vars */
 import React from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import { Form, Input, Upload, Button } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 
 const EventsAdditionalInfo = () => {
-  const {
-    register,
-    control,
-    formState: { errors },
-  } = useFormContext();
+  const { control } = useFormContext();
 
   return (
     <div>
@@ -31,7 +26,7 @@ const EventsAdditionalInfo = () => {
       <Controller
         control={control}
         name="fileAttachments"
-        render={({ field: { onChange, value, ref } }) => (
+        render={({ field: { onChange, ref } }) => (
           <Form.Item label="Upload Forms">
             <Upload multiple ref={ref} onChange={onChange}>
               <Button
