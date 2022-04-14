@@ -199,16 +199,15 @@ const CreateEvent = () => {
   const onSubmit = async values => {
     try {
       const requirements = buildRequirementsArray(values);
-
+      // console.log(values);
       const startDate = moment(values.eventStartDate).format('L');
       const startTime = moment(values.eventStartTime).format('LTS');
       const endDate = moment(values.eventEndDate).format('L');
       const endTime = moment(values.eventEndTime).format('LTS');
+      const timeZone = moment(values.eventStartDate).format('Z');
 
-      const startDatetime = `${startDate} ${startTime}`;
-      const endDatetime = `${endDate} ${endTime}`;
-      console.log(values);
-      console.log(requirements);
+      const startDatetime = `${startDate} ${startTime} ${timeZone}`;
+      const endDatetime = `${endDate} ${endTime} ${timeZone}`;
 
       const payload = {
         name: values.eventName,
@@ -227,11 +226,11 @@ const CreateEvent = () => {
       // Check if this is editing or creating a new event
       if (isEdit) {
         await axios.put(`http://localhost:3001/events/${id}`, payload);
+        // TODO: Redirect to event page?
       } else {
         await axios.post('http://localhost:3001/events/', payload);
+        // TODO: Redirect to event page?
       }
-
-      // console.log(values);
     } catch (e) {
       console.log(e.message);
     }
