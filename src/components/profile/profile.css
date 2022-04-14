@@ -1,0 +1,14 @@
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--eden) !important;
+  font-weight: 500;
+}
+
+.ant-tabs-ink-bar {
+  position: absolute;
+  background: var(--eden);
+  pointer-events: none;
+}
+
+.ant-tabs-tab:hover {
+  color: var(--green);
+}

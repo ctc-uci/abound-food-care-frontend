@@ -4,11 +4,10 @@ import GeneralInfo from '../components/create-account/GeneralInfo';
 import WeeklyInfo from '../components/create-account/WeeklyInfo';
 import RolesAndSkills from '../components/create-account/RolesAndSkills';
 import DuiAndCrimHis from '../components/create-account/DuiAndCrimHis';
-import VolunteeringHistory from '../components/volunteer-profile-history/VolunteeringHistory';
 import 'antd/dist/antd.variable.min.css';
 
 function Volunteers() {
-  const [currPage, setCurrPage] = useState(1);
+  const [currPage, setCurrPage] = useState(5);
   const [birthdate, setBirthdate] = useState('');
 
   const [firstName, setFirstName] = useState('');
@@ -116,7 +115,6 @@ function Volunteers() {
         />
       )}
       {currPage === 4 && <DuiAndCrimHis prevPage={prevPage} setDuiAndCrimHis={setDuiAndCrimHis} />}
-      {currPage === 5 && <VolunteeringHistory />}
     </div>
   );
 }

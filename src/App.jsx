@@ -19,6 +19,7 @@ import Admin from './pages/Admin';
 import useViewPort from './common/useViewPort';
 
 import AdminNavMenu from './components/navigation/AdminNavMenu';
+import AdminDashboard from './pages/AdminDashboard';
 // import VolunteerNavMenu from './components/navigation/VolunteerNavMenu';
 
 const { Content } = Layout;
@@ -47,11 +48,13 @@ function App() {
               <Route path="/volunteeringHistory" exact element={<VolunteeringHistory />} />
               <Route path="/events" exact element={<Events />} />
               <Route path="/events/create" exact element={<CreateEvent />} />
+              <Route path="/event" exact element={<Event />} />
               <Route path="/volunteers" exact element={<Volunteers />} />
               <Route path="/profile" exact element={<Profile />} />
               <Route path="/event" exact element={<Event />} />
               <Route path="/waivers" exact element={<Waivers />} />
-              <Route path="/admin" exact element={<Admin />} />
+              <Route path="/admin" exact element={<AdminDashboard />} />
+              <Route path="/admin/volunteers" exact element={<Admin />} />
             </Routes>
           </Content>
         </Router>
