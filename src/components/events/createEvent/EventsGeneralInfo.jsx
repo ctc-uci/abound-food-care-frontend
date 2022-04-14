@@ -118,7 +118,7 @@ const EventsGeneralInfo = () => {
               </div>
             </Form.Item>
             <Form.Item label="Num Volunteers" rules={[{ required: true }]}>
-              <InputNumber />
+              <Input />
             </Form.Item>
             <Form.Item label="Volunteer Type">
               <Select placeholder="Type"> {volunteerTypeMenu} </Select>
