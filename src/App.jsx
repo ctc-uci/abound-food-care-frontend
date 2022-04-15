@@ -19,7 +19,6 @@ import Admin from './pages/Admin';
 import AdminNavMenu from './components/navigation/AdminNavMenu';
 import AdminDashboard from './pages/AdminDashboard';
 // import VolunteerNavMenu from './components/navigation/VolunteerNavMenu';
-import UploadWaiver from './components/upload-waiver/uploadWaiver';
 
 const { Content } = Layout;
 
@@ -53,7 +52,6 @@ function App() {
               <Route path="/waivers" exact element={<Waivers />} />
               <Route path="/admin" exact element={<AdminDashboard />} />
               <Route path="/admin/volunteers" exact element={<Admin />} />
-              <Route path="/upload-waiver" exact element={<UploadWaiver />} />
             </Routes>
           </Content>
         </Router>

@@ -6,6 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, Button } from 'antd';
 import moment from 'moment';
 import axios from 'axios';
+import uploadBoxPhoto from '../components/events/utils';
 import EventsGeneralInfo from '../components/events/createEvent/EventsGeneralInfo';
 import EventsAdditionalInfo from '../components/events/createEvent/EventsAdditionalInfo';
 
@@ -13,6 +14,7 @@ const CreateEvent = () => {
   const [formStep, setFormStep] = useState(0);
   const { id } = useParams();
   const [isEdit] = useState(id);
+  const [filesList, setFilesList] = useState([]);
 
   const schema = yup.object({
     eventName: yup.string().required(),
@@ -41,8 +43,6 @@ const CreateEvent = () => {
       .test('len', 'Zipcode must contain only 5 digits', val => val.length === 5)
       .required(),
     notes: yup.string(),
-    // fileAttachments: yup.array().of(yup.string()), TODO: update once waivers storing decided
-    fileAttachments: yup.string(),
   });
 
   const methods = useForm({
@@ -67,7 +67,6 @@ const CreateEvent = () => {
       addressState: '',
       addressZip: '',
       notes: '',
-      fileAttachments: '',
     },
     resolver: yupResolver(schema),
     delayError: 750,
@@ -208,6 +207,10 @@ const CreateEvent = () => {
 
       const startDatetime = `${startDate} ${startTime} ${timeZone}`;
       const endDatetime = `${endDate} ${endTime} ${timeZone}`;
+      let waivers = await Promise.all(
+        filesList.map(async file => uploadBoxPhoto(file.originFileObj)),
+      );
+      waivers = filesList.map((file, index) => ({ name: file.name, link: waivers[index] }));
 
       const payload = {
         name: values.eventName,
@@ -221,6 +224,7 @@ const CreateEvent = () => {
         volunteerCapacity: values.volunteerCapacity,
         requirements,
         notes: values.notes,
+        waivers,
       };
 
       // Check if this is editing or creating a new event
@@ -272,7 +276,7 @@ const CreateEvent = () => {
           )}
           {formStep >= 1 && (
             <section hidden={formStep !== 1}>
-              <EventsAdditionalInfo />
+              <EventsAdditionalInfo setFilesList={setFilesList} />
               <div>
                 <Button
                   style={{
