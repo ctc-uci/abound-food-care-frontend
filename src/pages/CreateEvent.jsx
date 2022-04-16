@@ -14,7 +14,6 @@ const CreateEvent = () => {
   const [formStep, setFormStep] = useState(0);
   const { id } = useParams();
   const [isEdit] = useState(id);
-  const [filesList, setFilesList] = useState([]);
 
   const schema = yup.object({
     eventName: yup.string().required(),
@@ -43,6 +42,7 @@ const CreateEvent = () => {
       .test('len', 'Zipcode must contain only 5 digits', val => val.length === 5)
       .required(),
     notes: yup.string(),
+    waiverAttachments: yup.array(),
   });
 
   const methods = useForm({
@@ -67,6 +67,7 @@ const CreateEvent = () => {
       addressState: '',
       addressZip: '',
       notes: '',
+      waiverAttachments: [],
     },
     resolver: yupResolver(schema),
     delayError: 750,
@@ -96,7 +97,6 @@ const CreateEvent = () => {
     try {
       const eventResponse = await axios.get(`http://localhost:3001/events/${id}`);
       const eventData = eventResponse.data[0];
-      console.log(eventData);
       const endDateTime = new Date(eventData.endDatetime);
       const startDateTime = new Date(eventData.startDatetime);
       methods.setValue('eventName', eventData.name);
@@ -207,10 +207,14 @@ const CreateEvent = () => {
 
       const startDatetime = `${startDate} ${startTime} ${timeZone}`;
       const endDatetime = `${endDate} ${endTime} ${timeZone}`;
+
       let waivers = await Promise.all(
-        filesList.map(async file => uploadBoxPhoto(file.originFileObj)),
+        values.waiverAttachments.map(async file => uploadBoxPhoto(file.originFileObj)),
       );
-      waivers = filesList.map((file, index) => ({ name: file.name, link: waivers[index] }));
+      waivers = values.waiverAttachments.map((file, index) => ({
+        name: file.name,
+        link: waivers[index],
+      }));
 
       const payload = {
         name: values.eventName,
@@ -226,7 +230,6 @@ const CreateEvent = () => {
         notes: values.notes,
         waivers,
       };
-
       // Check if this is editing or creating a new event
       if (isEdit) {
         await axios.put(`http://localhost:3001/events/${id}`, payload);
@@ -276,7 +279,7 @@ const CreateEvent = () => {
           )}
           {formStep >= 1 && (
             <section hidden={formStep !== 1}>
-              <EventsAdditionalInfo setFilesList={setFilesList} />
+              <EventsAdditionalInfo />
               <div>
                 <Button
                   style={{
