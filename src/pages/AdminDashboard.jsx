@@ -5,15 +5,25 @@ import UpcomingEvents from '../components/admin-dashboard-components/UpcomingEve
 import AdminNotifications from '../components/admin-dashboard-components/AdminNotifications';
 import DashboardHeader from '../components/admin-dashboard-components/DashboardHeader';
 import PastEvents from '../components/admin-dashboard-components/PastEvents';
+import useViewPort from '../common/useViewPort';
 
 const AdminDashboard = () => {
+  const { width } = useViewPort();
+  const breakpoint = 720;
+
   return (
     <div className="dashboard-container">
       <DashboardHeader />
       <Row className="dashboard-row" gutter={[32, 16]}>
         <Col className="dashboard-col" span={18}>
           <UpcomingEvents />
-          <AdminNotifications />
+          {width > breakpoint ? (
+            <>
+              <AdminNotifications />
+            </>
+          ) : (
+            <></>
+          )}
         </Col>
         <Col className="dashboard-col" span={6}>
           <PastEvents />

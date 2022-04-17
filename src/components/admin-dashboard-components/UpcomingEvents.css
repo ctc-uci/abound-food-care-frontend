@@ -1,3 +1,26 @@
+h2 {
+  font-family: 'Avenir';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  /* line-height: 19px; */
+  text-align: center;
+  letter-spacing: -0.02em;
+  color: rgba(0, 0, 0, 0.45);
+  margin: 0;
+}
+
+h3 {
+  font-family: 'Avenir';
+  font-style: normal;
+  font-weight: 800;
+  font-size: 20px;
+  /* line-height: 27px; */
+  text-align: center;
+  letter-spacing: -0.02em;
+  color: #000000;
+}
+
 .upcoming-event {
   width: 33.3%;
   text-align: left;
@@ -32,3 +55,4 @@
 .ant-card-head-title {
   font-weight: 600;
 }
+
