@@ -11,7 +11,7 @@ import {
   Row,
   Col,
   Space,
-  Radio,
+  Tag,
   Typography,
 } from 'antd';
 import useViewPort from '../../../common/useViewPort';
@@ -48,7 +48,6 @@ const EventsGeneralInfo = () => {
     setEventTypeModal(true);
   };
 
-  // Event Type Menu
   const eventTypeMenu = eventsData.map(event => {
     return <Option key={event.name}>{event.name}</Option>;
   });
@@ -58,66 +57,300 @@ const EventsGeneralInfo = () => {
       <h1> General Information </h1>
       {width < breakpoint ? (
         <>
-          <Form.Item label="Event Name" rules={[{ required: true }]}>
-            <Input placeholder="Ex. Food Running Event" />
-          </Form.Item>
+          <Controller
+            control={control}
+            name="eventName"
+            render={({ field: { onChange, ref } }) => (
+              <Form.Item label="Event Name">
+                <Input placeholder="Ex. Food Running Event" onChange={onChange} ref={ref} />
+                <Text type="danger">{errors.eventName && <p>{errors.eventName.message}</p>}</Text>
+              </Form.Item>
+            )}
+          />
           <Space>
-            <Form.Item label="Date" rules={[{ required: true }]}>
-              <DatePicker placeholder="Select date" />
-            </Form.Item>
-            <Form.Item label="Time" rules={[{ required: true }]}>
-              <TimePicker placeholder="Select time" />
-            </Form.Item>
-          </Space>
-          <Form.Item label="Event Type" rules={[{ required: true }]}>
-            <Select placeholder="Type"> {eventTypeMenu} </Select>
-            <div>
-              {eventTypeModal && (
-                <EventTypeModal
-                  visible={eventTypeModal}
-                  setVisible={setEventTypeModal}
-                  eventsData={eventsData}
-                  setEventsData={setEventsData}
-                />
+            <Controller
+              name="eventStartDate"
+              control={control}
+              render={({ field: { onChange, ref } }) => (
+                <Form.Item label="Start Date">
+                  <DatePicker placeholder="Select date" onChange={onChange} ref={ref} />
+                  <Text type="danger">
+                    {errors.eventStartDate && <p>{errors.eventStartDate.message}</p>}
+                  </Text>
+                </Form.Item>
               )}
-            </div>
-            <div>
-              <Button
-                className="btn1"
-                type="link"
-                onClick={handleClickNewEventType}
-                style={{ color: '#6CC24A' }}
-              >
-                + New Event Type
-              </Button>
-            </div>
-          </Form.Item>
-          <Form.Item label="Num Volunteers" rules={[{ required: true }]}>
-            <Input />
-          </Form.Item>
+            />
+            <Controller
+              name="eventStartTime"
+              control={control}
+              render={({ field: { onChange, ref } }) => (
+                <Form.Item label="Start Time">
+                  <TimePicker placeholder="Select time" onChange={onChange} ref={ref} />
+                  <Text type="danger">
+                    {errors.eventStartTime && <p>{errors.eventStartTime.message}</p>}
+                  </Text>
+                </Form.Item>
+              )}
+            />
+          </Space>
+          <Space>
+            <Controller
+              name="eventEndDate"
+              control={control}
+              render={({ field: { onChange, ref } }) => (
+                <Form.Item label="End Date">
+                  <DatePicker placeholder="Select date" onChange={onChange} ref={ref} />
+                  <Text type="danger">
+                    {errors.eventEndDate && <p>{errors.eventEndDate.message}</p>}
+                  </Text>
+                </Form.Item>
+              )}
+            />
+            <Controller
+              name="eventEndTime"
+              control={control}
+              render={({ field: { onChange, ref } }) => (
+                <Form.Item label="End Time">
+                  <TimePicker placeholder="Select time" onChange={onChange} ref={ref} />
+                  <Text type="danger">
+                    {errors.eventEndTime && <p>{errors.eventEndTime.message}</p>}
+                  </Text>
+                </Form.Item>
+              )}
+            />
+          </Space>
+          <Controller
+            name="eventType"
+            control={control}
+            render={({ field: { onChange, ref } }) => (
+              <Form.Item label="Event Type">
+                <Select placeholder="Type" onChange={onChange} ref={ref}>
+                  {' '}
+                  {eventTypeMenu}{' '}
+                </Select>
+                <div>
+                  {eventTypeModal && (
+                    <EventTypeModal
+                      visible={eventTypeModal}
+                      setVisible={setEventTypeModal}
+                      eventsData={eventsData}
+                      setEventsData={setEventsData}
+                    />
+                  )}
+                </div>
+                <div>
+                  <Button
+                    className="btn1"
+                    type="link"
+                    onClick={handleClickNewEventType}
+                    style={{ color: '#6CC24A' }}
+                  >
+                    + New Event Type
+                  </Button>
+                </div>
+                <Text type="danger">{errors.eventType && <p>{errors.eventType.message}</p>}</Text>
+              </Form.Item>
+            )}
+          />
+          <Controller
+            control={control}
+            name="volunteerCapacity"
+            render={({ field: { onChange, ref } }) => (
+              <Form.Item label="Num Volunteers">
+                <Input onChange={onChange} ref={ref} />
+                <Text type="danger">
+                  {errors.volunteerCapacity && <p>{errors.volunteerCapacity.message}</p>}
+                </Text>
+              </Form.Item>
+            )}
+          />
           <Form.Item label="Requirements">
-            <Radio.Group defaultValue="c" buttonStyle="solid">
-              <Radio.Button value="a">First Aid Training</Radio.Button>
-            </Radio.Group>
-            <Radio.Group defaultValue="c" buttonStyle="solid" style={{ marginTop: 16 }}>
-              <Radio.Button value="a">Can Drive</Radio.Button>
-            </Radio.Group>
-            <Radio.Group defaultValue="c" buttonStyle="solid" style={{ marginTop: 16 }}>
-              <Radio.Button value="a">Adult(Age 18+)</Radio.Button>
-            </Radio.Group>
-            <Radio.Group defaultValue="c" buttonStyle="solid" style={{ marginTop: 16 }}>
-              <Radio.Button value="a">First Aid Training</Radio.Button>
-            </Radio.Group>
-            {/* <Button className="slider">First Aid Training</Button> */}
-            {/* <Button>Can Drive</Button>
-              <br />
-              <Button>Adult(Age 18+)</Button>
-              <Button>First Aid Training</Button> */}
+            <Space>
+              <Controller
+                control={control}
+                name="firstAidTraining"
+                // eslint-disable-next-line no-unused-vars
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item>
+                    <Tag.CheckableTag
+                      style={{ borderColor: 'gray' }}
+                      onChange={onChange}
+                      checked={value}
+                    >
+                      First Aid Training
+                    </Tag.CheckableTag>
+                  </Form.Item>
+                )}
+              />
+              <Controller
+                control={control}
+                name="canDrive"
+                // eslint-disable-next-line no-unused-vars
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item>
+                    <Tag.CheckableTag
+                      style={{ borderColor: 'gray' }}
+                      onChange={onChange}
+                      checked={value}
+                    >
+                      Can Drive
+                    </Tag.CheckableTag>
+                  </Form.Item>
+                )}
+              />
+              <Controller
+                control={control}
+                name="isAdult"
+                // eslint-disable-next-line no-unused-vars
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item>
+                    <Tag.CheckableTag
+                      style={{ borderColor: 'gray' }}
+                      onChange={onChange}
+                      checked={value}
+                    >
+                      Adult (age 18+)
+                    </Tag.CheckableTag>
+                  </Form.Item>
+                )}
+              />
+            </Space>
+            <Space>
+              <Controller
+                control={control}
+                name="isMinor"
+                // eslint-disable-next-line no-unused-vars
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item>
+                    <Tag.CheckableTag
+                      style={{ borderColor: 'gray' }}
+                      onChange={onChange}
+                      checked={value}
+                    >
+                      Minor (age &lt; 18)
+                    </Tag.CheckableTag>
+                  </Form.Item>
+                )}
+              />
+              <Controller
+                control={control}
+                name="serveSafeKnowledge"
+                // eslint-disable-next-line no-unused-vars
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item>
+                    <Tag.CheckableTag
+                      style={{ borderColor: 'gray' }}
+                      onChange={onChange}
+                      checked={value}
+                    >
+                      Serve Safe Knowledge
+                    </Tag.CheckableTag>
+                  </Form.Item>
+                )}
+              />
+              <Controller
+                control={control}
+                name="transportationExperience"
+                // eslint-disable-next-line no-unused-vars
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item>
+                    <Tag.CheckableTag
+                      style={{ borderColor: 'gray' }}
+                      onChange={onChange}
+                      checked={value}
+                    >
+                      Transportation Experience
+                    </Tag.CheckableTag>
+                  </Form.Item>
+                )}
+              />
+            </Space>
+            <Space>
+              <Controller
+                control={control}
+                name="movingWarehouseExperience"
+                // eslint-disable-next-line no-unused-vars
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item>
+                    <Tag.CheckableTag
+                      style={{ borderColor: 'gray' }}
+                      onChange={onChange}
+                      checked={value}
+                    >
+                      Moving / Warehouse Experience
+                    </Tag.CheckableTag>
+                  </Form.Item>
+                )}
+              />
+              <Controller
+                control={control}
+                name="foodServiceIndustryKnowledge"
+                // eslint-disable-next-line no-unused-vars
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item>
+                    <Tag.CheckableTag
+                      style={{ borderColor: 'gray' }}
+                      onChange={onChange}
+                      checked={value}
+                    >
+                      Food Service Industry Knowledge
+                    </Tag.CheckableTag>
+                  </Form.Item>
+                )}
+              />
+            </Space>
           </Form.Item>
-
-          <Form.Item label="Location" rules={[{ required: true }]}>
-            <Input placeholder="Ex. Irvine, CA" />
+          <Form.Item label="Location">
+            <Controller
+              control={control}
+              name="addressStreet"
+              render={({ field: { onChange, ref } }) => (
+                <Form.Item label="Street Address">
+                  <Input placeholder="200 N Tustin Ave" onChange={onChange} ref={ref} />
+                  <Text type="danger">
+                    {errors.addressStreet && <p>{errors.addressStreet.message}</p>}
+                  </Text>
+                </Form.Item>
+              )}
+            />
+            <Controller
+              control={control}
+              name="addressCity"
+              render={({ field: { onChange, ref } }) => (
+                <Form.Item label="City">
+                  <Input placeholder="Ex. Santa Ana" onChange={onChange} ref={ref} />
+                  <Text type="danger">
+                    {errors.addressCity && <p>{errors.addressCity.message}</p>}
+                  </Text>
+                </Form.Item>
+              )}
+            />
+            <Controller
+              control={control}
+              name="addressState"
+              render={({ field: { onChange, ref } }) => (
+                <Form.Item label="State">
+                  <Input placeholder="Ex. CA" onChange={onChange} ref={ref} />
+                  <Text type="danger">
+                    {errors.addressState && <p>{errors.addressState.message}</p>}
+                  </Text>
+                </Form.Item>
+              )}
+            />
+            <Controller
+              control={control}
+              name="addressZip"
+              render={({ field: { onChange, ref } }) => (
+                <Form.Item label="Zipcode">
+                  <Input placeholder="Ex. 92705" onChange={onChange} ref={ref} />
+                  <Text type="danger">
+                    {errors.addressZip && <p>{errors.addressZip.message}</p>}
+                  </Text>
+                </Form.Item>
+              )}
+            />
           </Form.Item>
+          <Space />
         </>
       ) : (
         <>
@@ -200,6 +433,7 @@ const EventsGeneralInfo = () => {
                     />
                   )}
                 </div>
+                <Text type="danger">{errors.eventType && <p>{errors.eventType.message}</p>}</Text>
               </Form.Item>
             )}
           />

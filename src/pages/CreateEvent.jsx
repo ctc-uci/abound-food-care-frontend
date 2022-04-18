@@ -72,37 +72,12 @@ const CreateEvent = () => {
     delayError: 750,
   });
 
-  const setGivenValue = field => {
-    methods.setValue(field, methods.getValues(field));
-  };
-
   const incrementFormStep = () => {
     setFormStep(cur => cur + 1);
-    setGivenValue('eventName');
-    setGivenValue('eventStartDate');
-    setGivenValue('eventStartTime');
-    setGivenValue('eventEndDate');
-    setGivenValue('eventEndTime');
-    setGivenValue('eventType');
-    setGivenValue('volunteerCapacity');
-    setGivenValue('canDrive');
-    setGivenValue('isAdult');
-    setGivenValue('isMinor');
-    setGivenValue('firstAidTraining');
-    setGivenValue('serveSafeKnowledge');
-    setGivenValue('transportationExperience');
-    setGivenValue('movingWarehouseExperience');
-    setGivenValue('foodServiceIndustryKnowledge');
-    setGivenValue('addressStreet');
-    setGivenValue('addressCity');
-    setGivenValue('addressState');
-    setGivenValue('addressZip');
   };
 
   const decrementFormStep = () => {
     setFormStep(cur => cur - 1);
-    setGivenValue('notes');
-    setGivenValue('fileAttachments');
   };
 
   const buildRequirementsArray = values => {
@@ -159,6 +134,7 @@ const CreateEvent = () => {
         endDatetime,
         volunteerCapacity: values.volunteerCapacity,
         requirements,
+        notes: values.notes,
       };
       await axios.post('http://localhost:3001/events/', payload);
     } catch (e) {

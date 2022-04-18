@@ -31,27 +31,42 @@ const EventsAdditionalInfo = () => {
       {width < breakpoint ? (
         <>
           <br />
-          <Form.Item label="">
-            <TextArea
-              placeholder="Ex: This event will take place on December 3, 2021 at 9:00AM"
-              autoSize={{ minRows: 7, maxRows: 7 }}
-            />
-          </Form.Item>
-          <Form.Item label="Upload Forms">
-            <Upload>
-              <Button
-                icon={<RightOutlined />}
-                style={{
-                  background: 'rgba(108, 194, 74, 0.25)',
-                  color: 'rgba(0, 0, 0, 0.85)',
-                  border: 'rgba(17, 87, 64, 0.25)',
-                }}
-              >
-                {' '}
-                Click to Upload
-              </Button>
-            </Upload>
-          </Form.Item>
+          <Controller
+            control={control}
+            name="notes"
+            render={({ field: { onChange, value, ref } }) => (
+              <Form.Item label="Additional Info">
+                <TextArea
+                  placeholder="Ex: This event will take place on December 3, 2021 at 9:00AM"
+                  autoSize={{ minRows: 7, maxRows: 7 }}
+                  ref={ref}
+                  onChange={onChange}
+                  value={value}
+                />
+              </Form.Item>
+            )}
+          />
+          <Controller
+            control={control}
+            name="fileAttachments"
+            render={({ field: { onChange, value, ref } }) => (
+              <Form.Item label="Upload Forms">
+                <Upload multiple ref={ref} onChange={onChange}>
+                  <Button
+                    icon={<RightOutlined />}
+                    style={{
+                      background: 'rgba(108, 194, 74, 0.25)',
+                      color: 'rgba(0, 0, 0, 0.85)',
+                      border: 'rgba(17, 87, 64, 0.25)',
+                    }}
+                  >
+                    {' '}
+                    Click to Upload
+                  </Button>
+                </Upload>
+              </Form.Item>
+            )}
+          />
         </>
       ) : (
         <div>
@@ -93,7 +108,6 @@ const EventsAdditionalInfo = () => {
           />
         </div>
       )}
-      ;
     </div>
   );
 };
