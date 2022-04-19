@@ -1,13 +1,18 @@
 import React from 'react';
-import AdminEvents from '../components/events/adminEvent/AdminEvents';
+import PropTypes from 'prop-types';
+import EventDashboard from '../components/events/eventDashboard/EventDashboard';
 import 'antd/dist/antd.css';
 
-function Events() {
+const Events = ({ isAdmin }) => {
   return (
     <div>
-      <AdminEvents />
+      <EventDashboard isAdmin={isAdmin} />
     </div>
   );
-}
+};
+
+Events.propTypes = {
+  isAdmin: PropTypes.bool.isRequired,
+};
 
 export default Events;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import { Layout } from 'antd';
@@ -24,6 +24,9 @@ import AdminDashboard from './pages/AdminDashboard';
 const { Content } = Layout;
 
 function App() {
+  const [isAdmin] = useState(true);
+  console.log(isAdmin);
+
   return (
     <div>
       <Layout>
@@ -44,9 +47,9 @@ function App() {
               <Route path="/partners" exact element={<Partners />} />
               <Route path="/solutions" exact element={<Solutions />} />
               <Route path="/volunteeringHistory" exact element={<VolunteeringHistory />} />
-              <Route path="/events" exact element={<Events />} />
+              <Route path="/events" exact element={<Events isAdmin={isAdmin} />} />
               <Route path="/events/create" exact element={<CreateEvent />} />
-              <Route path="/event" exact element={<Event />} />
+              <Route path="/event" exact element={<Event isAdmin={isAdmin} />} />
               <Route path="/volunteers" exact element={<Volunteers />} />
               <Route path="/profile" exact element={<Profile />} />
               <Route path="/event" exact element={<Event />} />
