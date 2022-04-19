@@ -42,7 +42,7 @@ const CreateEvent = () => {
       .test('len', 'Zipcode must contain only 5 digits', val => val.length === 5)
       .required(),
     notes: yup.string(),
-    waiverAttachments: yup.array(),
+    waivers: yup.array(),
   });
 
   const methods = useForm({
@@ -67,7 +67,7 @@ const CreateEvent = () => {
       addressState: '',
       addressZip: '',
       notes: '',
-      waiverAttachments: [],
+      waivers: [],
     },
     resolver: yupResolver(schema),
     delayError: 750,
@@ -112,12 +112,10 @@ const CreateEvent = () => {
       methods.setValue('eventStartDate', moment(startDateTime));
       methods.setValue('eventEndDate', moment(endDateTime));
       methods.setValue('eventStartTime', moment(startDateTime));
-      let { requirements } = eventData;
-      if (requirements) {
-        requirements = requirements.replaceAll('"', ''); // requirements that are two words are returned in quotes - must remove
-        requirements = requirements.slice(1, requirements.length - 1).split(',');
-        requirements.forEach(r => setRequirements(r));
+      if (eventData.requirements) {
+        eventData.requirements.forEach(r => setRequirements(r));
       }
+      methods.setValue('waivers', eventData.waivers ? eventData.waivers : []);
       // 'fileAttachments': 'eventData.fileAttachments)'; TBD once waivers set up in db
     } catch (e) {
       console.log('Error while getting event data!');
@@ -198,7 +196,6 @@ const CreateEvent = () => {
   const onSubmit = async values => {
     try {
       const requirements = buildRequirementsArray(values);
-      // console.log(values);
       const startDate = moment(values.eventStartDate).format('L');
       const startTime = moment(values.eventStartTime).format('LTS');
       const endDate = moment(values.eventEndDate).format('L');
@@ -209,9 +206,9 @@ const CreateEvent = () => {
       const endDatetime = `${endDate} ${endTime} ${timeZone}`;
 
       let waivers = await Promise.all(
-        values.waiverAttachments.map(async file => uploadBoxPhoto(file.originFileObj)),
+        values.waivers.map(async file => uploadBoxPhoto(file.originFileObj)),
       );
-      waivers = values.waiverAttachments.map((file, index) => ({
+      waivers = values.waivers.map((file, index) => ({
         name: file.name,
         link: waivers[index],
       }));
@@ -279,7 +276,7 @@ const CreateEvent = () => {
           )}
           {formStep >= 1 && (
             <section hidden={formStep !== 1}>
-              <EventsAdditionalInfo />
+              <EventsAdditionalInfo isEdit={isEdit} />
               <div>
                 <Button
                   style={{
