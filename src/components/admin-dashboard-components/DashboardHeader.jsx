@@ -49,7 +49,6 @@ const DashboardHeader = () => {
         </>
       ) : (
         <>
-          {/* TODO: Boxes are not same width right now fix later  */}
           <h1>{`Good morning, ${user.firstName} ${user.lastName}`}</h1>
           <div className="total-events-volunteers-container">
             <div className="total-container">
