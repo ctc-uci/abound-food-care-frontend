@@ -276,7 +276,7 @@ const CreateEvent = () => {
           )}
           {formStep >= 1 && (
             <section hidden={formStep !== 1}>
-              <EventsAdditionalInfo isEdit={isEdit} />
+              <EventsAdditionalInfo isEdit={!!isEdit} />
               <div>
                 <Button
                   style={{

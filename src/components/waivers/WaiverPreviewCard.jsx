@@ -1,6 +1,8 @@
 import React from 'react';
-import { Card } from 'antd';
+import { Card, Typography } from 'antd';
 import PropTypes from 'prop-types';
+
+const { Title } = Typography;
 
 const WaiverPreviewCard = ({ name, link, uploadDate }) => {
   const { Meta } = Card;
@@ -12,8 +14,12 @@ const WaiverPreviewCard = ({ name, link, uploadDate }) => {
             Download
           </a>
         }
-        title={name}
-        style={{ width: 300 }}
+        title={
+          <Title level={4} ellipsis>
+            {name}
+          </Title>
+        }
+        style={{ width: 250 }}
         cover={<img alt="" src={link} />}
       >
         <Meta title={name} description={uploadDate} />

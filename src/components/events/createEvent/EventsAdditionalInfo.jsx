@@ -29,7 +29,14 @@ const EventsAdditionalInfo = ({ isEdit }) => {
           <Controller
             control={control}
             name="waivers"
-            render={({ field: { value } }) => <WaiversGrid waivers={value} />}
+            render={({ field: { value } }) => (
+              <>
+                <h1>
+                  Waivers ({value.length}) {value.length > 0 ? ':' : ''}
+                </h1>
+                <WaiversGrid waivers={value} />
+              </>
+            )}
           />
           <br />
         </>
@@ -66,11 +73,7 @@ const EventsAdditionalInfo = ({ isEdit }) => {
 };
 
 EventsAdditionalInfo.propTypes = {
-  isEdit: PropTypes.string,
-};
-
-EventsAdditionalInfo.defaultProps = {
-  isEdit: false,
+  isEdit: PropTypes.bool.isRequired,
 };
 
 export default EventsAdditionalInfo;
