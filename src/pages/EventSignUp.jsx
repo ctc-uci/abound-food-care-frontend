@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, Tabs } from 'antd';
 import VolunteerGeneralInfo from '../components/event-sign-up/VolunteerGeneralInfo';
+import RolesAndSkills from '../components/event-sign-up/RolesAndSkills';
 
 const { TabPane } = Tabs;
 
@@ -39,7 +40,7 @@ const Card = styled.div`
   border-radius: 2px;
   box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
   margin: 1%;
-  height: 65vh;
+  height: 70vh;
 `;
 
 const EventSignUp = () => {
@@ -62,7 +63,9 @@ const EventSignUp = () => {
           <Card />
         </TabPane>
         <TabPane tab="Roles & Skills" key="3">
-          <Card />
+          <Card>
+            <RolesAndSkills />
+          </Card>
         </TabPane>
         <TabPane tab="Upload Forms" key="4">
           <Card />
