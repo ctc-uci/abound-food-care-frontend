@@ -9,12 +9,11 @@ const DashboardHeader = () => {
   const [user, setUser] = useState([]);
   const [numEvents, setNumEvents] = useState(0);
   const [numVolunteers, setNumVolunteers] = useState(0);
-
   useEffect(async () => {
     setUserId(10);
     const userData = await axios.get(`http://localhost:3001/users/${userId}`);
     const numEventsData = await axios.get('http://localhost:3001/events/total');
-    const numVolunteersData = await axios.get('http://localhost:3001/events/total');
+    const numVolunteersData = await axios.get('http://localhost:3001/volunteers/total');
     await setNumEvents(numEventsData.data.count);
     await setUser(userData.data);
     await setNumVolunteers(numVolunteersData.data.count);
