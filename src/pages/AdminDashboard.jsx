@@ -14,21 +14,28 @@ const AdminDashboard = () => {
   return (
     <div className="dashboard-container">
       <DashboardHeader />
-      <Row className="dashboard-row" gutter={[32, 16]}>
-        <Col className="dashboard-col" span={18}>
-          <UpcomingEvents />
-          {width > breakpoint ? (
-            <>
+      {width > breakpoint ? (
+        <>
+          <Row className="dashboard-row" gutter={[32, 16]}>
+            <Col className="dashboard-col" span={18}>
+              <UpcomingEvents />
               <AdminNotifications />
-            </>
-          ) : (
-            <></>
-          )}
-        </Col>
-        <Col className="dashboard-col" span={6}>
+            </Col>
+            <Col className="dashboard-col" span={6}>
+              <PastEvents />
+            </Col>
+          </Row>
+        </>
+      ) : (
+        <>
+          <Row className="dashboard-row">
+            <UpcomingEvents />
+          </Row>
+          {/* <Row className="dashboard-row" gutter={[32, 16]}> */}
           <PastEvents />
-        </Col>
-      </Row>
+          {/* </Row> */}
+        </>
+      )}
     </div>
   );
 };
