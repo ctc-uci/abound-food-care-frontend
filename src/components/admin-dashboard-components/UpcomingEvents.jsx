@@ -76,18 +76,6 @@ const UpcomingEvents = () => {
                       {utils.getTimeInPST(upcomingEvent.endDateTime)}
                     </h8>
                   </div>
-                  {/* <a className="upcoming-event-name" href="https://www.google.com">
-                    {upcomingEvent.name}
-                  </a>
-                  <p className="upcoming-event-start-date">
-                    {utils.getMonthString(upcomingEvent.startDateTime)}{' '}
-                    {new Date(upcomingEvent.startDateTime).getDate()},{' '}
-                    {new Date(upcomingEvent.startDateTime).getFullYear()}
-                  </p>
-                  <p>
-                    {utils.getTimeInPST(upcomingEvent.startDateTime)} -{' '}
-                    {utils.getTimeInPST(upcomingEvent.endDateTime)}
-                  </p> */}
                 </div>
               </Card.Grid>
             ))}
