@@ -3,9 +3,8 @@ import { Link } from 'react-router-dom';
 import { Input, Button, Radio, Row, Col, Card, Typography, ConfigProvider } from 'antd';
 import { FilterOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import moment from 'moment';
 import EventCard from '../EventCard';
-import utils from '../../../util/utils';
+import EventList from '../eventList';
 import useViewPort from '../../../common/useViewPort';
 import './adminEvents.css';
 import 'antd/dist/antd.variable.min.css';
@@ -129,35 +128,6 @@ const AdminEvents = () => {
     return rows;
   };
 
-  const renderEventsList = (title, status) => {
-    const events = getEventsByTypeAndStatus('all', status);
-    return (
-      <div className="event-list">
-        <h1 className="list-title">{title}</h1>
-        {events.map(event => {
-          const startDate = new Date(event.startDatetime);
-          return (
-            <Card key={event.id}>
-              <div className="event-list-card">
-                <div className="event-date">
-                  <p className="month"> {moment(startDate).format('MMM')}</p>
-                  <p className="date">{new Date(event.startDatetime).getDate()}</p>
-                </div>
-                <div className="right-section">
-                  <p className="event-name">{event.name}</p>
-                  <p className="event-time">
-                    {utils.getTimeInPST(event.startDatetime)}-
-                    {utils.getTimeInPST(event.endDatetime)} (PST)
-                  </p>
-                </div>
-              </div>
-            </Card>
-          );
-        })}
-      </div>
-    );
-  };
-
   const renderMobileCreateNewEventButton = () => {
     return (
       <div>
@@ -198,8 +168,8 @@ const AdminEvents = () => {
       <div id="mobile-admin-event-view">
         {renderMobileCreateNewEventButton()}
         {renderMobileSearchBar()}
-        {renderEventsList('Upcoming Events', 'upcoming')}
-        {renderEventsList('Past Events', 'past')}
+        <EventList title="Upcoming Events" eventStatus="upcoming" />
+        <EventList title="Past Events" eventStatus="past" />
       </div>
     );
   };

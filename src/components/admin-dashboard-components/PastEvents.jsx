@@ -21,17 +21,17 @@ const PastEvents = () => {
               </a>
               <p className="past-event-start-date">
                 {' '}
-                {utils.getMonthString(pastEvent.startDateTime)}{' '}
-                {new Date(pastEvent.startDateTime).getDate()},{' '}
-                {new Date(pastEvent.startDateTime).getFullYear()}
+                {utils.getMonthString(pastEvent.startDatetime)}{' '}
+                {new Date(pastEvent.startDatetime).getDate()},{' '}
+                {new Date(pastEvent.startDatetime).getFullYear()}
               </p>
               <p className="past-event-end">
-                {utils.getTimeInPST(pastEvent.startDateTime)} -{' '}
-                {utils.getTimeInPST(pastEvent.endDateTime)}
+                {utils.getTimeInPST(pastEvent.startDatetime)} -{' '}
+                {utils.getTimeInPST(pastEvent.endDatetime)}
               </p>
               <p>
                 <span style={{ color: 'rgba(0, 0, 0, 0.45)' }}>Total Hours: </span>
-                {utils.getHourDiff(pastEvent.startDateTime, pastEvent.endDateTime)} hrs
+                {utils.getHourDiff(pastEvent.startDatetime, pastEvent.endDatetime)} hrs
               </p>
             </div>
           </Card.Grid>
