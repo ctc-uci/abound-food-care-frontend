@@ -4,6 +4,7 @@ import { Button, Tabs } from 'antd';
 import VolunteerGeneralInfo from '../components/event-sign-up/VolunteerGeneralInfo';
 import RolesAndSkills from '../components/event-sign-up/RolesAndSkills';
 import UploadForms from '../components/event-sign-up/UploadForms';
+import Availability from '../components/event-sign-up/Availability';
 
 const { TabPane } = Tabs;
 
@@ -61,7 +62,9 @@ const EventSignUp = () => {
           </Card>
         </TabPane>
         <TabPane tab="Availability" key="2">
-          <Card />
+          <Card>
+            <Availability />
+          </Card>
         </TabPane>
         <TabPane tab="Roles & Skills" key="3">
           <Card>
