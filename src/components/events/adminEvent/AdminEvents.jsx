@@ -4,7 +4,7 @@ import { Input, Button, Radio, Row, Col, Card, Typography, ConfigProvider } from
 import { FilterOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import EventCard from '../EventCard';
-import EventList from '../eventList';
+import EventList from '../EventList';
 import useViewPort from '../../../common/useViewPort';
 import './adminEvents.css';
 import 'antd/dist/antd.variable.min.css';

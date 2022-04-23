@@ -1,10 +1,9 @@
 import '../styles/AdminDashboard.css';
 import { Row, Col } from 'antd';
 import React from 'react';
-import UpcomingEvents from '../components/admin-dashboard-components/UpcomingEvents';
 import AdminNotifications from '../components/admin-dashboard-components/AdminNotifications';
 import DashboardHeader from '../components/admin-dashboard-components/DashboardHeader';
-import PastEvents from '../components/admin-dashboard-components/PastEvents';
+import EventGrid from '../components/admin-dashboard-components/EventGrid';
 
 const AdminDashboard = () => {
   return (
@@ -12,11 +11,11 @@ const AdminDashboard = () => {
       <DashboardHeader />
       <Row className="dashboard-row" gutter={[32, 16]}>
         <Col className="dashboard-col" span={18}>
-          <UpcomingEvents />
+          <EventGrid title="Upcoming Events" eventStatus="upcoming" />
           <AdminNotifications />
         </Col>
         <Col className="dashboard-col" span={6}>
-          <PastEvents />
+          <EventGrid title="Past Events" eventStatus="past" />
         </Col>
       </Row>
     </div>
