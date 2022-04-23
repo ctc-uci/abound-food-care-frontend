@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './PastEvents.css';
+import './EventGrid.css';
 import { Card } from 'antd';
 import { PropTypes } from 'prop-types';
 import axios from 'axios';
@@ -18,6 +18,16 @@ const EventGrid = ({ title, eventStatus }) => {
     const response = await axios.get(query);
     await setEvents(response.data);
   }, []);
+
+  const renderTotalHours = (startDatetime, endDatetime) => {
+    return (
+      <p>
+        <span style={{ color: 'rgba(0, 0, 0, 0.45)' }}>Total Hours: </span>
+        {utils.getHourDiff(startDatetime, endDatetime)} hrs
+      </p>
+    );
+  };
+
   return (
     <div className="events-container">
       <Card title={title}>
@@ -36,10 +46,7 @@ const EventGrid = ({ title, eventStatus }) => {
               <p className="event-end">
                 {utils.getTimeInPST(event.startDatetime)} - {utils.getTimeInPST(event.endDatetime)}
               </p>
-              <p>
-                <span style={{ color: 'rgba(0, 0, 0, 0.45)' }}>Total Hours: </span>
-                {utils.getHourDiff(event.startDatetime, event.endDatetime)} hrs
-              </p>
+              {eventStatus === 'past' && renderTotalHours(event.startDatetime, event.endDatetime)}
             </div>
           </Card.Grid>
         ))}
