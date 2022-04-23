@@ -30,7 +30,7 @@ const VolunteerGeneralInfo = () => {
   const [zip, setZip] = useState('');
 
   useEffect(async () => {
-    const userId = 2;
+    const userId = 6;
     const { data: res } = await axios.get(`http://localhost:3001/users/${userId}`);
     setFirstName(res.firstName);
     setLastName(res.lastName);

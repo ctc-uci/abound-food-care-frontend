@@ -21,6 +21,83 @@ const Field = styled.div`
   flex-direction: column;
 `;
 
+const allRoles = [
+  {
+    label: 'Food Runner',
+    value: 'foodRunsInterest',
+  },
+  {
+    label: 'Distribution Worker',
+    value: 'distributionInterest',
+  },
+];
+
+const allSkills = [
+  {
+    label: 'First Aid Training',
+    value: 'firstAidTraining',
+  },
+  {
+    label: 'Serve Safe Knowledge',
+    value: 'serveSafeKnowledge',
+  },
+  {
+    label: 'Transportation Experience',
+    value: 'transportationExperience',
+  },
+  {
+    label: 'Moving / Warehouse Experience',
+    value: 'movingWarehouseExperience',
+  },
+  {
+    label: 'Food Service Industry Knowledge',
+    value: 'foodServiceIndustryKnowledge',
+  },
+];
+
+const allLanguages = [
+  {
+    label: 'English',
+    value: 'english',
+  },
+  {
+    label: 'Spanish',
+    value: 'spanish',
+  },
+  {
+    label: 'Chinese',
+    value: 'chinese',
+  },
+  {
+    label: 'Tagalog',
+    value: 'tagalog',
+  },
+  {
+    label: 'Vietnamese',
+    value: 'vietnamese',
+  },
+  {
+    label: 'French',
+    value: 'french',
+  },
+  {
+    label: 'Korean',
+    value: 'korean',
+  },
+  {
+    label: 'Arabic',
+    value: 'arabic',
+  },
+  {
+    label: 'German',
+    value: 'german',
+  },
+  {
+    label: 'Other',
+    value: 'other',
+  },
+];
+
 const RolesAndSkills = () => {
   const [loaded, setLoaded] = useState(false);
   const [roles, setRoles] = useState('');
@@ -35,9 +112,17 @@ const RolesAndSkills = () => {
   useEffect(async () => {
     const userId = 6;
     const { data: res } = await axios.get(`http://localhost:3001/users/${userId}`);
-    setRoles([]);
-    setSkills([]);
-    setLanguages([]);
+    const newVals = [];
+
+    Object.keys(res).forEach(key => {
+      if (res[key]) newVals.push(key);
+    });
+    res.languages.forEach(lang => {
+      newVals.push(lang);
+    });
+    setRoles(newVals);
+    setSkills(newVals);
+    setLanguages(newVals);
     setWeightLift(res.weightLiftingAbility);
     setTraining(res.completedChowmatchTraining);
     setDriving(res.canDrive);
@@ -45,83 +130,6 @@ const RolesAndSkills = () => {
     setDistance(res.distance);
     setLoaded(true);
   }, []);
-
-  const allRoles = [
-    {
-      label: 'Food Runner',
-      value: 'foodRunsInterest',
-    },
-    {
-      label: 'Distribution Worker',
-      value: 'distributionInterest',
-    },
-  ];
-
-  const allSkills = [
-    {
-      label: 'First Aid Training',
-      value: 'firstAidTraining',
-    },
-    {
-      label: 'Serve Safe Knowledge',
-      value: 'serveSafeKnowledge',
-    },
-    {
-      label: 'Transportation Experience',
-      value: 'transportationExperience',
-    },
-    {
-      label: 'Moving / Warehouse Experience',
-      value: 'movingWarehouseExperience',
-    },
-    {
-      label: 'Food Service Industry Knowledge',
-      value: 'foodServiceIndustryKnowledge',
-    },
-  ];
-
-  const allLanguages = [
-    {
-      label: 'English',
-      value: 'english',
-    },
-    {
-      label: 'Spanish',
-      value: 'spanish',
-    },
-    {
-      label: 'Chinese',
-      value: 'chinese',
-    },
-    {
-      label: 'Tagalog',
-      value: 'tagalog',
-    },
-    {
-      label: 'Vietnamese',
-      value: 'vietnamese',
-    },
-    {
-      label: 'French',
-      value: 'french',
-    },
-    {
-      label: 'Korean',
-      value: 'korean',
-    },
-    {
-      label: 'Arabic',
-      value: 'arabic',
-    },
-    {
-      label: 'German',
-      value: 'german',
-    },
-    {
-      label: 'Other',
-      value: 'other',
-    },
-  ];
 
   const DoubleTitleField = (title1, val, title2) => {
     return (
@@ -131,7 +139,7 @@ const RolesAndSkills = () => {
           <Input
             disabled
             style={{ color: 'black', width: '5vw', marginRight: '1vw' }}
-            value={val}
+            defaultValue={val}
           />
           <p style={{ padding: 0, margin: 0 }}>{title2}</p>
         </Row>
