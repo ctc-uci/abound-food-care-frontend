@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import { Form, Input, Upload, Button } from 'antd';
@@ -11,16 +10,7 @@ const { TextArea } = Input;
 const EventsAdditionalInfo = () => {
   const { width } = useViewPort();
   const breakpoint = 720;
-  const {
-    control,
-    formState: { errors },
-  } = useFormContext();
-
-  const [componentSize, setComponentSize] = React.useState('default');
-
-  const onFormLayoutChange = ({ size }) => {
-    setComponentSize(size);
-  };
+  const { control } = useFormContext();
 
   return (
     <div>
@@ -49,7 +39,7 @@ const EventsAdditionalInfo = () => {
           <Controller
             control={control}
             name="fileAttachments"
-            render={({ field: { onChange, value, ref } }) => (
+            render={({ field: { onChange, ref } }) => (
               <Form.Item label="Upload Forms">
                 <Upload multiple ref={ref} onChange={onChange}>
                   <Button
@@ -88,7 +78,7 @@ const EventsAdditionalInfo = () => {
           <Controller
             control={control}
             name="fileAttachments"
-            render={({ field: { onChange, value, ref } }) => (
+            render={({ field: { onChange, ref } }) => (
               <Form.Item label="Upload Forms">
                 <Upload multiple ref={ref} onChange={onChange}>
                   <Button
