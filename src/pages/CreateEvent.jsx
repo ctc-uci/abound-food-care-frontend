@@ -134,10 +134,6 @@ const CreateEvent = () => {
     }
   }, [isEdit]);
 
-  // const setGivenValue = field => {
-  //   methods.setValue(field, methods.getValues(field));
-  // };
-
   const incrementFormStep = () => {
     setFormStep(cur => cur + 1);
   };

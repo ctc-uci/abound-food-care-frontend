@@ -17,6 +17,8 @@ import Profile from './pages/Profile';
 import Event from './pages/Event';
 import Waivers from './pages/Waivers';
 import Admin from './pages/Admin';
+import useViewPort from './common/useViewPort';
+
 import AdminNavMenu from './components/navigation/AdminNavMenu';
 import AdminDashboard from './pages/AdminDashboard';
 import EventSignUp from './pages/EventSignUp';
@@ -25,11 +27,13 @@ import EventSignUp from './pages/EventSignUp';
 const { Content } = Layout;
 
 function App() {
+  const { width } = useViewPort();
+  const breakpoint = 720;
   return (
     <div>
       <Layout>
         <Router>
-          <AdminNavMenu />
+          {width > breakpoint ? <AdminNavMenu /> : <></>}
           <Content
             className="site-background"
             style={{

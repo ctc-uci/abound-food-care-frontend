@@ -6,12 +6,12 @@
 }
 
 .ant-menu:not(.ant-menu-horizontal) .ant-menu-item:hover {
-	background: white;
+  background: white;
   color: var(--eden);
 }
 
 .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
-	background: white;
+  background: white;
   color: var(--eden);
   font-weight: bold;
 }
