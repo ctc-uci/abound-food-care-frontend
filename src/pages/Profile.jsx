@@ -5,6 +5,7 @@ import ProfileGeneralInfo from '../components/profile/ProfileGeneralInfo';
 import ProfileDUICrimHistory from '../components/profile/ProfileDUICrimHistory';
 import ProfileRolesSkills from '../components/profile/ProfileRolesSkills';
 import TrainingAndForms from '../components/profile/profile-training-forms/TrainingAndForms';
+import VolunteeringHistory from '../components/profile/VolunteeringHistory';
 import '../components/profile/profile.css';
 
 const { TabPane } = Tabs;
@@ -28,6 +29,9 @@ function Profile() {
         </TabPane>
         <TabPane tab="Training & Forms" key="5">
           <TrainingAndForms />
+        </TabPane>
+        <TabPane tab="Volunteering History" key="6">
+          <VolunteeringHistory />
         </TabPane>
       </Tabs>
     </div>
