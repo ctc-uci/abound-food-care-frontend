@@ -21,7 +21,7 @@ const EventList = ({ title, events }) => {
               <div className="right-section">
                 <p className="event-name">{event.name}</p>
                 <p className="event-time">
-                  {utils.getTimeInPST(event.startDatetime)}-{utils.getTimeInPST(event.endDatetime)}
+                  {utils.getTimeInPST(event.startDatetime)}-{utils.getTimeInPST(event.endDatetime)}{' '}
                   (PST)
                 </p>
               </div>
