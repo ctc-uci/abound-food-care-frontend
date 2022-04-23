@@ -1,26 +1,11 @@
 import './EventList.css';
 import { Card } from 'antd';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { PropTypes } from 'prop-types';
-import axios from 'axios';
 import moment from 'moment';
 import utils from '../../util/utils';
 
-const EventList = ({ title, eventStatus }) => {
-  const [events, setEvents] = useState([]);
-
-  // get events of that type
-  useEffect(async () => {
-    let query = 'http://localhost:3001/events/';
-    if (eventStatus === 'past') {
-      query += 'past';
-    } else if (eventStatus === 'upcoming') {
-      query += 'upcoming';
-    }
-    const response = await axios.get(query);
-    await setEvents(response.data);
-  }, []);
-
+const EventList = ({ title, events }) => {
   return (
     <div className="event-list">
       <h1 className="list-title">{title}</h1>
@@ -50,12 +35,12 @@ const EventList = ({ title, eventStatus }) => {
 
 EventList.propTypes = {
   title: PropTypes.string,
-  eventStatus: PropTypes.string,
+  events: PropTypes.arrayOf(PropTypes.obj),
 };
 
 EventList.defaultProps = {
   title: '',
-  eventStatus: '',
+  events: [],
 };
 
 export default EventList;

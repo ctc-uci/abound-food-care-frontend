@@ -24,6 +24,7 @@ const AdminEvents = () => {
   const [loading, setLoading] = useState(true);
   const [eventsData, setEventsData] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
+  const [showSearchResults, setShowSearchResults] = useState(false);
 
   const { width } = useViewPort();
   const breakpoint = 720;
@@ -51,9 +52,12 @@ const AdminEvents = () => {
   }, []);
 
   const onSearch = e => {
+    console.log(e);
     if (e.target.value === '') {
+      setShowSearchResults(false);
       setEventsData(allEvents);
     } else {
+      setShowSearchResults(true);
       const searchSpecificEventData = eventsData.filter(event => event.name === e.target.value);
       setEventsData(searchSpecificEventData);
     }
@@ -164,12 +168,25 @@ const AdminEvents = () => {
   };
 
   const renderMobileAdminEventsView = () => {
+    // default lists
+    if (eventStatusValue === 'all' && eventTypeValue === 'all' && !showSearchResults) {
+      const pastEvents = getEventsByTypeAndStatus('all', 'past');
+      const upcomingEvents = getEventsByTypeAndStatus('all', 'upcoming');
+      return (
+        <div id="mobile-admin-event-view">
+          {renderMobileCreateNewEventButton()}
+          {renderMobileSearchBar()}
+          <EventList title="Upcoming Events" events={upcomingEvents} />
+          <EventList title="Past Events" events={pastEvents} />
+        </div>
+      );
+    }
+    // render search/filter results
     return (
       <div id="mobile-admin-event-view">
         {renderMobileCreateNewEventButton()}
         {renderMobileSearchBar()}
-        <EventList title="Upcoming Events" eventStatus="upcoming" />
-        <EventList title="Past Events" eventStatus="past" />
+        <EventList title="" events={eventsData} />
       </div>
     );
   };
