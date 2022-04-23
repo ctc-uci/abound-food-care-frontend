@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -11,6 +11,10 @@ import EventsAdditionalInfo from '../components/events/createEvent/EventsAdditio
 
 const CreateEvent = () => {
   const [formStep, setFormStep] = useState(0);
+  const { id } = useParams();
+  const [isEdit] = useState(id);
+
+  const zipRegExp = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
 
   const schema = yup.object({
     eventName: yup.string().required(),
@@ -36,8 +40,9 @@ const CreateEvent = () => {
       .required(),
     addressZip: yup
       .string()
-      .test('len', 'Zipcode must contain only 5 digits', val => val.length === 5)
-      .required(),
+      .matches(zipRegExp, 'Zipcode is not valid')
+      .required('Zipcode is required')
+      .test('len', 'Zipcode must contain only 5 digits', val => val.length === 5),
     notes: yup.string(),
     // fileAttachments: yup.array().of(yup.string()), TODO: update once waivers storing decided
     fileAttachments: yup.string(),
@@ -68,46 +73,81 @@ const CreateEvent = () => {
       fileAttachments: '',
     },
     resolver: yupResolver(schema),
-    mode: 'onChange',
     delayError: 750,
   });
 
-  const setGivenValue = field => {
-    methods.setValue(field, methods.getValues(field));
+  function setRequirements(value) {
+    if (value === 'drive') {
+      methods.setValue('canDrive', true);
+    } else if (value === 'adult') {
+      methods.setValue('isAdult', true);
+    } else if (value === 'minor') {
+      methods.setValue('isMinor', true);
+    } else if (value === 'first aid') {
+      methods.setValue('firstAidTraining', true);
+    } else if (value === 'serve safe') {
+      methods.setValue('serveSafeKnowledge', true);
+    } else if (value === 'transportation') {
+      methods.setValue('transportationExperience', true);
+    } else if (value === 'warehouse') {
+      methods.setValue('movingWarehouseExperience', true);
+    } else if (value === 'food service') {
+      methods.setValue('foodServiceIndustryKnowledge', true);
+    }
+  }
+
+  const getEventData = async () => {
+    try {
+      const eventResponse = await axios.get(`http://localhost:3001/events/${id}`);
+      const eventData = eventResponse.data[0];
+      const endDateTime = new Date(eventData.endDatetime);
+      const startDateTime = new Date(eventData.startDatetime);
+      methods.setValue('eventName', eventData.name);
+      methods.setValue('eventType', eventData.eventType);
+      methods.setValue('volunteerCapacity', eventData.volunteerCapacity);
+      methods.setValue('addressStreet', eventData.addressStreet);
+      methods.setValue('addressCity', eventData.addressCity);
+      methods.setValue('addressState', eventData.addressState);
+      methods.setValue('addressZip', eventData.addressZip);
+      methods.setValue('notes', eventData.notes);
+      methods.setValue('addressStreet', eventData.addressStreet);
+      methods.setValue('eventEndTime', moment(endDateTime));
+      methods.setValue('eventStartDate', moment(startDateTime));
+      methods.setValue('eventEndDate', moment(endDateTime));
+      methods.setValue('eventStartTime', moment(startDateTime));
+      let { requirements } = eventData;
+      if (requirements) {
+        requirements = requirements.replaceAll('"', ''); // requirements that are two words are returned in quotes - must remove
+        requirements = requirements.slice(1, requirements.length - 1).split(',');
+        requirements.forEach(r => setRequirements(r));
+      }
+      // 'fileAttachments': 'eventData.fileAttachments)'; TBD once waivers set up in db
+    } catch (e) {
+      console.log('Error while getting event data!');
+    }
   };
+
+  useEffect(() => {
+    // Load data if editing an event
+    if (isEdit) {
+      getEventData();
+    }
+  }, [isEdit]);
+
+  // const setGivenValue = field => {
+  //   methods.setValue(field, methods.getValues(field));
+  // };
 
   const incrementFormStep = () => {
     setFormStep(cur => cur + 1);
-    setGivenValue('eventName');
-    setGivenValue('eventStartDate');
-    setGivenValue('eventStartTime');
-    setGivenValue('eventEndDate');
-    setGivenValue('eventEndTime');
-    setGivenValue('eventType');
-    setGivenValue('volunteerCapacity');
-    setGivenValue('canDrive');
-    setGivenValue('isAdult');
-    setGivenValue('isMinor');
-    setGivenValue('firstAidTraining');
-    setGivenValue('serveSafeKnowledge');
-    setGivenValue('transportationExperience');
-    setGivenValue('movingWarehouseExperience');
-    setGivenValue('foodServiceIndustryKnowledge');
-    setGivenValue('addressStreet');
-    setGivenValue('addressCity');
-    setGivenValue('addressState');
-    setGivenValue('addressZip');
   };
 
   const decrementFormStep = () => {
     setFormStep(cur => cur - 1);
-    setGivenValue('notes');
-    setGivenValue('fileAttachments');
   };
 
   const buildRequirementsArray = values => {
     const requirements = [];
-
     if (values.canDrive) {
       requirements.push('drive');
     }
@@ -132,21 +172,20 @@ const CreateEvent = () => {
     if (values.foodServiceIndustryKnowledge) {
       requirements.push('food service');
     }
-
     return requirements;
   };
 
   const onSubmit = async values => {
     try {
       const requirements = buildRequirementsArray(values);
-
       const startDate = moment(values.eventStartDate).format('L');
       const startTime = moment(values.eventStartTime).format('LTS');
       const endDate = moment(values.eventEndDate).format('L');
       const endTime = moment(values.eventEndTime).format('LTS');
+      const timeZone = moment(values.eventStartDate).format('Z');
 
-      const startDatetime = `${startDate} ${startTime}`;
-      const endDatetime = `${endDate} ${endTime}`;
+      const startDatetime = `${startDate} ${startTime} ${timeZone}`;
+      const endDatetime = `${endDate} ${endTime} ${timeZone}`;
 
       const payload = {
         name: values.eventName,
@@ -159,8 +198,17 @@ const CreateEvent = () => {
         endDatetime,
         volunteerCapacity: values.volunteerCapacity,
         requirements,
+        notes: values.notes,
       };
-      await axios.post('http://localhost:3001/events/', payload);
+
+      // Check if this is editing or creating a new event
+      if (isEdit) {
+        await axios.put(`http://localhost:3001/events/${id}`, payload);
+        // TODO: Redirect to event page?
+      } else {
+        await axios.post('http://localhost:3001/events/', payload);
+        // TODO: Redirect to event page?
+      }
     } catch (e) {
       console.log(e.message);
     }
@@ -186,7 +234,6 @@ const CreateEvent = () => {
                   </Button>
                 </Link>
                 <Button
-                  // disabled={!methods.isValid}
                   onClick={incrementFormStep}
                   style={{
                     background: '#115740',
@@ -221,7 +268,7 @@ const CreateEvent = () => {
                   }}
                   htmlType="submit"
                 >
-                  Publish Event
+                  {isEdit ? 'Update Event' : 'Publish Event'}
                 </Button>
               </div>
             </section>
