@@ -14,6 +14,8 @@ const CreateEvent = () => {
   const { id } = useParams();
   const [isEdit] = useState(id);
 
+  const zipRegExp = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
+
   const schema = yup.object({
     eventName: yup.string().required(),
     eventStartDate: yup.date().required(),
@@ -38,8 +40,9 @@ const CreateEvent = () => {
       .required(),
     addressZip: yup
       .string()
-      .test('len', 'Zipcode must contain only 5 digits', val => val.length === 5)
-      .required(),
+      .matches(zipRegExp, 'Zipcode is not valid')
+      .required('Zipcode is required')
+      .test('len', 'Zipcode must contain only 5 digits', val => val.length === 5),
     notes: yup.string(),
     // fileAttachments: yup.array().of(yup.string()), TODO: update once waivers storing decided
     fileAttachments: yup.string(),
@@ -97,7 +100,6 @@ const CreateEvent = () => {
     try {
       const eventResponse = await axios.get(`http://localhost:3001/events/${id}`);
       const eventData = eventResponse.data[0];
-      console.log(eventData);
       const endDateTime = new Date(eventData.endDatetime);
       const startDateTime = new Date(eventData.startDatetime);
       methods.setValue('eventName', eventData.name);
@@ -132,42 +134,20 @@ const CreateEvent = () => {
     }
   }, [isEdit]);
 
-  const setGivenValue = field => {
-    methods.setValue(field, methods.getValues(field));
-  };
+  // const setGivenValue = field => {
+  //   methods.setValue(field, methods.getValues(field));
+  // };
 
   const incrementFormStep = () => {
     setFormStep(cur => cur + 1);
-    setGivenValue('eventName');
-    setGivenValue('eventStartDate');
-    setGivenValue('eventStartTime');
-    setGivenValue('eventEndDate');
-    setGivenValue('eventEndTime');
-    setGivenValue('eventType');
-    setGivenValue('volunteerCapacity');
-    setGivenValue('canDrive');
-    setGivenValue('isAdult');
-    setGivenValue('isMinor');
-    setGivenValue('firstAidTraining');
-    setGivenValue('serveSafeKnowledge');
-    setGivenValue('transportationExperience');
-    setGivenValue('movingWarehouseExperience');
-    setGivenValue('foodServiceIndustryKnowledge');
-    setGivenValue('addressStreet');
-    setGivenValue('addressCity');
-    setGivenValue('addressState');
-    setGivenValue('addressZip');
   };
 
   const decrementFormStep = () => {
     setFormStep(cur => cur - 1);
-    setGivenValue('notes');
-    setGivenValue('fileAttachments');
   };
 
   const buildRequirementsArray = values => {
     const requirements = [];
-
     if (values.canDrive) {
       requirements.push('drive');
     }
@@ -192,14 +172,12 @@ const CreateEvent = () => {
     if (values.foodServiceIndustryKnowledge) {
       requirements.push('food service');
     }
-
     return requirements;
   };
 
   const onSubmit = async values => {
     try {
       const requirements = buildRequirementsArray(values);
-      // console.log(values);
       const startDate = moment(values.eventStartDate).format('L');
       const startTime = moment(values.eventStartTime).format('LTS');
       const endDate = moment(values.eventEndDate).format('L');
@@ -256,7 +234,6 @@ const CreateEvent = () => {
                   </Button>
                 </Link>
                 <Button
-                  // disabled={!methods.isValid}
                   onClick={incrementFormStep}
                   style={{
                     background: '#115740',
@@ -296,7 +273,6 @@ const CreateEvent = () => {
               </div>
             </section>
           )}
-          {/* <pre>{JSON.stringify(methods.watch(), null, 2)}</pre> */}
         </Form>
       </FormProvider>
     </div>
