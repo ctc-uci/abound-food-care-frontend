@@ -1,9 +1,10 @@
-import './UpcomingEvents.css';
-import { Card } from 'antd';
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { Card } from 'antd';
 import utils from '../../util/utils';
 import useViewPort from '../../common/useViewPort';
+import './UpcomingEvents.css';
 
 const UpcomingEvents = () => {
   const { width } = useViewPort();
@@ -53,18 +54,16 @@ const UpcomingEvents = () => {
           <br />
           <div className="Upcoming-Events-Title-Mobile-Box">
             <h4>Upcoming Events</h4>
-            {/* Need to connect a-tag to all the evnets */}
-            <a href="https://www.google.com">
+            <Link to="/events">
               <h5>View All</h5>
-            </a>
+            </Link>
           </div>
           <div>
             {events.slice(0, 3).map(upcomingEvent => (
               <Card.Grid key={upcomingEvent.name} style={gridStyle}>
                 <div className="show-event-mobile-container">
                   <div className="show-event-date-mobile">
-                    {/* Need to remove March, I just put it in there for time being for testing purposes */}
-                    <h6>March {utils.getMonthString(upcomingEvent.startDateTime)}</h6>
+                    <h6>{utils.getMonthString(upcomingEvent.startDateTime)}</h6>
                     <h7>{new Date(upcomingEvent.startDateTime).getDate()}</h7>
                   </div>
                   <div className="show-event-details-mobile">

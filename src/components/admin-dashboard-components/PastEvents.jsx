@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import './PastEvents.css';
 import { Card } from 'antd';
 import axios from 'axios';
@@ -58,17 +59,15 @@ const PastEvents = () => {
           <br />
           <div className="mobile-header">
             <h4>Past Events</h4>
-            {/* Need to connect a-tag to all the evnets */}
-            <a href="https://www.google.com">
+            <Link to="/events">
               <h5>View All</h5>
-            </a>
+            </Link>
           </div>
           {events.slice(0, 1).map(pastEvent => (
             <Card.Grid key={pastEvent.name} style={gridStyle}>
               <div className="show-past-event-mobile-container">
                 <div className="show-past-event-date-mobile">
-                  {/* Need to remove March, I just put it in there for time being for testing purposes */}
-                  <h6>March {utils.getMonthString(pastEvent.startDateTime)}</h6>
+                  <h6>{utils.getMonthString(pastEvent.startDateTime)}</h6>
                   <h7>{new Date(pastEvent.startDateTime).getDate()}</h7>
                 </div>
                 <div className="show-past-event-details-mobile">
