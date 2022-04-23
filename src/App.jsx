@@ -24,8 +24,10 @@ import AdminDashboard from './pages/AdminDashboard';
 const { Content } = Layout;
 
 function App() {
-  const [isAdmin] = useState(true);
-  console.log(isAdmin);
+  const [isAdmin, setIsAdmin] = useState(true);
+  const toggleRole = () => {
+    setIsAdmin(!isAdmin);
+  };
 
   return (
     <div>
@@ -40,6 +42,9 @@ function App() {
               minHeight: 280,
             }}
           >
+            <button type="button" onClick={toggleRole}>
+              User Role: {isAdmin ? 'Admin' : 'Volunteer'}
+            </button>
             <Routes>
               <Route path="/" exact element={<Login />} />
               <Route path="/users/create" exact element={<CreateAccount />} />

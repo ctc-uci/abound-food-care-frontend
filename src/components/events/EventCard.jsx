@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import './eventCard.css';
 import 'antd/dist/antd.variable.min.css';
 
-const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapacity }) => {
+const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapacity, isAdmin }) => {
   const [numVolunteers, setNumVolunteers] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -40,7 +40,7 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
   return (
     <div>
       {loading && <div>Loading Event Data...</div>}
-      {!loading && (
+      {!loading && isAdmin && (
         <>
           {type === 'distribution' && (
             <Card
@@ -116,6 +116,79 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
           )}
         </>
       )}
+      {!loading && !isAdmin && (
+        <>
+          {type === 'distribution' && (
+            <Card
+              className="event-card"
+              title={name}
+              bordered
+              hoverable
+              headStyle={{
+                backgroundColor: '#009A44',
+                color: 'white',
+                fontSize: '18px',
+                fontWeight: 'bold',
+              }}
+            >
+              <p className="event-date-time">
+                {eventDate}
+                <br />
+                {eventStarttime} - {eventEndtime}
+              </p>
+              <p className="num-volunteers" style={{ color: '#BFBFBF' }}>
+                {numVolunteers}/{volunteerCapacity} Volunteers Signed Up
+              </p>
+            </Card>
+          )}
+          {type === 'food' && (
+            <Card
+              className="event-card"
+              title={name}
+              bordered
+              hoverable
+              headStyle={{
+                backgroundColor: '#FFA500',
+                color: 'white',
+                fontSize: '18px',
+                fontWeight: 'bold',
+              }}
+            >
+              <p className="event-date-time">
+                {eventDate}
+                <br />
+                {eventStarttime} - {eventEndtime}
+              </p>
+              <p className="num-volunteers" style={{ color: '#BFBFBF' }}>
+                {numVolunteers}/{volunteerCapacity} Volunteers Signed Up
+              </p>
+            </Card>
+          )}
+          {type !== 'distribution' && type !== 'food' && (
+            <Card
+              className="event-card"
+              title={name}
+              bordered
+              hoverable
+              headStyle={{
+                backgroundColor: '#808080',
+                color: 'white',
+                fontSize: '18px',
+                fontWeight: 'bold',
+              }}
+            >
+              <p className="event-date-time">
+                {eventDate}
+                <br />
+                {eventStarttime} - {eventEndtime}
+              </p>
+              <p className="num-volunteers" style={{ color: '#BFBFBF' }}>
+                {numVolunteers}/{volunteerCapacity} Volunteers Signed Up
+              </p>
+            </Card>
+          )}
+        </>
+      )}
     </div>
   );
 };
@@ -127,6 +200,7 @@ EventCard.propTypes = {
   startDateTime: PropTypes.string.isRequired,
   endDateTime: PropTypes.string.isRequired,
   volunteerCapacity: PropTypes.number.isRequired,
+  isAdmin: PropTypes.bool.isRequired,
 };
 
 export default EventCard;

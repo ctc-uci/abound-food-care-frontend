@@ -116,6 +116,7 @@ const EventDashboard = ({ isAdmin }) => {
           startDateTime={event.startDatetime}
           endDateTime={event.endDatetime}
           volunteerCapacity={event.volunteerCapacity}
+          isAdmin={isAdmin}
         />
       </Col>
     ));
@@ -196,7 +197,7 @@ const EventDashboard = ({ isAdmin }) => {
             {!loading && (
               <>
                 <Title level={1} className="title">
-                  Volunteer Events
+                  Events
                 </Title>
                 <Card className="card">
                   <Input
