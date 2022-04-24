@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import Chart from 'react-apexcharts';
 // import ApexCharts from 'apexcharts';
@@ -5,64 +6,27 @@ import Chart from 'react-apexcharts';
 const VolunteerAvailability = () => {
   const [options, setOptions] = useState(null);
   const [series, setSeries] = useState(null);
+  const [availabilityData, setAvailabilityData] = useState({});
 
-  const ACTUAL_DUMMY_DATA = [
-    {
-      user_id: 1,
-      day_of_week: 'sunday',
-      start_time: '10:00am',
-      end_time: '4:30pm',
-    },
-    {
-      user_id: 1,
-      day_of_week: 'monday',
-      start_time: '9:00am',
-      end_time: '4:30pm',
-    },
-    {
-      user_id: 1,
-      day_of_week: 'tuesday',
-      start_time: '10:00am',
-      end_time: '3:00pm',
-    },
-    {
-      user_id: 1,
-      day_of_week: 'wednesday',
-      start_time: '11:30am',
-      end_time: '4:30pm',
-    },
-    {
-      user_id: 1,
-      day_of_week: 'thursday',
-      start_time: '11:00am',
-      end_time: '4:30pm',
-    },
-    {
-      user_id: 1,
-      day_of_week: 'friday',
-      start_time: '9:00am',
-      end_time: '12:00pm',
-    },
-    {
-      user_id: 1,
-      day_of_week: 'saturday',
-      start_time: '9:00am',
-      end_time: '12:00pm',
-    },
-  ];
-
-  const convertData = times => {
+  const convertData = async times => {
     const data = [];
     const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    try {
+      await axios.get('http://localhost:3001/events/upcoming').then(async res => {
+        await setAvailabilityData(res);
+      });
+    } catch (e) {
+      console.log('Error getting volunteer data!');
+    }
     for (let day = 0; day < 7; day += 1) {
-      const dataAvailability = ACTUAL_DUMMY_DATA.filter(
+      const dataAvailability = availabilityData.filter(
         availability => availability.day_of_week === days[day],
       )[0];
       const dayArray = [];
       let available = false;
       for (let i = 0; i < times.length; i += 1) {
-        if (times[i] === dataAvailability.start_time) available = true;
-        if (times[i] === dataAvailability.end_time) available = false;
+        if (times[i] === dataAvailability.startTime) available = true;
+        if (times[i] === dataAvailability.endTime) available = false;
 
         if (available) dayArray.push(2);
         else dayArray.push(1);
@@ -105,6 +69,13 @@ const VolunteerAvailability = () => {
       };
     });
     setSeries(generatedSeries);
+  };
+
+  const renderChart = () => {
+    if (options) {
+      return <Chart options={options} series={series} type="heatmap" width="800" height="500" />;
+    }
+    return null;
   };
 
   useEffect(() => {
@@ -160,13 +131,6 @@ const VolunteerAvailability = () => {
     setOptions(values);
     generateSeries(9, 17);
   }, []);
-
-  const renderChart = () => {
-    if (options) {
-      return <Chart options={options} series={series} type="heatmap" width="800" height="500" />;
-    }
-    return null;
-  };
 
   return (
     <div className="app">
