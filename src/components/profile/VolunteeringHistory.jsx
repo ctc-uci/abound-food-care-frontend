@@ -3,11 +3,11 @@ import axios from 'axios';
 import { FieldTimeOutlined, ScheduleOutlined } from '@ant-design/icons';
 import { ConfigProvider, Table, Button } from 'antd';
 import './VolunteeringHistory.css';
-import EditHours from './EditHours';
-import SuccessModal from './SuccessModal';
+import EditHours from '../volunteer-profile-history/EditHours';
+import SuccessModal from '../volunteer-profile-history/SuccessModal';
 
 function VolunteeringHistory() {
-  const [userId, setUserId] = useState(121);
+  const [userId, setUserId] = useState(2);
   const [totalHours, setTotalHours] = useState(0);
   const [eventCount, setEventCount] = useState(0);
   const [unsubmittedData, setUnsubmittedData] = useState([]);
@@ -62,7 +62,7 @@ function VolunteeringHistory() {
   };
 
   useEffect(() => {
-    setUserId(121);
+    setUserId(2);
     axios.get(`http://localhost:3001/hours/statistics/${userId}`).then(res => {
       setEventCount(res.data[0].event_count);
       setTotalHours(res.data[0].hours);

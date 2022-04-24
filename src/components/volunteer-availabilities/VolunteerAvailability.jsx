@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import 'antd/dist/antd.css';
-import AdminDashboard from '../components/AdminDashboard';
-import HeatMap from '../components/volunteer-availabilities/HeatMap';
-import Database from '../components/volunteer-database/Database';
-import './Admin.css';
+import PropTypes from 'prop-types';
+import HeatMap from './HeatMap';
 
-function Admin() {
+const VolunteerAvailability = props => {
+  const { handleViewDatabase } = props;
   const VOLUNTEERS_DUMMY_DATA = [
     {
       id: 0,
@@ -144,6 +142,9 @@ function Admin() {
     },
   ];
 
+  const showDatabase = () => {
+    handleViewDatabase();
+  };
   const [volunteers, setVolunteers] = useState([]);
   const [availableVolunteers, setAvailableVolunteers] = useState([]);
 
@@ -165,7 +166,9 @@ function Admin() {
               id="search-volunteers"
             />
             <div className="right-align">
-              <button type="button">View Database</button>
+              <button type="button" onClick={showDatabase}>
+                View Database
+              </button>
               <button type="button">Export</button>
               <button type="button" style={{ backgroundColor: '#115740' }} id="add-user-btn">
                 + Add User
@@ -210,14 +213,12 @@ function Admin() {
           );
         })}
       </div>
-      <div>
-        <Database />
-      </div>
-      <div>
-        <AdminDashboard />
-      </div>
     </div>
   );
-}
+};
 
-export default Admin;
+VolunteerAvailability.propTypes = {
+  handleViewDatabase: PropTypes.func.isRequired,
+};
+
+export default VolunteerAvailability;

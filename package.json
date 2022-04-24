@@ -6,6 +6,7 @@
     "@angular/core": "^6.0.0",
     "@ant-design/icons": "^4.7.0",
     "@babel/core": "^7.0.0",
+    "@hookform/resolvers": "^2.8.8",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -35,7 +36,8 @@
     "styled-components": "^5.3.3",
     "testing-library": "0.0.2",
     "web-vitals": "^1.0.1",
-    "webpack": "4.44.2"
+    "webpack": "4.44.2",
+    "yup": "^0.32.11"
   },
   "optionalDependencies": {
     "babel-loader": "8.1.0"

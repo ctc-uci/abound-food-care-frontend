@@ -1,5 +1,6 @@
 import { React, useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import { Card } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
@@ -37,6 +38,14 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
     fetchData();
   }, []);
 
+  const getEditLink = () => {
+    return (
+      <Link to={`/events/edit/${id}`}>
+        <EditOutlined key="edit" />
+      </Link>
+    );
+  };
+
   return (
     <div>
       {loading && <div>Loading Event Data...</div>}
@@ -54,7 +63,7 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
                 fontSize: '18px',
                 fontWeight: 'bold',
               }}
-              actions={[<EditOutlined key="edit" />]}
+              actions={[getEditLink()]}
             >
               <p className="event-date-time">
                 {eventDate}
@@ -78,7 +87,7 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
                 fontSize: '18px',
                 fontWeight: 'bold',
               }}
-              actions={[<EditOutlined key="edit" />]}
+              actions={[getEditLink()]}
             >
               <p className="event-date-time">
                 {eventDate}
@@ -102,7 +111,7 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
                 fontSize: '18px',
                 fontWeight: 'bold',
               }}
-              actions={[<EditOutlined key="edit" />]}
+              actions={[getEditLink()]}
             >
               <p className="event-date-time">
                 {eventDate}
