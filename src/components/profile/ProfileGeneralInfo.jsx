@@ -1,47 +1,67 @@
 import React, { useEffect, useState } from 'react';
-import { DatePicker, Form, Input, Radio, Row, Col } from 'antd';
+import { useForm, Controller } from 'react-hook-form';
+import { Button, DatePicker, Form, Input, Radio, Row, Col, Typography } from 'antd';
 import axios from 'axios';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 
+const { Text } = Typography;
+
 const ProfileGeneralInfo = ({ userId }) => {
-  // const onFinish = values => {
-  //   console.log(values);
-  // };
+  const [isEditable, setIsEditable] = useState(false);
 
-  const [form] = Form.useForm();
-
-  const [componentSize, setComponentSize] = useState('default');
-  const [isEditable] = useState(true);
-
-  const onFormLayoutChange = ({ size }) => {
-    setComponentSize(size);
-  };
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm();
 
   const inputBoxStyle = {
     width: '50%',
   };
 
+  const handleEdit = () => {
+    setIsEditable(!isEditable);
+  };
+
   const getVolunteerData = async () => {
     try {
       const { data: volunteerData } = await axios.get(`http://localhost:3001/users/${userId}`);
-      form.setFieldsValue({
-        firstName: volunteerData.firstName,
-        lastName: volunteerData.lastName,
-        dateOfBirth: moment(
-          new Date(volunteerData.birthdate).toISOString().split('T')[0],
-          'YYYY-MM-DD',
-        ),
-        email: volunteerData.email,
-        phoneNumber: volunteerData.phone,
-        contactMethod: volunteerData.preferredContactMethod,
-        streetAddress: volunteerData.addressStreet,
-        city: volunteerData.addressCity,
-        state: volunteerData.addressState,
-        zipcode: volunteerData.addressZip,
-      });
+      setValue('firstName', volunteerData.firstName);
+      setValue('lastName', volunteerData.lastName);
+      setValue('organization', volunteerData.organization);
+      setValue(
+        'birthdate',
+        moment(new Date(volunteerData.birthdate).toISOString().split('T')[0], 'YYYY-MM-DD'),
+      );
+      setValue('email', volunteerData.email);
+      setValue('phone', volunteerData.phone);
+      setValue('preferredContactMethod', volunteerData.preferredContactMethod);
+      setValue('addressStreet', volunteerData.addressStreet);
+      setValue('addressCity', volunteerData.addressCity);
+      setValue('addressState', volunteerData.addressState);
+      setValue('addressZip', volunteerData.addressZip);
     } catch (e) {
       console.log('Error while getting volunteer data!');
+    }
+  };
+
+  const saveVolunteerData = values => {
+    try {
+      const payload = {
+        organization: values.organization,
+        phone: values.phone,
+        preferredContactMethod: values.preferredContactMethod,
+        addressStreet: values.addressStreet,
+        addressCity: values.addressCity,
+        addressState: values.addressState,
+        addressZip: values.addressZip,
+      };
+      console.log(payload);
+      // await axios.put(`http://localhost:3001/users/${userId}`, payload);
+    } catch (e) {
+      console.log(e.message);
     }
   };
 
@@ -50,88 +70,214 @@ const ProfileGeneralInfo = ({ userId }) => {
   }, []);
 
   return (
-    <div>
-      <Form
-        layout="vertical"
-        labelCol={{ span: 20 }}
-        name="nest-messages"
-        // onFinish={onFinish}
-        // validateMessages={validateMessages}
-        size={componentSize}
-        onValuesChange={onFormLayoutChange}
-        form={form}
-      >
-        <Row>
-          <Col span={6}>
-            <Form.Item name="firstName" label="First Name">
-              <Input placeholder="Enter first name" disabled={!isEditable} />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item name="lastName" label="Last Name">
-              <Input placeholder="Enter last name" disabled={!isEditable} />
-            </Form.Item>
-          </Col>
-        </Row>
-
-        <Form.Item name="dateOfBirth" label="Date of Birth">
-          <DatePicker placeholder="Select date" format="MM/DD/YYYY" disabled={!isEditable} />
-        </Form.Item>
-
-        <Form.Item
-          name="email"
-          label="Email"
-          rules={[
-            {
-              type: 'email',
-            },
-          ]}
+    <>
+      <div>
+        <Form
+          onFinish={handleSubmit(saveVolunteerData)}
+          layout="vertical"
+          labelCol={{ span: 20 }}
+          name="nest-messages"
         >
-          <Input style={inputBoxStyle} placeholder="" disabled={!isEditable} />
-        </Form.Item>
+          <Button
+            htmlType="submit"
+            onClick={handleEdit}
+            style={{ float: 'right', backgroundColor: 'var(--eden)', color: 'white' }}
+          >
+            {isEditable ? 'Save' : 'Edit'}
+          </Button>
+          <Row>
+            <Col span={6}>
+              <Controller
+                control={control}
+                name="firstName"
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item label="First Name">
+                    <Input onChange={onChange} value={value} ref={ref} disabled />
+                    <Text type="danger">
+                      {errors.firstName && <p>{errors.firstName.message}</p>}
+                    </Text>
+                  </Form.Item>
+                )}
+              />
+            </Col>
+            <Col span={6}>
+              <Controller
+                control={control}
+                name="lastName"
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item label="Last Name">
+                    <Input onChange={onChange} value={value} ref={ref} disabled />
+                    <Text type="danger">{errors.lastName && <p>{errors.lastName.message}</p>}</Text>
+                  </Form.Item>
+                )}
+              />
+            </Col>
+          </Row>
 
-        <Form.Item name="phoneNumber" label="Phone">
-          <Input
-            style={inputBoxStyle}
-            placeholder="Please enter your work goals"
-            disabled={!isEditable}
+          <Controller
+            control={control}
+            name="organization"
+            render={({ field: { onChange, value, ref } }) => (
+              <Form.Item label="Organization">
+                <Input
+                  style={inputBoxStyle}
+                  onChange={onChange}
+                  value={value}
+                  ref={ref}
+                  disabled={!isEditable}
+                />
+                <Text type="danger">
+                  {errors.organization && <p>{errors.organization.message}</p>}
+                </Text>
+              </Form.Item>
+            )}
           />
-        </Form.Item>
 
-        <Form.Item name="contactMethod" label="Preferred Contact Method">
-          <Radio.Group disabled={!isEditable}>
-            <Radio value="email">Email</Radio>
-            <Radio value="phone">Phone</Radio>
-          </Radio.Group>
-        </Form.Item>
-
-        <Form.Item name="streetAddress" label="Street Address">
-          <Input
-            style={inputBoxStyle}
-            placeholder="Please enter your work goals"
-            disabled={!isEditable}
+          <Controller
+            control={control}
+            name="birthdate"
+            render={({ field: { onChange, value, ref } }) => (
+              <Form.Item label="Birthday">
+                <DatePicker
+                  placeholder="Select date"
+                  onChange={onChange}
+                  value={value}
+                  ref={ref}
+                  disabled
+                />
+                <Text type="danger">{errors.birthdate && <p>{errors.birthdate.message}</p>}</Text>
+              </Form.Item>
+            )}
           />
-        </Form.Item>
 
-        <Row>
-          <Col span={6}>
-            <Form.Item name="city" label="City">
-              <Input placeholder="" disabled={!isEditable} />
-            </Form.Item>
-          </Col>
-          <Col span={3}>
-            <Form.Item name="state" label="State">
-              <Input placeholder="" disabled={!isEditable} />
-            </Form.Item>
-          </Col>
-          <Col span={3}>
-            <Form.Item name="zipcode" label="Zip Code">
-              <Input placeholder="" disabled={!isEditable} />
-            </Form.Item>
-          </Col>
-        </Row>
-      </Form>
-    </div>
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { onChange, value, ref } }) => (
+              <Form.Item label="Email">
+                <Input style={inputBoxStyle} onChange={onChange} value={value} ref={ref} disabled />
+                <Text type="danger">{errors.email && <p>{errors.email.message}</p>}</Text>
+              </Form.Item>
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="phone"
+            render={({ field: { onChange, value, ref } }) => (
+              <Form.Item label="Phone Number">
+                <Input
+                  style={inputBoxStyle}
+                  onChange={onChange}
+                  value={value}
+                  ref={ref}
+                  disabled={!isEditable}
+                />
+                <Text type="danger">{errors.phone && <p>{errors.phone.message}</p>}</Text>
+              </Form.Item>
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="preferredContactMethod"
+            render={({ field: { onChange, ref, value } }) => (
+              <Form.Item label="Preferred Contact Method">
+                <Radio.Group onChange={onChange} ref={ref} value={value} disabled={!isEditable}>
+                  <Radio value="email">Email</Radio>
+                  <Radio value="phone">Phone</Radio>
+                </Radio.Group>
+                <Text type="danger">
+                  {errors.preferredContactMethod && <p>{errors.preferredContactMethod.message}</p>}
+                </Text>
+              </Form.Item>
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="addressStreet"
+            render={({ field: { onChange, value, ref } }) => (
+              <Form.Item label="Street Address">
+                <Input
+                  style={inputBoxStyle}
+                  onChange={onChange}
+                  value={value}
+                  ref={ref}
+                  disabled={!isEditable}
+                />
+                <Text type="danger">
+                  {errors.addressStreet && <p>{errors.addressStreet.message}</p>}
+                </Text>
+              </Form.Item>
+            )}
+          />
+
+          <Row>
+            <Col span={6}>
+              <Controller
+                control={control}
+                name="addressCity"
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item label="City">
+                    <Input
+                      style={inputBoxStyle}
+                      onChange={onChange}
+                      value={value}
+                      ref={ref}
+                      disabled={!isEditable}
+                    />
+                    <Text type="danger">
+                      {errors.addressCity && <p>{errors.addressCity.message}</p>}
+                    </Text>
+                  </Form.Item>
+                )}
+              />
+            </Col>
+            <Col span={3}>
+              <Controller
+                control={control}
+                name="addressState"
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item label="State">
+                    <Input
+                      style={inputBoxStyle}
+                      onChange={onChange}
+                      value={value}
+                      ref={ref}
+                      disabled={!isEditable}
+                    />
+                    <Text type="danger">
+                      {errors.addressState && <p>{errors.addressState.message}</p>}
+                    </Text>
+                  </Form.Item>
+                )}
+              />
+            </Col>
+            <Col span={3}>
+              <Controller
+                control={control}
+                name="addressZip"
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item label="Zipcode">
+                    <Input
+                      style={inputBoxStyle}
+                      onChange={onChange}
+                      value={value}
+                      ref={ref}
+                      disabled={!isEditable}
+                    />
+                    <Text type="danger">
+                      {errors.addressZip && <p>{errors.addressZip.message}</p>}
+                    </Text>
+                  </Form.Item>
+                )}
+              />
+            </Col>
+          </Row>
+        </Form>
+      </div>
+    </>
   );
 };
 
