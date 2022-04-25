@@ -1,39 +1,77 @@
 import React, { useState, useEffect } from 'react';
-import { Radio, Form, Input } from 'antd';
+import { useForm, Controller } from 'react-hook-form';
+import { Radio, Form, Input, Button, Typography } from 'antd';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
-// const validateMessages = {
-//   // eslint-disable-next-line no-template-curly-in-string
-//   required: 'Answer to this question is required!',
-// };
+const { Text } = Typography;
 
 const ProfileDUIAndCrimHistory = ({ userId }) => {
-  const [form] = Form.useForm();
-
   const [componentSize, setComponentSize] = useState('default');
-  const [isEditable] = useState(true);
+  const [isEditable, setIsEditable] = useState(false);
+  const [defaultValues, setDefaultValues] = useState({});
 
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
   };
 
   const inputBoxStyle = {
-    width: '50%',
+    width: '75%',
   };
+
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm();
 
   const getVolunteerData = async () => {
     try {
       const { data: volunteerData } = await axios.get(`http://localhost:3001/users/${userId}`);
-      form.setFieldsValue({
-        criminalHistory: volunteerData.criminalHistory.toString(),
-        criminalHistoryDetails: volunteerData.criminalHistoryDetails,
-        duiHistory: volunteerData.duiHistory.toString(),
+      setDefaultValues({
+        duiHistory: volunteerData.duiHistory,
         duiHistoryDetails: volunteerData.duiHistoryDetails,
+        criminalHistory: volunteerData.criminalHistory,
+        criminalHistoryDetails: volunteerData.criminalHistoryDetails,
         additionalInformation: volunteerData.additionalInformation,
       });
+      setValue('duiHistory', volunteerData.duiHistory);
+      setValue('duiHistoryDetails', volunteerData.duiHistoryDetails);
+      setValue('criminalHistory', volunteerData.criminalHistory);
+      setValue('criminalHistoryDetails', volunteerData.criminalHistoryDetails);
+      setValue('additionalInfo', volunteerData.additionalInformation);
     } catch (e) {
-      console.log('Error while getting volunteer data!');
+      console.log(e.message);
+    }
+  };
+
+  const handleEdit = () => {
+    setIsEditable(!isEditable);
+  };
+
+  const handleCancel = () => {
+    setIsEditable(false);
+    setValue('duiHistory', defaultValues.duiHistory);
+    setValue('duiHistoryDetails', defaultValues.duiHistoryDetails);
+    setValue('criminalHistory', defaultValues.criminalHistory);
+    setValue('criminalHistoryDetails', defaultValues.criminalHistoryDetails);
+    setValue('additionalInfo', defaultValues.additionalInformation);
+  };
+
+  const saveVolunteerData = values => {
+    try {
+      const payload = {
+        duiHistory: values.duiHistory,
+        duiHistoryDetails: values.duiHistoryDetails,
+        criminalHistory: values.criminalHistory,
+        criminalHistoryDetails: values.criminalHistoryDetails,
+        additionalInformation: values.additionalInfo,
+      };
+      console.log(payload);
+      // await axios.put(`http://localhost:3001/users/${userId}`, payload);
+    } catch (e) {
+      console.log(e.message);
     }
   };
 
@@ -44,54 +82,105 @@ const ProfileDUIAndCrimHistory = ({ userId }) => {
   return (
     <div>
       <Form
+        onFinish={handleSubmit(saveVolunteerData)}
         layout="vertical"
         labelCol={{ span: 20 }}
         wrapperCol={{ span: 20 }}
-        name="dui_criminal_history"
-        // validateMessages={validateMessages}
         size={componentSize}
         onValuesChange={onFormLayoutChange}
-        form={form}
       >
-        <Form.Item
+        <div style={{ float: 'right' }}>
+          {isEditable && (
+            <Button className="cancel-btn" onClick={handleCancel}>
+              Cancel
+            </Button>
+          )}
+          <Button className="edit-save-btn" htmlType="submit" onClick={handleEdit}>
+            {isEditable ? 'Save' : 'Edit'}
+          </Button>
+        </div>
+        <Controller
+          control={control}
           name="criminalHistory"
-          label="Have you ever been convicted of violation of any law?"
-        >
-          <Radio.Group disabled={!isEditable}>
-            <Radio value="true">Yes</Radio>
-            <Radio value="false">No</Radio>
-            <Radio value="prefer not to say">Prefer not to say</Radio>
-          </Radio.Group>
-        </Form.Item>
-
-        <Form.Item
+          render={({ field: { onChange, ref, value } }) => (
+            <Form.Item label="Have you ever been convicted of violation of any law?">
+              <Radio.Group onChange={onChange} ref={ref} value={value} disabled={!isEditable}>
+                <Radio value>Yes</Radio>
+                <Radio value={false}>No</Radio>
+              </Radio.Group>
+              <Text type="danger">
+                {errors.criminalHistory && <p>{errors.criminalHistory.message}</p>}
+              </Text>
+            </Form.Item>
+          )}
+        />
+        <Controller
+          control={control}
           name="criminalHistoryDetails"
-          label="If you replied YES to the previous question, please specify your most recent violation."
-        >
-          <Input.TextArea style={inputBoxStyle} disabled={!isEditable} />
-        </Form.Item>
-
-        <Form.Item name="duiHistory" label="Do you have any DUI history?">
-          <Radio.Group disabled={!isEditable}>
-            <Radio value="true">Yes</Radio>
-            <Radio value="false">No</Radio>
-            <Radio value="prefer not to say">Prefer not to say</Radio>
-          </Radio.Group>
-        </Form.Item>
-
-        <Form.Item
+          render={({ field: { onChange, value, ref } }) => (
+            <Form.Item label="If you replied YES to the previous question, please specify your most recent violation.">
+              <Input.TextArea
+                onChange={onChange}
+                value={value}
+                ref={ref}
+                disabled={!isEditable}
+                style={inputBoxStyle}
+              />
+              <Text type="danger">
+                {errors.criminalHistoryDetails && <p>{errors.criminalHistoryDetails.message}</p>}
+              </Text>
+            </Form.Item>
+          )}
+        />
+        <Controller
+          control={control}
+          name="duiHistory"
+          render={({ field: { onChange, ref, value } }) => (
+            <Form.Item label="Do you have any DUI (Driving Under Influence) history?">
+              <Radio.Group onChange={onChange} ref={ref} value={value} disabled={!isEditable}>
+                <Radio value>Yes</Radio>
+                <Radio value={false}>No</Radio>
+              </Radio.Group>
+              <Text type="danger">{errors.duiHistory && <p>{errors.duiHistory.message}</p>}</Text>
+            </Form.Item>
+          )}
+        />
+        <Controller
+          control={control}
           name="duiHistoryDetails"
-          label="If you replied YES to the previous question, please specify your most recent DUI violation."
-        >
-          <Input.TextArea style={inputBoxStyle} disabled={!isEditable} />
-        </Form.Item>
-
-        <Form.Item
-          name="additionalInformation"
-          label="Please write down any additional information you would like us to know:"
-        >
-          <Input.TextArea style={inputBoxStyle} disabled={!isEditable} />
-        </Form.Item>
+          render={({ field: { onChange, value, ref } }) => (
+            <Form.Item label="If you replied YES to the previous question, please specify your most recent DUI violation.">
+              <Input.TextArea
+                onChange={onChange}
+                value={value}
+                ref={ref}
+                disabled={!isEditable}
+                style={inputBoxStyle}
+              />
+              <Text type="danger">
+                {errors.duiHistoryDetails && <p>{errors.duiHistoryDetails.message}</p>}
+              </Text>
+            </Form.Item>
+          )}
+        />
+        <Controller
+          control={control}
+          name="additionalInfo"
+          render={({ field: { onChange, value, ref } }) => (
+            <Form.Item label="Please write down any additional information you would like us to know.">
+              <Input.TextArea
+                onChange={onChange}
+                value={value}
+                ref={ref}
+                disabled={!isEditable}
+                style={inputBoxStyle}
+              />
+              <Text type="danger">
+                {errors.additionalInfo && <p>{errors.additionalInfo.message}</p>}
+              </Text>
+            </Form.Item>
+          )}
+        />
       </Form>
     </div>
   );

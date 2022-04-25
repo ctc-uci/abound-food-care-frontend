@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, DatePicker, Form, Input, Radio, Row, Col, Typography } from 'antd';
 import axios from 'axios';
 import moment from 'moment';
@@ -9,25 +11,60 @@ const { Text } = Typography;
 
 const ProfileGeneralInfo = ({ userId }) => {
   const [isEditable, setIsEditable] = useState(false);
+  const [defaultValues, setDefaultValues] = useState({});
+  const [componentSize, setComponentSize] = useState('default');
+
+  const onFormLayoutChange = ({ size }) => {
+    setComponentSize(size);
+  };
+
+  const inputBoxStyle = {
+    width: '50%',
+  };
+
+  const phoneRegExp =
+    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+  const zipRegExp = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
+
+  const schema = yup.object({
+    organization: yup.string().required(),
+    phone: yup
+      .string()
+      .matches(phoneRegExp, 'Phone number is not valid')
+      .required('Phone number is a required field'),
+    preferredContactMethod: yup.string().required(),
+    addressStreet: yup.string().required('Street address is a required field'),
+    addressZip: yup
+      .string()
+      .matches(zipRegExp, 'Zipcode is not valid')
+      .required('Zipcode is required')
+      .test('len', 'Zipcode must contain only 5 digits', val => val.length === 5),
+    addressCity: yup.string().required('City is a required field'),
+    addressState: yup
+      .string()
+      .test('len', 'Must be a 2-letter state code', val => val.length === 2)
+      .required('State is a required field'),
+  });
 
   const {
     control,
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm();
-
-  const inputBoxStyle = {
-    width: '50%',
-  };
-
-  const handleEdit = () => {
-    setIsEditable(!isEditable);
-  };
+  } = useForm({ resolver: yupResolver(schema), mode: 'onChange', delayError: 750 });
 
   const getVolunteerData = async () => {
     try {
       const { data: volunteerData } = await axios.get(`http://localhost:3001/users/${userId}`);
+      setDefaultValues({
+        organization: volunteerData.organization,
+        phone: volunteerData.phone,
+        preferredContactMethod: volunteerData.preferredContactMethod,
+        addressStreet: volunteerData.addressStreet,
+        addressCity: volunteerData.addressCity,
+        addressState: volunteerData.addressState,
+        addressZip: volunteerData.addressZip,
+      });
       setValue('firstName', volunteerData.firstName);
       setValue('lastName', volunteerData.lastName);
       setValue('organization', volunteerData.organization);
@@ -43,8 +80,23 @@ const ProfileGeneralInfo = ({ userId }) => {
       setValue('addressState', volunteerData.addressState);
       setValue('addressZip', volunteerData.addressZip);
     } catch (e) {
-      console.log('Error while getting volunteer data!');
+      console.log(e.message);
     }
+  };
+
+  const handleEdit = () => {
+    setIsEditable(!isEditable);
+  };
+
+  const handleCancel = () => {
+    setIsEditable(false);
+    setValue('organization', defaultValues.organization);
+    setValue('phone', defaultValues.phone);
+    setValue('preferredContactMethod', defaultValues.preferredContactMethod);
+    setValue('addressStreet', defaultValues.addressStreet);
+    setValue('addressCity', defaultValues.addressCity);
+    setValue('addressState', defaultValues.addressState);
+    setValue('addressZip', defaultValues.addressZip);
   };
 
   const saveVolunteerData = values => {
@@ -74,17 +126,22 @@ const ProfileGeneralInfo = ({ userId }) => {
       <div>
         <Form
           onFinish={handleSubmit(saveVolunteerData)}
+          onValuesChange={onFormLayoutChange}
+          size={componentSize}
           layout="vertical"
           labelCol={{ span: 20 }}
           name="nest-messages"
         >
-          <Button
-            htmlType="submit"
-            onClick={handleEdit}
-            style={{ float: 'right', backgroundColor: 'var(--eden)', color: 'white' }}
-          >
-            {isEditable ? 'Save' : 'Edit'}
-          </Button>
+          <div style={{ float: 'right' }}>
+            {isEditable && (
+              <Button className="cancel-btn" onClick={handleCancel}>
+                Cancel
+              </Button>
+            )}
+            <Button className="edit-save-btn" htmlType="submit" onClick={handleEdit}>
+              {isEditable ? 'Save' : 'Edit'}
+            </Button>
+          </div>
           <Row>
             <Col span={6}>
               <Controller
