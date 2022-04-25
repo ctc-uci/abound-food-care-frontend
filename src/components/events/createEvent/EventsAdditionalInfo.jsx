@@ -44,12 +44,13 @@ const EventsAdditionalInfo = ({ isEdit }) => {
         <Controller
           control={control}
           name="waivers"
-          render={({ field: { onChange, ref } }) => (
+          render={({ field: { onChange, value, ref } }) => (
             <Form.Item label="Upload Forms">
               <Upload
                 multiple
                 ref={ref}
                 onChange={e => onChange(e.fileList)}
+                fileList={value}
                 customRequest={e => e.onSuccess('Ok')}
               >
                 <Button
