@@ -97,7 +97,6 @@ const CreateEvent = () => {
     try {
       const eventResponse = await axios.get(`http://localhost:3001/events/${id}`);
       const eventData = eventResponse.data[0];
-      console.log(eventData);
       const endDateTime = new Date(eventData.endDatetime);
       const startDateTime = new Date(eventData.startDatetime);
       methods.setValue('eventName', eventData.name);
@@ -199,7 +198,6 @@ const CreateEvent = () => {
   const onSubmit = async values => {
     try {
       const requirements = buildRequirementsArray(values);
-      // console.log(values);
       const startDate = moment(values.eventStartDate).format('L');
       const startTime = moment(values.eventStartTime).format('LTS');
       const endDate = moment(values.eventEndDate).format('L');
