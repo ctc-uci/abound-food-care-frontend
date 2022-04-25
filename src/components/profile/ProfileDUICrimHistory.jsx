@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Radio, Form, Input, Button, Typography } from 'antd';
 import axios from 'axios';
 import PropTypes from 'prop-types';
@@ -19,12 +21,20 @@ const ProfileDUIAndCrimHistory = ({ userId }) => {
     width: '75%',
   };
 
+  const schema = yup.object({
+    criminalHistory: yup.bool().required(),
+    criminalHistoryDetails: yup.string().nullable(true),
+    duiHistory: yup.bool().required(),
+    duiHistoryDetails: yup.string().nullable(true),
+    additionalInformation: yup.string().nullable(true),
+  });
+
   const {
     control,
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm();
+  } = useForm({ resolver: yupResolver(schema), mode: 'onChange', delayError: 750 });
 
   const getVolunteerData = async () => {
     try {
