@@ -3,7 +3,7 @@ import { Card } from 'antd';
 import React from 'react';
 import { PropTypes } from 'prop-types';
 import moment from 'moment';
-import utils from '../../util/utils';
+import utils from '../../../util/utils';
 
 const EventList = ({ title, events }) => {
   return (
