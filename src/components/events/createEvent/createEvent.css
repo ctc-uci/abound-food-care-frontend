@@ -1,0 +1,14 @@
+h2 {
+  font-size: 16px;
+  font-weight: normal;
+}
+
+.description {
+  line-height: 120%;
+}
+
+.btn1 {
+  float: right;
+  display: flex;
+  justify-content: flex-end;
+}

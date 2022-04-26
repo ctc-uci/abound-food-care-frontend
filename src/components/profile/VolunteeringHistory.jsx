@@ -3,8 +3,8 @@ import axios from 'axios';
 import { FieldTimeOutlined, ScheduleOutlined } from '@ant-design/icons';
 import { ConfigProvider, Table, Button } from 'antd';
 import './VolunteeringHistory.css';
-import EditHours from '../components/volunteer-profile-history/EditHours';
-import SuccessModal from '../components/volunteer-profile-history/SuccessModal';
+import EditHours from '../volunteer-profile-history/EditHours';
+import SuccessModal from '../volunteer-profile-history/SuccessModal';
 
 function VolunteeringHistory() {
   const [userId, setUserId] = useState(2);
