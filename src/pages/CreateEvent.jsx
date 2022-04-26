@@ -116,11 +116,12 @@ const CreateEvent = () => {
       methods.setValue('eventEndDate', moment(endDateTime));
       methods.setValue('eventStartTime', moment(startDateTime));
       methods.setValue('waivers', eventData.waivers ? eventData.waivers : []);
-      let { requirements } = eventData;
-      if (requirements) {
-        requirements = requirements.replaceAll('"', ''); // requirements that are two words are returned in quotes - must remove
-        requirements = requirements.slice(1, requirements.length - 1).split(',');
-        requirements.forEach(r => setRequirements(r));
+      console.log(eventData);
+      if (eventData.requirements) {
+        // console.log(requirements);
+        // requirements = requirements.replaceAll('"', ''); // requirements that are two words are returned in quotes - must remove
+        // requirements = requirements.slice(1, requirements.length - 1).split(',');
+        eventData.requirements.forEach(r => setRequirements(r));
       }
     } catch (e) {
       console.log(e.message);
