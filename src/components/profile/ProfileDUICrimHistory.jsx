@@ -69,7 +69,7 @@ const ProfileDUIAndCrimHistory = ({ userId }) => {
     setValue('additionalInfo', defaultValues.additionalInformation);
   };
 
-  const saveVolunteerData = values => {
+  const saveVolunteerData = async values => {
     try {
       const payload = {
         duiHistory: values.duiHistory,
@@ -78,8 +78,7 @@ const ProfileDUIAndCrimHistory = ({ userId }) => {
         criminalHistoryDetails: values.criminalHistoryDetails,
         additionalInformation: values.additionalInfo,
       };
-      console.log(payload);
-      // await axios.put(`http://localhost:3001/users/${userId}`, payload);
+      await axios.put(`http://localhost:3001/users/dui-criminal/${userId}`, payload);
     } catch (e) {
       console.log(e.message);
     }

@@ -143,26 +143,60 @@ const ProfileRolesAndSkills = ({ userId }) => {
     setValue('distance', defaultValues.distance);
   };
 
-  const saveVolunteerData = values => {
+  const buildLanguagesArray = values => {
+    const languages = [];
+    if (values.english) {
+      languages.push('english');
+    }
+    if (values.spanish) {
+      languages.push('spanish');
+    }
+    if (values.french) {
+      languages.push('french');
+    }
+    if (values.chinese) {
+      languages.push('chinese');
+    }
+    if (values.tagalog) {
+      languages.push('tagalog');
+    }
+    if (values.korean) {
+      languages.push('korean');
+    }
+    if (values.arabic) {
+      languages.push('arabic');
+    }
+    if (values.german) {
+      languages.push('german');
+    }
+    if (values.vietnamese) {
+      languages.push('vietnamese');
+    }
+
+    return languages;
+  };
+
+  const saveVolunteerData = async values => {
+    const languages = buildLanguagesArray(values);
     try {
       const payload = {
         role: values.role,
-        foodRunning: values.foodRunning,
-        distribution: values.distribution,
+        foodRunsInterest: values.foodRunning,
+        distributionInterest: values.distribution,
         firstAidTraining: values.firstAidTraining,
         serveSafeKnowledge: values.serveSafeKnowledge,
         transportationExperience: values.transportationExperience,
         movingWarehouseExperience: values.movingWarehouseExperience,
         foodServiceIndustryKnowledge: values.foodServiceIndustryKnowledge,
+        languages,
         weightLiftingAbility: values.weightLiftingAbility,
-        completedChowmatch: values.completedChowmatch,
+        completedChowmatchTraining: values.completedChowmatch,
         canDrive: values.canDrive,
         willingToDrive: values.willingToDrive,
         vehicleType: values.vehicleType,
         distance: values.distance,
       };
-      console.log(payload);
-      // await axios.put(`http://localhost:3001/users/${userId}`, payload);
+      await axios.put(`http://localhost:3001/users/roles-skills/${userId}`, payload);
     } catch (e) {
       console.log(e.message);
     }

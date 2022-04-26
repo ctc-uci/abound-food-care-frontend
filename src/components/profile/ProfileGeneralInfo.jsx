@@ -99,7 +99,7 @@ const ProfileGeneralInfo = ({ userId }) => {
     setValue('addressZip', defaultValues.addressZip);
   };
 
-  const saveVolunteerData = values => {
+  const saveVolunteerData = async values => {
     try {
       const payload = {
         organization: values.organization,
@@ -110,8 +110,7 @@ const ProfileGeneralInfo = ({ userId }) => {
         addressState: values.addressState,
         addressZip: values.addressZip,
       };
-      console.log(payload);
-      // await axios.put(`http://localhost:3001/users/${userId}`, payload);
+      await axios.put(`http://localhost:3001/users/general-info/${userId}`, payload);
     } catch (e) {
       console.log(e.message);
     }
@@ -317,13 +316,7 @@ const ProfileGeneralInfo = ({ userId }) => {
                 name="addressZip"
                 render={({ field: { onChange, value, ref } }) => (
                   <Form.Item label="Zipcode">
-                    <Input
-                      style={inputBoxStyle}
-                      onChange={onChange}
-                      value={value}
-                      ref={ref}
-                      disabled={!isEditable}
-                    />
+                    <Input onChange={onChange} value={value} ref={ref} disabled={!isEditable} />
                     <Text type="danger">
                       {errors.addressZip && <p>{errors.addressZip.message}</p>}
                     </Text>
