@@ -19,13 +19,13 @@ const UpcomingEvents = () => {
               {upcomingEvent.name}
             </a>
             <p className="upcoming-event-start-date">
-              {utils.getMonthString(upcomingEvent.startDateTime)}{' '}
-              {new Date(upcomingEvent.startDateTime).getDate()},{' '}
-              {new Date(upcomingEvent.startDateTime).getFullYear()}
+              {utils.getMonthString(upcomingEvent.startDatetime)}{' '}
+              {new Date(upcomingEvent.startDatetime).getDate()},{' '}
+              {new Date(upcomingEvent.startDatetime).getFullYear()}
             </p>
             <p>
-              {utils.getTimeInPST(upcomingEvent.startDateTime)} -{' '}
-              {utils.getTimeInPST(upcomingEvent.endDateTime)}
+              {utils.getTimeInPST(upcomingEvent.startDatetime)} -{' '}
+              {utils.getTimeInPST(upcomingEvent.endDatetime)}
             </p>
           </div>
         </Card.Grid>
