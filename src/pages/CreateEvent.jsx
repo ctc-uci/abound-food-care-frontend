@@ -15,6 +15,8 @@ const CreateEvent = () => {
   const { id } = useParams();
   const [isEdit] = useState(id);
 
+  const zipRegExp = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
+
   const schema = yup.object({
     eventName: yup.string().required(),
     eventStartDate: yup.date().required(),
@@ -39,8 +41,9 @@ const CreateEvent = () => {
       .required(),
     addressZip: yup
       .string()
-      .test('len', 'Zipcode must contain only 5 digits', val => val.length === 5)
-      .required(),
+      .matches(zipRegExp, 'Zipcode is not valid')
+      .required('Zipcode is required')
+      .test('len', 'Zipcode must contain only 5 digits', val => val.length === 5),
     notes: yup.string(),
     waivers: yup.array(),
   });
@@ -112,13 +115,15 @@ const CreateEvent = () => {
       methods.setValue('eventStartDate', moment(startDateTime));
       methods.setValue('eventEndDate', moment(endDateTime));
       methods.setValue('eventStartTime', moment(startDateTime));
-      if (eventData.requirements) {
-        eventData.requirements.forEach(r => setRequirements(r));
-      }
       methods.setValue('waivers', eventData.waivers ? eventData.waivers : []);
-      // 'fileAttachments': 'eventData.fileAttachments)'; TBD once waivers set up in db
+      let { requirements } = eventData;
+      if (requirements) {
+        requirements = requirements.replaceAll('"', ''); // requirements that are two words are returned in quotes - must remove
+        requirements = requirements.slice(1, requirements.length - 1).split(',');
+        requirements.forEach(r => setRequirements(r));
+      }
     } catch (e) {
-      console.log('Error while getting event data!');
+      console.log(e.message);
     }
   };
 
@@ -129,42 +134,16 @@ const CreateEvent = () => {
     }
   }, [isEdit]);
 
-  const setGivenValue = field => {
-    methods.setValue(field, methods.getValues(field));
-  };
-
   const incrementFormStep = () => {
     setFormStep(cur => cur + 1);
-    setGivenValue('eventName');
-    setGivenValue('eventStartDate');
-    setGivenValue('eventStartTime');
-    setGivenValue('eventEndDate');
-    setGivenValue('eventEndTime');
-    setGivenValue('eventType');
-    setGivenValue('volunteerCapacity');
-    setGivenValue('canDrive');
-    setGivenValue('isAdult');
-    setGivenValue('isMinor');
-    setGivenValue('firstAidTraining');
-    setGivenValue('serveSafeKnowledge');
-    setGivenValue('transportationExperience');
-    setGivenValue('movingWarehouseExperience');
-    setGivenValue('foodServiceIndustryKnowledge');
-    setGivenValue('addressStreet');
-    setGivenValue('addressCity');
-    setGivenValue('addressState');
-    setGivenValue('addressZip');
   };
 
   const decrementFormStep = () => {
     setFormStep(cur => cur - 1);
-    setGivenValue('notes');
-    setGivenValue('fileAttachments');
   };
 
   const buildRequirementsArray = values => {
     const requirements = [];
-
     if (values.canDrive) {
       requirements.push('drive');
     }
@@ -189,7 +168,6 @@ const CreateEvent = () => {
     if (values.foodServiceIndustryKnowledge) {
       requirements.push('food service');
     }
-
     return requirements;
   };
 
@@ -260,7 +238,6 @@ const CreateEvent = () => {
                   </Button>
                 </Link>
                 <Button
-                  // disabled={!methods.isValid}
                   onClick={incrementFormStep}
                   style={{
                     background: '#115740',
@@ -300,7 +277,6 @@ const CreateEvent = () => {
               </div>
             </section>
           )}
-          {/* <pre>{JSON.stringify(methods.watch(), null, 2)}</pre> */}
         </Form>
       </FormProvider>
     </div>

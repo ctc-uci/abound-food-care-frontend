@@ -1,255 +1,326 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { Input, Radio, Form, Select, InputNumber, Button, Col, Checkbox, Row } from 'antd';
+import React from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
+import { Input, Radio, Form, Select, Checkbox, Row, Typography } from 'antd';
+
+const { Text } = Typography;
 
 const { Option } = Select;
 
-const validateMessages = {
-  // eslint-disable-next-line no-template-curly-in-string
-  required: 'Answer to this question is required!',
-};
-
-const RolesAndSkills = props => {
-  const { nextPage, prevPage, setRolesAndSkills } = props;
-  const onFinish = values => {
-    setRolesAndSkills(values);
-    nextPage();
-  };
-
-  const [componentSize, setComponentSize] = useState('default');
-  const [requiredMark, setRequiredMarkType] = useState('optional');
-
-  const onRequiredTypeChange = ({ requiredMarkValue }) => {
-    setRequiredMarkType(requiredMarkValue);
-  };
-
-  const onFormLayoutChange = ({ size }) => {
-    setComponentSize(size);
-  };
+const RolesAndSkills = () => {
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext();
 
   return (
     <div>
       <h1>Interested Roles and Skills</h1>
-      <Form
-        labelCol={{ span: 6 }}
-        wrapperCol={{ span: 14 }}
-        onFinish={onFinish}
-        validateMessages={validateMessages}
-        name="roles_n_skills"
-        size={componentSize}
-        initialValues={{
-          requiredMarkValue: requiredMark,
-        }}
-        onValuesChange={(onRequiredTypeChange, onFormLayoutChange)}
-        requiredMark={requiredMark}
-      >
-        <Form.Item name="interestedRoles" label="Roles Interested In" rules={[{ required: true }]}>
-          <Checkbox.Group>
-            <Row>
-              <Col span={6}>
-                <Checkbox
-                  value="item01"
-                  style={{
-                    lineHeight: '32px',
-                  }}
-                >
-                  item01
-                </Checkbox>
-              </Col>
-              <Col span={6}>
-                <Checkbox
-                  value="item02"
-                  style={{
-                    lineHeight: '32px',
-                  }}
-                >
-                  item02
-                </Checkbox>
-              </Col>
-              <Col span={6}>
-                <Checkbox
-                  value="item03"
-                  style={{
-                    lineHeight: '32px',
-                  }}
-                >
-                  item03
-                </Checkbox>
-              </Col>
-              <Col span={6}>
-                <Checkbox
-                  value="item04"
-                  style={{
-                    lineHeight: '32px',
-                  }}
-                >
-                  item04
-                </Checkbox>
-              </Col>
-            </Row>
-          </Checkbox.Group>
+      <section>
+        <Form.Item label="Events Interested In">
+          <Row>
+            <Controller
+              control={control}
+              name="foodRunning"
+              render={({ field: { onChange, value, ref } }) => (
+                <Form.Item>
+                  <Checkbox onChange={onChange} ref={ref} checked={value}>
+                    Food Running
+                  </Checkbox>
+                  <Text type="danger">
+                    {errors.foodRunning && <p>{errors.foodRunning.message}</p>}
+                  </Text>
+                </Form.Item>
+              )}
+            />
+            <Controller
+              control={control}
+              name="distribution"
+              render={({ field: { onChange, value, ref } }) => (
+                <Form.Item>
+                  <Checkbox onChange={onChange} ref={ref} checked={value}>
+                    Distribution
+                  </Checkbox>
+                  <Text type="danger">
+                    {errors.distribution && <p>{errors.distribution.message}</p>}
+                  </Text>
+                </Form.Item>
+              )}
+            />
+          </Row>
         </Form.Item>
-
-        <Form.Item name="skills" label="Skills">
-          <Input.TextArea placeholder="Please enter your work goals" />
+      </section>
+      <section>
+        <Form.Item label="Skills (optional)">
+          <Row>
+            <Controller
+              control={control}
+              name="firstAidTraining"
+              render={({ field: { onChange, value, ref } }) => (
+                <Form.Item>
+                  <Checkbox onChange={onChange} ref={ref} checked={value}>
+                    First Aid Training
+                  </Checkbox>
+                  <Text type="danger">
+                    {errors.firstAidTraining && <p>{errors.firstAidTraining.message}</p>}
+                  </Text>
+                </Form.Item>
+              )}
+            />
+            <Controller
+              control={control}
+              name="serveSafeKnowledge"
+              render={({ field: { onChange, value, ref } }) => (
+                <Form.Item>
+                  <Checkbox onChange={onChange} ref={ref} checked={value}>
+                    Serve Safe Knowledge
+                  </Checkbox>
+                  <Text type="danger">
+                    {errors.serveSafeKnowledge && <p>{errors.serveSafeKnowledge.message}</p>}
+                  </Text>
+                </Form.Item>
+              )}
+            />
+            <Controller
+              control={control}
+              name="transportationExperience"
+              render={({ field: { onChange, value, ref } }) => (
+                <Form.Item>
+                  <Checkbox onChange={onChange} ref={ref} checked={value}>
+                    Transportation Experience
+                  </Checkbox>
+                  <Text type="danger">
+                    {errors.transportationExperience && (
+                      <p>{errors.transportationExperience.message}</p>
+                    )}
+                  </Text>
+                </Form.Item>
+              )}
+            />
+            <Controller
+              control={control}
+              name="movingWarehouseExperience"
+              render={({ field: { onChange, value, ref } }) => (
+                <Form.Item>
+                  <Checkbox onChange={onChange} ref={ref} checked={value}>
+                    Moving/Warehouse Experience
+                  </Checkbox>
+                  <Text type="danger">
+                    {errors.movingWarehouseExperience && (
+                      <p>{errors.movingWarehouseExperience.message}</p>
+                    )}
+                  </Text>
+                </Form.Item>
+              )}
+            />
+            <Controller
+              control={control}
+              name="foodServiceIndustryKnowledge"
+              render={({ field: { onChange, value, ref } }) => (
+                <Form.Item>
+                  <Checkbox onChange={onChange} ref={ref} checked={value}>
+                    Food Service Industry Knowledge
+                  </Checkbox>
+                  <Text type="danger">
+                    {errors.foodServiceIndustryKnowledge && (
+                      <p>{errors.foodServiceIndustryKnowledge.message}</p>
+                    )}
+                  </Text>
+                </Form.Item>
+              )}
+            />
+          </Row>
         </Form.Item>
-
-        <Form.Item name="languagesSpoken" label="Languages Spoken" rules={[{ required: true }]}>
-          <Checkbox.Group>
-            <Row>
-              <Col span={3}>
-                <Checkbox
-                  value="item01"
-                  style={{
-                    lineHeight: '32px',
-                  }}
-                >
-                  item01
-                </Checkbox>
-              </Col>
-              <Col span={3}>
-                <Checkbox
-                  value="item02"
-                  style={{
-                    lineHeight: '32px',
-                  }}
-                >
-                  item02
-                </Checkbox>
-              </Col>
-              <Col span={3}>
-                <Checkbox
-                  value="item03"
-                  style={{
-                    lineHeight: '32px',
-                  }}
-                >
-                  item03
-                </Checkbox>
-              </Col>
-              <Col span={3}>
-                <Checkbox
-                  value="item04"
-                  style={{
-                    lineHeight: '32px',
-                  }}
-                >
-                  item04
-                </Checkbox>
-              </Col>
-              <Col span={3}>
-                <Checkbox
-                  value="item05"
-                  style={{
-                    lineHeight: '32px',
-                  }}
-                >
-                  item05
-                </Checkbox>
-              </Col>
-              <Col span={3}>
-                <Checkbox
-                  value="item06"
-                  style={{
-                    lineHeight: '32px',
-                  }}
-                >
-                  item06
-                </Checkbox>
-              </Col>
-              <Col span={3}>
-                <Checkbox
-                  value="item07"
-                  style={{
-                    lineHeight: '32px',
-                  }}
-                >
-                  item07
-                </Checkbox>
-              </Col>
-              <Col span={3}>
-                <Checkbox
-                  value="Other"
-                  style={{
-                    lineHeight: '32px',
-                  }}
-                >
-                  Other
-                </Checkbox>
-              </Col>
-            </Row>
-          </Checkbox.Group>
+      </section>
+      <section>
+        <Form.Item label="Languages Spoken">
+          <Row>
+            <Controller
+              control={control}
+              name="english"
+              render={({ field: { onChange, value, ref } }) => (
+                <Form.Item>
+                  <Checkbox onChange={onChange} ref={ref} checked={value}>
+                    English
+                  </Checkbox>
+                  <Text type="danger">{errors.english && <p>{errors.english.message}</p>}</Text>
+                </Form.Item>
+              )}
+            />
+            <Controller
+              control={control}
+              name="spanish"
+              render={({ field: { onChange, value, ref } }) => (
+                <Form.Item>
+                  <Checkbox onChange={onChange} ref={ref} checked={value}>
+                    Spanish
+                  </Checkbox>
+                  <Text type="danger">{errors.spanish && <p>{errors.spanish.message}</p>}</Text>
+                </Form.Item>
+              )}
+            />
+            <Controller
+              control={control}
+              name="french"
+              render={({ field: { onChange, value, ref } }) => (
+                <Form.Item>
+                  <Checkbox onChange={onChange} ref={ref} checked={value}>
+                    French
+                  </Checkbox>
+                  {errors.french && <p>{errors.french.message}</p>}
+                </Form.Item>
+              )}
+            />
+            <Controller
+              control={control}
+              name="chinese"
+              render={({ field: { onChange, value, ref } }) => (
+                <Form.Item>
+                  <Checkbox onChange={onChange} ref={ref} checked={value}>
+                    Chinese
+                  </Checkbox>
+                  <Text type="danger">{errors.chinese && <p>{errors.chinese.message}</p>}</Text>
+                </Form.Item>
+              )}
+            />
+            <Controller
+              control={control}
+              name="tagalog"
+              render={({ field: { onChange, value, ref } }) => (
+                <Form.Item>
+                  <Checkbox onChange={onChange} ref={ref} checked={value}>
+                    Tagalog
+                  </Checkbox>
+                  <Text type="danger" />
+                  {errors.tagalog && <p>{errors.tagalog.message}</p>}
+                </Form.Item>
+              )}
+            />
+            <Controller
+              control={control}
+              name="korean"
+              render={({ field: { onChange, value, ref } }) => (
+                <Form.Item>
+                  <Checkbox onChange={onChange} ref={ref} checked={value}>
+                    Korean
+                  </Checkbox>
+                  <Text type="danger">{errors.korean && <p>{errors.korean.message}</p>}</Text>
+                </Form.Item>
+              )}
+            />
+            <Controller
+              control={control}
+              name="arabic"
+              render={({ field: { onChange, value, ref } }) => (
+                <Form.Item>
+                  <Checkbox onChange={onChange} ref={ref} checked={value}>
+                    Arabic
+                  </Checkbox>
+                  <Text type="danger">{errors.arabic && <p>{errors.arabic.message}</p>}</Text>
+                </Form.Item>
+              )}
+            />
+            <Controller
+              control={control}
+              name="german"
+              render={({ field: { onChange, value, ref } }) => (
+                <Form.Item>
+                  <Checkbox onChange={onChange} ref={ref} checked={value}>
+                    German
+                  </Checkbox>
+                  <Text type="danger">{errors.german && <p>{errors.german.message}</p>}</Text>
+                </Form.Item>
+              )}
+            />
+            <Controller
+              control={control}
+              name="vietnamese"
+              render={({ field: { onChange, value, ref } }) => (
+                <Form.Item>
+                  <Checkbox onChange={onChange} ref={ref} checked={value}>
+                    Vietnamese
+                  </Checkbox>
+                  <Text type="danger">
+                    {errors.vietnamese && <p>{errors.vietnamese.message}</p>}
+                  </Text>
+                </Form.Item>
+              )}
+            />
+          </Row>
         </Form.Item>
-
-        <Form.Item
-          name="weightliftingAbility"
-          label="Weightlifting Ability"
-          rules={[
-            {
-              type: 'number',
-              required: true,
-            },
-          ]}
-        >
-          <InputNumber placeholder="0 lbs" />
-        </Form.Item>
-
-        <Form.Item name="drive" label="Can you drive?" rules={[{ required: true }]}>
-          <Radio.Group>
-            <Radio value="true">Yes</Radio>
-            <Radio value="false">No</Radio>
-          </Radio.Group>
-        </Form.Item>
-
-        <Form.Item
-          name="foodRunsInterest"
-          label="Are you interested in food runs?"
-          rules={[{ required: true }]}
-        >
-          <Radio.Group>
-            <Radio value="true">Yes</Radio>
-            <Radio value="false">No</Radio>
-          </Radio.Group>
-        </Form.Item>
-
-        <Form.Item name="vehicleType" label="Vehicle Type:" rules={[{ required: true }]}>
-          <Select mode="multiple" placeholder="Select all that apply.">
-            <Option value="opt1">opt1</Option>
-            <Option value="opt2">opt2</Option>
-            <Option value="opt3">opt3</Option>
-          </Select>
-        </Form.Item>
-
-        <Form.Item
-          name="drivingMiles"
-          label="How far are you comfortable driving?"
-          rules={[
-            {
-              required: true,
-              type: 'number',
-            },
-          ]}
-        >
-          <InputNumber placeholder="0 miles" />
-        </Form.Item>
-
-        <Form.Item wrapperCol={{ offset: 19 }}>
-          <Button type="primary" htmlType="button" onClick={prevPage}>
-            Previous
-          </Button>
-          <Button type="primary" htmlType="submit">
-            Next
-          </Button>
-        </Form.Item>
-      </Form>
+      </section>
+      <Controller
+        control={control}
+        name="weightLiftingAbility"
+        render={({ field: { onChange, ref } }) => (
+          <Form.Item label="Weightlifting Ability" required>
+            <Input onChange={onChange} ref={ref} placeholder="0 lbs" />
+            <Text type="danger">
+              {errors.weightLiftingAbility && <p>{errors.weightLiftingAbility.message}</p>}
+            </Text>
+          </Form.Item>
+        )}
+      />
+      <Controller
+        control={control}
+        name="canDrive"
+        render={({ field: { onChange, ref, value } }) => (
+          <Form.Item label="Can you drive?" required>
+            <Radio.Group onChange={onChange} ref={ref} value={value}>
+              <Radio value="true">Yes</Radio>
+              <Radio value="false">No</Radio>
+            </Radio.Group>
+            <Text type="danger">{errors.canDrive && <p>{errors.canDrive.message}</p>}</Text>
+          </Form.Item>
+        )}
+      />
+      <Controller
+        control={control}
+        name="willingToDrive"
+        render={({ field: { onChange, ref, value } }) => (
+          <Form.Item label="Are you willing to drive?" required>
+            <Radio.Group onChange={onChange} ref={ref} value={value}>
+              <Radio value="true">Yes</Radio>
+              <Radio value="false">No</Radio>
+            </Radio.Group>
+            <Text type="danger">
+              {errors.willingToDrive && <p>{errors.willingToDrive.message}</p>}
+            </Text>
+          </Form.Item>
+        )}
+      />
+      <Controller
+        control={control}
+        name="vehicleType"
+        render={({ field: { onChange, ref } }) => (
+          <Form.Item label="Vehicle Type:">
+            <Select placeholder="Please select" onChange={onChange} ref={ref}>
+              <Option value="Large Vehicle (Van, Truck, SUV)">
+                Large Vehicle (Van, Truck, SUV)
+              </Option>
+              <Option value="Mid-Size Vehicle">Mid-Size Vehicle</Option>
+              <Option value="Small Vehicle (Compact, Sedan)">Small Vehicle (Compact, Sedan)</Option>
+            </Select>
+            <Text type="danger">{errors.vehicleType && <p>{errors.vehicleType.message}</p>}</Text>
+          </Form.Item>
+        )}
+      />
+      <Controller
+        control={control}
+        name="distance"
+        render={({ field: { onChange, ref } }) => (
+          <Form.Item label="How many miles are you comfortable driving?">
+            <Input
+              placeholder="Ex. 0, 10, 15, 20"
+              onChange={onChange}
+              ref={ref}
+              style={{ width: '200px' }}
+            />
+            <Text type="danger">{errors.distance && <p>{errors.distance.message}</p>}</Text>
+          </Form.Item>
+        )}
+      />
     </div>
   );
-};
-
-RolesAndSkills.propTypes = {
-  nextPage: PropTypes.func.isRequired,
-  prevPage: PropTypes.func.isRequired,
-  setRolesAndSkills: PropTypes.func.isRequired,
 };
 
 export default RolesAndSkills;
