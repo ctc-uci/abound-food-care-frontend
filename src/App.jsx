@@ -17,6 +17,7 @@ import useViewPort from './common/useViewPort';
 import AdminNavMenu from './components/navigation/AdminNavMenu';
 import AdminDashboard from './pages/AdminDashboard';
 import EventSignUp from './pages/EventSignUp';
+import VolunteerDashboard from './pages/VolunteerDashboard';
 // import VolunteerNavMenu from './components/navigation/VolunteerNavMenu';
 
 const { Content } = Layout;
@@ -50,6 +51,7 @@ function App() {
               {/* profile should be eventually be rendered under /volunteers. see Volunteers.jsx for note */}
               <Route path="/profile" exact element={<Profile />} />
               <Route path="/waivers" exact element={<Waivers />} />
+              <Route path="/test" exact element={<VolunteerDashboard />} />
             </Routes>
           </Content>
         </Router>
