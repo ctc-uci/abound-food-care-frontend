@@ -19,7 +19,7 @@ import EventTypeModal from './EventTypeModal';
 import './createEvent.css';
 
 const { Option } = Select;
-const { Text } = Typography;
+const { Text, Title } = Typography;
 
 const EventsGeneralInfo = () => {
   const { width } = useViewPort();
@@ -54,7 +54,7 @@ const EventsGeneralInfo = () => {
 
   return (
     <div>
-      <h1> General Information </h1>
+      <Title level={2}>General Information</Title>
       {width < breakpoint ? (
         <>
           <Controller
