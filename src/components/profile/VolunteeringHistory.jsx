@@ -8,7 +8,7 @@ import SuccessModal from '../volunteer-profile-history/SuccessModal';
 
 function VolunteeringHistory() {
   const [userId, setUserId] = useState(2);
-  const [totalHours, setTotalHours] = useState(0);
+  const [hoursCount, setHoursCount] = useState(0);
   const [eventCount, setEventCount] = useState(0);
   const [unsubmittedData, setUnsubmittedData] = useState([]);
   const [submittedData, setSubmittedData] = useState([]);
@@ -61,36 +61,65 @@ function VolunteeringHistory() {
     setUnsubmittedData(data);
   };
 
+  // TODO: update appropriate states
+  const getEventsCount = async () => {
+    const { data: res } = await axios.get(
+      `http://localhost:3001/volunteers/${userId}/total-events`,
+    );
+    console.log(res.count);
+    setEventCount(res.count);
+  };
+
+  const getHoursCount = async () => {
+    const { data: res } = await axios.get(`http://localhost:3001/hours/user/${userId}/total`);
+    console.log(res.count);
+    setHoursCount(res.count);
+  };
+
+  const getAllHours = async () => {
+    const { data: res } = await axios.get(`http://localhost:3001/hours/${userId}`);
+    console.log(res);
+    // TODO: extract unsubmitted hours
+    // TODO: extract submitted hours
+  };
+
+  // refactoring in progress
   useEffect(() => {
     setUserId(2);
-    axios.get(`http://localhost:3001/hours/statistics/${userId}`).then(res => {
-      setEventCount(res.data[0].event_count);
-      setTotalHours(res.data[0].hours);
-    });
+    getEventsCount();
+    getHoursCount();
+    getAllHours();
+    // const { count: res } = axios.get(`http://localhost:3001/volunteers/${userId}/total-events`);
+    // console.log(res);
+    // .then(res => {
+    //   setEventCount(res.data[0].event_count);
+    //   setTotalHours(res.data[0].hours);
+    // });
 
-    let data = [];
-    let data2 = [];
-    axios.get(`http://localhost:3001/hours/unsubmittedUser/${userId}`).then(res => {
-      data = res.data;
-      for (let i = 0; i < data.length; i += 1) {
-        data[i].key = i;
-        data[i].edit = i;
-        data[i].submit = i;
-      }
-      setUnsubmittedData(data);
-    });
+    // let data = [];
+    // let data2 = [];
+    // axios.get(`http://localhost:3001/hours/unsubmittedUser/${userId}`).then(res => {
+    //   data = res.data;
+    //   for (let i = 0; i < data.length; i += 1) {
+    //     data[i].key = i;
+    //     data[i].edit = i;
+    //     data[i].submit = i;
+    //   }
+    //   setUnsubmittedData(data);
+    // });
 
-    axios.get(`http://localhost:3001/hours/submittedUser/${userId}`).then(res => {
-      data2 = res.data;
-      for (let i = 0; i < data2.length; i += 1) {
-        data2[i].key = i;
-      }
-      setSubmittedData(data2);
-    });
+    // axios.get(`http://localhost:3001/hours/submittedUser/${userId}`).then(res => {
+    //   data2 = res.data;
+    //   for (let i = 0; i < data2.length; i += 1) {
+    //     data2[i].key = i;
+    //   }
+    //   setSubmittedData(data2);
+    // });
 
     setLoading(false);
   }, []);
 
+  // TODO: update axios calls to match route changes
   const handleSubmit = i => {
     setEditIndex(i);
     const body = {
@@ -261,7 +290,7 @@ function VolunteeringHistory() {
           <div className="iconDiv">
             <div className="overviewDiv">
               <FieldTimeOutlined className="icon" />
-              <p className="iconTxt">{totalHours} Volunteer Hours</p>
+              <p className="iconTxt">{hoursCount} Volunteer Hours</p>
             </div>
             <div className="overviewDiv">
               <ScheduleOutlined className="icon" />
