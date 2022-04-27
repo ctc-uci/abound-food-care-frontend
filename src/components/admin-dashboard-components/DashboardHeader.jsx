@@ -27,23 +27,10 @@ const DashboardHeader = ({ userId, isAdmin }) => {
     } else {
       // volunteer statistics
       const eventsVolunteered = await axios.get(`http://localhost:3001/volunteers/${userId}`);
-      // const totalHours = await axios.get(`http://localhost:3001/hours/user/${userId}/total`);
+      const totalHours = await axios.get(`http://localhost:3001/hours/user/${userId}/total`);
       setFirstStatistic(eventsVolunteered.data.eventIds[0]);
-      // setSecondStatistic(totalHours.data.count);
+      setSecondStatistic(totalHours.data.count);
     }
-
-    // const firstStatisticData = await axios.get(
-    //   isAdmin ? 'http://localhost:3001/events/total' : `http://localhost:3001/volunteers/${userId}`,
-    // );
-    // console.log(firstStatisticData.data.eventIds[0]);
-    // const secondStatisticData = await axios.get(
-    //   isAdmin
-    //     ? 'http://localhost:3001/volunteers/total'
-    //     : `http://localhost:3001/hours/user/${userId}/total`,
-    // );
-    // console.log(secondStatisticData);
-    // await setFirstStatistic(firstStatisticData.data.eventIds[0]);
-    // await setSecondStatistic(secondStatisticData.data.count);
   });
 
   const renderHeaderDesktop = () => {

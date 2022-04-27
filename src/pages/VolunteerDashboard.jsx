@@ -39,8 +39,8 @@ const VolunteerDashboard = () => {
     // render mobile version
     return (
       <div>
-        <EventList title="Upcoming Events" events={upcomingEvents} />
-        <EventList title="Past Events" events={pastEvents} />
+        <EventList title="Upcoming Events" events={upcomingEvents} showViewAll />
+        <EventList title="Past Events" events={pastEvents} showViewAll />
       </div>
     );
   };
