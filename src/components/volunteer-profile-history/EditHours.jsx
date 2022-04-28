@@ -23,17 +23,6 @@ const EditHours = ({
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
-    console.log({
-      changeUnsubmittedData,
-      setIsEditing,
-      eventName,
-      timeIn,
-      timeOut,
-      date,
-      notes,
-      index,
-      eventId,
-    });
     setNewDate(date);
     setNewTimeIn(timeIn);
     setNewTimeOut(timeOut);
@@ -87,7 +76,7 @@ const EditHours = ({
         startDatetime: startTime,
         endDatetime: endTime,
         eventId,
-        submit: index,
+        approveOrDecline: index,
         edit: index,
       });
       setIsEditing(false);
