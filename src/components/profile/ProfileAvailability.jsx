@@ -1,12 +1,18 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
+import { Button } from 'antd';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import Chart from 'react-apexcharts';
 
+/* TODO: implement editing
+- disable editing when not in edit mode
+- once availability is selected and 'Save' is clicked, send updated availability to backend
+*/
+
 const ProfileAvailability = ({ userId }) => {
   const [options, setOptions] = useState(null);
   const [series, setSeries] = useState([]);
+  const [isEditable, setIsEditable] = useState(false);
   const [availabilityData, setAvailabilityData] = useState([]);
   const [dataRetrieved, setDataRetrieved] = useState(false);
 
@@ -80,11 +86,11 @@ const ProfileAvailability = ({ userId }) => {
       const dataAvailability = availabilityData.filter(
         availability => availability.dayOfWeek === days[day],
       );
+      const dayArray = [];
       if (dataAvailability.length > 0) {
         const d = dataAvailability[0];
-        const dayArray = [];
-        const startTime = d.startTime.split('-')[0];
-        const endTime = d.endTime.split('-')[0];
+        const startTime = d.startTime.slice(0, d.startTime.lastIndexOf(':'));
+        const endTime = d.endTime.slice(0, d.endTime.lastIndexOf(':'));
         let available = false;
         for (let i = 0; i < times.length; i += 1) {
           if (times[i] === startTime) available = true;
@@ -93,8 +99,12 @@ const ProfileAvailability = ({ userId }) => {
           if (available) dayArray.push(2);
           else dayArray.push(1);
         }
-        data.push(dayArray);
+      } else {
+        for (let i = 0; i < times.length; i += 1) {
+          dayArray.push(1);
+        }
       }
+      data.push(dayArray);
     }
     return data;
   };
@@ -104,7 +114,7 @@ const ProfileAvailability = ({ userId }) => {
     const generatedSeries = [];
     while (i < count) {
       const x = dayOfWeek[i];
-      const y = data[index][i]; // TODO: fix this
+      const y = data[i][16 - index];
       generatedSeries.push({
         x,
         y,
@@ -117,11 +127,10 @@ const ProfileAvailability = ({ userId }) => {
   const generateSeries = (startHour, endHour) => {
     const times = [];
     for (let hour = startHour; hour <= endHour; hour += 1) {
-      const formattedHour = hour % 12 === 0 ? '12' : hour.toString();
-      // const period = hour >= 12 ? 'pm' : 'am';
-      times.push(formattedHour.concat(':00:00'));
+      const formattedHour = hour < 10 ? `0${hour.toString()}` : hour.toString();
+      times.push(formattedHour.concat(':00'));
       if (hour !== endHour) {
-        times.push(formattedHour.concat(':30:00'));
+        times.push(formattedHour.concat(':30'));
       }
     }
     const data = convertData(times);
@@ -155,11 +164,35 @@ const ProfileAvailability = ({ userId }) => {
     return null;
   };
 
+  const handleEdit = () => {
+    setIsEditable(!isEditable);
+  };
+
+  const handleCancel = () => {
+    setIsEditable(false);
+  };
+
   return (
     <div className="app">
+      <div style={{ float: 'right' }}>
+        {isEditable && (
+          <Button className="cancel-btn" onClick={handleCancel}>
+            Cancel
+          </Button>
+        )}
+        <Button className="edit-save-btn" htmlType="submit" onClick={handleEdit}>
+          {isEditable ? 'Save' : 'Edit'}
+        </Button>
+      </div>
+      {/* TODO: make thhis cart NOT editable */}
       <div className="row">
         <div className="mixed-chart"> {renderChart()} </div>
       </div>
+      {isEditable && (
+        <div className="row">
+          <div className="mixed-chart"> {renderChart()} </div>
+        </div>
+      )}
     </div>
   );
 };

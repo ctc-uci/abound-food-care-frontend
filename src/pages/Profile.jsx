@@ -5,7 +5,6 @@ import ProfileGeneralInfo from '../components/profile/ProfileGeneralInfo';
 import ProfileDUICrimHistory from '../components/profile/ProfileDUICrimHistory';
 import ProfileRolesSkills from '../components/profile/ProfileRolesSkills';
 import ProfileAvailability from '../components/profile/ProfileAvailability';
-// import WeeklyInfo from '../components/create-account/WeeklyInfo';
 import WaiversGrid from '../components/waivers/WaiversGrid';
 import VolunteeringHistory from '../components/profile/VolunteeringHistory';
 import '../components/profile/profile.css';
@@ -42,7 +41,7 @@ function Profile() {
           <ProfileGeneralInfo userId={2} />
         </TabPane>
         <TabPane tab="Availability" key="2">
-          <ProfileAvailability userId={3} />
+          <ProfileAvailability userId={13} />
         </TabPane>
         <TabPane tab="Roles & Skills" key="3">
           <ProfileRolesSkills userId={6} />
