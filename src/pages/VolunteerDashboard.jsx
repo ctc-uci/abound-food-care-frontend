@@ -17,9 +17,9 @@ const VolunteerDashboard = () => {
 
   useEffect(async () => {
     const uEvents = await axios.get('http://localhost:3001/events/upcoming');
-    await setUpcomingEvents(uEvents.data);
+    setUpcomingEvents(uEvents.data);
     const pEvents = await axios.get('http://localhost:3001/events/past');
-    await setPastEvents(pEvents.data);
+    setPastEvents(pEvents.data);
   }, []);
 
   const renderDashboard = () => {

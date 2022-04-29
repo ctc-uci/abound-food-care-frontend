@@ -24,7 +24,7 @@ const EventList = ({ title, events, showViewAll }) => {
       {events.map(event => {
         const startDate = new Date(event.startDatetime);
         return (
-          <Card key={event.id}>
+          <Card key={event.eventId}>
             <div className="event-list-card">
               <div className="event-date">
                 <p className="month"> {moment(startDate).format('MMM')}</p>
@@ -47,7 +47,8 @@ const EventList = ({ title, events, showViewAll }) => {
 
 EventList.propTypes = {
   title: PropTypes.string,
-  events: PropTypes.arrayOf(PropTypes.obj),
+  // eslint-disable-next-line react/forbid-prop-types
+  events: PropTypes.arrayOf(PropTypes.any),
   showViewAll: PropTypes.bool,
 };
 

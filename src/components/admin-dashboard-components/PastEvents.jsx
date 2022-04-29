@@ -8,13 +8,13 @@ const PastEvents = () => {
   const [events, setEvents] = useState([]);
   useEffect(async () => {
     const response = await axios.get('http://localhost:3001/events/past');
-    await setEvents(response.data);
+    setEvents(response.data);
   }, []);
   return (
     <div className="past-events-container">
       <Card title="Past Events">
         {events.map(pastEvent => (
-          <Card.Grid key={pastEvent.name} className="past-event">
+          <Card.Grid key={pastEvent.eventId} className="past-event">
             <div>
               <a className="past-event-name" href="https://www.google.com">
                 {pastEvent.name}

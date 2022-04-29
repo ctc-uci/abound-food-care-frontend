@@ -16,7 +16,7 @@ const EventGrid = ({ title, eventStatus }) => {
       query += 'upcoming';
     }
     const response = await axios.get(query);
-    await setEvents(response.data);
+    setEvents(response.data);
   }, []);
 
   const renderTotalHours = (startDatetime, endDatetime) => {
@@ -31,8 +31,9 @@ const EventGrid = ({ title, eventStatus }) => {
   return (
     <div className="events-container">
       <Card title={title}>
-        {events.map(event => (
-          <Card.Grid key={event.name} className={`${eventStatus}-event`}>
+        {events.map((event, index) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <Card.Grid key={index} className={`${eventStatus}-event`}>
             <div>
               <a className="event-name" href="https://www.google.com">
                 {event.name}
