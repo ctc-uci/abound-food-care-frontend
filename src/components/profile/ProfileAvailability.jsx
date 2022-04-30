@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from 'antd';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import Chart from 'react-apexcharts';
 
-/* TODO: implement editing
-- disable editing when not in edit mode
-- once availability is selected and 'Save' is clicked, send updated availability to backend
-*/
-
 const ProfileAvailability = ({ userId }) => {
   const [options, setOptions] = useState(null);
   const [series, setSeries] = useState([]);
-  const [isEditable, setIsEditable] = useState(false);
   const [availabilityData, setAvailabilityData] = useState([]);
   const [dataRetrieved, setDataRetrieved] = useState(false);
 
@@ -164,35 +157,11 @@ const ProfileAvailability = ({ userId }) => {
     return null;
   };
 
-  const handleEdit = () => {
-    setIsEditable(!isEditable);
-  };
-
-  const handleCancel = () => {
-    setIsEditable(false);
-  };
-
   return (
     <div className="app">
-      <div style={{ float: 'right' }}>
-        {isEditable && (
-          <Button className="cancel-btn" onClick={handleCancel}>
-            Cancel
-          </Button>
-        )}
-        <Button className="edit-save-btn" htmlType="submit" onClick={handleEdit}>
-          {isEditable ? 'Save' : 'Edit'}
-        </Button>
-      </div>
-      {/* TODO: make thhis cart NOT editable */}
       <div className="row">
         <div className="mixed-chart"> {renderChart()} </div>
       </div>
-      {isEditable && (
-        <div className="row">
-          <div className="mixed-chart"> {renderChart()} </div>
-        </div>
-      )}
     </div>
   );
 };
