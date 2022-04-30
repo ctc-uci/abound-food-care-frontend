@@ -52,7 +52,6 @@ const AdminEvents = () => {
   }, []);
 
   const onSearch = e => {
-    console.log(e);
     if (e.target.value === '') {
       setShowSearchResults(false);
       setEventsData(allEvents);

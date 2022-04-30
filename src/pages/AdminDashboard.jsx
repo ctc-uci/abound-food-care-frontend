@@ -6,9 +6,10 @@ import DashboardHeader from '../components/admin-dashboard-components/DashboardH
 import EventGrid from '../components/admin-dashboard-components/EventGrid';
 
 const AdminDashboard = () => {
+  // HARDCODED USERID FOR NOW
   return (
     <div className="dashboard-container">
-      <DashboardHeader />
+      <DashboardHeader isAdmin userId={2} />
       <Row className="dashboard-row" gutter={[32, 16]}>
         <Col className="dashboard-col" span={18}>
           <EventGrid title="Upcoming Events" eventStatus="upcoming" />

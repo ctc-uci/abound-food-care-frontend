@@ -17,6 +17,7 @@ import useViewPort from './common/useViewPort';
 import AdminNavMenu from './components/navigation/AdminNavMenu';
 import AdminDashboard from './pages/AdminDashboard';
 import EventSignUp from './pages/EventSignUp';
+import VolunteerDashboard from './pages/VolunteerDashboard';
 // import VolunteerNavMenu from './components/navigation/VolunteerNavMenu';
 
 const { Content } = Layout;
@@ -41,6 +42,7 @@ function App() {
               <Route path="/" exact element={<Login />} />
               <Route path="/users/create" exact element={<CreateAccount />} />
               <Route path="/admin" exact element={<AdminDashboard />} />
+              <Route path="/volunteer" exact element={<VolunteerDashboard />} />
               <Route path="/events" exact element={<Events />} />
               <Route path="/events/create" exact element={<CreateEvent />} />
               <Route path="/events/edit/:id" exact element={<CreateEvent />} />

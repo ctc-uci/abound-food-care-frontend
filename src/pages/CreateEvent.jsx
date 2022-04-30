@@ -6,6 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, Button } from 'antd';
 import moment from 'moment';
 import axios from 'axios';
+import uploadBoxPhoto from '../components/events/utils';
 import EventsGeneralInfo from '../components/events/createEvent/EventsGeneralInfo';
 import EventsAdditionalInfo from '../components/events/createEvent/EventsAdditionalInfo';
 
@@ -44,8 +45,7 @@ const CreateEvent = () => {
       .required('Zipcode is required')
       .test('len', 'Zipcode must contain only 5 digits', val => val.length === 5),
     notes: yup.string(),
-    // fileAttachments: yup.array().of(yup.string()), TODO: update once waivers storing decided
-    fileAttachments: yup.string(),
+    waivers: yup.array(),
   });
 
   const methods = useForm({
@@ -70,7 +70,7 @@ const CreateEvent = () => {
       addressState: '',
       addressZip: '',
       notes: '',
-      fileAttachments: '',
+      waivers: [],
     },
     resolver: yupResolver(schema),
     delayError: 750,
@@ -115,15 +115,12 @@ const CreateEvent = () => {
       methods.setValue('eventStartDate', moment(startDateTime));
       methods.setValue('eventEndDate', moment(endDateTime));
       methods.setValue('eventStartTime', moment(startDateTime));
-      let { requirements } = eventData;
-      if (requirements) {
-        requirements = requirements.replaceAll('"', ''); // requirements that are two words are returned in quotes - must remove
-        requirements = requirements.slice(1, requirements.length - 1).split(',');
-        requirements.forEach(r => setRequirements(r));
+      methods.setValue('waivers', eventData.waivers ? eventData.waivers : []);
+      if (eventData.requirements) {
+        eventData.requirements.forEach(r => setRequirements(r));
       }
-      // 'fileAttachments': 'eventData.fileAttachments)'; TBD once waivers set up in db
     } catch (e) {
-      console.log('Error while getting event data!');
+      console.log(e.message);
     }
   };
 
@@ -183,6 +180,14 @@ const CreateEvent = () => {
       const startDatetime = `${startDate} ${startTime} ${timeZone}`;
       const endDatetime = `${endDate} ${endTime} ${timeZone}`;
 
+      let waivers = await Promise.all(
+        values.waivers.map(async file => uploadBoxPhoto(file.originFileObj)),
+      );
+      waivers = values.waivers.map((file, index) => ({
+        name: file.name,
+        link: waivers[index],
+      }));
+
       const payload = {
         name: values.eventName,
         eventType: values.eventType,
@@ -195,8 +200,8 @@ const CreateEvent = () => {
         volunteerCapacity: values.volunteerCapacity,
         requirements,
         notes: values.notes,
+        waivers,
       };
-
       // Check if this is editing or creating a new event
       if (isEdit) {
         await axios.put(`http://localhost:3001/events/${id}`, payload);
@@ -245,7 +250,7 @@ const CreateEvent = () => {
           )}
           {formStep >= 1 && (
             <section hidden={formStep !== 1}>
-              <EventsAdditionalInfo />
+              <EventsAdditionalInfo isEdit={!!isEdit} />
               <div>
                 <Button
                   style={{
