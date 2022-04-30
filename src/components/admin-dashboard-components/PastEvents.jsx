@@ -12,7 +12,7 @@ const PastEvents = () => {
   const breakpoint = 720;
   useEffect(async () => {
     const response = await axios.get('http://localhost:3001/events/past');
-    await setEvents(response.data);
+    setEvents(response.data);
   }, []);
 
   const gridStyle = {
