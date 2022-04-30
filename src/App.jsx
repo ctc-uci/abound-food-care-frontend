@@ -42,6 +42,7 @@ function App() {
               <Route path="/" exact element={<Login />} />
               <Route path="/users/create" exact element={<CreateAccount />} />
               <Route path="/admin" exact element={<AdminDashboard />} />
+              <Route path="/volunteer" exact element={<VolunteerDashboard />} />
               <Route path="/events" exact element={<Events />} />
               <Route path="/events/create" exact element={<CreateEvent />} />
               <Route path="/events/edit/:id" exact element={<CreateEvent />} />
@@ -51,7 +52,6 @@ function App() {
               {/* profile should be eventually be rendered under /volunteers. see Volunteers.jsx for note */}
               <Route path="/profile" exact element={<Profile />} />
               <Route path="/waivers" exact element={<Waivers />} />
-              <Route path="/test" exact element={<VolunteerDashboard />} />
             </Routes>
           </Content>
         </Router>
