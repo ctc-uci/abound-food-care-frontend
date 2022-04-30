@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { Input, Button, Radio, Row, Col, Card, Typography, ConfigProvider } from 'antd';
 import { FilterOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import EventCard from '../EventCard';
-import EventList from '../EventList';
+import EventCard from '../event/EventCard';
+import EventList from '../event/EventList';
 import useViewPort from '../../../common/useViewPort';
 import './adminEvents.css';
 import 'antd/dist/antd.variable.min.css';
@@ -52,7 +52,6 @@ const AdminEvents = () => {
   }, []);
 
   const onSearch = e => {
-    console.log(e);
     if (e.target.value === '') {
       setShowSearchResults(false);
       setEventsData(allEvents);
