@@ -11,8 +11,11 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
   const [numVolunteers, setNumVolunteers] = useState(0);
   const [loading, setLoading] = useState(false);
 
+  // console.log(startDateTime);
+
   // get date and time
   const eventStartDateObj = new Date(startDateTime);
+  // console.log(eventStartDateObj);
   const eventEndDateObj = new Date(endDateTime);
   const eventDate = `${eventStartDateObj.toLocaleString('en-us', {
     month: 'long',
