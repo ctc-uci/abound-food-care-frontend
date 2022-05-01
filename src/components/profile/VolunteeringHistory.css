@@ -1,15 +1,11 @@
 @import '~antd/dist/antd.variable.min.css';
 @font-face {
-  font-family: 'Inter-Regular';
-  src: url('../../assets/fonts/Inter-Regular.ttf');
+  font-family: 'Avenir-Bold';
+  src: url('../assets/fonts/AvenirNextLTProBold.otf');
 }
 @font-face {
-  font-family: 'Inter-SemiBold';
-  src: url('../../assets/fonts/Inter-SemiBold.ttf');
-}
-@font-face {
-  font-family: 'Inter-Medium';
-  src: url('../../assets/fonts/Inter-Medium.ttf');
+  font-family: 'Avenir-Heavy';
+  src: url('../assets/fonts/AvenirLTProHeavy.otf');
 }
 
 .historyTab {
@@ -18,10 +14,7 @@
   justify-content: center;
   padding: 0;
   margin: 0;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-sizing: border-box;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 2px;
+  margin-top: 6vh;
 }
 
 .container {
@@ -33,24 +26,11 @@
   align-items: flex-start;
 }
 
-.header {
-  font-family: 'Inter-SemiBold';
-  font-size: 2.1em;
-  padding: 0;
-  margin: 0;
-  padding-top: 1.8em;
-}
-
 .tableHeader {
-  font-family: 'Inter-SemiBold';
+  font-family: 'Avenir-Heavy';
   font-size: 1.9em;
-  padding: 0;
+  padding: .5em;
   margin: 0;
-  padding-bottom: 0.5em;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-sizing: border-box;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 2px;
 }
 
 .iconDiv {
@@ -71,7 +51,7 @@
 }
 
 .iconTxt {
-  font-family: 'Inter-SemiBold';
+  font-family: 'Avenir-Heavy';
   font-size: 2em;
   line-height: 1em;
   color: #115740;
@@ -79,7 +59,7 @@
 }
 
 .icon {
-  font-size: 13em;
+  font-size: 10em;
   color: #115740;
 }
 
@@ -93,3 +73,4 @@
 .spacer {
   height: 3em;
 }
+
