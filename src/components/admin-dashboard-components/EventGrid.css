@@ -1,0 +1,51 @@
+/* 3 events in each row */
+.upcoming-event {
+  width: 33.3%;
+  text-align: left;
+  border-right: none;
+  font-size: 16px;
+  height: 165px;
+}
+
+/* 1 event per row */
+.past-event {
+  width: 100%;
+  text-align: left;
+  border-right: none;
+  height: 174px;
+  font-size: 16px;
+}
+
+.event p {
+  margin-bottom: 0;
+  font-size: 16px;
+}
+
+.event-start-date {
+  margin-top: 1em;
+  margin-bottom: 0px;
+}
+
+.event-name {
+  color: #115740 !important;
+  font-weight: 600;
+  /* margin-bottom: 3em; */
+}
+
+.upcoming-events {
+  width: 100%;
+  border-bottom: none;
+  margin-bottom: 3vh;
+}
+
+.ant-card-head {
+  font-size: 34px;
+}
+
+.ant-card-head-title {
+  font-weight: 600;
+}
+
+.event-end {
+  margin-bottom: 5px !important;
+}
