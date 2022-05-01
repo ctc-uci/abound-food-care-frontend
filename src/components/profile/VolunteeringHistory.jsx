@@ -1,10 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FieldTimeOutlined, ScheduleOutlined } from '@ant-design/icons';
-import { ConfigProvider, Table, Button } from 'antd';
+import { FieldTimeOutlined, ScheduleOutlined, DownOutlined } from '@ant-design/icons';
+import { ConfigProvider, Table, Button, Collapse } from 'antd';
 import './VolunteeringHistory.css';
+import styled from 'styled-components';
 import EditHours from '../volunteer-profile-history/EditHours';
 import SuccessModal from '../volunteer-profile-history/SuccessModal';
+
+const { Panel } = Collapse;
+
+const ShadowBox = styled.div`
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-sizing: border-box;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+`;
 
 function VolunteeringHistory() {
   const [userId, setUserId] = useState(2);
@@ -17,16 +28,23 @@ function VolunteeringHistory() {
   const [editIndex, setEditIndex] = useState(0);
   const [submittedHours, setSubmittedHours] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
+  const [unsubmittedCollapse, setUnsubmittedCollapse] = useState(false);
+  const [submittedCollapse, setSubmittedCollapse] = useState(false);
+
+  const ExpandIcon = state => {
+    return (
+      <DownOutlined
+        rotate={state ? '' : '180'}
+        style={{
+          color: '#115740',
+          fontSize: '1em',
+        }}
+      />
+    );
+  };
 
   const parseDate = date => {
     return new Date(date).toLocaleDateString();
-    /*
-    console.log(newDate);
-    const month = date.substring(5, 7);
-    const day = date.substring(8, 10);
-    const year = date.substring(0, 4);
-    return `${month}/${day}/${year}`;
-    */
   };
 
   const parseTime = time => {
@@ -35,19 +53,6 @@ function VolunteeringHistory() {
       timeString.substring(0, timeString.length - 6) +
       timeString.substring(timeString.length - 3, timeString.length)
     );
-    /*
-    let startTime = time.substring(11, 16);
-    if (parseInt(startTime.substring(0, 2), 10) > 12) {
-      startTime = `${parseInt(startTime.substring(0, 2), 10) - 12}:${startTime.substring(3, 5)} pm`;
-    } else if (parseInt(startTime.substring(0, 2), 10) > 9) {
-      startTime = `${startTime.substring(0, 5)} am`;
-    } else if (parseInt(startTime.substring(0, 2), 10) == 0) {
-      startTime = `12:${startTime.substring(3, 5)} am`;
-    } else {
-      startTime = `${startTime.substring(1, 5)} am`;
-    }
-    return startTime;
-    */
   };
 
   const removeFromUnsubmitted = index => {
@@ -62,7 +67,7 @@ function VolunteeringHistory() {
   };
 
   useEffect(() => {
-    setUserId(2);
+    setUserId(3);
     axios.get(`http://localhost:3001/hours/statistics/${userId}`).then(res => {
       setEventCount(res.data[0].event_count);
       setTotalHours(res.data[0].hours);
@@ -249,14 +254,10 @@ function VolunteeringHistory() {
           eventId={unsubmittedData[editIndex].event_id}
           index={editIndex}
         />
-        /*
-          timeIn, timeOut, and date are all treated as strings. not too sure what format the backend
-          is going to serve to us in and wether or not we'll have to do string manipulation
-        */
       )}
       <div className="historyTab">
         <div className="container">
-          <p className="header">My Volunteering History</p>
+          <p className="tableHeader">My Volunteering History</p>
 
           <div className="iconDiv">
             <div className="overviewDiv">
@@ -272,27 +273,46 @@ function VolunteeringHistory() {
                 <UsergroupDeleteOutlined className="icon" />
                 <p className="iconTxt">Impacted {peopleImpacted} People</p>
               </div>
-              */}
+            */}
           </div>
 
-          <p className="tableHeader">Unsubmitted Hours</p>
-          <Table
-            className="table"
-            columns={unsubmittedColumns}
-            loading={isLoading}
-            dataSource={unsubmittedData}
-            pagination={false}
-          />
-
-          <p className="tableHeader">Submitted Hours</p>
-          <Table
-            className="table"
-            columns={submittedColumns}
-            loading={isLoading}
-            dataSource={submittedData}
-            pagination={false}
-          />
+          <ShadowBox>
+            <Collapse
+              className="heavyText"
+              ghost
+              expandIconPosition="right"
+              expandIcon={() => ExpandIcon(unsubmittedCollapse)}
+              onChange={() => setUnsubmittedCollapse(!unsubmittedCollapse)}
+            >
+              <Panel className="tableHeader" header="Unsubmitted Hours">
+                <Table
+                  columns={unsubmittedColumns}
+                  loading={isLoading}
+                  dataSource={unsubmittedData}
+                  pagination={false}
+                />
+              </Panel>
+            </Collapse>
+          </ShadowBox>
           <div className="spacer" />
+          <ShadowBox>
+            <Collapse
+              className="heavyText"
+              ghost
+              expandIconPosition="right"
+              expandIcon={() => ExpandIcon(submittedCollapse)}
+              onChange={() => setSubmittedCollapse(!submittedCollapse)}
+            >
+              <Panel className="tableHeader" header="Submitted Hours">
+                <Table
+                  columns={submittedColumns}
+                  loading={isLoading}
+                  dataSource={submittedData}
+                  pagination={false}
+                />
+              </Panel>
+            </Collapse>
+          </ShadowBox>
         </div>
       </div>
     </ConfigProvider>
