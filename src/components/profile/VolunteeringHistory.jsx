@@ -34,12 +34,10 @@ function VolunteeringHistory() {
   const ExpandIcon = state => {
     return (
       <DownOutlined
+        rotate={state ? '' : '180'}
         style={{
           color: '#115740',
           fontSize: '1em',
-          transform: state ? '' : 'rotate(180deg)',
-          transition: 'transform 0.5s',
-          transformOrigin: 'top',
         }}
       />
     );
