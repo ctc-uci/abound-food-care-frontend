@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FieldTimeOutlined, ScheduleOutlined } from '@ant-design/icons';
-import { ConfigProvider, Table, Button } from 'antd';
+import { FieldTimeOutlined, ScheduleOutlined, DownOutlined } from '@ant-design/icons';
+import { ConfigProvider, Table, Button, Collapse } from 'antd';
 import './VolunteeringHistory.css';
 import styled from 'styled-components';
-import EditHours from '../../components/volunteer-profile-history/EditHours';
-import SuccessModal from '../../components/volunteer-profile-history/SuccessModal';
+import EditHours from '../volunteer-profile-history/EditHours';
+import SuccessModal from '../volunteer-profile-history/SuccessModal';
+
+const { Panel } = Collapse;
 
 const ShadowBox = styled.div`
+  width: 100%;
   border: 1px solid rgba(0, 0, 0, 0.06);
   box-sizing: border-box;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
@@ -25,6 +28,22 @@ function VolunteeringHistory() {
   const [editIndex, setEditIndex] = useState(0);
   const [submittedHours, setSubmittedHours] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
+  const [unsubmittedCollapse, setUnsubmittedCollapse] = useState(false);
+  const [submittedCollapse, setSubmittedCollapse] = useState(false);
+
+  const ExpandIcon = state => {
+    return (
+      <DownOutlined
+        style={{
+          color: '#115740',
+          fontSize: '1em',
+          transform: state ? '' : 'rotate(180deg)',
+          transition: 'transform 0.5s',
+          transformOrigin: 'top',
+        }}
+      />
+    );
+  };
 
   const parseDate = date => {
     return new Date(date).toLocaleDateString();
@@ -260,23 +279,41 @@ function VolunteeringHistory() {
           </div>
 
           <ShadowBox>
-            <p className="tableHeader">Unsubmitted Hours</p>
-            <Table
-              columns={unsubmittedColumns}
-              loading={isLoading}
-              dataSource={unsubmittedData}
-              pagination={false}
-            />
+            <Collapse
+              className="heavyText"
+              ghost
+              expandIconPosition="right"
+              expandIcon={() => ExpandIcon(unsubmittedCollapse)}
+              onChange={() => setUnsubmittedCollapse(!unsubmittedCollapse)}
+            >
+              <Panel className="tableHeader" header="Unsubmitted Hours">
+                <Table
+                  columns={unsubmittedColumns}
+                  loading={isLoading}
+                  dataSource={unsubmittedData}
+                  pagination={false}
+                />
+              </Panel>
+            </Collapse>
           </ShadowBox>
           <div className="spacer" />
           <ShadowBox>
-            <p className="tableHeader">Submitted Hours</p>
-            <Table
-              columns={submittedColumns}
-              loading={isLoading}
-              dataSource={submittedData}
-              pagination={false}
-            />
+            <Collapse
+              className="heavyText"
+              ghost
+              expandIconPosition="right"
+              expandIcon={() => ExpandIcon(submittedCollapse)}
+              onChange={() => setSubmittedCollapse(!submittedCollapse)}
+            >
+              <Panel className="tableHeader" header="Submitted Hours">
+                <Table
+                  columns={submittedColumns}
+                  loading={isLoading}
+                  dataSource={submittedData}
+                  pagination={false}
+                />
+              </Panel>
+            </Collapse>
           </ShadowBox>
         </div>
       </div>

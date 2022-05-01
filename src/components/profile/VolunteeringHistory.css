@@ -1,11 +1,11 @@
 @import '~antd/dist/antd.variable.min.css';
 @font-face {
   font-family: 'Avenir-Bold';
-  src: url('../assets/fonts/AvenirNextLTProBold.otf');
+  src: url('../../assets/fonts/AvenirNextLTProBold.otf');
 }
 @font-face {
   font-family: 'Avenir-Heavy';
-  src: url('../assets/fonts/AvenirLTProHeavy.otf');
+  src: url('../../assets/fonts/AvenirLTProHeavy.otf');
 }
 
 .historyTab {
@@ -31,6 +31,12 @@
   font-size: 1.9em;
   padding: .5em;
   margin: 0;
+  width: '100%';
+}
+
+.heavyText {
+  font-family: 'Avenir-Heavy';
+  font-size: 1em;
 }
 
 .iconDiv {

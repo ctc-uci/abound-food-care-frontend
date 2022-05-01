@@ -18,6 +18,7 @@ import AdminNavMenu from './components/navigation/AdminNavMenu';
 import AdminDashboard from './pages/AdminDashboard';
 import EventSignUp from './pages/EventSignUp';
 import VolunteerDashboard from './pages/VolunteerDashboard';
+import VolunteeringHistory from './components/profile/VolunteeringHistory';
 // import VolunteerNavMenu from './components/navigation/VolunteerNavMenu';
 
 const { Content } = Layout;
@@ -52,6 +53,7 @@ function App() {
               <Route path="/profile" exact element={<Profile />} />
               <Route path="/waivers" exact element={<Waivers />} />
               <Route path="/test" exact element={<VolunteerDashboard />} />
+              <Route path="/volunteeringHistory" exact element={<VolunteeringHistory />} />
             </Routes>
           </Content>
         </Router>
