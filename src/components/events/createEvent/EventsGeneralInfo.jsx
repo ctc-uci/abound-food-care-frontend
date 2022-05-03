@@ -60,9 +60,14 @@ const EventsGeneralInfo = () => {
           <Controller
             control={control}
             name="eventName"
-            render={({ field: { onChange, ref } }) => (
+            render={({ field: { onChange, value, ref } }) => (
               <Form.Item label="Event Name">
-                <Input placeholder="Ex. Food Running Event" onChange={onChange} ref={ref} />
+                <Input
+                  placeholder="Ex. Food Running Event"
+                  onChange={onChange}
+                  value={value}
+                  ref={ref}
+                />
                 <Text type="danger">{errors.eventName && <p>{errors.eventName.message}</p>}</Text>
               </Form.Item>
             )}
@@ -71,9 +76,14 @@ const EventsGeneralInfo = () => {
             <Controller
               name="eventStartDate"
               control={control}
-              render={({ field: { onChange, ref } }) => (
+              render={({ field: { onChange, value, ref } }) => (
                 <Form.Item label="Start Date">
-                  <DatePicker placeholder="Select date" onChange={onChange} ref={ref} />
+                  <DatePicker
+                    placeholder="Select date"
+                    onChange={onChange}
+                    value={value}
+                    ref={ref}
+                  />
                   <Text type="danger">
                     {errors.eventStartDate && <p>{errors.eventStartDate.message}</p>}
                   </Text>
@@ -83,9 +93,14 @@ const EventsGeneralInfo = () => {
             <Controller
               name="eventStartTime"
               control={control}
-              render={({ field: { onChange, ref } }) => (
+              render={({ field: { onChange, value, ref } }) => (
                 <Form.Item label="Start Time">
-                  <TimePicker placeholder="Select time" onChange={onChange} ref={ref} />
+                  <TimePicker
+                    placeholder="Select time"
+                    onChange={onChange}
+                    value={value}
+                    ref={ref}
+                  />
                   <Text type="danger">
                     {errors.eventStartTime && <p>{errors.eventStartTime.message}</p>}
                   </Text>
@@ -97,9 +112,14 @@ const EventsGeneralInfo = () => {
             <Controller
               name="eventEndDate"
               control={control}
-              render={({ field: { onChange, ref } }) => (
+              render={({ field: { onChange, value, ref } }) => (
                 <Form.Item label="End Date">
-                  <DatePicker placeholder="Select date" onChange={onChange} ref={ref} />
+                  <DatePicker
+                    placeholder="Select date"
+                    onChange={onChange}
+                    value={value}
+                    ref={ref}
+                  />
                   <Text type="danger">
                     {errors.eventEndDate && <p>{errors.eventEndDate.message}</p>}
                   </Text>
@@ -109,9 +129,14 @@ const EventsGeneralInfo = () => {
             <Controller
               name="eventEndTime"
               control={control}
-              render={({ field: { onChange, ref } }) => (
+              render={({ field: { onChange, value, ref } }) => (
                 <Form.Item label="End Time">
-                  <TimePicker placeholder="Select time" onChange={onChange} ref={ref} />
+                  <TimePicker
+                    placeholder="Select time"
+                    onChange={onChange}
+                    value={value}
+                    ref={ref}
+                  />
                   <Text type="danger">
                     {errors.eventEndTime && <p>{errors.eventEndTime.message}</p>}
                   </Text>
@@ -122,9 +147,9 @@ const EventsGeneralInfo = () => {
           <Controller
             name="eventType"
             control={control}
-            render={({ field: { onChange, ref } }) => (
+            render={({ field: { onChange, value, ref } }) => (
               <Form.Item label="Event Type">
-                <Select placeholder="Type" onChange={onChange} ref={ref}>
+                <Select placeholder="Type" onChange={onChange} value={value} ref={ref}>
                   {' '}
                   {eventTypeMenu}{' '}
                 </Select>
@@ -155,9 +180,9 @@ const EventsGeneralInfo = () => {
           <Controller
             control={control}
             name="volunteerCapacity"
-            render={({ field: { onChange, ref } }) => (
+            render={({ field: { onChange, value, ref } }) => (
               <Form.Item label="Num Volunteers">
-                <Input onChange={onChange} ref={ref} />
+                <Input onChange={onChange} value={value} ref={ref} />
                 <Text type="danger">
                   {errors.volunteerCapacity && <p>{errors.volunteerCapacity.message}</p>}
                 </Text>
@@ -304,9 +329,14 @@ const EventsGeneralInfo = () => {
             <Controller
               control={control}
               name="addressStreet"
-              render={({ field: { onChange, ref } }) => (
+              render={({ field: { onChange, value, ref } }) => (
                 <Form.Item label="Street Address">
-                  <Input placeholder="200 N Tustin Ave" onChange={onChange} ref={ref} />
+                  <Input
+                    placeholder="200 N Tustin Ave"
+                    onChange={onChange}
+                    value={value}
+                    ref={ref}
+                  />
                   <Text type="danger">
                     {errors.addressStreet && <p>{errors.addressStreet.message}</p>}
                   </Text>
@@ -316,9 +346,9 @@ const EventsGeneralInfo = () => {
             <Controller
               control={control}
               name="addressCity"
-              render={({ field: { onChange, ref } }) => (
+              render={({ field: { onChange, value, ref } }) => (
                 <Form.Item label="City">
-                  <Input placeholder="Ex. Santa Ana" onChange={onChange} ref={ref} />
+                  <Input placeholder="Ex. Santa Ana" onChange={onChange} value={value} ref={ref} />
                   <Text type="danger">
                     {errors.addressCity && <p>{errors.addressCity.message}</p>}
                   </Text>
@@ -328,9 +358,9 @@ const EventsGeneralInfo = () => {
             <Controller
               control={control}
               name="addressState"
-              render={({ field: { onChange, ref } }) => (
+              render={({ field: { onChange, value, ref } }) => (
                 <Form.Item label="State">
-                  <Input placeholder="Ex. CA" onChange={onChange} ref={ref} />
+                  <Input placeholder="Ex. CA" onChange={onChange} value={value} ref={ref} />
                   <Text type="danger">
                     {errors.addressState && <p>{errors.addressState.message}</p>}
                   </Text>
@@ -340,9 +370,9 @@ const EventsGeneralInfo = () => {
             <Controller
               control={control}
               name="addressZip"
-              render={({ field: { onChange, ref } }) => (
+              render={({ field: { onChange, value, ref } }) => (
                 <Form.Item label="Zipcode">
-                  <Input placeholder="Ex. 92705" onChange={onChange} ref={ref} />
+                  <Input placeholder="Ex. 92705" onChange={onChange} value={value} ref={ref} />
                   <Text type="danger">
                     {errors.addressZip && <p>{errors.addressZip.message}</p>}
                   </Text>
@@ -357,9 +387,14 @@ const EventsGeneralInfo = () => {
           <Controller
             control={control}
             name="eventName"
-            render={({ field: { onChange, ref } }) => (
+            render={({ field: { onChange, value, ref } }) => (
               <Form.Item label="Event Name">
-                <Input placeholder="Ex. Food Running Event" ref={ref} onChange={onChange} />
+                <Input
+                  placeholder="Ex. Food Running Event"
+                  ref={ref}
+                  value={value}
+                  onChange={onChange}
+                />
                 <Text type="danger">{errors.eventName && <p>{errors.eventName.message}</p>}</Text>
               </Form.Item>
             )}
@@ -367,9 +402,9 @@ const EventsGeneralInfo = () => {
           <Controller
             control={control}
             name="eventStartDate"
-            render={({ field: { onChange, ref } }) => (
+            render={({ field: { onChange, value, ref } }) => (
               <Form.Item label="Start Date">
-                <DatePicker placeholder="Select date" onChange={onChange} ref={ref} />
+                <DatePicker placeholder="Select date" onChange={onChange} value={value} ref={ref} />
                 <Text type="danger">
                   {errors.eventStartDate && <p>{errors.eventStartDate.message}</p>}
                 </Text>
@@ -379,9 +414,9 @@ const EventsGeneralInfo = () => {
           <Controller
             control={control}
             name="eventStartTime"
-            render={({ field: { onChange, ref } }) => (
+            render={({ field: { onChange, value, ref } }) => (
               <Form.Item label="Start Time">
-                <TimePicker placeholder="Select time" onChange={onChange} ref={ref} />
+                <TimePicker placeholder="Select time" onChange={onChange} value={value} ref={ref} />
                 <Text type="danger">
                   {errors.eventStartTime && <p>{errors.eventStartTime.message}</p>}
                 </Text>
@@ -391,9 +426,9 @@ const EventsGeneralInfo = () => {
           <Controller
             control={control}
             name="eventEndDate"
-            render={({ field: { onChange, ref } }) => (
+            render={({ field: { onChange, value, ref } }) => (
               <Form.Item label="End Date">
-                <DatePicker placeholder="Select date" onChange={onChange} ref={ref} />
+                <DatePicker placeholder="Select date" onChange={onChange} value={value} ref={ref} />
                 <Text type="danger">
                   {errors.eventEndDate && <p>{errors.eventEndDate.message}</p>}
                 </Text>
@@ -403,9 +438,9 @@ const EventsGeneralInfo = () => {
           <Controller
             control={control}
             name="eventEndTime"
-            render={({ field: { onChange, ref } }) => (
+            render={({ field: { onChange, value, ref } }) => (
               <Form.Item label="End Time">
-                <TimePicker placeholder="Select time" onChange={onChange} ref={ref} />
+                <TimePicker placeholder="Select time" onChange={onChange} value={value} ref={ref} />
                 <Text type="danger">
                   {errors.eventEndTime && <p>{errors.eventEndTime.message}</p>}
                 </Text>
@@ -415,9 +450,15 @@ const EventsGeneralInfo = () => {
           <Controller
             control={control}
             name="eventType"
-            render={({ field: { onChange, ref } }) => (
+            render={({ field: { onChange, value, ref } }) => (
               <Form.Item label="Event Type">
-                <Select placeholder="Type" style={{ width: '100px' }} onChange={onChange} ref={ref}>
+                <Select
+                  placeholder="Type"
+                  style={{ width: '100px' }}
+                  onChange={onChange}
+                  value={value}
+                  ref={ref}
+                >
                   {eventTypeMenu}
                 </Select>
                 <Button type="link" onClick={handleClickNewEventType} style={{ color: '#6CC24A' }}>
@@ -440,9 +481,9 @@ const EventsGeneralInfo = () => {
           <Controller
             control={control}
             name="volunteerCapacity"
-            render={({ field: { onChange, ref } }) => (
+            render={({ field: { onChange, value, ref } }) => (
               <Form.Item label="Num Volunteers">
-                <Input style={{ width: '200px' }} onChange={onChange} ref={ref} />
+                <Input style={{ width: '200px' }} onChange={onChange} value={value} ref={ref} />
                 <Text type="danger">
                   {errors.volunteerCapacity && <p>{errors.volunteerCapacity.message}</p>}
                 </Text>
@@ -542,9 +583,14 @@ const EventsGeneralInfo = () => {
               <Controller
                 control={control}
                 name="addressStreet"
-                render={({ field: { onChange, ref } }) => (
+                render={({ field: { onChange, value, ref } }) => (
                   <Form.Item label="Street Address">
-                    <Input placeholder="200 N Tustin Ave" onChange={onChange} ref={ref} />
+                    <Input
+                      placeholder="200 N Tustin Ave"
+                      onChange={onChange}
+                      value={value}
+                      ref={ref}
+                    />
                     <Text type="danger">
                       {errors.addressStreet && <p>{errors.addressStreet.message}</p>}
                     </Text>
@@ -554,9 +600,14 @@ const EventsGeneralInfo = () => {
               <Controller
                 control={control}
                 name="addressCity"
-                render={({ field: { onChange, ref } }) => (
+                render={({ field: { onChange, value, ref } }) => (
                   <Form.Item label="City">
-                    <Input placeholder="Ex. Santa Ana" onChange={onChange} ref={ref} />
+                    <Input
+                      placeholder="Ex. Santa Ana"
+                      onChange={onChange}
+                      value={value}
+                      ref={ref}
+                    />
                     <Text type="danger">
                       {errors.addressCity && <p>{errors.addressCity.message}</p>}
                     </Text>
@@ -566,9 +617,9 @@ const EventsGeneralInfo = () => {
               <Controller
                 control={control}
                 name="addressState"
-                render={({ field: { onChange, ref } }) => (
+                render={({ field: { onChange, value, ref } }) => (
                   <Form.Item label="State">
-                    <Input placeholder="Ex. CA" onChange={onChange} ref={ref} />
+                    <Input placeholder="Ex. CA" onChange={onChange} value={value} ref={ref} />
                     <Text type="danger">
                       {errors.addressState && <p>{errors.addressState.message}</p>}
                     </Text>
@@ -578,9 +629,9 @@ const EventsGeneralInfo = () => {
               <Controller
                 control={control}
                 name="addressZip"
-                render={({ field: { onChange, ref } }) => (
+                render={({ field: { onChange, value, ref } }) => (
                   <Form.Item label="Zipcode">
-                    <Input placeholder="Ex. 92705" onChange={onChange} ref={ref} />
+                    <Input placeholder="Ex. 92705" onChange={onChange} value={value} ref={ref} />
                     <Text type="danger">
                       {errors.addressZip && <p>{errors.addressZip.message}</p>}
                     </Text>
