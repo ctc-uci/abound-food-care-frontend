@@ -231,4 +231,8 @@ WeeklyInfo.propTypes = {
   setAvailability: PropTypes.func.isRequired,
 };
 
+// WeeklyInfo.defaultProps = {
+//   createAccountVersion: true,
+// };
+
 export default WeeklyInfo;
