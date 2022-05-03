@@ -99,7 +99,7 @@ const CreateEvent = () => {
   const getEventData = async () => {
     try {
       const eventResponse = await axios.get(`http://localhost:3001/events/${id}`);
-      const eventData = eventResponse.data[0];
+      const eventData = eventResponse.data;
       const endDateTime = new Date(eventData.endDatetime);
       const startDateTime = new Date(eventData.startDatetime);
       methods.setValue('eventName', eventData.name);

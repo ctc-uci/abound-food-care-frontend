@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Upload, message } from 'antd';
+import PropTypes from 'prop-types';
+import { Button, Upload } from 'antd';
 import { InboxOutlined, DownloadOutlined } from '@ant-design/icons';
 
 const { Dragger } = Upload;
@@ -19,33 +20,23 @@ const Title = styled.h2`
   font-weight: bold;
 `;
 
-// Update props when connecting to backend
-const props = {
-  name: 'file',
-  multiple: true,
-  action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-  onChange(info) {
-    const { status } = info.file;
-    if (status !== 'uploading') {
-      console.log(info.file, info.fileList);
-    }
-    if (status === 'done') {
-      message.success(`${info.file.name} file uploaded successfully.`);
-    } else if (status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
-  onDrop(e) {
-    console.log('Dropped files', e.dataTransfer.files);
-  },
-};
-
-const UploadForms = () => {
+const UploadForms = ({ eventData, setWaiverList }) => {
   return (
     <Container>
-      <Title>Waiver Name</Title>
-      <Button icon={<DownloadOutlined />}>Click to Download</Button>
-      <Dragger {...props} style={{ width: '400px' }}>
+      {eventData.waivers.map(waiverInfo => (
+        <>
+          <Title>{waiverInfo.name}</Title>
+          <a href={waiverInfo.link} download>
+            <Button icon={<DownloadOutlined />}>Click to Download</Button>
+          </a>
+        </>
+      ))}
+      <Dragger
+        multiple
+        onChange={e => setWaiverList(e.fileList)}
+        customRequest={e => e.onSuccess('Ok')}
+        style={{ width: '400px' }}
+      >
         <p className="ant-upload-drag-icon">
           <InboxOutlined style={{ color: 'black' }} />
         </p>
@@ -57,6 +48,12 @@ const UploadForms = () => {
       </Dragger>
     </Container>
   );
+};
+
+UploadForms.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  eventData: PropTypes.object.isRequired,
+  setWaiverList: PropTypes.func.isRequired,
 };
 
 export default UploadForms;

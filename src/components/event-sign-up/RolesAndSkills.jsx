@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
+import PropTypes from 'prop-types';
 import { Checkbox, Input, Radio } from 'antd';
 import FixedTitledInput from './FixedTitledInput';
 
@@ -98,39 +98,7 @@ const allLanguages = [
   },
 ];
 
-const RolesAndSkills = () => {
-  const [loaded, setLoaded] = useState(false);
-  const [roles, setRoles] = useState('');
-  const [skills, setSkills] = useState('');
-  const [languages, setLanguages] = useState('');
-  const [weightLift, setWeightLift] = useState('');
-  const [training, setTraining] = useState(false);
-  const [driving, setDriving] = useState('');
-  const [vehicle, setVehicle] = useState('');
-  const [distance, setDistance] = useState('');
-
-  useEffect(async () => {
-    const userId = 6;
-    const { data: res } = await axios.get(`http://localhost:3001/users/${userId}`);
-    const newVals = [];
-
-    Object.keys(res).forEach(key => {
-      if (res[key]) newVals.push(key);
-    });
-    res.languages.forEach(lang => {
-      newVals.push(lang);
-    });
-    setRoles(newVals);
-    setSkills(newVals);
-    setLanguages(newVals);
-    setWeightLift(res.weightLiftingAbility);
-    setTraining(res.completedChowmatchTraining);
-    setDriving(res.canDrive);
-    setVehicle(res.vehicleType);
-    setDistance(res.distance);
-    setLoaded(true);
-  }, []);
-
+const RolesAndSkills = ({ userData }) => {
   const DoubleTitleField = (title1, val, title2) => {
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -161,31 +129,46 @@ const RolesAndSkills = () => {
     );
   };
 
+  const checkBoxValues = [];
+  Object.keys(userData).forEach(key => {
+    if (key === 'languages') {
+      userData[key].forEach(language => checkBoxValues.push(language));
+    } else if (userData[key]) {
+      checkBoxValues.push(key);
+    }
+  });
+
   return (
-    loaded && (
-      <Container>
-        <Field>
-          <p>Volunteering Roles Interested In</p>
-          <Checkbox.Group disabled options={allRoles} defaultValue={roles} />
-        </Field>
-        <Field>
-          <p>Special Talents/ Skills</p>
-          <Checkbox.Group disabled options={allSkills} defaultValue={skills} />
-        </Field>
-        <Field>
-          <p>Languages Spoken</p>
-          <Checkbox.Group disabled options={allLanguages} defaultValue={languages} />
-        </Field>
-        {DoubleTitleField('Weight Lifting Ability', weightLift, 'pounds')}
-        {YesNoField('Have you completed the food match training on Chowmatch?', training)}
-        {YesNoField('Able to Drive', driving)}
-        <div style={{ width: '10%' }}>
-          <FixedTitledInput title="Type of Vehicle" val={vehicle} />
-        </div>
-        {DoubleTitleField('Distance Comfortable Driving', distance, 'miles')}
-      </Container>
-    )
+    <Container>
+      <Field>
+        <p>Volunteering Roles Interested In</p>
+        <Checkbox.Group disabled options={allRoles} defaultValue={checkBoxValues} />
+      </Field>
+      <Field>
+        <p>Special Talents/ Skills</p>
+        <Checkbox.Group disabled options={allSkills} defaultValue={checkBoxValues} />
+      </Field>
+      <Field>
+        <p>Languages Spoken</p>
+        <Checkbox.Group disabled options={allLanguages} defaultValue={checkBoxValues} />
+      </Field>
+      {DoubleTitleField('Weight Lifting Ability', userData.weightLift, 'pounds')}
+      {YesNoField(
+        'Have you completed the food match training on Chowmatch?',
+        userData.completedChowmatchTraining,
+      )}
+      {YesNoField('Able to Drive', userData.canDrive)}
+      <div style={{ width: '10%' }}>
+        <FixedTitledInput title="Type of Vehicle" val={userData.vehicleType} />
+      </div>
+      {DoubleTitleField('Distance Comfortable Driving', userData.distance, 'miles')}
+    </Container>
   );
+};
+
+RolesAndSkills.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  userData: PropTypes.object.isRequired,
 };
 
 export default RolesAndSkills;
