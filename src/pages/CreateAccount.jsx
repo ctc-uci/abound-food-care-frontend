@@ -47,9 +47,9 @@ const CreateAccount = () => {
       .required('State is a required field'),
     weightLiftingAbility: yup.number().integer().required(),
     criminalHistory: yup.bool().required(),
-    criminalHistoryDetails: yup.string(),
+    criminalHistoryDetails: yup.string().nullable(true),
     duiHistory: yup.bool().required(),
-    duiHistoryDetails: yup.string(),
+    duiHistoryDetails: yup.string().nullable(true),
     completedChowmatchTraining: yup.bool().required(),
     foodRunsInterest: yup.bool().required(),
     distributionInterest: yup.bool().required(),
@@ -63,7 +63,7 @@ const CreateAccount = () => {
     movingWarehouseExperience: yup.bool().required(),
     foodServiceIndustryKnowledge: yup.bool().required(),
     languages: yup.array().of(yup.string()),
-    additionalInformation: yup.string(),
+    additionalInformation: yup.string().nullable(true),
   });
 
   const methods = useForm({

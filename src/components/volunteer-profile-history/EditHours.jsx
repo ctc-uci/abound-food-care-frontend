@@ -5,18 +5,17 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import ErrorModal from './ErrorModal';
 
-const EditHours = props => {
-  const {
-    changeUnsubmittedData,
-    setIsEditing,
-    eventName,
-    timeIn,
-    timeOut,
-    date,
-    notes,
-    index,
-    eventId,
-  } = props;
+const EditHours = ({
+  changeUnsubmittedData,
+  setIsEditing,
+  eventName,
+  timeIn,
+  timeOut,
+  date,
+  notes,
+  index,
+  eventId,
+}) => {
   const [newTimeIn, setNewTimeIn] = useState('');
   const [newTimeOut, setNewTimeOut] = useState('');
   const [newDate, setNewDate] = useState('');
@@ -72,13 +71,12 @@ const EditHours = props => {
 
       changeUnsubmittedData(index, {
         key: index,
-        name: eventName,
+        event: { name: eventName, notes: newNotes },
         date: newDate,
-        start_datetime: startTime,
-        end_datetime: endTime,
-        event_id: eventId,
-        notes: newNotes,
-        submit: index,
+        startDatetime: startTime,
+        endDatetime: endTime,
+        eventId,
+        approveOrDecline: index,
         edit: index,
       });
       setIsEditing(false);
@@ -250,7 +248,7 @@ const EditHours = props => {
               onChange={setNotesVal}
               size="small"
               style={{ width: '64%' }}
-              placeholder="Please enter your work goals"
+              placeholder="Anything else you'd like us to know?"
             />
           </div>
         </div>
@@ -299,27 +297,15 @@ const EditHours = props => {
 };
 
 EditHours.propTypes = {
-  setIsEditing: PropTypes.func,
-  changeUnsubmittedData: PropTypes.func,
-  eventName: PropTypes.string,
-  date: PropTypes.string,
-  timeIn: PropTypes.string,
-  timeOut: PropTypes.string,
-  notes: PropTypes.string,
-  index: PropTypes.number,
-  eventId: PropTypes.number,
-};
-
-EditHours.defaultProps = {
-  setIsEditing: () => {},
-  changeUnsubmittedData: () => {},
-  eventName: '',
-  date: '',
-  timeIn: '',
-  timeOut: '',
-  notes: '',
-  index: 0,
-  eventId: 0,
+  setIsEditing: PropTypes.func.isRequired,
+  changeUnsubmittedData: PropTypes.func.isRequired,
+  eventName: PropTypes.string.isRequired,
+  date: PropTypes.string.isRequired,
+  timeIn: PropTypes.string.isRequired,
+  timeOut: PropTypes.string.isRequired,
+  notes: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
+  eventId: PropTypes.number.isRequired,
 };
 
 export default EditHours;
