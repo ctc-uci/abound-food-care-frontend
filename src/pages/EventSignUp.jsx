@@ -7,6 +7,7 @@ import VolunteerGeneralInfo from '../components/event-sign-up/VolunteerGeneralIn
 import RolesAndSkills from '../components/event-sign-up/RolesAndSkills';
 import UploadForms from '../components/event-sign-up/UploadForms';
 import Availability from '../components/event-sign-up/Availability';
+import eventConfirmationPopUp from '../components/event-sign-up/modals';
 
 const { TabPane } = Tabs;
 
@@ -68,8 +69,11 @@ const EventSignUp = () => {
     }
   };
 
-  const signUp = async () => {
+  const signUp = async (resolve, reject) => {
     try {
+      if (waiverList.length !== eventData.waivers.length) {
+        reject('WaiverError');
+      }
       let waivers = await Promise.all(
         waiverList.map(async file => uploadBoxPhoto(file.originFileObj)),
       );
@@ -78,8 +82,10 @@ const EventSignUp = () => {
         link: waivers[index],
       }));
       await axios.post(`http://localhost:3001/volunteers/${userId}/${eventId}`, { waivers });
+      resolve();
     } catch (err) {
       console.log(err.message);
+      reject();
     }
   };
 
@@ -97,7 +103,7 @@ const EventSignUp = () => {
         <HeaderText>Sign Up</HeaderText>
         <ButtonRow>
           <Button style={{ marginRight: '3vw' }}>Cancel</Button>
-          <Button type="primary" onClick={signUp}>
+          <Button type="primary" onClick={() => eventConfirmationPopUp(signUp, eventData)}>
             Submit
           </Button>
         </ButtonRow>
