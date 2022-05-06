@@ -19,29 +19,13 @@ const DeclinePopup = ({
   endDate,
   startTime,
   endTime,
+  handleDecline,
 }) => {
   const [notes, setNotes] = useState('');
   const handleNotes = e => {
     setNotes(e.target.value);
   };
-  const handleDecline = async () => {
-    try {
-      const startDatetime = `${startDate} ${startTime}`;
-      const endDatetime = `${endDate} ${endTime}`;
-      const payload = {
-        startDatetime,
-        endDatetime,
-        submitted: false,
-        approved: false,
-        declined: true,
-        notes,
-      };
-      await axios.post(`http://localhost:3001/hours/${userId}/${eventId}`, payload);
-      setIsModalVisible(false);
-    } catch (e) {
-      console.log(e.message);
-    }
-  };
+
   return (
     <Modal
       title="Decline Volunteer Hours"
@@ -56,7 +40,7 @@ const DeclinePopup = ({
           type="primary"
           style={{ backgroundColor: '#115740' }}
           key="send"
-          onClick={handleDecline}
+          onClick={() => handleDecline(userId, eventId, startDate, startTime, endDate, endTime)}
         >
           Send
         </Button>,
@@ -139,6 +123,7 @@ DeclinePopup.propTypes = {
   endDate: PropTypes.string.isRequired,
   startTime: PropTypes.string.isRequired,
   endTime: PropTypes.string.isRequired,
+  handleDecline: PropTypes.func.isRequired,
 };
 
 export default DeclinePopup;

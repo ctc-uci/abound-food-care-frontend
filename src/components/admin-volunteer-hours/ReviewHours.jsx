@@ -23,6 +23,7 @@ const ReviewHours = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [sortCriterion, setSortCriterion] = useState('Date (most recent first)');
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [approvedOrDeclined, setApprovedOrDeclined] = useState(false);
   const [modalKey, setModalKey] = useState(0);
   const [selectedRows, setSelectedRows] = useState([]);
 
@@ -68,6 +69,7 @@ const ReviewHours = () => {
         declined: false,
       };
       await axios.post(`http://localhost:3001/hours/${userId}/${eventId}`, payload);
+      await setApprovedOrDeclined(!approvedOrDeclined);
     } catch (e) {
       console.log(e.message);
     }
@@ -77,6 +79,39 @@ const ReviewHours = () => {
     for (let i = 0; i < selectedRows.length; i += 1) {
       // eslint-disable-next-line no-await-in-loop
       await handleApprove(
+        selectedRows[i].userId,
+        selectedRows[i].eventId,
+        selectedRows[i].startDate,
+        selectedRows[i].startTime,
+        selectedRows[i].endDate,
+        selectedRows[i].endTime,
+      );
+    }
+  };
+
+  const handleDecline = async (userId, eventId, startDate, startTime, endDate, endTime) => {
+    try {
+      const startDatetime = `${startDate} ${startTime}`;
+      const endDatetime = `${endDate} ${endTime}`;
+      const payload = {
+        startDatetime,
+        endDatetime,
+        submitted: true,
+        approved: false,
+        declined: true,
+      };
+      await axios.post(`http://localhost:3001/hours/${userId}/${eventId}`, payload);
+      await setIsModalVisible(false);
+      await setApprovedOrDeclined(!approvedOrDeclined);
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
+
+  const handleDeclineSelected = async () => {
+    for (let i = 0; i < selectedRows.length; i += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      await handleDecline(
         selectedRows[i].userId,
         selectedRows[i].eventId,
         selectedRows[i].startDate,
@@ -130,7 +165,7 @@ const ReviewHours = () => {
     setUnapprovedHours(data);
     setFilteredData(data);
     setLoading(false);
-  }, [unapprovedHours]);
+  }, [approvedOrDeclined]);
 
   const columns = [
     {
@@ -184,7 +219,7 @@ const ReviewHours = () => {
           <Button
             type="primary"
             style={{ backgroundColor: '#115740' }}
-            onClick={() =>
+            onClick={() => {
               handleApprove(
                 filteredData[modalKey].userId,
                 filteredData[modalKey].eventId,
@@ -192,8 +227,8 @@ const ReviewHours = () => {
                 filteredData[modalKey].startTime,
                 filteredData[modalKey].endDate,
                 filteredData[modalKey].endTime,
-              )
-            }
+              );
+            }}
           >
             Approve
           </Button>
@@ -202,16 +237,19 @@ const ReviewHours = () => {
     },
   ];
 
+  const keyInWord = (key, word) => {
+    return word.toLowerCase().includes(key.toLowerCase());
+  };
+
   const onSearch = e => {
     const data = [];
     for (let i = 0; i < unapprovedHours.length; i += 1) {
       const volunteerHours = unapprovedHours[i];
       if (
-        volunteerHours.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        volunteerHours.eventName.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        volunteerHours.startDate.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        volunteerHours.startTime.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        volunteerHours.endTime.toLowerCase().includes(e.target.value.toLowerCase())
+        keyInWord(e.target.value, volunteerHours.name) ||
+        keyInWord(e.target.value, volunteerHours.organization) ||
+        keyInWord(e.target.value, volunteerHours.eventName) ||
+        keyInWord(e.target.value, volunteerHours.startDate)
       ) {
         data.push(volunteerHours);
       }
@@ -221,8 +259,10 @@ const ReviewHours = () => {
   };
 
   const onChange = e => {
-    if (e.target.value === '') {
+    if (e.target.value) {
       onSearch(e);
+    } else {
+      setFilteredData(unapprovedHours);
     }
   };
 
@@ -283,15 +323,20 @@ const ReviewHours = () => {
           <Col span={7}>
             <p className="table-label">Search Table</p>
           </Col>
-          <Col span={12} />
-          <Col span={4}>
+          <Col span={6} />
+          <Col span={10}>
             <Space>
               <Button
                 type="primary"
-                style={{ backgroundColor: '#115740' }}
+                style={{ backgroundColor: '#115740', marginLeft: '30px' }}
                 onClick={handleApproveSelected}
               >
                 Approve Selected
+              </Button>
+            </Space>
+            <Space>
+              <Button style={{ marginLeft: '30px' }} onClick={handleDeclineSelected}>
+                Decline Selected
               </Button>
             </Space>
           </Col>
@@ -320,6 +365,7 @@ const ReviewHours = () => {
           endDate={filteredData[modalKey].endDate}
           startTime={filteredData[modalKey].startTime}
           endTime={filteredData[modalKey].endTime}
+          handleDecline={handleDecline}
         />
       ) : null}
     </ConfigProvider>
