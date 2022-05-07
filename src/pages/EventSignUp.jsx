@@ -49,7 +49,7 @@ const Card = styled.div`
 `;
 
 const EventSignUp = () => {
-  const userId = 6;
+  const userId = 17;
   const eventId = 109;
   const [userData, setUserData] = useState({});
   const [eventData, setEventData] = useState({});
@@ -116,7 +116,10 @@ const EventSignUp = () => {
         </TabPane>
         <TabPane tab="Availability" key="2">
           <Card>
-            <Availability />
+            <Availability
+              availabilities={userData.availabilities}
+              eventStartDate={eventData.startDatetime}
+            />
           </Card>
         </TabPane>
         <TabPane tab="Roles & Skills" key="3">
