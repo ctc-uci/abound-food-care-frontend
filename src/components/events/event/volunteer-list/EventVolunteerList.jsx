@@ -5,8 +5,7 @@ import '../eventPage.css';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
-const EventVolunteerList = props => {
-  const { name, type, eventId, setViewVolunteers } = props;
+const EventVolunteerList = ({ name, type, eventId, setViewVolunteers }) => {
   const [volunteers, setVolunteers] = useState([]);
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(true);
