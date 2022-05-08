@@ -69,7 +69,7 @@ const ReviewHours = () => {
         declined: false,
       };
       await axios.post(`http://localhost:3001/hours/${userId}/${eventId}`, payload);
-      await setApprovedOrDeclined(!approvedOrDeclined);
+      setApprovedOrDeclined(!approvedOrDeclined);
     } catch (e) {
       console.log(e.message);
     }
@@ -101,8 +101,8 @@ const ReviewHours = () => {
         declined: true,
       };
       await axios.post(`http://localhost:3001/hours/${userId}/${eventId}`, payload);
-      await setIsModalVisible(false);
-      await setApprovedOrDeclined(!approvedOrDeclined);
+      setIsModalVisible(false);
+      setApprovedOrDeclined(!approvedOrDeclined);
     } catch (e) {
       console.log(e.message);
     }
