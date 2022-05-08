@@ -43,7 +43,8 @@ const EventPage = () => {
       const { data: volunteerData } = await axios.get(
         `http://localhost:3001/volunteers/events/${eventId}`,
       );
-      setNumAttendees(volunteerData.length);
+      const { userIds } = volunteerData;
+      setNumAttendees(userIds.length);
     } catch (e) {
       console.log('Error getting event attendee data!');
     }
@@ -228,7 +229,7 @@ const EventPage = () => {
                     paddingRight: '1.5em',
                   }}
                 >
-                  {numAttendees}/{eventData.volunteerCapacity} Volunteers Signed Up
+                  {numAttendees || 0}/{eventData.volunteerCapacity} Volunteers Signed Up
                 </p>
                 <button
                   type="button"
@@ -429,6 +430,7 @@ const EventPage = () => {
               </div>
             )}
           </div>
+          <pre>{JSON.stringify(numAttendees, null, 2)}</pre>
         </div>
       </ConfigProvider>
     )

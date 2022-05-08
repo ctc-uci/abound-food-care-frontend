@@ -10,22 +10,45 @@ const EventVolunteerList = ({ name, type, eventId, setViewVolunteers }) => {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
+  const getUserData = async () => {
+    const volunteerData = [];
+    let emailM = 'mailto:';
+    const { data: userIds } = await axios.get(`http://localhost:3001/events/${eventId}/volunteers`);
+    for (let i = 0; i < userIds.length; i += 1) {
+      axios
+        .get(`http://localhost:3001/users/${userIds[i].user_id}`)
+        .then(res => volunteerData.push(res.data));
+    }
+    // TODO: fix--volunteerData length 0
+    for (let i = 0; i < volunteerData.length; i += 1) {
+      const user = volunteerData[i];
+      console.log(user);
+      user.name = `${user.firstName} ${user.lastName}`;
+      emailM += `${user.email}`;
+      volunteerData.push(user);
+    }
+    setVolunteers(volunteerData);
+    setEmail(emailM);
+  };
+
   useEffect(() => {
-    axios
-      .get(`http://localhost:3001/events/${eventId}/volunteers`)
-      .then(res => {
-        for (let i = 0; i < res.data.length; i += 1) {
-          res.data[i].name = `${res.data[i].first_name} ${res.data[i].last_name}`;
-        }
-        setVolunteers(res.data);
-        let emailM = 'mailto:';
-        for (let i = 0; i < res.data.length; i += 1) {
-          emailM += `${res.data[i].email};`;
-        }
-        setEmail(emailM);
-        setIsLoading(false);
-      })
-      .then(() => {});
+    getUserData();
+    setIsLoading(false);
+    // axios
+    //   .get(`http://localhost:3001/events/${eventId}/volunteers`)
+    //   .then(res => {
+    //     for (let i = 0; i < res.data.length; i += 1) {
+    //       res.data[i].name = `${res.data[i].first_name} ${res.data[i].last_name}`;
+    //     }
+    //     setVolunteers(res.data);
+    //     let emailM = 'mailto:';
+    //     for (let i = 0; i < res.data.length; i += 1) {
+    //       emailM += `${res.data[i].email};`;
+    //     }
+    //     setEmail(emailM);
+    //     setIsLoading(false);
+    //   })
+    //   .then(() => {});
   }, []);
 
   ConfigProvider.config({
@@ -158,17 +181,17 @@ const EventVolunteerList = ({ name, type, eventId, setViewVolunteers }) => {
 };
 
 EventVolunteerList.propTypes = {
-  name: PropTypes.string,
-  type: PropTypes.string,
-  eventId: PropTypes.number,
-  setViewVolunteers: PropTypes.number,
+  name: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  eventId: PropTypes.string.isRequired,
+  setViewVolunteers: PropTypes.func.isRequired,
 };
 
-EventVolunteerList.defaultProps = {
-  name: '',
-  type: 'General Event',
-  eventId: 0,
-  setViewVolunteers: () => {},
-};
+// EventVolunteerList.defaultProps = {
+//   name: '',
+//   type: 'General Event',
+//   eventId: 0,
+//   setViewVolunteers: () => {},
+// };
 
 export default EventVolunteerList;
