@@ -1,15 +1,15 @@
 @import '~antd/dist/antd.variable.min.css';
 @font-face {
   font-family: 'Inter-Regular';
-  src: url('../assets/fonts/Inter-Regular.ttf');
+  src: url('../../assets/fonts/Inter-Regular.ttf');
 }
 @font-face {
   font-family: 'Inter-SemiBold';
-  src: url('../assets/fonts/Inter-SemiBold.ttf');
+  src: url('../../assets/fonts/Inter-SemiBold.ttf');
 }
 @font-face {
   font-family: 'Inter-Medium';
-  src: url('../assets/fonts/Inter-Medium.ttf');
+  src: url('../../assets/fonts/Inter-Medium.ttf');
 }
 
 .historyTab {
@@ -18,10 +18,6 @@
   justify-content: center;
   padding: 0;
   margin: 0;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-sizing: border-box;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 2px;
 }
 
 .container {
@@ -47,10 +43,6 @@
   padding: 0;
   margin: 0;
   padding-bottom: 0.5em;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-sizing: border-box;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 2px;
 }
 
 .iconDiv {
@@ -92,4 +84,8 @@
 
 .spacer {
   height: 3em;
+}
+
+.ant-btn.decline-btn {
+  border-color: #D9D9D9;
 }

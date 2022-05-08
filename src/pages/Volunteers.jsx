@@ -1,13 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
+import 'antd/dist/antd.css';
 import Database from '../components/volunteer-database/Database';
+import './Volunteers.css';
 import VolunteerAvailability from '../components/volunteer-availabilities/VolunteerAvailability';
+import Profile from './Profile';
 
 function Volunteers() {
+  const [viewDatabase, setViewDatabase] = useState(false);
+
+  const handleViewDatabase = () => {
+    setViewDatabase(true);
+  };
+
+  const handleHideDatabase = () => {
+    setViewDatabase(false);
+  };
+
   return (
     <div>
-      <p>This is the admin volunteer viewing page</p>
-      <Database />
-      <VolunteerAvailability />
+      {viewDatabase ? (
+        <Database handleHideDatabase={handleHideDatabase} />
+      ) : (
+        <VolunteerAvailability handleViewDatabase={handleViewDatabase} />
+      )}
+      {/* TODO: should only render profile when user selected from database^ */}
+      <Profile />
     </div>
   );
 }

@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FieldTimeOutlined, ScheduleOutlined } from '@ant-design/icons';
-import { ConfigProvider, Table, Button } from 'antd';
+import { ConfigProvider, Table, Button, Space, Typography } from 'antd';
 import './VolunteeringHistory.css';
-import EditHours from '../components/volunteer-profile-history/EditHours';
-import SuccessModal from '../components/volunteer-profile-history/SuccessModal';
+import EditHours from '../volunteer-profile-history/EditHours';
+
+const { Title } = Typography;
 
 function VolunteeringHistory() {
   const [userId, setUserId] = useState(2);
-  const [totalHours, setTotalHours] = useState(0);
+  const [hoursCount, setHoursCount] = useState(0);
   const [eventCount, setEventCount] = useState(0);
   const [unsubmittedData, setUnsubmittedData] = useState([]);
   const [submittedData, setSubmittedData] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isDeclined, setIsDeclined] = useState(false);
   const [editIndex, setEditIndex] = useState(0);
-  const [submittedHours, setSubmittedHours] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
 
   const parseDate = date => {
@@ -50,71 +51,90 @@ function VolunteeringHistory() {
     */
   };
 
-  const removeFromUnsubmitted = index => {
-    const data = [];
-    for (let i = 0; i < index; i += 1) {
-      data.push(unsubmittedData[i]);
+  const getEventsCount = async () => {
+    const { data: res } = await axios.get(
+      `http://localhost:3001/volunteers/${userId}/total-events`,
+    );
+    setEventCount(res.count);
+  };
+
+  const getHoursCount = async () => {
+    const { data: res } = await axios.get(`http://localhost:3001/hours/user/${userId}/total`);
+    setHoursCount(res.count);
+  };
+
+  const setAllHoursData = async () => {
+    const { data: res } = await axios.get(`http://localhost:3001/hours/${userId}`);
+    const unsubmittedHoursData = [];
+    const submittedHoursData = [];
+    for (let i = 0; i < res.length; i += 1) {
+      if (res[i].submitted === false && res[i].declined === false) {
+        unsubmittedHoursData.push(res[i]);
+      } else if (res[i].submitted === true && res[i].declined === false) {
+        submittedHoursData.push(res[i]);
+      }
     }
-    for (let i = index + 1; i < unsubmittedData.length; i += 1) {
-      data.push(unsubmittedData[i]);
+
+    for (let i = 0; i < submittedHoursData.length; i += 1) {
+      submittedHoursData[i].key = i;
     }
-    setUnsubmittedData(data);
+    setSubmittedData(submittedHoursData);
+
+    for (let i = 0; i < unsubmittedHoursData.length; i += 1) {
+      unsubmittedHoursData[i].key = i;
+      unsubmittedHoursData[i].edit = i;
+      unsubmittedHoursData[i].approveOrDecline = i;
+    }
+    setUnsubmittedData(unsubmittedHoursData);
   };
 
   useEffect(() => {
     setUserId(2);
-    axios.get(`http://localhost:3001/hours/statistics/${userId}`).then(res => {
-      setEventCount(res.data[0].event_count);
-      setTotalHours(res.data[0].hours);
-    });
-
-    let data = [];
-    let data2 = [];
-    axios.get(`http://localhost:3001/hours/unsubmittedUser/${userId}`).then(res => {
-      data = res.data;
-      for (let i = 0; i < data.length; i += 1) {
-        data[i].key = i;
-        data[i].edit = i;
-        data[i].submit = i;
-      }
-      setUnsubmittedData(data);
-    });
-
-    axios.get(`http://localhost:3001/hours/submittedUser/${userId}`).then(res => {
-      data2 = res.data;
-      for (let i = 0; i < data2.length; i += 1) {
-        data2[i].key = i;
-      }
-      setSubmittedData(data2);
-    });
-
+    getEventsCount();
+    getHoursCount();
+    setAllHoursData();
     setLoading(false);
-  }, []);
+  }, [isSubmitted, isDeclined]);
 
-  const handleSubmit = i => {
-    setEditIndex(i);
-    const body = {
-      userId,
-      eventId: unsubmittedData[i].event_id,
-      startDatetime: new Date(unsubmittedData[i].start_datetime),
-      endDatetime: new Date(unsubmittedData[i].end_datetime),
-      approved: false,
-      notes: unsubmittedData[i].notes,
+  // update approved status to true
+  // update submitted status to true
+  const handleApprove = index => {
+    setEditIndex(index);
+    const payload = {
+      startDatetime: new Date(unsubmittedData[index].startDatetime),
+      endDatetime: new Date(unsubmittedData[index].endDatetime),
+      submitted: true,
+      approved: true,
+      declined: false,
+      notes: unsubmittedData[index].event.notes,
     };
-    axios.put('http://localhost:3001/hours/submit', body).then(res => {
-      setIsSubmitted(true);
-      setSubmittedHours(res.data[0].num_hours);
-      removeFromUnsubmitted(i);
 
-      let data = [];
-      axios.get(`http://localhost:3001/hours/submittedUser/${userId}`).then(res2 => {
-        data = res2.data;
-        for (let j = 0; j < data.length; j += 1) {
-          data[j].key = j;
-        }
-        setSubmittedData(data);
+    axios
+      .post(`http://localhost:3001/hours/${userId}/${unsubmittedData[index].eventId}`, payload)
+      .then(() => {
+        setIsDeclined(true);
       });
-    });
+  };
+
+  // change declined status to true
+  // disappears from admin hours page
+  // remains in the volunteer hours page
+  const handleDecline = index => {
+    setEditIndex(index);
+    const payload = {
+      startDatetime: new Date(unsubmittedData[index].startDatetime),
+      endDatetime: new Date(unsubmittedData[index].endDatetime),
+      submitted: false,
+      approved: false,
+      declined: true,
+      notes: unsubmittedData[index].event.notes,
+    };
+
+    axios
+      .post(`http://localhost:3001/hours/${userId}/${unsubmittedData[index].eventId}`, payload)
+      .then(() => {
+        setIsSubmitted(true);
+      });
   };
 
   const handleEdit = index => {
@@ -137,40 +157,45 @@ function VolunteeringHistory() {
   const unsubmittedColumns = [
     {
       title: 'Event Name',
-      dataIndex: 'name',
+      dataIndex: ['event', 'name'],
       key: 'name',
       render: text => <a href="/volunteers">{text}</a>,
       width: '25em',
     },
     {
       title: 'Date',
-      dataIndex: 'start_datetime',
-      key: 'date',
+      dataIndex: 'startDatetime',
+      key: 'startDatetime',
       width: '15em',
       render: text => <p>{text ? parseDate(text) : ''}</p>,
     },
     {
       title: 'Time In',
-      dataIndex: 'start_datetime',
-      key: 'timeIn',
+      dataIndex: 'startDatetime',
+      key: 'startDatetime',
       width: '15em',
       render: text => <p>{text ? parseTime(text) : ''}</p>,
     },
     {
       title: 'Time Out',
-      dataIndex: 'end_datetime',
-      key: 'timeOut',
+      dataIndex: 'endDatetime',
+      key: 'endDatetime',
       width: '15em',
       render: text => <p>{text ? parseTime(text) : ''}</p>,
     },
     {
-      title: 'Submit?',
-      dataIndex: 'submit',
-      key: 'submit',
+      title: 'Approve or Decline',
+      dataIndex: 'approveOrDecline',
+      key: 'approveOrDecline',
       render: index => (
-        <Button type="primary" disabled={isEditing} onClick={() => handleSubmit(index)}>
-          Submit
-        </Button>
+        <Space>
+          <Button className="decline-btn" disabled={isEditing} onClick={() => handleDecline(index)}>
+            Decline
+          </Button>
+          <Button type="primary" disabled={isEditing} onClick={() => handleApprove(index)}>
+            Approve
+          </Button>
+        </Space>
       ),
     },
     {
@@ -188,41 +213,35 @@ function VolunteeringHistory() {
   const submittedColumns = [
     {
       title: 'Event Name',
-      dataIndex: 'name',
+      dataIndex: ['event', 'name'],
       key: 'name',
       render: text => <a href="/volunteers">{text}</a>,
       width: '25em',
     },
     {
       title: 'Date',
-      dataIndex: 'date',
-      key: 'date',
+      dataIndex: 'startDatetime',
+      key: 'startDatetime',
       width: '15em',
       render: text => <p>{text ? parseDate(text) : ''}</p>,
     },
     {
       title: 'Time In',
-      dataIndex: 'start_datetime',
+      dataIndex: 'startDatetime',
       width: '15em',
       render: text => <p>{text ? parseTime(text) : ''}</p>,
     },
     {
       title: 'Time Out',
-      dataIndex: 'end_datetime',
+      dataIndex: 'endDatetime',
       width: '15em',
       render: text => <p>{text ? parseTime(text) : ''}</p>,
     },
     {
       title: 'Hours',
-      dataIndex: 'num_hours',
+      dataIndex: 'numHours',
       key: 'hours',
       render: hours => <p>{hours}</p>,
-    },
-    {
-      title: 'Approved?',
-      dataIndex: 'approved',
-      key: 'approved',
-      render: approved => <p>{approved ? 'Yes' : 'Not yet'}</p>,
     },
   ];
 
@@ -234,34 +253,27 @@ function VolunteeringHistory() {
 
   return (
     <ConfigProvider>
-      {isSubmitted && (
-        <SuccessModal setIsSubmitted={setIsSubmitted} volunteerHours={submittedHours} />
-      )}
       {isEditing && (
         <EditHours
           setIsEditing={setIsEditing}
           changeUnsubmittedData={changeUnsubmittedData}
-          eventName={unsubmittedData[editIndex].name}
-          date={unsubmittedData[editIndex].start_datetime}
-          timeIn={unsubmittedData[editIndex].start_datetime}
-          timeOut={unsubmittedData[editIndex].end_datetime}
-          notes={unsubmittedData[editIndex].notes}
-          eventId={unsubmittedData[editIndex].event_id}
+          eventName={unsubmittedData[editIndex].event.name}
+          date={unsubmittedData[editIndex].startDatetime}
+          timeIn={unsubmittedData[editIndex].startDatetime}
+          timeOut={unsubmittedData[editIndex].endDatetime}
+          notes={unsubmittedData[editIndex].event.notes}
+          eventId={unsubmittedData[editIndex].eventId}
           index={editIndex}
         />
-        /*
-          timeIn, timeOut, and date are all treated as strings. not too sure what format the backend
-          is going to serve to us in and wether or not we'll have to do string manipulation
-        */
       )}
       <div className="historyTab">
         <div className="container">
-          <p className="header">My Volunteering History</p>
+          <Title>My Volunteering History</Title>
 
           <div className="iconDiv">
             <div className="overviewDiv">
               <FieldTimeOutlined className="icon" />
-              <p className="iconTxt">{totalHours} Volunteer Hours</p>
+              <p className="iconTxt">{hoursCount} Volunteer Hours</p>
             </div>
             <div className="overviewDiv">
               <ScheduleOutlined className="icon" />
@@ -282,6 +294,7 @@ function VolunteeringHistory() {
             loading={isLoading}
             dataSource={unsubmittedData}
             pagination={false}
+            scroll
           />
 
           <p className="tableHeader">Submitted Hours</p>
@@ -291,6 +304,7 @@ function VolunteeringHistory() {
             loading={isLoading}
             dataSource={submittedData}
             pagination={false}
+            scroll
           />
           <div className="spacer" />
         </div>
