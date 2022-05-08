@@ -430,7 +430,6 @@ const EventPage = () => {
               </div>
             )}
           </div>
-          <pre>{JSON.stringify(numAttendees, null, 2)}</pre>
         </div>
       </ConfigProvider>
     )
