@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -14,6 +14,8 @@ const CreateEvent = () => {
   const [formStep, setFormStep] = useState(0);
   const { id } = useParams();
   const [isEdit] = useState(id);
+
+  const navigate = useNavigate();
 
   const zipRegExp = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
 
@@ -205,10 +207,14 @@ const CreateEvent = () => {
       // Check if this is editing or creating a new event
       if (isEdit) {
         await axios.put(`http://localhost:3001/events/${id}`, payload);
-        // TODO: Redirect to event page?
+        navigate(`/events/${id}`);
       } else {
-        await axios.post('http://localhost:3001/events/', payload);
-        // TODO: Redirect to event page?
+        const { data: newEventResponse } = await axios.post(
+          'http://localhost:3001/events/',
+          payload,
+        );
+        const { eventId } = newEventResponse;
+        navigate(`/events/${eventId}`);
       }
     } catch (e) {
       console.log(e.message);

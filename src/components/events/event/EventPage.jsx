@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   CalendarOutlined,
   ClockCircleOutlined,
@@ -11,6 +11,7 @@ import axios from 'axios';
 import moment from 'moment';
 import PostEvent from './postevent/PostEvent';
 import EventVolunteerList from './volunteer-list/EventVolunteerList';
+import EventPageImage from '../../../assets/img/event-page-banner.png';
 import './eventPage.css';
 
 const EventPage = () => {
@@ -25,6 +26,7 @@ const EventPage = () => {
   */
 
   const { eventId } = useParams();
+  const navigate = useNavigate();
 
   const getEvent = async () => {
     try {
@@ -34,7 +36,7 @@ const EventPage = () => {
         setIsEdit(true);
       }
     } catch (e) {
-      console.log('Error getting event data!');
+      console.log(e.message);
     }
   };
 
@@ -43,10 +45,14 @@ const EventPage = () => {
       const { data: volunteerData } = await axios.get(
         `http://localhost:3001/volunteers/events/${eventId}`,
       );
-      const { userIds } = volunteerData;
-      setNumAttendees(userIds.length);
+      if (volunteerData) {
+        const { userIds } = volunteerData;
+        setNumAttendees(userIds.length);
+      } else {
+        setNumAttendees(0);
+      }
     } catch (e) {
-      console.log('Error getting event attendee data!');
+      console.log(e.message);
     }
   };
 
@@ -179,6 +185,7 @@ const EventPage = () => {
     !isAddingPost &&
     !viewVolunteers && (
       <ConfigProvider>
+        <img src={EventPageImage} alt="Event Page Banner" />
         <div
           style={{
             width: '80vw',
@@ -371,20 +378,37 @@ const EventPage = () => {
                 alignItems: 'center',
               }}
             >
-              <Button
-                style={{
-                  width: '9em',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                type="primary"
-                onClick={() => setIsAddingPost(true)}
-              >
-                <p style={{ padding: 0, margin: 0, fontSize: '14px' }}>
-                  {eventData.posteventText ? 'Edit' : 'Add'} Post-Event
-                </p>
-              </Button>
+              {Date.parse(eventData.startDatetime) < new Date() ? (
+                <Button
+                  style={{
+                    width: '9em',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                  type="primary"
+                  onClick={() => setIsAddingPost(true)}
+                >
+                  <p style={{ padding: 0, margin: 0, fontSize: '14px' }}>
+                    {eventData.posteventText ? 'Edit' : 'Add'} Post-Event
+                  </p>
+                </Button>
+              ) : (
+                Date.parse(eventData.startDatetime) >= new Date() && (
+                  <Button
+                    style={{
+                      width: '9em',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                    type="primary"
+                    onClick={() => navigate(`/events/edit/${eventId}`)}
+                  >
+                    <p style={{ padding: 0, margin: 0, fontSize: '14px' }}>Edit Event</p>
+                  </Button>
+                )
+              )}
               {/* Thank you note to be implemented if time */}
               {/* <Button
                 style={{
@@ -431,6 +455,7 @@ const EventPage = () => {
             )}
           </div>
         </div>
+        {/* <pre>{JSON.stringify((Date.parse(eventData.startDatetime)) > new Date(), null, 2)}</pre> */}
       </ConfigProvider>
     )
   );
