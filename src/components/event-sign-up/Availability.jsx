@@ -12,6 +12,21 @@ const numToDayOfWeek = [
   'Saturday',
 ];
 
+const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
 const times = [
   '9:00',
   '9:30',
@@ -32,32 +47,10 @@ const times = [
   '5:00',
 ];
 
-const getIncrements = (startTime, endTime) => {
-  let parsedStart = new Date(2000, 1, 0, startTime.slice(0, 2), startTime.slice(3, 5));
-  const parsedEnd = new Date(2000, 1, 0, endTime.slice(0, 2), endTime.slice(3, 5));
-  const increments = [];
-  while (parsedStart.getTime() <= parsedEnd.getTime()) {
-    const minutes = parsedStart.getMinutes().toString();
-    const hours = parsedStart.getHours();
-    increments.push(
-      `${hours > 12 ? (hours - 12).toString() : hours.toString()}:${
-        minutes.length === 1 ? '00' : minutes
-      }`,
-    );
-    parsedStart = new Date(parsedStart.getTime() + 30 * 60000);
-  }
-  return increments;
-};
-
 const Availability = ({ availabilities, eventStartDate }) => {
-  let dayOfWeek = new Date(eventStartDate);
-  dayOfWeek = numToDayOfWeek[dayOfWeek.getDay()];
-  let parsedAvails = availabilities.filter(avail => avail.dayOfWeek === dayOfWeek);
-  parsedAvails = parsedAvails.reduce(
-    // (increments, a) => [...increments, ...getIncrements('09:00', '17:00')],
-    (increments, a) => [...increments, ...getIncrements(a.startTime, a.endTime)],
-    [],
-  );
+  const eventDate = new Date(eventStartDate);
+  const dayOfWeek = numToDayOfWeek[eventDate.getDay()];
+  let parsedAvails = availabilities[dayOfWeek];
 
   parsedAvails = times.reduce(
     (increments, time) => [
@@ -69,37 +62,68 @@ const Availability = ({ availabilities, eventStartDate }) => {
 
   const options = {
     chart: {
-      type: 'heatmap',
+      toolbar: {
+        show: false,
+      },
+      events: {},
+    },
+    plotOptions: {
+      heatmap: {
+        radius: 0,
+      },
     },
     dataLabels: {
       enabled: false,
     },
     colors: ['#115740'],
     title: {
-      text: new Date().toDateString(),
+      text: `${dayOfWeek} -
+            ${months[eventDate.getMonth()]}
+            ${eventDate.getDay()},
+            ${eventDate.getFullYear()}`,
+      align: 'center',
     },
-    toolbar: {
+    tooltip: {
+      enabled: false,
+    },
+    stroke: {
       show: false,
     },
+    yaxis: {
+      labels: {
+        formatter(value) {
+          return value[value.length - 2] === '3' ? '' : value;
+        },
+      },
+    },
+    xaxis: {
+      labels: {
+        show: false,
+      },
+    },
+    selection: {
+      enabled: false,
+    },
+    states: {
+      hover: {
+        filter: {
+          type: 'none',
+        },
+      },
+      active: {
+        filter: {
+          type: 'none',
+        },
+      },
+    },
   };
 
-  const renderChart = () => {
-    if (options) {
-      return <Chart options={options} series={parsedAvails} type="heatmap" height="500" />;
-    }
-    return null;
-  };
-
-  return (
-    <div>
-      <div> {renderChart()} </div>
-    </div>
-  );
+  return <Chart options={options} series={parsedAvails} type="heatmap" height="500" />;
 };
 
 Availability.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
-  availabilities: PropTypes.array.isRequired,
+  availabilities: PropTypes.object.isRequired,
   eventStartDate: PropTypes.string.isRequired,
 };
 
