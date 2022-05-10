@@ -11,17 +11,28 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
   const [numVolunteers, setNumVolunteers] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  // console.log(startDateTime);
-
   // get date and time
   const eventStartDateObj = new Date(startDateTime);
-  // console.log(eventStartDateObj);
   const eventEndDateObj = new Date(endDateTime);
   const eventDate = `${eventStartDateObj.toLocaleString('en-us', {
     month: 'long',
   })} ${eventStartDateObj.getDate()}, ${eventStartDateObj.getFullYear()}`;
-  const eventStarttime = `${eventStartDateObj.getHours()}:${eventStartDateObj.getMinutes()}`;
-  const eventEndtime = `${eventEndDateObj.getHours()}:${eventEndDateObj.getMinutes()}`;
+  const eventStarttime = `${
+    eventStartDateObj.getHours() > 9
+      ? eventStartDateObj.getHours()
+      : `0${eventStartDateObj.getHours()}`
+  }:${
+    eventStartDateObj.getMinutes() > 9
+      ? eventStartDateObj.getMinutes()
+      : `${eventStartDateObj.getMinutes()}0`
+  }`;
+  const eventEndtime = `${
+    eventEndDateObj.getHours() > 9 ? eventEndDateObj.getHours() : `0${eventEndDateObj.getHours()}`
+  }:${
+    eventEndDateObj.getMinutes() > 9
+      ? eventEndDateObj.getMinutes()
+      : `${eventEndDateObj.getMinutes()}0`
+  }`;
 
   useEffect(() => {
     const fetchData = async () => {

@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   CalendarOutlined,
   ClockCircleOutlined,
   VerticalAlignBottomOutlined,
   AimOutlined,
 } from '@ant-design/icons';
-import { Button, Divider, ConfigProvider } from 'antd';
+import { Button, Divider, Tag, Space, ConfigProvider } from 'antd';
 import axios from 'axios';
 import moment from 'moment';
 import PostEvent from './postevent/PostEvent';
 import EventVolunteerList from './volunteer-list/EventVolunteerList';
+import EventPageImage from '../../../assets/img/event-page-banner.png';
 import './eventPage.css';
 
 const EventPage = () => {
@@ -23,7 +25,8 @@ const EventPage = () => {
   const [postEvent, setPostEvent] = useState(null);
   */
 
-  const eventId = 11;
+  const { eventId } = useParams();
+  const navigate = useNavigate();
 
   const getEvent = async () => {
     try {
@@ -33,7 +36,7 @@ const EventPage = () => {
         setIsEdit(true);
       }
     } catch (e) {
-      console.log('Error getting event data!');
+      console.log(e.message);
     }
   };
 
@@ -42,9 +45,14 @@ const EventPage = () => {
       const { data: volunteerData } = await axios.get(
         `http://localhost:3001/volunteers/events/${eventId}`,
       );
-      setNumAttendees(volunteerData.length);
+      if (volunteerData) {
+        const { userIds } = volunteerData;
+        setNumAttendees(userIds.length);
+      } else {
+        setNumAttendees(0);
+      }
     } catch (e) {
-      console.log('Error getting event attendee data!');
+      console.log(e.message);
     }
   };
 
@@ -130,6 +138,17 @@ const EventPage = () => {
     return <div />;
   };
 
+  const requirementsMap = {
+    drive: 'Can Drive',
+    adult: 'Adult (Age 18+)',
+    minor: 'Minor (Age <18)',
+    'first aid': 'First Aid Training',
+    'serve safe': 'Serve Safe Knowledge',
+    transportation: 'Transportation Experience',
+    warehouse: 'Moving/Warehouse Experience',
+    'food service': 'Food Service Industry Knowledge',
+  };
+
   ConfigProvider.config({
     theme: {
       primaryColor: '#115740',
@@ -166,9 +185,7 @@ const EventPage = () => {
     !isAddingPost &&
     !viewVolunteers && (
       <ConfigProvider>
-        <div>
-          <h1>event id is currently hardcoded!</h1>
-        </div>
+        <img src={EventPageImage} alt="Event Page Banner" />
         <div
           style={{
             width: '80vw',
@@ -219,7 +236,7 @@ const EventPage = () => {
                     paddingRight: '1.5em',
                   }}
                 >
-                  {numAttendees}/{eventData.volunteerCapacity} Volunteers Signed Up
+                  {numAttendees || 0}/{eventData.volunteerCapacity} Volunteers Signed Up
                 </p>
                 <button
                   type="button"
@@ -361,20 +378,37 @@ const EventPage = () => {
                 alignItems: 'center',
               }}
             >
-              <Button
-                style={{
-                  width: '9em',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                type="primary"
-                onClick={() => setIsAddingPost(true)}
-              >
-                <p style={{ padding: 0, margin: 0, fontSize: '14px' }}>
-                  {eventData.posteventText ? 'Edit' : 'Add'} Post-Event
-                </p>
-              </Button>
+              {Date.parse(eventData.startDatetime) < new Date() ? (
+                <Button
+                  style={{
+                    width: '9em',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                  type="primary"
+                  onClick={() => setIsAddingPost(true)}
+                >
+                  <p style={{ padding: 0, margin: 0, fontSize: '14px' }}>
+                    {eventData.posteventText ? 'Edit' : 'Add'} Post-Event
+                  </p>
+                </Button>
+              ) : (
+                Date.parse(eventData.startDatetime) >= new Date() && (
+                  <Button
+                    style={{
+                      width: '9em',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                    type="primary"
+                    onClick={() => navigate(`/events/edit/${eventId}`)}
+                  >
+                    <p style={{ padding: 0, margin: 0, fontSize: '14px' }}>Edit Event</p>
+                  </Button>
+                )
+              )}
               {/* Thank you note to be implemented if time */}
               {/* <Button
                 style={{
@@ -388,57 +422,40 @@ const EventPage = () => {
                 <p style={{ padding: 0, margin: 0, fontSize: '14px' }}>Send Thank You</p>
               </Button> */}
             </div>
-            <div
-              className="containerBorder"
-              style={{
-                backgroundColor: 'white',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'flex-start',
-                marginTop: '2.5em',
-              }}
-            >
-              <p className="header" style={{ paddingLeft: '1em' }}>
-                Requirements
-              </p>
-              <Divider style={{ padding: 0, margin: 0, marginBottom: '1em' }} />
+            {eventData.requirements && (
               <div
+                className="containerBorder"
                 style={{
+                  backgroundColor: 'white',
                   display: 'flex',
-                  flexDirection: 'row',
-                  flexWrap: 'wrap',
-                  paddingLeft: '1em',
+                  flexDirection: 'column',
+                  justifyContent: 'flex-start',
+                  marginTop: '2.5em',
                 }}
               >
-                {/* TODO: fix this */}
-                {[eventData.requirements].map(e => {
-                  return (
-                    <div
-                      key={e}
-                      className="requirementsTag"
-                      style={{
-                        paddingLeft: '1em',
-                        paddingRight: '1em',
-                        margin: '1em',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <p
-                        style={{
-                          padding: 0,
-                          margin: 0,
-                        }}
-                      >
-                        {e}
-                      </p>
-                    </div>
-                  );
-                })}
+                <p className="header" style={{ paddingLeft: '1em' }}>
+                  Requirements
+                </p>
+                <Divider style={{ padding: 0, margin: 0, marginBottom: '1em' }} />
+                <div style={{ paddingLeft: '2em', paddingBottom: '1em' }}>
+                  <Space direction="vertical">
+                    {eventData.requirements.map((e, i) => {
+                      return (
+                        <Tag
+                          // eslint-disable-next-line react/no-array-index-key
+                          key={i}
+                        >
+                          {requirementsMap[e]}
+                        </Tag>
+                      );
+                    })}
+                  </Space>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
+        {/* <pre>{JSON.stringify((Date.parse(eventData.startDatetime)) > new Date(), null, 2)}</pre> */}
       </ConfigProvider>
     )
   );

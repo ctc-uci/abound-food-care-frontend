@@ -35,11 +35,17 @@ const PostEvent = props => {
           width: '80vw',
           display: 'flex',
           flexDirection: 'column',
-          marginLeft: '5%',
-          marginTop: '1.5em',
+          margin: 'auto',
         }}
       >
-        <h1 style={{ fontSize: 34, fontFamily: 'AvenirNextLTProBold', marginBottom: '1%' }}>
+        <h1
+          style={{
+            fontSize: 34,
+            fontFamily: 'AvenirNextLTProBold',
+            marginBottom: '1%',
+            color: 'black',
+          }}
+        >
           {' '}
           Post-Event Recap{' '}
         </h1>
@@ -62,7 +68,15 @@ const PostEvent = props => {
               flexDirection: 'column',
             }}
           >
-            <h2 style={{ fontFamily: 'AvenirNextLTProBold', fontSize: 20, fontWeight: 600 }}>
+            <h2
+              style={{
+                fontFamily: 'AvenirNextLTProBold',
+                fontSize: 20,
+                fontWeight: 600,
+                textAlign: 'left',
+                color: 'black',
+              }}
+            >
               {' '}
               {name}{' '}
             </h2>
@@ -141,7 +155,7 @@ PostEvent.propTypes = {
   name: PropTypes.string,
   date: PropTypes.string,
   time: PropTypes.string,
-  eventId: PropTypes.number,
+  eventId: PropTypes.string,
   setIsAddingPost: PropTypes.func,
   isEdit: PropTypes.bool,
   setIsLoading: PropTypes.func,
@@ -151,7 +165,7 @@ PostEvent.defaultProps = {
   name: '',
   date: '',
   time: '',
-  eventId: 0,
+  eventId: '0',
   setIsAddingPost: () => {},
   setIsLoading: () => {},
   isEdit: false,
