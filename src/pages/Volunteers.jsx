@@ -4,9 +4,12 @@ import Database from '../components/volunteer-database/Database';
 import './Volunteers.css';
 import VolunteerAvailability from '../components/volunteer-availabilities/VolunteerAvailability';
 import Profile from './Profile';
+import useViewPort from '../common/useViewPort';
 
 function Volunteers() {
-  const [viewDatabase, setViewDatabase] = useState(false);
+  const { width } = useViewPort();
+  const breakpoint = 720;
+  const [viewDatabase, setViewDatabase] = useState(true);
 
   const handleViewDatabase = () => {
     setViewDatabase(true);
@@ -18,13 +21,21 @@ function Volunteers() {
 
   return (
     <div>
-      {viewDatabase ? (
-        <Database handleHideDatabase={handleHideDatabase} />
+      {width > breakpoint ? (
+        <>
+          {viewDatabase ? (
+            <Database handleHideDatabase={handleHideDatabase} />
+          ) : (
+            <VolunteerAvailability handleViewDatabase={handleViewDatabase} />
+          )}
+          {/* TODO: should only render profile when user selected from database^ */}
+          <Profile />
+        </>
       ) : (
-        <VolunteerAvailability handleViewDatabase={handleViewDatabase} />
+        <>
+          <Database handleHideDatabase={handleHideDatabase} />
+        </>
       )}
-      {/* TODO: should only render profile when user selected from database^ */}
-      <Profile />
     </div>
   );
 }
