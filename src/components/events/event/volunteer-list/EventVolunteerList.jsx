@@ -5,28 +5,34 @@ import '../eventPage.css';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
-const EventVolunteerList = props => {
-  const { name, type, eventId, setViewVolunteers } = props;
+const EventVolunteerList = ({ name, type, eventId, setViewVolunteers }) => {
   const [volunteers, setVolunteers] = useState([]);
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
+  const getUserData = async () => {
+    const volunteerPromises = [];
+    const volunteerData = [];
+    let emailM = 'mailto:';
+    const { data: userIds } = await axios.get(`http://localhost:3001/events/${eventId}/volunteers`);
+    for (let i = 0; i < userIds.length; i += 1) {
+      volunteerPromises.push(axios.get(`http://localhost:3001/users/${userIds[i].user_id}`));
+    }
+    await Promise.all(volunteerPromises).then(values => {
+      for (let i = 0; i < values.length; i += 1) {
+        const user = values[i].data;
+        user.name = `${user.firstName} ${user.lastName}`;
+        emailM += `${user.email}`;
+        volunteerData.push(user);
+      }
+    });
+    setVolunteers(volunteerData);
+    setEmail(emailM);
+  };
+
   useEffect(() => {
-    axios
-      .get(`http://localhost:3001/events/${eventId}/volunteers`)
-      .then(res => {
-        for (let i = 0; i < res.data.length; i += 1) {
-          res.data[i].name = `${res.data[i].first_name} ${res.data[i].last_name}`;
-        }
-        setVolunteers(res.data);
-        let emailM = 'mailto:';
-        for (let i = 0; i < res.data.length; i += 1) {
-          emailM += `${res.data[i].email};`;
-        }
-        setEmail(emailM);
-        setIsLoading(false);
-      })
-      .then(() => {});
+    getUserData();
+    setIsLoading(false);
   }, []);
 
   ConfigProvider.config({
@@ -62,6 +68,7 @@ const EventVolunteerList = props => {
       key: 'waiver',
       render: () => {
         return (
+          // TODO: add waiver functionality, remove email href
           <a style={{ color: '#115740' }} href={email}>
             Download
           </a>
@@ -77,8 +84,8 @@ const EventVolunteerList = props => {
           display: 'flex',
           flexDirection: 'row',
           width: '80vw',
-          paddingLeft: '5vw',
           paddingTop: '1.5em',
+          margin: 'auto',
         }}
       >
         <ArrowLeftOutlined
@@ -97,7 +104,7 @@ const EventVolunteerList = props => {
               display: 'flex',
               flexDirection: 'row',
               justifyContent: 'space-between',
-              height: '7vh',
+              height: '10vh',
             }}
           >
             <div
@@ -148,10 +155,11 @@ const EventVolunteerList = props => {
               >
                 Email Volunteers
               </Button>
+              {/* TODO: add waiver download functionality */}
               <Button type="primary">Download All Waivers</Button>
             </div>
           </div>
-          <Table dataSource={volunteers} columns={columns} loading={isLoading} />
+          <Table rowKey="email" dataSource={volunteers} columns={columns} loading={isLoading} />
         </div>
       </div>
     </ConfigProvider>
@@ -159,17 +167,17 @@ const EventVolunteerList = props => {
 };
 
 EventVolunteerList.propTypes = {
-  name: PropTypes.string,
-  type: PropTypes.string,
-  eventId: PropTypes.number,
-  setViewVolunteers: PropTypes.number,
+  name: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  eventId: PropTypes.string.isRequired,
+  setViewVolunteers: PropTypes.func.isRequired,
 };
 
-EventVolunteerList.defaultProps = {
-  name: '',
-  type: 'General Event',
-  eventId: 0,
-  setViewVolunteers: () => {},
-};
+// EventVolunteerList.defaultProps = {
+//   name: '',
+//   type: 'General Event',
+//   eventId: 0,
+//   setViewVolunteers: () => {},
+// };
 
 export default EventVolunteerList;
