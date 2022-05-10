@@ -132,4 +132,35 @@
 .search-volunteer-mobile-container {
   display: flex;
   padding-top: 2vh;
+  padding-bottom: 2vh;
+}
+
+.mobile-volunteer-data {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.mobile-volunteer-data h2 {
+  font-family: 'Avenir';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 22px;
+  /* identical to box height */
+
+  letter-spacing: -0.02em;
+
+  color: rgba(0, 0, 0, 0.3);
+}
+
+.mobile-volunteer-data h3 {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 22px;
+  /* identical to box height */
+
+  letter-spacing: -0.02em;
+
+  color: rgba(0, 0, 0, 0.85);
 }

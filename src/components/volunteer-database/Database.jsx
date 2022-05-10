@@ -25,7 +25,7 @@ function Database(props) {
       const { data: volunteerResponse } = await axios.get('http://localhost:3001/volunteers');
       setVolunteerData(volunteerResponse);
       setFilteredData(volunteerResponse);
-      console.log(volunteerResponse);
+      // console.log(volunteerResponse);
     } catch (e) {
       console.log('Error getting volunteer data!');
     }
@@ -299,10 +299,30 @@ function Database(props) {
               />
             </div>
             {filteredData.map(obj => {
+              const name = `${obj.firstName} ${obj.lastName}`;
               return (
                 <Collapse key={obj.userId}>
-                  <Panel header={obj.firstName} key={obj.userId}>
-                    <p>Test</p>
+                  <Panel header={name} key={obj.userId}>
+                    <div className="mobile-volunteer-data">
+                      <h2>Role:&nbsp;&nbsp;&nbsp;&nbsp;</h2>
+                      <h3>{obj.role}</h3>
+                    </div>
+                    <div className="mobile-volunteer-data">
+                      <h2>Email:&nbsp;&nbsp;</h2>
+                      <h3>{obj.email}</h3>
+                    </div>
+                    <div className="mobile-volunteer-data">
+                      <h2>Phone:&nbsp;</h2>
+                      <h3>{obj.phone}</h3>
+                    </div>
+                    <div className="mobile-volunteer-data">
+                      <h2>City:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h2>
+                      <h3>{obj.addressCity}</h3>
+                    </div>
+                    <div className="mobile-volunteer-data">
+                      <h2>State:&nbsp;&nbsp;&nbsp;&nbsp;</h2>
+                      <h3>{obj.addressState}</h3>
+                    </div>
                   </Panel>
                 </Collapse>
               );
