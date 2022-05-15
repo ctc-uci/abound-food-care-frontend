@@ -8,6 +8,7 @@ import ProfileAvailability from '../components/profile/ProfileAvailability';
 import WaiversGrid from '../components/waivers/WaiversGrid';
 import VolunteeringHistory from '../components/profile/VolunteeringHistory';
 import '../components/profile/profile.css';
+import useViewPort from '../common/useViewPort';
 
 const { TabPane } = Tabs;
 function Profile() {
@@ -32,10 +33,13 @@ function Profile() {
     },
   ];
 
+  const { width } = useViewPort();
+  const breakpoint = 720;
+
   return (
     <div>
       <p>This is the volunteer profile page - USER ID OF VOLUNTEER HARDCODED TEMPORARILY</p>
-      <h1>[VOLUNTEER NAME HERE]s Profile</h1>
+      <p>[VOLUNTEER NAME HERE]s Profile</p>
       <Tabs defaultActiveKey="1">
         <TabPane tab="General Information" key="1">
           <ProfileGeneralInfo userId={2} />
@@ -52,9 +56,13 @@ function Profile() {
         <TabPane tab="Training & Forms" key="5">
           <WaiversGrid waivers={waivers} />
         </TabPane>
-        <TabPane tab="Volunteering History" key="6">
-          <VolunteeringHistory />
-        </TabPane>
+        {width > breakpoint ? (
+          <TabPane tab="Volunteering History" key="6">
+            <VolunteeringHistory />
+          </TabPane>
+        ) : (
+          <></>
+        )}
       </Tabs>
     </div>
   );

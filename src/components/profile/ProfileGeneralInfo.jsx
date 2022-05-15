@@ -6,11 +6,14 @@ import { Button, DatePicker, Form, Input, Radio, Row, Col, Typography } from 'an
 import axios from 'axios';
 import moment from 'moment';
 import PropTypes from 'prop-types';
+import useViewPort from '../../common/useViewPort';
 
 const { Text } = Typography;
 
 const ProfileGeneralInfo = ({ userId }) => {
-  const [isEditable, setIsEditable] = useState(false);
+  const { width } = useViewPort();
+  const breakpoint = 720;
+  const [isEditable, setIsEditable] = useState(width < breakpoint);
   const [defaultValues, setDefaultValues] = useState({});
   const [componentSize, setComponentSize] = useState('default');
 
@@ -19,7 +22,7 @@ const ProfileGeneralInfo = ({ userId }) => {
   };
 
   const inputBoxStyle = {
-    width: '50%',
+    width: width > breakpoint ? '50%' : '100%',
   };
 
   const phoneRegExp =
@@ -131,44 +134,95 @@ const ProfileGeneralInfo = ({ userId }) => {
           labelCol={{ span: 20 }}
           name="nest-messages"
         >
-          <div style={{ float: 'right' }}>
-            {isEditable && (
-              <Button className="cancel-btn" onClick={handleCancel}>
-                Cancel
+          {width > breakpoint ? (
+            <div style={{ float: 'right' }}>
+              {isEditable && (
+                <Button className="cancel-btn" onClick={handleCancel}>
+                  Cancel
+                </Button>
+              )}
+              <Button className="edit-save-btn" htmlType="submit" onClick={handleEdit}>
+                {isEditable ? 'Save' : 'Edit'}
               </Button>
-            )}
-            <Button className="edit-save-btn" htmlType="submit" onClick={handleEdit}>
-              {isEditable ? 'Save' : 'Edit'}
-            </Button>
-          </div>
-          <Row>
-            <Col span={6}>
-              <Controller
-                control={control}
-                name="firstName"
-                render={({ field: { onChange, value, ref } }) => (
-                  <Form.Item label="First Name">
-                    <Input onChange={onChange} value={value} ref={ref} disabled />
-                    <Text type="danger">
-                      {errors.firstName && <p>{errors.firstName.message}</p>}
-                    </Text>
-                  </Form.Item>
-                )}
-              />
-            </Col>
-            <Col span={6}>
-              <Controller
-                control={control}
-                name="lastName"
-                render={({ field: { onChange, value, ref } }) => (
-                  <Form.Item label="Last Name">
-                    <Input onChange={onChange} value={value} ref={ref} disabled />
-                    <Text type="danger">{errors.lastName && <p>{errors.lastName.message}</p>}</Text>
-                  </Form.Item>
-                )}
-              />
-            </Col>
-          </Row>
+            </div>
+          ) : (
+            <></>
+          )}
+          {width > breakpoint ? (
+            <Row>
+              <Col span={6}>
+                <Controller
+                  control={control}
+                  name="firstName"
+                  render={({ field: { onChange, value, ref } }) => (
+                    <Form.Item label="First Name">
+                      <Input onChange={onChange} value={value} ref={ref} disabled />
+                      <Text type="danger">
+                        {errors.firstName && <p>{errors.firstName.message}</p>}
+                      </Text>
+                    </Form.Item>
+                  )}
+                />
+              </Col>
+              <Col span={6}>
+                <Controller
+                  control={control}
+                  name="lastName"
+                  render={({ field: { onChange, value, ref } }) => (
+                    <Form.Item label="Last Name">
+                      <Input onChange={onChange} value={value} ref={ref} disabled />
+                      <Text type="danger">
+                        {errors.lastName && <p>{errors.lastName.message}</p>}
+                      </Text>
+                    </Form.Item>
+                  )}
+                />
+              </Col>
+            </Row>
+          ) : (
+            <>
+              <Row>
+                <Controller
+                  control={control}
+                  name="firstName"
+                  render={({ field: { onChange, value, ref } }) => (
+                    <Form.Item label="First Name" style={inputBoxStyle}>
+                      <Input
+                        onChange={onChange}
+                        style={inputBoxStyle}
+                        value={value}
+                        ref={ref}
+                        disabled
+                      />
+                      <Text type="danger">
+                        {errors.firstName && <p>{errors.firstName.message}</p>}
+                      </Text>
+                    </Form.Item>
+                  )}
+                />
+              </Row>
+              <Row>
+                <Controller
+                  control={control}
+                  name="lastName"
+                  render={({ field: { onChange, value, ref } }) => (
+                    <Form.Item label="Last Name" style={inputBoxStyle}>
+                      <Input
+                        onChange={onChange}
+                        style={inputBoxStyle}
+                        value={value}
+                        ref={ref}
+                        disabled
+                      />
+                      <Text type="danger">
+                        {errors.lastName && <p>{errors.lastName.message}</p>}
+                      </Text>
+                    </Form.Item>
+                  )}
+                />
+              </Row>
+            </>
+          )}
 
           <Controller
             control={control}
@@ -269,13 +323,15 @@ const ProfileGeneralInfo = ({ userId }) => {
             )}
           />
 
-          <Row>
-            <Col span={6}>
+          {width > breakpoint ? (
+            <></>
+          ) : (
+            <Row>
               <Controller
                 control={control}
                 name="addressCity"
                 render={({ field: { onChange, value, ref } }) => (
-                  <Form.Item label="City">
+                  <Form.Item label="City" style={{ width: '100%' }}>
                     <Input
                       style={inputBoxStyle}
                       onChange={onChange}
@@ -289,7 +345,34 @@ const ProfileGeneralInfo = ({ userId }) => {
                   </Form.Item>
                 )}
               />
-            </Col>
+            </Row>
+          )}
+
+          <Row>
+            {width > breakpoint ? (
+              <Col span={6}>
+                <Controller
+                  control={control}
+                  name="addressCity"
+                  render={({ field: { onChange, value, ref } }) => (
+                    <Form.Item label="City">
+                      <Input
+                        style={inputBoxStyle}
+                        onChange={onChange}
+                        value={value}
+                        ref={ref}
+                        disabled={!isEditable}
+                      />
+                      <Text type="danger">
+                        {errors.addressCity && <p>{errors.addressCity.message}</p>}
+                      </Text>
+                    </Form.Item>
+                  )}
+                />
+              </Col>
+            ) : (
+              <></>
+            )}
             <Col span={3}>
               <Controller
                 control={control}
@@ -310,7 +393,8 @@ const ProfileGeneralInfo = ({ userId }) => {
                 )}
               />
             </Col>
-            <Col span={3}>
+            {width > breakpoint ? <></> : <Col span={1} />}
+            <Col span={3 * (width > breakpoint ? 1 : 2)}>
               <Controller
                 control={control}
                 name="addressZip"
