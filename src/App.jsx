@@ -50,6 +50,7 @@ function App() {
               <Route path="/events/edit/:id" exact element={<CreateEvent />} />
               <Route path="/event" exact element={<Event />} />
               <Route path="/admin/volunteers" exact element={<Volunteers />} />
+              <Route path="/events/:eventId" exact element={<Event />} />
               <Route path="/events/register" exact element={<EventSignUp />} />
               <Route path="/volunteers" exact element={<Volunteers />} />
               {/* profile should be eventually be rendered under /volunteers. see Volunteers.jsx for note */}

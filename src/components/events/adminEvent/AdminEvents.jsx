@@ -118,14 +118,16 @@ const AdminEvents = () => {
   const renderEventsGrid = events => {
     const rows = events.map(event => (
       <Col key={event.eventId} span={8}>
-        <EventCard
-          id={event.eventId}
-          name={event.name}
-          type={event.eventType}
-          startDateTime={event.startDatetime}
-          endDateTime={event.endDatetime}
-          volunteerCapacity={event.volunteerCapacity}
-        />
+        <Link to={`/events/${event.eventId}`}>
+          <EventCard
+            id={event.eventId}
+            name={event.name}
+            type={event.eventType}
+            startDateTime={event.startDatetime}
+            endDateTime={event.endDatetime}
+            volunteerCapacity={event.volunteerCapacity}
+          />
+        </Link>
       </Col>
     ));
     return rows;

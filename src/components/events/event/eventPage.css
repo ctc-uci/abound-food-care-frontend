@@ -11,6 +11,11 @@
   font-family: AvenirNextLTProReg;
 }
 
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
 .header {
   font-family: AvenirNextLTProBold;
   color: black;
