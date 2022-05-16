@@ -12,6 +12,8 @@ import Volunteers from './pages/Volunteers';
 import Profile from './pages/Profile';
 import Event from './pages/Event';
 import Waivers from './pages/Waivers';
+// import Admin from './pages/Admin';
+import Hours from './pages/Hours';
 import useViewPort from './common/useViewPort';
 
 import AdminNavMenu from './components/navigation/AdminNavMenu';
@@ -46,12 +48,15 @@ function App() {
               <Route path="/events" exact element={<Events />} />
               <Route path="/events/create" exact element={<CreateEvent />} />
               <Route path="/events/edit/:id" exact element={<CreateEvent />} />
+              <Route path="/event" exact element={<Event />} />
+              <Route path="/admin/volunteers" exact element={<Volunteers />} />
               <Route path="/events/:eventId" exact element={<Event />} />
               <Route path="/events/register" exact element={<EventSignUp />} />
               <Route path="/volunteers" exact element={<Volunteers />} />
               {/* profile should be eventually be rendered under /volunteers. see Volunteers.jsx for note */}
               <Route path="/profile" exact element={<Profile />} />
               <Route path="/waivers" exact element={<Waivers />} />
+              <Route path="/hours" exact element={<Hours />} />
             </Routes>
           </Content>
         </Router>
