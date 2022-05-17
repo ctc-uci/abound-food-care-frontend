@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import HeatMap from './HeatMap';
+import './availabilities.css';
 
 const VolunteerAvailability = props => {
   const { handleViewDatabase } = props;
