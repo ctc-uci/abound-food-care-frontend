@@ -13,7 +13,7 @@ const { Text } = Typography;
 const ProfileGeneralInfo = ({ userId }) => {
   const { width } = useViewPort();
   const breakpoint = 720;
-  const [isEditable, setIsEditable] = useState(width < breakpoint);
+  const [isEditable, setIsEditable] = useState(false);
   const [defaultValues, setDefaultValues] = useState({});
   const [componentSize, setComponentSize] = useState('default');
 
@@ -134,20 +134,16 @@ const ProfileGeneralInfo = ({ userId }) => {
           labelCol={{ span: 20 }}
           name="nest-messages"
         >
-          {width > breakpoint ? (
-            <div style={{ float: 'right' }}>
-              {isEditable && (
-                <Button className="cancel-btn" onClick={handleCancel}>
-                  Cancel
-                </Button>
-              )}
-              <Button className="edit-save-btn" htmlType="submit" onClick={handleEdit}>
-                {isEditable ? 'Save' : 'Edit'}
+          <div style={{ float: 'right' }}>
+            {isEditable && (
+              <Button className="cancel-btn" onClick={handleCancel}>
+                Cancel
               </Button>
-            </div>
-          ) : (
-            <></>
-          )}
+            )}
+            <Button className="edit-save-btn" htmlType="submit" onClick={handleEdit}>
+              {isEditable ? 'Save' : 'Edit'}
+            </Button>
+          </div>
           {width > breakpoint ? (
             <Row>
               <Col span={6}>
