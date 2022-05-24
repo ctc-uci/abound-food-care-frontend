@@ -12,12 +12,22 @@ import {
   Divider,
   Table,
   ConfigProvider,
+  Collapse,
+  Checkbox,
 } from 'antd';
-import { SearchOutlined, DownOutlined, FilterOutlined } from '@ant-design/icons';
+import {
+  SearchOutlined,
+  DownOutlined,
+  FilterOutlined,
+  RightOutlined,
+  ClockCircleOutlined,
+} from '@ant-design/icons';
 import axios from 'axios';
 import DeclinePopup from './DeclinePopup';
 import useViewPort from '../../common/useViewPort';
 import './reviewHours.css';
+
+const { Panel } = Collapse;
 
 const ReviewHours = () => {
   const [isLoading, setLoading] = useState(true);
@@ -28,6 +38,8 @@ const ReviewHours = () => {
   const [approvedOrDeclined, setApprovedOrDeclined] = useState(false);
   const [modalKey, setModalKey] = useState(0);
   const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedLogs, setSelectedLogs] = useState([]);
+  const [countSelectedLogs, setCountSelectedLogs] = useState(0);
 
   const { width } = useViewPort();
   const breakpoint = 720;
@@ -81,16 +93,35 @@ const ReviewHours = () => {
   };
 
   const handleApproveSelected = async () => {
-    for (let i = 0; i < selectedRows.length; i += 1) {
-      // eslint-disable-next-line no-await-in-loop
-      await handleApprove(
-        selectedRows[i].userId,
-        selectedRows[i].eventId,
-        selectedRows[i].startDate,
-        selectedRows[i].startTime,
-        selectedRows[i].endDate,
-        selectedRows[i].endTime,
-      );
+    if (width > breakpoint) {
+      // desktop view table
+      for (let i = 0; i < selectedRows.length; i += 1) {
+        // eslint-disable-next-line no-await-in-loop
+        await handleApprove(
+          selectedRows[i].userId,
+          selectedRows[i].eventId,
+          selectedRows[i].startDate,
+          selectedRows[i].startTime,
+          selectedRows[i].endDate,
+          selectedRows[i].endTime,
+        );
+      }
+    } else {
+      // mobile view list
+      // go through filteredData, if the selectedLogs array has true for that index, then we handleApprove()
+      for (let i = 0; i < filteredData.length; i += 1) {
+        if (selectedLogs[i] === true) {
+          // eslint-disable-next-line no-await-in-loop
+          await handleApprove(
+            filteredData[i].userId,
+            filteredData[i].eventId,
+            filteredData[i].startDate,
+            filteredData[i].startTime,
+            filteredData[i].endDate,
+            filteredData[i].endTime,
+          );
+        }
+      }
     }
   };
 
@@ -169,6 +200,7 @@ const ReviewHours = () => {
     }
     setUnapprovedHours(data);
     setFilteredData(data);
+    setSelectedLogs(data.map(() => false));
     setLoading(false);
   }, [approvedOrDeclined]);
 
@@ -343,7 +375,7 @@ const ReviewHours = () => {
         <Dropdown.Button
           overlay={mobileSortMenu}
           placement="bottomRight"
-          icon={<FilterOutlined style={{ color: '#115740' }} />}
+          icon={<FilterOutlined style={{ color: '#000000', opacity: '45%' }} />}
         />
       </div>
     );
@@ -362,12 +394,117 @@ const ReviewHours = () => {
           className="mobile-approve-selected-btn"
           type="primary"
           size="large"
-          style={{ background: '#115740' }}
           onClick={handleApproveSelected}
+          disabled={countSelectedLogs === 0}
         >
           Approve Selected
         </Button>
       </div>
+    );
+  };
+
+  const handleCheckbox = (e, index) => {
+    const newSelectedLogs = [...selectedLogs];
+
+    if (e.target.checked === true) {
+      setCountSelectedLogs(countSelectedLogs + 1);
+    } else {
+      setCountSelectedLogs(countSelectedLogs - 1);
+    }
+
+    newSelectedLogs[index] = e.target.checked;
+
+    setSelectedLogs(newSelectedLogs);
+  };
+
+  const renderHoursLogList = () => {
+    const getRows = () => {
+      return filteredData.map(log => {
+        const getHeader = () => {
+          return (
+            <div>
+              <Checkbox
+                onClick={e => e.stopPropagation()}
+                onChange={e => handleCheckbox(e, log.key)}
+              />
+              <span className="panel-header-name">{log.name}</span>
+            </div>
+          );
+        };
+        return (
+          <Panel header={getHeader()} key={log.key} className="site-collapse-custom-panel">
+            <div>
+              <div className="panel-row">
+                <p className="panel-row-header">Organization(s)</p>
+                <p>{log.organization}</p>
+              </div>
+              <div className="panel-row">
+                <p className="panel-row-header">Event Name</p>
+                <p className="panel-event-name">{log.eventName}</p>
+              </div>
+              <div className="panel-row">
+                <p className="panel-row-header">Date</p>
+                <p>{log.startDate}</p>
+              </div>
+              <div className="panel-row">
+                <p className="panel-row-time-section">
+                  <ClockCircleOutlined />
+                  <p className="panel-row-time">
+                    <strong>Time In: </strong>
+                    {log.startTime}
+                  </p>
+                  <p className="panel-row-time">
+                    <strong>Time Out: </strong>
+                    {log.endTime}
+                  </p>
+                </p>
+              </div>
+              <div className="panel-row-buttons">
+                <Space>
+                  <Button
+                    onClick={() => {
+                      setModalKey(log.key);
+                      setIsModalVisible(true);
+                    }}
+                  >
+                    Decline
+                  </Button>
+                  <Button
+                    type="primary"
+                    style={{ backgroundColor: '#115740' }}
+                    onClick={() => {
+                      handleApprove(
+                        filteredData[log.key].userId,
+                        filteredData[log.key].eventId,
+                        filteredData[log.key].startDate,
+                        filteredData[log.key].startTime,
+                        filteredData[log.key].endDate,
+                        filteredData[log.key].endTime,
+                      );
+                    }}
+                  >
+                    Approve
+                  </Button>
+                </Space>
+              </div>
+            </div>
+          </Panel>
+        );
+      });
+    };
+
+    return (
+      <Collapse
+        bordered={false}
+        expandIcon={({ isActive }) => (
+          <RightOutlined style={{ color: '#115740' }} rotate={isActive ? 270 : 90} />
+        )}
+        expandIconPosition="right"
+        collapsible="icon"
+        className="site-collapse-custom-collapse"
+      >
+        {getRows()}
+      </Collapse>
     );
   };
 
@@ -378,16 +515,7 @@ const ReviewHours = () => {
           {renderMobileApproveSelectedButton()}
           {renderMobileSearchBar()}
         </div>
-        <div className="table">
-          <Table
-            rowSelection={{ type: 'checkbox', ...rowSelection }}
-            columns={columns}
-            dataSource={filteredData}
-            loading={isLoading}
-            size="small"
-            rowClassName="table-row"
-          />
-        </div>
+        {renderHoursLogList()}
       </>
     );
   };
