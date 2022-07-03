@@ -1,0 +1,57 @@
+@import '~antd/dist/antd.css';
+
+.ant-menu {
+  background: var(--eden);
+  color: white;
+}
+
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item:hover {
+  background: white;
+  color: var(--eden);
+}
+
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+  background: white;
+  color: var(--eden);
+  font-weight: bold;
+}
+
+.menu-item:not(.ant-menu-item-selected) .link {
+  color: white;
+}
+
+.menu-item:not(.ant-menu-item-selected) .link:hover {
+  color: var(--eden);
+}
+
+.logo .logo-img {
+  width: 50px;
+  margin: auto;
+  padding: 3%;
+}
+
+.logo {
+  font-weight: bold;
+  color: white;
+  width: 200px;
+  margin: auto;
+  padding: 10px 5px;
+}
+
+.logo:hover {
+  cursor: pointer;
+}
+
+.toggle-btn {
+  position: absolute;
+  padding: 50px 25px;
+  bottom: 0;
+  background: none;
+  border: none;
+  color: white;
+}
+
+.toggle-btn:hover {
+  background: none;
+  color: white;
+}

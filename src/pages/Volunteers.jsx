@@ -1,21 +1,30 @@
-import React from 'react';
-import VolunteeringHistory from '../components/VolunteeringHistory';
-import GeneralInfo from '../components/GeneralInfo';
-import WeeklyInfo from '../components/WeeklyInfo';
-import RolesAndSkills from '../components/RolesAndSkills';
-import DuiAndCrimHis from '../components/DuiAndCrimHis';
-
-import 'antd/dist/antd.variable.min.css';
+import React, { useState } from 'react';
+import 'antd/dist/antd.css';
+import Database from '../components/volunteer-database/Database';
+import './Volunteers.css';
+import VolunteerAvailability from '../components/volunteer-availabilities/VolunteerAvailability';
+import Profile from './Profile';
 
 function Volunteers() {
+  const [viewDatabase, setViewDatabase] = useState(false);
+
+  const handleViewDatabase = () => {
+    setViewDatabase(true);
+  };
+
+  const handleHideDatabase = () => {
+    setViewDatabase(false);
+  };
+
   return (
     <div>
-      <p>This is the volunteers page</p>
-      <VolunteeringHistory />
-      <WeeklyInfo />
-      <GeneralInfo />
-      <RolesAndSkills />
-      <DuiAndCrimHis />
+      {viewDatabase ? (
+        <Database handleHideDatabase={handleHideDatabase} />
+      ) : (
+        <VolunteerAvailability handleViewDatabase={handleViewDatabase} />
+      )}
+      {/* TODO: should only render profile when user selected from database^ */}
+      <Profile />
     </div>
   );
 }
