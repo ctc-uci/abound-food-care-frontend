@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "dependencies": {
     "@angular/common": "^6.0.0",
-    "@angular/core": "^6.0.0",
+    "@angular/core": "^11.0.5",
     "@ant-design/icons": "^4.7.0",
     "@babel/core": "^7.0.0",
     "@hookform/resolvers": "^2.8.8",
