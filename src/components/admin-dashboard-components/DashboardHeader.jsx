@@ -2,7 +2,7 @@ import { PageHeader, Row, Col } from 'antd';
 import './DashboardHeader.css';
 import React, { useEffect, useState } from 'react';
 import { PropTypes } from 'prop-types';
-import axios from 'axios';
+import { AFCBackend } from '../../util/utils';
 import logo from '../../assets/img/afc-logo.png';
 import useViewPort from '../../common/useViewPort';
 
@@ -15,19 +15,19 @@ const DashboardHeader = ({ userId, isAdmin }) => {
   const breakpoint = 720;
 
   useEffect(async () => {
-    const userData = await axios.get(`http://localhost:3001/users/${userId}`);
+    const userData = await AFCBackend.get(`/users/${userId}`);
     setUser(userData.data);
 
     if (isAdmin) {
       // admin statistics
-      const totalEvents = await axios.get('http://localhost:3001/events/total');
-      const totalVolunteers = await axios.get('http://localhost:3001/volunteers/total');
+      const totalEvents = await AFCBackend.get('/events/total');
+      const totalVolunteers = await AFCBackend.get('/volunteers/total');
       setFirstStatistic(totalEvents.data.count);
       setSecondStatistic(totalVolunteers.data.count);
     } else {
       // volunteer statistics
-      const eventsVolunteered = await axios.get(`http://localhost:3001/volunteers/${userId}`);
-      const totalHours = await axios.get(`http://localhost:3001/hours/user/${userId}/total`);
+      const eventsVolunteered = await AFCBackend.get(`/volunteers/${userId}`);
+      const totalHours = await AFCBackend.get(`/hours/user/${userId}/total`);
       setFirstStatistic(eventsVolunteered.data.eventIds[0]);
       setSecondStatistic(totalHours.data.count);
     }

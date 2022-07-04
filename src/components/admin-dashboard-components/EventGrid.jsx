@@ -3,7 +3,7 @@ import './EventGrid.css';
 import { Card } from 'antd';
 import { PropTypes } from 'prop-types';
 import axios from 'axios';
-import utils from '../../util/utils';
+import { getHourDiff, getMonthString, getTimeInPST } from '../../util/utils';
 
 const EventGrid = ({ title, eventStatus }) => {
   const [events, setEvents] = useState([]);
@@ -23,7 +23,7 @@ const EventGrid = ({ title, eventStatus }) => {
     return (
       <p>
         <span style={{ color: 'rgba(0, 0, 0, 0.45)' }}>Total Hours: </span>
-        {utils.getHourDiff(startDatetime, endDatetime)} hrs
+        {getHourDiff(startDatetime, endDatetime)} hrs
       </p>
     );
   };
@@ -40,12 +40,11 @@ const EventGrid = ({ title, eventStatus }) => {
               </a>
               <p className="event-start-date">
                 {' '}
-                {utils.getMonthString(event.startDatetime)}{' '}
-                {new Date(event.startDatetime).getDate()},{' '}
+                {getMonthString(event.startDatetime)} {new Date(event.startDatetime).getDate()},{' '}
                 {new Date(event.startDatetime).getFullYear()}
               </p>
               <p className="event-end">
-                {utils.getTimeInPST(event.startDatetime)} - {utils.getTimeInPST(event.endDatetime)}
+                {getTimeInPST(event.startDatetime)} - {getTimeInPST(event.endDatetime)}
               </p>
               {eventStatus === 'past' && renderTotalHours(event.startDatetime, event.endDatetime)}
             </div>

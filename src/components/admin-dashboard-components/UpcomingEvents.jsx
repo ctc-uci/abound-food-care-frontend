@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Card } from 'antd';
-import utils from '../../util/utils';
+import { getMonthString, getTimeInPST } from '../../util/utils';
 import useViewPort from '../../common/useViewPort';
 import './UpcomingEvents.css';
 
@@ -36,13 +36,13 @@ const UpcomingEvents = () => {
                     {upcomingEvent.name}
                   </a>
                   <p className="upcoming-event-start-date">
-                    {utils.getMonthString(upcomingEvent.startDateTime)}{' '}
+                    {getMonthString(upcomingEvent.startDateTime)}{' '}
                     {new Date(upcomingEvent.startDateTime).getDate()},{' '}
                     {new Date(upcomingEvent.startDateTime).getFullYear()}
                   </p>
                   <p>
-                    {utils.getTimeInPST(upcomingEvent.startDateTime)} -{' '}
-                    {utils.getTimeInPST(upcomingEvent.endDateTime)}
+                    {getTimeInPST(upcomingEvent.startDateTime)} -{' '}
+                    {getTimeInPST(upcomingEvent.endDateTime)}
                   </p>
                 </div>
               </Card.Grid>
@@ -63,7 +63,7 @@ const UpcomingEvents = () => {
               <Card.Grid key={upcomingEvent.name} style={gridStyle}>
                 <div className="show-event-mobile-container">
                   <div className="show-event-date-mobile">
-                    <h6>{utils.getMonthString(upcomingEvent.startDateTime)}</h6>
+                    <h6>{getMonthString(upcomingEvent.startDateTime)}</h6>
                     <h7>{new Date(upcomingEvent.startDateTime).getDate()}</h7>
                   </div>
                   <div className="show-event-details-mobile">
@@ -71,8 +71,8 @@ const UpcomingEvents = () => {
                       {upcomingEvent.name}
                     </a>
                     <h8>
-                      {utils.getTimeInPST(upcomingEvent.startDateTime)} -{' '}
-                      {utils.getTimeInPST(upcomingEvent.endDateTime)}
+                      {getTimeInPST(upcomingEvent.startDateTime)} -{' '}
+                      {getTimeInPST(upcomingEvent.endDateTime)}
                     </h8>
                   </div>
                 </div>
