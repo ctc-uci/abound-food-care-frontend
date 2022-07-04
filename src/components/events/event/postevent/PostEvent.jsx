@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Input, Button, ConfigProvider } from 'antd';
 import { CalendarOutlined, ClockCircleOutlined } from '@ant-design/icons';
-import axios from 'axios';
 import PropTypes from 'prop-types';
+import { AFCBackend } from '../../../../util/utils';
 
 const PostEvent = props => {
   const { name, date, time, eventId, setIsAddingPost, isEdit, setIsLoading } = props;
@@ -14,16 +14,13 @@ const PostEvent = props => {
     },
   });
 
-  const sendPostEvent = () => {
+  const sendPostEvent = async () => {
     setIsLoading(true);
     if (isEdit) {
-      axios
-        .put(`http://localhost:3001/events/add_post_text/${eventId}`, {
-          posteventText: postEventSection,
-        })
-        .then(() => {
-          setIsAddingPost(false);
-        });
+      await AFCBackend.put(`/events/add_post_text/${eventId}`, {
+        posteventText: postEventSection,
+      });
+      setIsAddingPost(false);
     }
   };
 
@@ -133,7 +130,9 @@ const PostEvent = props => {
                 </Button>
 
                 <Button
-                  onClick={sendPostEvent}
+                  onClick={async () => {
+                    await sendPostEvent();
+                  }}
                   style={{
                     width: '9.0em',
                     marginTop: '3.0em',

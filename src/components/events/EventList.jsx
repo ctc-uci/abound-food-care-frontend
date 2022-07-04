@@ -4,7 +4,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
 import moment from 'moment';
-import utils from '../../util/utils';
+import { getTimeInPST } from '../../util/utils';
 
 const EventList = ({ title, events, showViewAll }) => {
   const renderViewAllLink = () => {
@@ -33,8 +33,7 @@ const EventList = ({ title, events, showViewAll }) => {
               <div className="right-section">
                 <p className="event-name">{event.name}</p>
                 <p className="event-time">
-                  {utils.getTimeInPST(event.startDatetime)}-{utils.getTimeInPST(event.endDatetime)}{' '}
-                  (PST)
+                  {getTimeInPST(event.startDatetime)}-{getTimeInPST(event.endDatetime)} (PST)
                 </p>
               </div>
             </div>

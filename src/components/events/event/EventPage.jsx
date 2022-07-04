@@ -7,8 +7,8 @@ import {
   AimOutlined,
 } from '@ant-design/icons';
 import { Button, Divider, Tag, Space, ConfigProvider } from 'antd';
-import axios from 'axios';
 import moment from 'moment';
+import { AFCBackend } from '../../../util/utils';
 import PostEvent from './postevent/PostEvent';
 import EventVolunteerList from './volunteer-list/EventVolunteerList';
 import EventPageImage from '../../../assets/img/event-page-banner.png';
@@ -30,7 +30,7 @@ const EventPage = () => {
 
   const getEvent = async () => {
     try {
-      const { data: eventResponse } = await axios.get(`http://localhost:3001/events/${eventId}`);
+      const { data: eventResponse } = await AFCBackend.get(`/events/${eventId}`);
       setEventData(eventResponse[0]);
       if (eventResponse[0].posteventText !== undefined) {
         setIsEdit(true);
@@ -42,9 +42,7 @@ const EventPage = () => {
 
   const getNumAttendees = async () => {
     try {
-      const { data: volunteerData } = await axios.get(
-        `http://localhost:3001/volunteers/events/${eventId}`,
-      );
+      const { data: volunteerData } = await AFCBackend.get(`/volunteers/events/${eventId}`);
       if (volunteerData) {
         const { userIds } = volunteerData;
         setNumAttendees(userIds.length);
@@ -66,7 +64,7 @@ const EventPage = () => {
   /*
   useEffect(() => {
     //get post event
-    //axios.get(`http://localhost:3001/postevents/${eventId}`)
+    //AFCBackend.get(`/postevents/${eventId}`)
   }, [isAddingPost]);
   */
 

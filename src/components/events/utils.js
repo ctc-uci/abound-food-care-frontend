@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { AFCBackend } from '../../util/utils';
 
 const uploadBoxPhoto = async file => {
   // get S3 upload url from server
-  const { data: uploadUrl } = await axios.get(`http://localhost:3001/s3Upload`);
+  const { data: uploadUrl } = await AFCBackend.get(`/s3Upload`);
   // upload image directly to S3 bucket
   await axios.put(uploadUrl, file, {
     headers: {

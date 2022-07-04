@@ -3,7 +3,7 @@ import { Card } from 'antd';
 import React from 'react';
 import { PropTypes } from 'prop-types';
 import moment from 'moment';
-import utils from '../../../util/utils';
+import { getTimeInPST } from '../../../util/utils';
 
 const EventList = ({ title, events }) => {
   return (
@@ -21,8 +21,7 @@ const EventList = ({ title, events }) => {
               <div className="right-section">
                 <p className="event-name">{event.name}</p>
                 <p className="event-time">
-                  {utils.getTimeInPST(event.startDatetime)}-{utils.getTimeInPST(event.endDatetime)}{' '}
-                  (PST)
+                  {getTimeInPST(event.startDatetime)}-{getTimeInPST(event.endDatetime)} (PST)
                 </p>
               </div>
             </div>

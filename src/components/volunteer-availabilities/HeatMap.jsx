@@ -1,7 +1,7 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 // import ApexCharts from 'apexcharts';
-import axios from 'axios';
+import { AFCBackend } from '../../util/utils';
 
 const HeatMap = () => {
   const [options, setOptions] = React.useState(null);
@@ -56,7 +56,7 @@ const HeatMap = () => {
       '17:00PM': '17:30PM',
     };
     let data = {};
-    await axios.get('http://localhost:3001/volunteers/available').then(res => {
+    await AFCBackend.get('/volunteers/available').then(res => {
       data = res.data;
     });
     for (let hour = startHour; hour <= endHour; hour += 1) {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { FieldTimeOutlined, ScheduleOutlined } from '@ant-design/icons';
 import { ConfigProvider, Table, Button, Space, Typography } from 'antd';
+import { AFCBackend } from '../../util/utils';
 import './VolunteeringHistory.css';
 import EditHours from '../volunteer-profile-history/EditHours';
 
@@ -52,19 +52,17 @@ function VolunteeringHistory() {
   };
 
   const getEventsCount = async () => {
-    const { data: res } = await axios.get(
-      `http://localhost:3001/volunteers/${userId}/total-events`,
-    );
+    const { data: res } = await AFCBackend.get(`/volunteers/${userId}/total-events`);
     setEventCount(res.count);
   };
 
   const getHoursCount = async () => {
-    const { data: res } = await axios.get(`http://localhost:3001/hours/user/${userId}/total`);
+    const { data: res } = await AFCBackend.get(`/hours/user/${userId}/total`);
     setHoursCount(res.count);
   };
 
   const setAllHoursData = async () => {
-    const { data: res } = await axios.get(`http://localhost:3001/hours/${userId}`);
+    const { data: res } = await AFCBackend.get(`/hours/${userId}`);
     const unsubmittedHoursData = [];
     const submittedHoursData = [];
     for (let i = 0; i < res.length; i += 1) {
@@ -98,7 +96,7 @@ function VolunteeringHistory() {
 
   // update approved status to true
   // update submitted status to true
-  const handleApprove = index => {
+  const handleApprove = async index => {
     setEditIndex(index);
     const payload = {
       startDatetime: new Date(unsubmittedData[index].startDatetime),
@@ -109,17 +107,14 @@ function VolunteeringHistory() {
       notes: unsubmittedData[index].event.notes,
     };
 
-    axios
-      .post(`http://localhost:3001/hours/${userId}/${unsubmittedData[index].eventId}`, payload)
-      .then(() => {
-        setIsDeclined(true);
-      });
+    await AFCBackend.post(`/hours/${userId}/${unsubmittedData[index].eventId}`, payload);
+    setIsDeclined(true);
   };
 
   // change declined status to true
   // disappears from admin hours page
   // remains in the volunteer hours page
-  const handleDecline = index => {
+  const handleDecline = async index => {
     setEditIndex(index);
     const payload = {
       startDatetime: new Date(unsubmittedData[index].startDatetime),
@@ -130,11 +125,8 @@ function VolunteeringHistory() {
       notes: unsubmittedData[index].event.notes,
     };
 
-    axios
-      .post(`http://localhost:3001/hours/${userId}/${unsubmittedData[index].eventId}`, payload)
-      .then(() => {
-        setIsSubmitted(true);
-      });
+    await AFCBackend.post(`/hours/${userId}/${unsubmittedData[index].eventId}`, payload);
+    setIsSubmitted(true);
   };
 
   const handleEdit = index => {
@@ -189,10 +181,22 @@ function VolunteeringHistory() {
       key: 'approveOrDecline',
       render: index => (
         <Space>
-          <Button className="decline-btn" disabled={isEditing} onClick={() => handleDecline(index)}>
+          <Button
+            className="decline-btn"
+            disabled={isEditing}
+            onClick={async () => {
+              await handleDecline(index);
+            }}
+          >
             Decline
           </Button>
-          <Button type="primary" disabled={isEditing} onClick={() => handleApprove(index)}>
+          <Button
+            type="primary"
+            disabled={isEditing}
+            onClick={async () => {
+              await handleApprove(index);
+            }}
+          >
             Approve
           </Button>
         </Space>

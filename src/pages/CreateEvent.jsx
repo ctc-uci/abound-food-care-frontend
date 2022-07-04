@@ -5,10 +5,10 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, Button } from 'antd';
 import moment from 'moment';
-import axios from 'axios';
 import uploadBoxPhoto from '../components/events/utils';
 import EventsGeneralInfo from '../components/events/createEvent/EventsGeneralInfo';
 import EventsAdditionalInfo from '../components/events/createEvent/EventsAdditionalInfo';
+import { AFCBackend } from '../util/utils';
 
 const CreateEvent = () => {
   const [formStep, setFormStep] = useState(0);
@@ -100,7 +100,7 @@ const CreateEvent = () => {
 
   const getEventData = async () => {
     try {
-      const eventResponse = await axios.get(`http://localhost:3001/events/${id}`);
+      const eventResponse = await AFCBackend.get(`/events/${id}`);
       const eventData = eventResponse.data[0];
       const endDateTime = new Date(eventData.endDatetime);
       const startDateTime = new Date(eventData.startDatetime);
@@ -206,13 +206,10 @@ const CreateEvent = () => {
       };
       // Check if this is editing or creating a new event
       if (isEdit) {
-        await axios.put(`http://localhost:3001/events/${id}`, payload);
+        await AFCBackend.put(`/events/${id}`, payload);
         navigate(`/events/${id}`);
       } else {
-        const { data: newEventResponse } = await axios.post(
-          'http://localhost:3001/events/',
-          payload,
-        );
+        const { data: newEventResponse } = await AFCBackend.post('/events/', payload);
         const { eventId } = newEventResponse;
         navigate(`/events/${eventId}`);
       }
