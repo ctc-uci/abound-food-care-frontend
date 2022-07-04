@@ -8,7 +8,7 @@ const EventGrid = ({ title, eventStatus }) => {
   const [events, setEvents] = useState([]);
   // get events of that type
   useEffect(async () => {
-    // eventStatus is either past or upcoming
+    // eventStatus is either 'past' or 'upcoming'
     const response = await AFCBackend.get(`/events/${eventStatus}`);
     setEvents(response.data);
   }, []);
