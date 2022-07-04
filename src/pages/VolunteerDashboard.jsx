@@ -1,12 +1,12 @@
 import '../styles/AdminDashboard.css';
 import { Row, Col } from 'antd';
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import UpcomingEvents from '../components/admin-dashboard-components/UpcomingEvents';
 import DashboardHeader from '../components/admin-dashboard-components/DashboardHeader';
 import PastEvents from '../components/admin-dashboard-components/PastEvents';
 import EventList from '../components/events/EventList';
 import useViewPort from '../common/useViewPort';
+import { AFCBackend } from '../util/utils';
 
 const VolunteerDashboard = () => {
   const { width } = useViewPort();
@@ -16,9 +16,9 @@ const VolunteerDashboard = () => {
   const [upcomingEvents, setUpcomingEvents] = useState([]);
 
   useEffect(async () => {
-    const uEvents = await axios.get('http://localhost:3001/events/upcoming');
+    const uEvents = await AFCBackend.get('/events/upcoming');
     setUpcomingEvents(uEvents.data);
-    const pEvents = await axios.get('http://localhost:3001/events/past');
+    const pEvents = await AFCBackend.get('/events/past');
     setPastEvents(pEvents.data);
   }, []);
 

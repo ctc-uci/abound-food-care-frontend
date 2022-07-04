@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// import axios from 'axios';
 import { Form, Button } from 'antd';
 import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
@@ -8,6 +7,7 @@ import GeneralInfo from '../components/create-account/GeneralInfo';
 import DuiAndCrimHis from '../components/create-account/DuiAndCrimHis';
 import RolesAndSkills from '../components/create-account/RolesAndSkills';
 import WeeklyInfo from '../components/create-account/WeeklyInfo';
+// import { AFCBackend } from '../util/utils';
 
 const CreateAccount = () => {
   const [formStep, setFormStep] = useState(0);
@@ -186,7 +186,7 @@ const CreateAccount = () => {
         availabilities: availability,
       };
       console.log(payload);
-      // await axios.post('http://localhost:3001/users/', payload);
+      // await AFCBackend.post('/users/', payload);
     } catch (e) {
       console.log(e.message);
     }
