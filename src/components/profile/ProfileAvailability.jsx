@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import PropTypes from 'prop-types';
 import Chart from 'react-apexcharts';
+import { AFCBackend } from '../../util/utils';
 
 const ProfileAvailability = ({ userId }) => {
   const [options, setOptions] = useState(null);
@@ -64,7 +64,7 @@ const ProfileAvailability = ({ userId }) => {
 
   const getUserAvailability = async () => {
     try {
-      const { data: res } = await axios.get(`http://localhost:3001/availability/${userId}`);
+      const { data: res } = await AFCBackend.get(`/availability/${userId}`);
       const { availabilities } = res;
       setAvailabilityData(availabilities);
     } catch (e) {
