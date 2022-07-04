@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './PastEvents.css';
 import { Card } from 'antd';
-import axios from 'axios';
-import { getMonthString, getTimeInPST, getHourDiff } from '../../util/utils';
+import { AFCBackend, getMonthString, getTimeInPST, getHourDiff } from '../../util/utils';
 import useViewPort from '../../common/useViewPort';
 
 const PastEvents = () => {
@@ -11,7 +10,7 @@ const PastEvents = () => {
   const { width } = useViewPort();
   const breakpoint = 720;
   useEffect(async () => {
-    const response = await axios.get('http://localhost:3001/events/past');
+    const response = await AFCBackend.get('/events/past');
     setEvents(response.data);
   }, []);
 
