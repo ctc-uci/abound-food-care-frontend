@@ -1,9 +1,10 @@
 import { React, useState, useEffect } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Card } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
+
+import { AFCBackend } from '../../../util/utils';
 import './eventCard.css';
 import 'antd/dist/antd.variable.min.css';
 
@@ -38,9 +39,7 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
     const fetchData = async () => {
       setLoading(true);
       try {
-        const { data: volunteerResponse } = await axios.get(
-          `http://localhost:3001/volunteers/events/${id}`,
-        );
+        const { data: volunteerResponse } = await AFCBackend.get(`/volunteers/events/${id}`);
         if (volunteerResponse.status === 200 && volunteerResponse.length > 0) {
           setNumVolunteers(volunteerResponse.userIds.length);
         }
