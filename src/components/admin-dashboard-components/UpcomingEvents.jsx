@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import { Card } from 'antd';
-import { getMonthString, getTimeInPST } from '../../util/utils';
+import { AFCBackend, getMonthString, getTimeInPST } from '../../util/utils';
 import useViewPort from '../../common/useViewPort';
 import './UpcomingEvents.css';
 
@@ -20,7 +19,7 @@ const UpcomingEvents = () => {
   const [events, setEvents] = useState([]);
 
   useEffect(async () => {
-    const response = await axios.get('http://localhost:3001/events/upcoming');
+    const response = await AFCBackend.get('/events/upcoming');
     await setEvents(response.data);
   }, []);
 
