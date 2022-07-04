@@ -2,20 +2,14 @@ import React, { useState, useEffect } from 'react';
 import './EventGrid.css';
 import { Card } from 'antd';
 import { PropTypes } from 'prop-types';
-import axios from 'axios';
-import { getHourDiff, getMonthString, getTimeInPST } from '../../util/utils';
+import { AFCBackend, getHourDiff, getMonthString, getTimeInPST } from '../../util/utils';
 
 const EventGrid = ({ title, eventStatus }) => {
   const [events, setEvents] = useState([]);
   // get events of that type
   useEffect(async () => {
-    let query = 'http://localhost:3001/events/';
-    if (eventStatus === 'past') {
-      query += 'past';
-    } else if (eventStatus === 'upcoming') {
-      query += 'upcoming';
-    }
-    const response = await axios.get(query);
+    // eventStatus is either past or upcoming
+    const response = await AFCBackend.get(`/events/${eventStatus}`);
     setEvents(response.data);
   }, []);
 
