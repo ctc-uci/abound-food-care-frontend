@@ -3,7 +3,7 @@ import { Button, Table, ConfigProvider } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import '../eventPage.css';
 import PropTypes from 'prop-types';
-import axios from 'axios';
+import { AFCBackend } from '../../../../util/utils';
 
 const EventVolunteerList = ({ name, type, eventId, setViewVolunteers }) => {
   const [volunteers, setVolunteers] = useState([]);
@@ -13,10 +13,11 @@ const EventVolunteerList = ({ name, type, eventId, setViewVolunteers }) => {
   const getUserData = async () => {
     const volunteerPromises = [];
     const volunteerData = [];
+    // TODO Retool this to use forEach and modern JS (alan - 7/3)
     let emailM = 'mailto:';
-    const { data: userIds } = await axios.get(`http://localhost:3001/events/${eventId}/volunteers`);
+    const { data: userIds } = await AFCBackend.get(`/events/${eventId}/volunteers`);
     for (let i = 0; i < userIds.length; i += 1) {
-      volunteerPromises.push(axios.get(`http://localhost:3001/users/${userIds[i].user_id}`));
+      volunteerPromises.push(AFCBackend.get(`/users/${userIds[i].user_id}`));
     }
     await Promise.all(volunteerPromises).then(values => {
       for (let i = 0; i < values.length; i += 1) {

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Input, Radio, Form, Select, Checkbox, Row, Tag, Typography, Space, Button } from 'antd';
-import axios from 'axios';
 import PropTypes from 'prop-types';
+import { AFCBackend } from '../../util/utils';
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -82,7 +82,7 @@ const ProfileRolesAndSkills = ({ userId }) => {
 
   const getDriverData = async () => {
     try {
-      const { data: volunteerData } = await axios.get(`http://localhost:3001/users/${userId}`);
+      const { data: volunteerData } = await AFCBackend.get(`/users/${userId}`);
       setDefaultValues({
         role: volunteerData.role,
         foodRunning: volunteerData.foodRunsInterest,
@@ -196,7 +196,7 @@ const ProfileRolesAndSkills = ({ userId }) => {
         vehicleType: values.vehicleType,
         distance: values.distance,
       };
-      await axios.put(`http://localhost:3001/users/roles-skills/${userId}`, payload);
+      await AFCBackend.put(`/users/roles-skills/${userId}`, payload);
     } catch (e) {
       console.log(e.message);
     }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
+import { AFCBackend } from '../../util/utils';
 import FixedTitledInput from './FixedTitledInput';
 
 const Container = styled.div`
@@ -31,7 +31,7 @@ const VolunteerGeneralInfo = () => {
 
   useEffect(async () => {
     const userId = 6;
-    const { data: res } = await axios.get(`http://localhost:3001/users/${userId}`);
+    const { data: res } = await AFCBackend.get(`/users/${userId}`);
     setFirstName(res.firstName);
     setLastName(res.lastName);
     setOrg(res.organization);

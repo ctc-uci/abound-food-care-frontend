@@ -2,7 +2,7 @@ import { React, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Input, Button, Radio, Row, Col, Card, Typography, ConfigProvider } from 'antd';
 import { FilterOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import axios from 'axios';
+import { AFCBackend } from '../../../util/utils';
 import EventCard from '../event/EventCard';
 import EventList from '../event/EventList';
 import useViewPort from '../../../common/useViewPort';
@@ -37,7 +37,7 @@ const AdminEvents = () => {
 
   const fetchAllEvents = async () => {
     try {
-      const { data: eventResponse } = await axios.get('http://localhost:3001/events');
+      const { data: eventResponse } = await AFCBackend.get('/events');
       setEventsData(eventResponse);
       setAllEvents(eventResponse);
     } catch (err) {

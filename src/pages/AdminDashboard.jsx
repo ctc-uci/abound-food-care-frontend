@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Row, Col } from 'antd';
 import AdminNotifications from '../components/admin-dashboard-components/AdminNotifications';
 import DashboardHeader from '../components/admin-dashboard-components/DashboardHeader';
 import EventGrid from '../components/admin-dashboard-components/EventGrid';
 import EventList from '../components/events/EventList';
 import useViewPort from '../common/useViewPort';
+import { AFCBackend } from '../util/utils';
 import '../styles/AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -16,9 +16,9 @@ const AdminDashboard = () => {
   const [upcomingEvents, setUpcomingEvents] = useState([]);
 
   useEffect(async () => {
-    const uEvents = await axios.get('http://localhost:3001/events/upcoming');
+    const uEvents = await AFCBackend.get('/events/upcoming');
     setUpcomingEvents(uEvents.data);
-    const pEvents = await axios.get('http://localhost:3001/events/past');
+    const pEvents = await AFCBackend.get('/events/past');
     setPastEvents(pEvents.data);
   }, []);
 

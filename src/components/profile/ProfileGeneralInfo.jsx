@@ -3,9 +3,9 @@ import { useForm, Controller } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, DatePicker, Form, Input, Radio, Row, Col, Typography } from 'antd';
-import axios from 'axios';
 import moment from 'moment';
 import PropTypes from 'prop-types';
+import { AFCBackend } from '../../util/utils';
 
 const { Text } = Typography;
 
@@ -55,7 +55,7 @@ const ProfileGeneralInfo = ({ userId }) => {
 
   const getVolunteerData = async () => {
     try {
-      const { data: volunteerData } = await axios.get(`http://localhost:3001/users/${userId}`);
+      const { data: volunteerData } = await AFCBackend.get(`/users/${userId}`);
       setDefaultValues({
         organization: volunteerData.organization,
         phone: volunteerData.phone,
@@ -110,7 +110,7 @@ const ProfileGeneralInfo = ({ userId }) => {
         addressState: values.addressState,
         addressZip: values.addressZip,
       };
-      await axios.put(`http://localhost:3001/users/general-info/${userId}`, payload);
+      await AFCBackend.put(`/users/general-info/${userId}`, payload);
     } catch (e) {
       console.log(e.message);
     }

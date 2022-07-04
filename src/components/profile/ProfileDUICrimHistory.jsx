@@ -3,8 +3,8 @@ import { useForm, Controller } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Radio, Form, Input, Button, Typography } from 'antd';
-import axios from 'axios';
 import PropTypes from 'prop-types';
+import { AFCBackend } from '../../util/utils';
 
 const { Text } = Typography;
 
@@ -38,7 +38,7 @@ const ProfileDUIAndCrimHistory = ({ userId }) => {
 
   const getVolunteerData = async () => {
     try {
-      const { data: volunteerData } = await axios.get(`http://localhost:3001/users/${userId}`);
+      const { data: volunteerData } = await AFCBackend.get(`/users/${userId}`);
       setDefaultValues({
         duiHistory: volunteerData.duiHistory,
         duiHistoryDetails: volunteerData.duiHistoryDetails,
@@ -78,7 +78,7 @@ const ProfileDUIAndCrimHistory = ({ userId }) => {
         criminalHistoryDetails: values.criminalHistoryDetails,
         additionalInformation: values.additionalInfo,
       };
-      await axios.put(`http://localhost:3001/users/dui-criminal/${userId}`, payload);
+      await AFCBackend.put(`/users/dui-criminal/${userId}`, payload);
     } catch (e) {
       console.log(e.message);
     }

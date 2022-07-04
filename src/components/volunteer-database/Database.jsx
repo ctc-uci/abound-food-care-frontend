@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import 'antd/dist/antd.variable.min.css';
 import './database.css';
 import { Input, Button, Row, Col, Dropdown, Menu, Divider, Table } from 'antd';
 import { SearchOutlined, FilterFilled, DownOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
+import { AFCBackend } from '../../util/utils';
 
 function Database(props) {
   const [volunteerData, setVolunteerData] = useState([]);
@@ -17,7 +17,7 @@ function Database(props) {
 
   const getVolunteers = async () => {
     try {
-      const { data: volunteerResponse } = await axios.get('http://localhost:3001/volunteers');
+      const { data: volunteerResponse } = await AFCBackend.get('/volunteers');
       setVolunteerData(volunteerResponse);
       setFilteredData(volunteerResponse);
     } catch (e) {

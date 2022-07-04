@@ -2,20 +2,14 @@ import React, { useState, useEffect } from 'react';
 import './EventGrid.css';
 import { Card } from 'antd';
 import { PropTypes } from 'prop-types';
-import axios from 'axios';
-import utils from '../../util/utils';
+import { AFCBackend, getHourDiff, getMonthString, getTimeInPST } from '../../util/utils';
 
 const EventGrid = ({ title, eventStatus }) => {
   const [events, setEvents] = useState([]);
   // get events of that type
   useEffect(async () => {
-    let query = 'http://localhost:3001/events/';
-    if (eventStatus === 'past') {
-      query += 'past';
-    } else if (eventStatus === 'upcoming') {
-      query += 'upcoming';
-    }
-    const response = await axios.get(query);
+    // eventStatus is either 'past' or 'upcoming'
+    const response = await AFCBackend.get(`/events/${eventStatus}`);
     setEvents(response.data);
   }, []);
 
@@ -23,7 +17,7 @@ const EventGrid = ({ title, eventStatus }) => {
     return (
       <p>
         <span style={{ color: 'rgba(0, 0, 0, 0.45)' }}>Total Hours: </span>
-        {utils.getHourDiff(startDatetime, endDatetime)} hrs
+        {getHourDiff(startDatetime, endDatetime)} hrs
       </p>
     );
   };
@@ -40,12 +34,11 @@ const EventGrid = ({ title, eventStatus }) => {
               </a>
               <p className="event-start-date">
                 {' '}
-                {utils.getMonthString(event.startDatetime)}{' '}
-                {new Date(event.startDatetime).getDate()},{' '}
+                {getMonthString(event.startDatetime)} {new Date(event.startDatetime).getDate()},{' '}
                 {new Date(event.startDatetime).getFullYear()}
               </p>
               <p className="event-end">
-                {utils.getTimeInPST(event.startDatetime)} - {utils.getTimeInPST(event.endDatetime)}
+                {getTimeInPST(event.startDatetime)} - {getTimeInPST(event.endDatetime)}
               </p>
               {eventStatus === 'past' && renderTotalHours(event.startDatetime, event.endDatetime)}
             </div>

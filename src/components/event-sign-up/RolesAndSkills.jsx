@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
 import { Checkbox, Input, Radio } from 'antd';
 import FixedTitledInput from './FixedTitledInput';
+import { AFCBackend } from '../../util/utils';
 
 const Container = styled.div`
   padding: 2%;
@@ -111,7 +111,7 @@ const RolesAndSkills = () => {
 
   useEffect(async () => {
     const userId = 6;
-    const { data: res } = await axios.get(`http://localhost:3001/users/${userId}`);
+    const { data: res } = await AFCBackend.get(`/users/${userId}`);
     const newVals = [];
 
     Object.keys(res).forEach(key => {
