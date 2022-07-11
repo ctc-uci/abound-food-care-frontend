@@ -18,6 +18,7 @@ const AdminNavMenu = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [menuTitle, setMenuTitle] = useState('Abound Food Care');
   const { pathname } = useLocation();
+  // TO-DO: remove console.log before shipping to AFC
   console.log({ pathname });
   const handleToggle = () => {
     setCollapsed(!collapsed);

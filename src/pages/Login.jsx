@@ -70,7 +70,7 @@ function Login() {
                   >
                     <Input
                       placeholder="Email"
-                      prefix={<MailOutlined style={{ color: '#009A44' }} />}
+                      prefix={<MailOutlined style={{ color: '#009A44', paddingRight: '13px' }} />}
                     />
                   </Form.Item>
 
@@ -80,7 +80,7 @@ function Login() {
                   >
                     <Input.Password
                       placeholder="Password"
-                      prefix={<LockOutlined style={{ color: '#009A44' }} />}
+                      prefix={<LockOutlined style={{ color: '#009A44', paddingRight: '13px' }} />}
                     />
                   </Form.Item>
 
@@ -162,7 +162,7 @@ function Login() {
                   >
                     <Input
                       placeholder="First Name"
-                      prefix={<UserOutlined style={{ color: '#009A44' }} />}
+                      prefix={<UserOutlined style={{ color: '#009A44', paddingRight: '13px' }} />}
                     />
                   </Form.Item>
 
@@ -172,7 +172,7 @@ function Login() {
                   >
                     <Input
                       placeholder="Last Name"
-                      prefix={<UserOutlined style={{ color: '#009A44' }} />}
+                      prefix={<UserOutlined style={{ color: '#009A44', paddingRight: '13px' }} />}
                     />
                   </Form.Item>
 
@@ -182,7 +182,7 @@ function Login() {
                   >
                     <Input
                       placeholder="Email"
-                      prefix={<MailOutlined style={{ color: '#009A44' }} />}
+                      prefix={<MailOutlined style={{ color: '#009A44', paddingRight: '13px' }} />}
                     />
                   </Form.Item>
 
@@ -192,7 +192,7 @@ function Login() {
                   >
                     <Input.Password
                       placeholder="Password"
-                      prefix={<LockOutlined style={{ color: '#009A44' }} />}
+                      prefix={<LockOutlined style={{ color: '#009A44', paddingRight: '13px' }} />}
                     />
                   </Form.Item>
 
