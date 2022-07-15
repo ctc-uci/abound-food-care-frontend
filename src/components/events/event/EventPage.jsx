@@ -340,18 +340,23 @@ const EventPage = () => {
               }}
             >
               <p className="header">Waivers</p>
-              <Button
-                style={{
-                  width: '13em',
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <VerticalAlignBottomOutlined />
-                <p style={{ padding: 0, margin: 0, paddingLeft: '.7em' }}>Click to Download</p>
-              </Button>
+              {/* TODO Multiple waiver downloads; currently, only single waiver download button */}
+              {eventData.waivers && eventData.waivers.length > 0 && (
+                <a href={eventData.waivers[0].link} download={eventData.waivers[0].name}>
+                  <Button
+                    style={{
+                      width: '13em',
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <VerticalAlignBottomOutlined />
+                    <p style={{ padding: 0, margin: 0, paddingLeft: '.7em' }}>Click to Download</p>
+                  </Button>
+                </a>
+              )}
               <p style={{ fontFamily: 'AvenirNextLTProBold', fontSize: '14px', color: '#888888' }}>
                 Not yet implemented
               </p>
