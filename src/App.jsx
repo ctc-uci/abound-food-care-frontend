@@ -5,7 +5,7 @@ import { Layout } from 'antd';
 
 // Pages
 import Login from './pages/Login';
-import CreateAccount from './pages/CreateAccount';
+import CreateAccount from './pages/CreateAccount/CreateAccount';
 import Events from './pages/Events';
 import CreateEvent from './pages/CreateEvent';
 import Volunteers from './pages/Volunteers';

@@ -2,6 +2,8 @@ import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { DatePicker, Form, Input, Radio, Typography } from 'antd';
 
+import styles from './GeneralInfo.module.css';
+
 const { Text } = Typography;
 
 const GeneralInfo = () => {
@@ -12,7 +14,10 @@ const GeneralInfo = () => {
 
   return (
     <div>
-      <h1> General Information </h1>
+      <h1 className={styles.header}> General Information</h1>
+      <p className={styles.instructions}>
+        Please enter the following information below to complete your profile.
+      </p>
       <Controller
         control={control}
         name="firstName"

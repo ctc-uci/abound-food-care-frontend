@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import 'antd/dist/antd.css';
 import { Card, Divider, Form, Input, Button, Checkbox, Radio } from 'antd';
 import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 import { ReactComponent as AboundSignature } from '../Abound_Signature.svg';
 
 function Login() {
   const [state, setState] = useState('login');
+  const navigate = useNavigate();
 
   const forgotPassword = () => {};
 
@@ -13,7 +15,9 @@ function Login() {
 
   const googleSignIn = () => {};
 
-  const signUp = () => {};
+  const signUp = () => {
+    navigate('/users/create');
+  };
 
   const googleSignUp = () => {};
 

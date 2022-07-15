@@ -3,11 +3,13 @@ import { Form, Button } from 'antd';
 import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import GeneralInfo from '../components/create-account/GeneralInfo';
-import DuiAndCrimHis from '../components/create-account/DuiAndCrimHis';
-import RolesAndSkills from '../components/create-account/RolesAndSkills';
-import WeeklyInfo from '../components/create-account/WeeklyInfo';
+import GeneralInfo from '../../components/create-account/GeneralInfo/GeneralInfo';
+import DuiAndCrimHis from '../../components/create-account/DuiAndCrimHis/DuiAndCrimHis';
+import RolesAndSkills from '../../components/create-account/RolesAndSkills/RolesAndSkills';
+import WeeklyInfo from '../../components/create-account/WeeklyInfo/WeeklyInfo';
 // import { AFCBackend } from '../util/utils';
+
+import styles from './CreateAccount.module.css';
 
 const CreateAccount = () => {
   const [formStep, setFormStep] = useState(0);
@@ -197,7 +199,7 @@ const CreateAccount = () => {
   };
 
   return (
-    <div>
+    <div className={styles.wrapper}>
       <FormProvider {...methods}>
         <Form
           labelWrap
@@ -211,15 +213,7 @@ const CreateAccount = () => {
             <section hidden={formStep !== 0}>
               <GeneralInfo />
               <div>
-                <Button
-                  style={{
-                    background: '#115740',
-                    color: 'white',
-                    borderColor: '#115740',
-                    float: 'right',
-                  }}
-                  onClick={incrementFormStep}
-                >
+                <Button className={styles['next-button']} onClick={incrementFormStep}>
                   Next
                 </Button>
               </div>
@@ -229,23 +223,10 @@ const CreateAccount = () => {
             <section hidden={formStep !== 1}>
               <WeeklyInfo availability={availability} setAvailability={setAvailability} />
               <div>
-                <Button
-                  style={{
-                    borderColor: '#D9D9D9',
-                  }}
-                  onClick={decrementFormStep}
-                >
+                <Button className={styles['previous-button']} onClick={decrementFormStep}>
                   Previous
                 </Button>
-                <Button
-                  style={{
-                    background: '#115740',
-                    color: 'white',
-                    borderColor: '#115740',
-                    float: 'right',
-                  }}
-                  onClick={incrementFormStep}
-                >
+                <Button className={styles['next-button']} onClick={incrementFormStep}>
                   Next
                 </Button>
               </div>
@@ -255,23 +236,10 @@ const CreateAccount = () => {
             <section hidden={formStep !== 2}>
               <RolesAndSkills />
               <div>
-                <Button
-                  style={{
-                    borderColor: '#D9D9D9',
-                  }}
-                  onClick={decrementFormStep}
-                >
+                <Button className={styles['previous-button']} onClick={decrementFormStep}>
                   Previous
                 </Button>
-                <Button
-                  style={{
-                    background: '#115740',
-                    color: 'white',
-                    borderColor: '#115740',
-                    float: 'right',
-                  }}
-                  onClick={incrementFormStep}
-                >
+                <Button className={styles['next-button']} onClick={incrementFormStep}>
                   Next
                 </Button>
               </div>
@@ -281,12 +249,7 @@ const CreateAccount = () => {
             <section hidden={formStep !== 3}>
               <DuiAndCrimHis />
               <div>
-                <Button
-                  style={{
-                    borderColor: '#D9D9D9',
-                  }}
-                  onClick={decrementFormStep}
-                >
+                <Button className={styles['previous-button']} onClick={decrementFormStep}>
                   Previous
                 </Button>
                 <Button
