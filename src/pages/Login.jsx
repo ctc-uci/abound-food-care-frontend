@@ -1,19 +1,54 @@
 import React, { useState } from 'react';
+import { instanceOf } from 'prop-types';
 import 'antd/dist/antd.css';
 import { Card, Divider, Form, Input, Button, Checkbox, Radio } from 'antd';
 import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
+
+import {
+  AUTH_ROLES,
+  logInWithEmailAndPassword,
+  registerWithEmailAndPassword,
+  useNavigate,
+} from '../util/auth_utils';
+import { Cookies, withCookies } from '../util/cookie_utils';
 import { ReactComponent as AboundSignature } from '../Abound_Signature.svg';
 
-function Login() {
+function Login({ cookies }) {
   const [state, setState] = useState('login');
+
+  const [loginEmail, setLoginEmail] = useState('');
+
+  const [loginPassword, setLoginPassword] = useState('');
+
+  const [registerEmail, setRegisterEmail] = useState('');
+
+  const [registerPassword, setRegisterPassword] = useState('');
+
+  const [role, setRole] = useState('');
+
+  const navigate = useNavigate();
 
   const forgotPassword = () => {};
 
-  const logIn = () => {};
+  const logIn = async e => {
+    e.preventDefault();
+    try {
+      await logInWithEmailAndPassword(loginEmail, loginPassword, '/', navigate, cookies);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const googleSignIn = () => {};
 
-  const signUp = () => {};
+  const signUp = async e => {
+    e.preventDefault();
+    try {
+      await registerWithEmailAndPassword(registerEmail, registerPassword, role, navigate, '/');
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const googleSignUp = () => {};
 
@@ -59,6 +94,8 @@ function Login() {
                   <Input
                     placeholder="Email"
                     prefix={<MailOutlined style={{ color: '#009A44' }} />}
+                    onChange={e => setLoginEmail(e.target.value)}
+                    value={loginEmail}
                   />
                 </Form.Item>
 
@@ -69,6 +106,8 @@ function Login() {
                   <Input.Password
                     placeholder="Password"
                     prefix={<LockOutlined style={{ color: '#009A44' }} />}
+                    onChange={e => setLoginPassword(e.target.value)}
+                    value={loginPassword}
                   />
                 </Form.Item>
 
@@ -167,6 +206,8 @@ function Login() {
                   <Input
                     placeholder="Email"
                     prefix={<MailOutlined style={{ color: '#009A44' }} />}
+                    value={registerEmail}
+                    onChange={e => setRegisterEmail(e.target.value)}
                   />
                 </Form.Item>
 
@@ -177,13 +218,22 @@ function Login() {
                   <Input.Password
                     placeholder="Password"
                     prefix={<LockOutlined style={{ color: '#009A44' }} />}
+                    value={registerPassword}
+                    onChange={e => setRegisterPassword(e.target.value)}
                   />
                 </Form.Item>
 
                 <Form.Item label="Role" name="role">
                   <Radio.Group defaultValue="Volunteer" buttonStyle="solid">
-                    <Radio.Button value="Volunteer">Volunteer</Radio.Button>
-                    <Radio.Button value="Admin">Admin</Radio.Button>
+                    <Radio.Button
+                      value="Volunteer"
+                      onClick={() => setRole(AUTH_ROLES.VOLUNTEER_ROLE)}
+                    >
+                      Volunteer
+                    </Radio.Button>
+                    <Radio.Button value="Admin" onClick={() => setRole(AUTH_ROLES.ADMIN_ROLE)}>
+                      Admin
+                    </Radio.Button>
                   </Radio.Group>
                 </Form.Item>
 
@@ -201,7 +251,7 @@ function Login() {
                 </Form.Item>
               </Form>
 
-              <Button onClick={signUp} style={{ display: 'block', width: '100%' }} type="primary">
+              <Button onClick={signUp} style={{ display: 'block', width: '100%' }} type="button">
                 Sign Up
               </Button>
               <Button onClick={googleSignUp} style={{ display: 'block', width: '100%' }}>
@@ -232,4 +282,8 @@ function Login() {
   );
 }
 
-export default Login;
+Login.propTypes = {
+  cookies: instanceOf(Cookies).isRequired,
+};
+
+export default withCookies(Login);

@@ -7,7 +7,7 @@ import GeneralInfo from '../components/create-account/GeneralInfo';
 import DuiAndCrimHis from '../components/create-account/DuiAndCrimHis';
 import RolesAndSkills from '../components/create-account/RolesAndSkills';
 import WeeklyInfo from '../components/create-account/WeeklyInfo';
-// import { AFCBackend } from '../util/utils';
+import { AFCBackend } from '../util/utils';
 
 const CreateAccount = () => {
   const [formStep, setFormStep] = useState(0);
@@ -147,14 +147,14 @@ const CreateAccount = () => {
   };
 
   // TODO: backend connection once auth is finalized
-  const onSubmit = values => {
+  const onSubmit = async values => {
     try {
       const languages = buildLanguagesArray(values);
-
       const payload = {
+        userId: '69',
         firstName: values.firstName,
         lastName: values.lastName,
-        role: values.role,
+        role: 'volunteer',
         organization: values.organization,
         birthdate: values.birthdate,
         email: values.email,
@@ -186,7 +186,7 @@ const CreateAccount = () => {
         availabilities: availability,
       };
       console.log(payload);
-      // await AFCBackend.post('/users/', payload);
+      await AFCBackend.post('/users/', payload);
     } catch (e) {
       console.log(e.message);
     }

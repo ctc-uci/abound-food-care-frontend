@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { CookiesProvider } from 'react-cookie';
 import './App.css';
 import { Layout } from 'antd';
 
@@ -26,7 +27,7 @@ function App() {
   const { width } = useViewPort();
   const breakpoint = 720;
   return (
-    <div>
+    <CookiesProvider>
       <Layout>
         <Router>
           {width > breakpoint ? <AdminNavMenu /> : <></>}
@@ -56,7 +57,7 @@ function App() {
           </Content>
         </Router>
       </Layout>
-    </div>
+    </CookiesProvider>
   );
 }
 
