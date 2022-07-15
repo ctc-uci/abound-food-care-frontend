@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { AFCBackend } from '../../util/utils';
 
-const uploadBoxPhoto = async file => {
+const uploadWaiver = async file => {
   // get S3 upload url from server
   const { data: uploadUrl } = await AFCBackend.get(`/s3Upload`);
   // upload image directly to S3 bucket
@@ -15,4 +15,4 @@ const uploadBoxPhoto = async file => {
   return imageUrl;
 };
 
-export default uploadBoxPhoto;
+export default uploadWaiver;
