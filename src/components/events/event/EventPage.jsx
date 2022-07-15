@@ -357,9 +357,6 @@ const EventPage = () => {
                   </Button>
                 </a>
               )}
-              <p style={{ fontFamily: 'AvenirNextLTProBold', fontSize: '14px', color: '#888888' }}>
-                Not yet implemented
-              </p>
             </div>
           </div>
           <div
