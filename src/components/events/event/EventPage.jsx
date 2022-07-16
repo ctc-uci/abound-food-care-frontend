@@ -433,11 +433,14 @@ const EventPage = () => {
                   marginTop: '2.5em',
                 }}
               >
-                <p className="header" style={{ paddingLeft: '1em' }}>
+                <p
+                  className="header"
+                  style={{ paddingLeft: '1em', paddingTop: '0.5rem', paddingBottom: '0.5rem' }}
+                >
                   Requirements
                 </p>
                 <Divider style={{ padding: 0, margin: 0, marginBottom: '1em' }} />
-                <div style={{ paddingLeft: '2em', paddingBottom: '1em' }}>
+                <div style={{ paddingLeft: '2em', paddingBottom: '1.5rem' }}>
                   <Space direction="vertical">
                     {eventData.requirements.map((e, i) => {
                       return (
