@@ -199,13 +199,13 @@ const EventPage = () => {
               display: 'flex',
               flexDirection: 'column',
               marginLeft: '5%',
-              marginTop: '1.5em',
+              marginTop: '0.75rem',
             }}
           >
             <div
               style={{
                 backgroundColor: 'white',
-                height: '4rem',
+                height: '2.5rem',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
@@ -217,41 +217,11 @@ const EventPage = () => {
                   fontWeight: 500,
                   fontSize: '16px',
                   color: '#888888',
-                  paddingTop: '0.25rem',
                   margin: 0,
                 }}
               >
                 {eventData.eventType ? eventData.eventType : 'General Event'}
               </p>
-              {/* <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                <p
-                  style={{
-                    fontFamily: 'AvenirNextLTProBold',
-                    fontSize: '15px',
-                    color: '#000000',
-                    padding: 0,
-                    margin: 0,
-                    paddingRight: '1.5em',
-                  }}
-                >
-                  {numAttendees || 0}/{eventData.volunteerCapacity} Volunteers Signed Up
-                </p>
-                <button
-                  type="button"
-                  style={{
-                    backgroundColor: 'transparent',
-                    border: 'none',
-                    padding: 0,
-                    margin: 0,
-                    fontSize: '13px',
-                    cursor: 'pointer',
-                    color: '#115740',
-                  }}
-                  onClick={() => setViewVolunteers(true)}
-                >
-                  View Volunteers
-                </button>
-              </div> */}
             </div>
             <div
               style={{
@@ -472,7 +442,7 @@ const EventPage = () => {
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'flex-start',
-                  marginTop: '2.5em',
+                  marginTop: '3.75em',
                 }}
               >
                 <p
