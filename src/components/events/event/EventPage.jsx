@@ -116,7 +116,7 @@ const EventPage = () => {
             flexDirection: 'column',
             justifyContent: 'space-between',
             backgroundColor: 'white',
-            marginTop: '2em',
+            marginTop: '4rem',
           }}
         >
           <p className="header">Additional Notes</p>
@@ -205,7 +205,7 @@ const EventPage = () => {
             <div
               style={{
                 backgroundColor: 'white',
-                height: '4.5em',
+                height: '4rem',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
@@ -257,8 +257,8 @@ const EventPage = () => {
               style={{
                 position: 'relative',
                 backgroundColor: 'white',
-                marginTop: '4em',
-                height: '10em',
+                marginTop: '4rem',
+                height: '7rem',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
@@ -335,7 +335,7 @@ const EventPage = () => {
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 backgroundColor: 'white',
-                marginTop: '4em',
+                marginTop: '2.5rem',
                 height: '6em',
               }}
             >
