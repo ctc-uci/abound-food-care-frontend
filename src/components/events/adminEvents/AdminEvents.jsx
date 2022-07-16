@@ -250,10 +250,16 @@ const AdminEvents = () => {
                 </Link>
               </div>
             </Card>
-            <div className="events-grid">
-              {/* {width > breakpoint ? ( */}
-              <Row className="event-card-row">{renderEventsGrid(eventsData)}</Row>
-            </div>
+            {eventsData.length > 0 ? (
+              <div className="events-grid">
+                {/* {width > breakpoint ? ( */}
+                <Row className="event-card-row">{renderEventsGrid(eventsData)}</Row>
+              </div>
+            ) : (
+              <Card className="card">
+                There are no events. Select <b>Create an Event</b> to make one!
+              </Card>
+            )}
           </>
         )}
       </div>
