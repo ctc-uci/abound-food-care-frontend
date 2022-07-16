@@ -6,7 +6,7 @@ import { AFCBackend } from '../../../util/utils';
 import EventCard from '../event/EventCard';
 import EventList from '../event/EventList';
 import useViewPort from '../../../common/useViewPort';
-import './adminEvents.css';
+import styles from './adminEvents.module.css';
 import 'antd/dist/antd.variable.min.css';
 import 'antd/dist/antd.less';
 
@@ -138,7 +138,7 @@ const AdminEvents = () => {
       <div>
         <Link to="/events/create">
           <Button
-            className="mobile-new-event-btn"
+            className={styles['mobile-new-event-btn']}
             type="primary"
             icon={<PlusOutlined />}
             size="large"
@@ -157,7 +157,7 @@ const AdminEvents = () => {
     return (
       <Input
         prefix={<SearchOutlined style={{ color: '#BFBFBF' }} />}
-        className="mobile-search-bar"
+        className={styles['mobile-search-bar']}
         size="large"
         placeholder="Search by event name, date, ..."
         onPressEnter={onSearch}
@@ -194,28 +194,28 @@ const AdminEvents = () => {
 
   const renderAdminEventsView = () => {
     return (
-      <div className="events">
+      <div className={styles.events}>
         {loading && <div>Loading...</div>}
         {!loading && (
           <>
-            <Title level={1} className="title">
+            <Title level={1} className={styles.title}>
               Events
             </Title>
-            <Card className="card">
+            <Card className={styles.card}>
               <Input
                 prefix={<SearchOutlined style={{ color: '#BFBFBF' }} />}
-                className="search-bar"
+                className={styles['search-bar']}
                 size="large"
                 placeholder="Search events by name"
                 onPressEnter={onSearch}
                 onChange={onChange}
                 allowClear
               />
-              <div className="filters">
+              <div className={styles.filters}>
                 <span>
                   Event Type:
                   <Radio.Group
-                    className="event-type-radio"
+                    className={styles['event-type-radio']}
                     defaultValue="all"
                     onChange={onTypeChange}
                     value={eventTypeValue}
@@ -223,10 +223,11 @@ const AdminEvents = () => {
                     buttonStyle="solid"
                   >
                     <Radio.Button value="all">All</Radio.Button>
-                    <Radio.Button className="distribution-radio-btn" value="distribution">
+                    {/* TODO Add functionality to map types to buttons instead of hardcoding */}
+                    <Radio.Button className={styles['distribution-radio-btn']} value="distribution">
                       Distributions
                     </Radio.Button>
-                    <Radio.Button className="food-radio-btn" value="food">
+                    <Radio.Button className={styles['food-radio-btn']} value="food">
                       Food Running
                     </Radio.Button>
                     <Radio.Button value="other">Other</Radio.Button>
@@ -235,7 +236,7 @@ const AdminEvents = () => {
                 <span>
                   Event Status:
                   <Radio.Group
-                    className="status-type-radio"
+                    className={styles['status-type-radio']}
                     options={eventStatusOptions}
                     onChange={onStatusChange}
                     value={eventStatusValue}
@@ -244,19 +245,19 @@ const AdminEvents = () => {
                   />
                 </span>
                 <Link to="/events/create">
-                  <Button className="new-event-btn" type="primary">
+                  <Button className={styles['new-event-btn']} type="primary">
                     Create New Event
                   </Button>
                 </Link>
               </div>
             </Card>
             {eventsData.length > 0 ? (
-              <div className="events-grid">
+              <div className={styles['events-grid']}>
                 {/* {width > breakpoint ? ( */}
-                <Row className="event-card-row">{renderEventsGrid(eventsData)}</Row>
+                <Row className={styles['event-card-row']}>{renderEventsGrid(eventsData)}</Row>
               </div>
             ) : (
-              <Card className="card">
+              <Card className={styles.card}>
                 There are no events. Select <b>Create an Event</b> to make one!
               </Card>
             )}

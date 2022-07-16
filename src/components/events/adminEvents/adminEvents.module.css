@@ -7,6 +7,11 @@
   font-family: 'Inter-SemiBold';
   src: url('../../../assets/fonts/Inter-SemiBold.ttf');
 }
+/* TODO Standardize font globals */
+@font-face {
+  font-family: "Avenir Next LT Pro";
+  src: url('../../../assets/fonts/AvenirNextLTProRegular.otf');;
+}
 
 .root {
   max-height: 100vh;
@@ -16,6 +21,7 @@
 
 .title {
   margin-left: 17px;
+  font-family: "Avenir Next LT Pro";
 }
 
 .events {
