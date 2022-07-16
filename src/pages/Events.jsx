@@ -1,5 +1,5 @@
 import React from 'react';
-import AdminEvents from '../components/events/adminEvent/AdminEvents';
+import AdminEvents from '../components/events/adminEvents/AdminEvents';
 import 'antd/dist/antd.css';
 
 function Events() {
