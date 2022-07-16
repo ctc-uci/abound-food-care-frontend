@@ -217,13 +217,13 @@ const EventPage = () => {
                   fontWeight: 500,
                   fontSize: '16px',
                   color: '#888888',
-                  padding: 0,
+                  paddingTop: '0.25rem',
                   margin: 0,
                 }}
               >
                 {eventData.eventType ? eventData.eventType : 'General Event'}
               </p>
-              <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+              {/* <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                 <p
                   style={{
                     fontFamily: 'AvenirNextLTProBold',
@@ -251,7 +251,7 @@ const EventPage = () => {
                 >
                   View Volunteers
                 </button>
-              </div>
+              </div> */}
             </div>
             <div
               style={{
@@ -362,6 +362,7 @@ const EventPage = () => {
           <div
             style={{
               width: '25%',
+              minWidth: '265px',
               height: '50em',
               display: 'flex',
               flexDirection: 'column',
@@ -378,6 +379,38 @@ const EventPage = () => {
                 alignItems: 'center',
               }}
             >
+              <div
+                style={{
+                  paddingLeft: '0.1em',
+                }}
+              >
+                <p
+                  style={{
+                    fontFamily: 'AvenirNextLTProBold',
+                    fontSize: '15px',
+                    color: '#000000',
+                    margin: 0,
+                    paddingRight: '1.2em',
+                  }}
+                >
+                  {numAttendees || 0}/{eventData.volunteerCapacity} Signed Up
+                </p>
+                <button
+                  type="button"
+                  style={{
+                    backgroundColor: 'transparent',
+                    border: 'none',
+                    padding: 0,
+                    margin: 0,
+                    fontSize: '13px',
+                    cursor: 'pointer',
+                    color: '#115740',
+                  }}
+                  onClick={() => setViewVolunteers(true)}
+                >
+                  View Volunteers
+                </button>
+              </div>
               {Date.parse(eventData.startDatetime) < new Date() ? (
                 <Button
                   style={{
@@ -397,6 +430,7 @@ const EventPage = () => {
                 Date.parse(eventData.startDatetime) >= new Date() && (
                   <Button
                     style={{
+                      height: '45px',
                       width: '9em',
                       display: 'flex',
                       alignItems: 'center',
@@ -405,7 +439,15 @@ const EventPage = () => {
                     type="primary"
                     onClick={() => navigate(`/events/edit/${eventId}`)}
                   >
-                    <p style={{ padding: 0, margin: 0, fontSize: '14px' }}>Edit Event</p>
+                    <p
+                      style={{
+                        padding: 0,
+                        margin: 0,
+                        fontSize: '14px',
+                      }}
+                    >
+                      Edit Event
+                    </p>
                   </Button>
                 )
               )}
