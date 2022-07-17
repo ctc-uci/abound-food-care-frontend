@@ -1,16 +1,17 @@
 import { React, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Input, Button, Radio, Row, Col, Card, Typography, ConfigProvider } from 'antd';
+import { Input, Button, Radio, Row, Col, Card, ConfigProvider } from 'antd';
 import { FilterOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { AFCBackend } from '../../../util/utils';
 import EventCard from '../event/EventCard';
 import EventList from '../event/EventList';
+import AddEventTypeModal from '../createEvent/AddEventTypeModal';
 import useViewPort from '../../../common/useViewPort';
 import styles from './adminEvents.module.css';
 import 'antd/dist/antd.variable.min.css';
 import 'antd/dist/antd.less';
 
-const { Title } = Typography;
+// const { Title } = Typography;
 
 ConfigProvider.config({
   theme: {
@@ -25,6 +26,20 @@ const AdminEvents = () => {
   const [eventsData, setEventsData] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
+  const [showEventTypeModal, setShowEventTypeModal] = useState(false);
+
+  const defaultEventTypes = [
+    {
+      name: 'Distribution',
+      description:
+        'Events where volunteers assist in distributing food - duties may include loading cars, taking data, packaging produce & meal, and traffic.',
+    },
+    {
+      name: 'Food Running',
+      description: 'Events where volunteers transport food safely from donor to recipient.',
+    },
+  ];
+  const [eventTypes, setEventTypes] = useState(defaultEventTypes);
 
   const { width } = useViewPort();
   const breakpoint = 720;
@@ -198,10 +213,11 @@ const AdminEvents = () => {
         {loading && <div>Loading...</div>}
         {!loading && (
           <>
-            <Title level={1} className={styles.title}>
-              Events
-            </Title>
             <Card className={styles.card}>
+              {/* <Title level={1} className={styles.title}>
+                Events
+              </Title> */}
+              <div className={styles.title}>Events</div>
               <Input
                 prefix={<SearchOutlined style={{ color: '#BFBFBF' }} />}
                 className={styles['search-bar']}
@@ -211,6 +227,8 @@ const AdminEvents = () => {
                 onChange={onChange}
                 allowClear
               />
+            </Card>
+            <Card className={styles['filter-card']}>
               <div className={styles.filters}>
                 <span>
                   Event Type:
@@ -244,11 +262,26 @@ const AdminEvents = () => {
                     buttonStyle="solid"
                   />
                 </span>
+                <Button
+                  className={styles['new-event-type-btn']}
+                  type="default"
+                  onClick={() => {
+                    setShowEventTypeModal(true);
+                  }}
+                >
+                  New Event Type
+                </Button>
                 <Link to="/events/create">
                   <Button className={styles['new-event-btn']} type="primary">
-                    Create New Event
+                    New Event
                   </Button>
                 </Link>
+                <AddEventTypeModal
+                  addVisible={showEventTypeModal}
+                  setAddVisible={setShowEventTypeModal}
+                  eventsData={eventTypes}
+                  setEventsData={setEventTypes}
+                />
               </div>
             </Card>
             {eventsData.length > 0 ? (

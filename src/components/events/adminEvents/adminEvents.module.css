@@ -21,7 +21,10 @@
 
 .title {
   margin-left: 17px;
+  margin-bottom: 20px;
   font-family: "Avenir Next LT Pro";
+  font-size: 20px;
+  font-weight: bold;
 }
 
 .events {
@@ -37,12 +40,19 @@
   border-radius: 5px;
 }
 
+.filter-card {
+  margin: 15px;
+  margin-top: 25px;
+  border-radius: 5px;
+}
+
 .search-bar {
   width: 750px;
+  margin-left: 15%;
 }
 
 .filters {
-  margin: 40px 5px 20px;
+  margin: 7px 5px;
 }
 
 .distribution-radio-btn {
@@ -71,8 +81,21 @@
   background-color: var(--eden);
   border-color: var(--eden);
   color: white;
-  font-weight: 600;
-  margin-top: 15px;
+  font-weight: 400;
+  margin-top: 10px;
+  float: right;
+}
+
+.new-event-type-btn,
+.new-event-type-btn:hover,
+.new-event-type-btn:focus {
+  background-color: white;
+  border-color: var(--eden);
+  color: var(--eden);
+  font-weight: 400;
+  margin-top: 10px;
+  margin-left: 15px;
+  margin-right: 5px;
   float: right;
 }
 
