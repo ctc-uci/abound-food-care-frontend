@@ -1,12 +1,5 @@
 @import '~antd/dist/antd.variable.min.css';
-@font-face {
-  font-family: 'Inter-Regular';
-  src: url('../../../assets/fonts/Inter-Regular.ttf');
-}
-@font-face {
-  font-family: 'Inter-SemiBold';
-  src: url('../../../assets/fonts/Inter-SemiBold.ttf');
-}
+@import '../../../common/global.css';
 
 .event-card {
   margin: 10px;

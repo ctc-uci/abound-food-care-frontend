@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css';
 import { Layout } from 'antd';
+import './common/global.css';
 
 // Pages
 import Login from './pages/Login';
@@ -20,9 +20,7 @@ import EventSignUp from './pages/EventSignUp';
 import VolunteerDashboard from './pages/VolunteerDashboard';
 // import VolunteerNavMenu from './components/navigation/VolunteerNavMenu';
 
-const { Content } = Layout;
-
-function App() {
+const App = () => {
   const { width } = useViewPort();
   const breakpoint = 720;
   return (
@@ -30,14 +28,7 @@ function App() {
       <Layout>
         <Router>
           {width > breakpoint ? <AdminNavMenu /> : <></>}
-          <Content
-            className="site-background"
-            style={{
-              padding: 24,
-              margin: 0,
-              minHeight: 280,
-            }}
-          >
+          <div className="site-background">
             <Routes>
               <Route path="/" exact element={<Login />} />
               <Route path="/users/create" exact element={<CreateAccount />} />
@@ -53,11 +44,11 @@ function App() {
               <Route path="/profile" exact element={<Profile />} />
               <Route path="/waivers" exact element={<Waivers />} />
             </Routes>
-          </Content>
+          </div>
         </Router>
       </Layout>
     </div>
   );
-}
+};
 
 export default App;
