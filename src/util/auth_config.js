@@ -1,7 +1,7 @@
 // Sample roles, feel free to change
 const AUTH_ROLES = {
-  ADMIN_ROLE: 'Admin',
-  VOLUNTEER_ROLE: 'Volunteer',
+  ADMIN_ROLE: 'admin',
+  VOLUNTEER_ROLE: 'volunteer',
 };
 
 export default { AUTH_ROLES };
