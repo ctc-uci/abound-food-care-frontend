@@ -27,12 +27,44 @@ const EventVolunteerList = ({ name, type, eventId, setViewVolunteers }) => {
         volunteerData.push(user);
       }
     });
+
+    const { data: eventWaivers } = await AFCBackend.get(`waivers/${eventId}`);
+    for (let i = 0; i < eventWaivers.length; i += 1) {
+      const waiver = eventWaivers[i];
+      if (waiver.userId) {
+        const matchingVolunteer = volunteerData.find(volunteer => {
+          return volunteer.userId === waiver.userId;
+        });
+        matchingVolunteer.waiver = waiver.link;
+      }
+    }
+
     setVolunteers(volunteerData);
     setEmail(emailM);
   };
 
-  useEffect(() => {
-    getUserData();
+  // const getVolunteerWaivers = async () => {
+  //   // match uploaded waivers to volunteers
+  //   const { data: eventWaivers } = await AFCBackend.get(`waivers/${eventId}`);
+  //   console.log('waivers', eventWaivers);
+  //   console.log('volunteers', volunteers);
+
+  //   for (let i = 0; i < eventWaivers.length; i += 1) {
+  //     const waiver = eventWaivers[i];
+  //     if (waiver.userId) {
+  //       console.log('waiver', waiver);
+  //       const matchingVolunteer = volunteers.find(volunteer => {
+  //         return volunteer.userId === waiver.userId;
+  //       });
+  //       console.log('matching', matchingVolunteer);
+  //       matchingVolunteer.waiver = waiver.link;
+  //     }
+  //   }
+  // };
+
+  useEffect(async () => {
+    await getUserData();
+    // await getVolunteerWaivers();
     setIsLoading(false);
   }, []);
 
@@ -67,10 +99,10 @@ const EventVolunteerList = ({ name, type, eventId, setViewVolunteers }) => {
       title: 'Waiver',
       dataIndex: 'waiver',
       key: 'waiver',
-      render: () => {
+      render: waiver => {
         return (
           // TODO: add waiver functionality, remove email href
-          <a style={{ color: '#115740' }} href={email}>
+          <a style={{ color: '#115740' }} href={waiver} download>
             Download
           </a>
         );
