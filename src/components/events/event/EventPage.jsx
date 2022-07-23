@@ -312,7 +312,18 @@ const EventPage = () => {
               <p className="header">Waivers</p>
               {/* TODO Multiple waiver downloads; currently, only single waiver download button */}
               {eventData.waivers && eventData.waivers.length > 0 && (
-                <a href={eventData.waivers[0].link} download={eventData.waivers[0].name}>
+                <a
+                  href={
+                    eventData.waivers.filter(waiver => {
+                      return waiver.userId !== null;
+                    })[0].link
+                  }
+                  download={
+                    eventData.waivers.filter(waiver => {
+                      return waiver.userId !== null;
+                    })[0].name
+                  }
+                >
                   <Button
                     style={{
                       width: '13em',
