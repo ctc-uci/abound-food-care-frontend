@@ -8,7 +8,7 @@ import GeneralInfo from '../../components/create-account/GeneralInfo/GeneralInfo
 import DuiAndCrimHis from '../../components/create-account/DuiAndCrimHis/DuiAndCrimHis';
 import RolesAndSkills from '../../components/create-account/RolesAndSkills/RolesAndSkills';
 import WeeklyInfo from '../../components/create-account/WeeklyInfo/WeeklyInfo';
-import { AFCBackend } from '../../util/utils';
+import { AFCBackend, phoneRegExp, zipRegExp } from '../../util/utils';
 
 import styles from './CreateAccount.module.css';
 
@@ -22,10 +22,6 @@ const CreateAccount = ({ setPageState, firstName, lastName, email }) => {
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
   };
-
-  const phoneRegExp =
-    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
-  const zipRegExp = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
 
   const schema = yup.object({
     firstName: yup.string().required('First name is a required field'),
@@ -155,40 +151,7 @@ const CreateAccount = ({ setPageState, firstName, lastName, email }) => {
   const onSubmit = async values => {
     const languages = buildLanguagesArray(values);
 
-    const payload = {
-      firstName: values.firstName,
-      lastName: values.lastName,
-      role: values.role,
-      organization: values.organization,
-      birthdate: values.birthdate,
-      email: values.email,
-      phone: values.phone,
-      preferredContactMethod: values.preferredContactMethod,
-      addressStreet: values.addressStreet,
-      addressZip: values.addressZip,
-      addressCity: values.addressCity,
-      addressState: values.addressState,
-      weightLiftingAbility: values.weightLiftingAbility,
-      criminalHistory: values.criminalHistory,
-      criminalHistoryDetails: values.criminalHistoryDetails,
-      duiHistory: values.duiHistory,
-      duiHistoryDetails: values.duiHistoryDetails,
-      completedChowmatchTraining: values.completedChowmatchTraining,
-      foodRunsInterest: values.foodRunsInterest,
-      distributionInterest: values.distributionInterest,
-      canDrive: values.canDrive,
-      willingToDrive: values.willingToDrive,
-      vehicleType: values.vehicleType,
-      distance: values.distance,
-      firstAidTraining: values.firstAidTraining,
-      serveSafeKnowledge: values.serveSafeKnowledge,
-      transportationExperience: values.transportationExperience,
-      movingWarehouseExperience: values.movingWarehouseExperience,
-      foodServiceIndustryKnowledge: values.foodServiceIndustryKnowledge,
-      languages,
-      additionalInformation: values.additionalInformation,
-      availabilities: availability,
-    };
+    const payload = { ...values, languages, availabilities: availability };
     await AFCBackend.post('/users/', payload);
   };
 
