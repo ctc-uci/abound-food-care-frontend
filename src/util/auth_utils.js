@@ -11,13 +11,13 @@ import {
   sendPasswordResetEmail,
   confirmPasswordReset,
   applyActionCode,
+  deleteUser,
 } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { cookieKeys, cookieConfig, clearCookies } from './cookie_utils';
+import { AFCBackend } from './utils';
 
 import AUTH_ROLES from './auth_config';
-
-const { USER_ROLE } = AUTH_ROLES.AUTH_ROLES;
 
 // Using Firebase Web version 9
 const firebaseConfig = {
@@ -31,12 +31,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-
-// TEMP: Make sure to remove
-const NPOBackend = axios.create({
-  baseURL: 'http://localhost:3001',
-  withCredentials: true,
-});
 
 const refreshUrl = `https://securetoken.googleapis.com/v1/token?key=${process.env.REACT_APP_FIREBASE_APIKEY}`;
 
@@ -88,8 +82,9 @@ const refreshToken = async () => {
     });
     // Sets the appropriate cookies after refreshing access token
     setCookie(cookieKeys.ACCESS_TOKEN, idToken, cookieConfig);
-    const user = await NPOBackend.get(`/users/${auth.currentUser.uid}`);
-    setCookie(cookieKeys.ROLE, user.data.user.role, cookieConfig);
+    const user = await AFCBackend.get(`/users/${auth.currentUser.uid}`);
+    setCookie(cookieKeys.ROLE, user.data.role, cookieConfig);
+    setCookie(cookieKeys.USER_ID, user.data.userId, cookieConfig);
     return idToken;
   }
   return null;
@@ -106,9 +101,9 @@ const refreshToken = async () => {
 const createUserInDB = async (email, userId, role, signUpWithGoogle, password = null) => {
   try {
     if (signUpWithGoogle) {
-      await NPOBackend.post('/users/create', { email, userId, role, registered: false });
+      await AFCBackend.post('/users/create', { email, userId, role, registered: false });
     } else {
-      await NPOBackend.post('/users/create', { email, userId, role, registered: true });
+      await AFCBackend.post('/users/create', { email, userId, role, registered: true });
     }
   } catch (err) {
     // Since this route is called after user is created in firebase, if this
@@ -136,11 +131,16 @@ const signInWithGoogle = async (newUserRedirectPath, defaultRedirectPath, naviga
   const newUser = getAdditionalUserInfo(userCredential).isNewUser;
   cookies.set(cookieKeys.ACCESS_TOKEN, auth.currentUser.accessToken, cookieConfig);
   if (newUser) {
-    await createUserInDB(auth.currentUser.email, userCredential.user.uid, USER_ROLE, true);
-    cookies.set(cookieKeys.ROLE, USER_ROLE, cookieConfig);
+    await createUserInDB(
+      auth.currentUser.email,
+      userCredential.user.uid,
+      AUTH_ROLES.USER_ROLE,
+      true,
+    );
+    cookies.set(cookieKeys.ROLE, AUTH_ROLES.USER_ROLE, cookieConfig);
     navigate(newUserRedirectPath);
   } else {
-    const user = await NPOBackend.get(`/users/${auth.currentUser.uid}`);
+    const user = await AFCBackend.get(`/users/${auth.currentUser.uid}`);
     cookies.set(cookieKeys.ROLE, user.data.user.role, cookieConfig);
     if (!user.data.user.registered) {
       navigate(newUserRedirectPath);
@@ -158,7 +158,7 @@ const signInWithGoogle = async (newUserRedirectPath, defaultRedirectPath, naviga
  * @param {hook} navigate used to redirect the user after submitted
  */
 const finishGoogleLoginRegistration = async (redirectPath, navigate) => {
-  await NPOBackend.put(`/users/update/${auth.currentUser.uid}`);
+  await AFCBackend.put(`/users/update/${auth.currentUser.uid}`);
   navigate(redirectPath);
 };
 
@@ -173,14 +173,10 @@ const finishGoogleLoginRegistration = async (redirectPath, navigate) => {
  */
 const logInWithEmailAndPassword = async (email, password, redirectPath, navigate, cookies) => {
   await signInWithEmailAndPassword(auth, email, password);
-  // Check if the user has verified their email.
-  // if (!auth.currentUser.emailVerified) {
-  //   throw new Error('Please verify your email before logging in.');
-  // }
   cookies.set(cookieKeys.ACCESS_TOKEN, auth.currentUser.accessToken, cookieConfig);
-  // const user = await NPOBackend.get(`/users/${auth.currentUser.uid}`);
-  // cookies.set(cookieKeys.ROLE, user.data.user.role, cookieConfig);
-  console.log(auth.currentUser);
+  const user = await AFCBackend.get(`/users/${auth.currentUser.uid}`);
+  cookies.set(cookieKeys.ROLE, user.data.role, cookieConfig);
+  cookies.set(cookieKeys.USER_ID, user.data.userId, cookieConfig);
   navigate(redirectPath);
 };
 
@@ -202,9 +198,9 @@ const createUserInFirebase = async (email, password) => {
  * @param {string} role
  * @returns A UserCredential object from firebase
  */
-const createUser = async (email, password, role) => {
-  await createUserInFirebase(email, password);
-  console.log(role);
+const createUser = async (email, password) => {
+  const user = await createUserInFirebase(email, password);
+  return user;
 };
 
 /**
@@ -215,9 +211,9 @@ const createUser = async (email, password, role) => {
  * @param {hook} navigate An instance of the useNavigate hook from react-router-dom
  * @param {string} redirectPath path to redirect users once logged in
  */
-const registerWithEmailAndPassword = async (email, password, role, navigate, redirectPath) => {
-  await createUser(email, password, role);
-  navigate(redirectPath);
+const registerWithEmailAndPassword = async (email, password, role) => {
+  const user = await createUser(email, password, role);
+  return user;
 };
 
 /**
@@ -322,14 +318,15 @@ const addAuthInterceptor = axiosInstance => {
   );
 };
 
-// to be moved where NPOBackend is declared
-addAuthInterceptor(NPOBackend);
+// to be moved where AFCBackend is declared
+addAuthInterceptor(AFCBackend);
 
 export {
-  NPOBackend,
+  AFCBackend,
   auth,
   AUTH_ROLES,
   useNavigate,
+  deleteUser,
   signInWithGoogle,
   logInWithEmailAndPassword,
   registerWithEmailAndPassword,

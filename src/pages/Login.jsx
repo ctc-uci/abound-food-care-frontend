@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { instanceOf } from 'prop-types';
 import 'antd/dist/antd.css';
 import { Card, Divider, Form, Input, Button, Checkbox, Radio } from 'antd';
 import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
 
 import {
-  // AUTH_ROLES,
+  auth,
+  AUTH_ROLES,
   logInWithEmailAndPassword,
-  registerWithEmailAndPassword,
   useNavigate,
+  getCurrentUser,
 } from '../util/auth_utils';
 import { Cookies, withCookies } from '../util/cookie_utils';
 import { ReactComponent as AboundSignature } from '../Abound_Signature.svg';
@@ -16,6 +17,15 @@ import { ReactComponent as AboundSignature } from '../Abound_Signature.svg';
 import CreateAccount from './CreateAccount/CreateAccount';
 
 function Login({ cookies }) {
+  const navigate = useNavigate();
+
+  useEffect(async () => {
+    const user = await getCurrentUser(auth);
+    if (user !== null) {
+      navigate('/');
+    }
+  }, []);
+
   const [pageState, setPageState] = useState('login');
   const [registerFirstName, setRegisterFirstName] = useState('');
   const [registerLastName, setRegisterLastName] = useState('');
@@ -30,10 +40,7 @@ function Login({ cookies }) {
 
   const [registerPassword, setRegisterPassword] = useState('');
 
-  const [role, setRole] = useState('');
-
-  console.log(setRole);
-  const navigate = useNavigate();
+  const [role, setRole] = useState(AUTH_ROLES.VOLUNTEER_ROLE);
 
   const forgotPassword = () => {};
 
@@ -56,7 +63,6 @@ function Login({ cookies }) {
       registerEmail.length > 0
     ) {
       setPageState('createPage');
-      await registerWithEmailAndPassword(registerEmail, registerPassword, role, navigate, '/');
     } else {
       setErrorMessage("Inputs can't be empty.");
     }
@@ -71,6 +77,9 @@ function Login({ cookies }) {
           firstName={registerFirstName}
           lastName={registerLastName}
           email={registerEmail}
+          password={registerPassword}
+          role={role}
+          navigate={navigate}
         />
       ) : (
         <Card
@@ -138,18 +147,6 @@ function Login({ cookies }) {
                           prefix={<LockOutlined style={{ color: '#009A44' }} />}
                           onChange={e => setLoginPassword(e.target.value)}
                           value={loginPassword}
-                        />
-                      </Form.Item>
-
-                      <Form.Item
-                        name="password"
-                        rules={[{ required: true, message: 'Please input your password!' }]}
-                      >
-                        <Input.Password
-                          placeholder="Password"
-                          prefix={
-                            <LockOutlined style={{ color: '#009A44', paddingRight: '13px' }} />
-                          }
                         />
                       </Form.Item>
 
@@ -292,9 +289,13 @@ function Login({ cookies }) {
                       </Form.Item>
 
                       <Form.Item label="Role" name="role">
-                        <Radio.Group defaultValue="Volunteer" buttonStyle="solid">
-                          <Radio.Button value="Volunteer">Volunteer</Radio.Button>
-                          <Radio.Button value="Admin">Admin</Radio.Button>
+                        <Radio.Group
+                          defaultValue={AUTH_ROLES.VOLUNTEER_ROLE}
+                          onChange={e => setRole(e.target.value)}
+                          buttonStyle="solid"
+                        >
+                          <Radio.Button value={AUTH_ROLES.VOLUNTEER_ROLE}>Volunteer</Radio.Button>
+                          <Radio.Button value={AUTH_ROLES.ADMIN_ROLE}>Admin</Radio.Button>
                         </Radio.Group>
                       </Form.Item>
                       <Form.Item name="TOSPP" valuePropName="checked">

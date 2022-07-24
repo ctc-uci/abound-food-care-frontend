@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Button, Steps } from 'antd';
+import { Form, Button, Steps, Typography } from 'antd';
 import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -10,13 +10,18 @@ import RolesAndSkills from '../../components/create-account/RolesAndSkills/Roles
 import WeeklyInfo from '../../components/create-account/WeeklyInfo/WeeklyInfo';
 import { AFCBackend } from '../../util/utils';
 
+import { registerWithEmailAndPassword } from '../../util/auth_utils';
+
 import styles from './CreateAccount.module.css';
+
+const { Text } = Typography;
 
 const { Step } = Steps;
 
-const CreateAccount = ({ setPageState, firstName, lastName, email }) => {
+const CreateAccount = ({ setPageState, firstName, lastName, email, password, role, navigate }) => {
   const [formStep, setFormStep] = useState(0);
   const [availability, setAvailability] = useState([]);
+  const [missingAvailabilityErrorMessage, setMissingAvailabilityErrorMessage] = useState('');
   const [componentSize, setComponentSize] = useState('default');
 
   const onFormLayoutChange = ({ size }) => {
@@ -30,6 +35,10 @@ const CreateAccount = ({ setPageState, firstName, lastName, email }) => {
   const schema = yup.object({
     firstName: yup.string().required('First name is a required field'),
     lastName: yup.string().required('Last name is a required field'),
+    password: yup
+      .string()
+      .required('Password must be at least 6 characters')
+      .test('len', 'Password must be at least 6 characters', val => val?.length >= 6),
     role: yup.string().required(),
     organization: yup.string().required(),
     birthdate: yup.date().required(),
@@ -75,6 +84,7 @@ const CreateAccount = ({ setPageState, firstName, lastName, email }) => {
     defaultValues: {
       firstName,
       lastName,
+      password,
       role: 'volunteer',
       organization: '',
       birthdate: '',
@@ -86,15 +96,15 @@ const CreateAccount = ({ setPageState, firstName, lastName, email }) => {
       addressCity: '',
       addressState: '',
       weightLiftingAbility: null,
-      criminalHistory: false,
+      criminalHistory: null,
       criminalHistoryDetails: '',
-      duiHistory: false,
+      duiHistory: null,
       duiHistoryDetails: '',
-      completedChowmatchTraining: false,
+      completedChowmatchTraining: null,
       foodRunsInterest: false,
       distributionInterest: false,
-      canDrive: false,
-      willingToDrive: false,
+      canDrive: null,
+      willingToDrive: null,
       vehicleType: '',
       distance: null,
       firstAidTraining: false,
@@ -110,8 +120,33 @@ const CreateAccount = ({ setPageState, firstName, lastName, email }) => {
     delayError: 750,
   });
 
-  const incrementFormStep = () => {
-    setFormStep(cur => cur + 1);
+  const incrementFormStep = async () => {
+    const triggers = {
+      0: [
+        'firstName',
+        'lastName',
+        'password',
+        'organization',
+        'birthdate',
+        'email',
+        'phone',
+        'preferredContactMethod',
+        'addressStreet',
+        'addressCity',
+        'addressState',
+        'addressZip',
+      ],
+      1: [],
+      2: ['weightLiftingAbility', 'canDrive', 'willingToDrive'],
+    };
+    if (formStep === 1 && availability.length === 0) {
+      setMissingAvailabilityErrorMessage('Please select at least one availability slot.');
+      return;
+    }
+    const result = await methods.trigger(triggers[formStep]);
+    if (result) {
+      setFormStep(cur => cur + 1);
+    }
   };
 
   const decrementFormStep = () => {
@@ -151,49 +186,32 @@ const CreateAccount = ({ setPageState, firstName, lastName, email }) => {
     return languages;
   };
 
-  // TODO: backend connection once auth is finalized
   const onSubmit = async values => {
+    const result = await methods.trigger([
+      'duiHistory',
+      'criminalHistory',
+      'completedChowmatchTraining',
+    ]);
+    if (!result) {
+      return;
+    }
     try {
       const languages = buildLanguagesArray(values);
+      const { uid } = await registerWithEmailAndPassword(values.email, values.password, role);
+
       const payload = {
-        userId: '69',
-        firstName: values.firstName,
-        lastName: values.lastName,
-        role: 'volunteer',
-        organization: values.organization,
-        birthdate: values.birthdate,
-        email: values.email,
-        phone: values.phone,
-        preferredContactMethod: values.preferredContactMethod,
-        addressStreet: values.addressStreet,
-        addressZip: values.addressZip,
-        addressCity: values.addressCity,
-        addressState: values.addressState,
-        weightLiftingAbility: values.weightLiftingAbility,
-        criminalHistory: values.criminalHistory,
-        criminalHistoryDetails: values.criminalHistoryDetails,
-        duiHistory: values.duiHistory,
-        duiHistoryDetails: values.duiHistoryDetails,
-        completedChowmatchTraining: values.completedChowmatchTraining,
-        foodRunsInterest: values.foodRunsInterest,
-        distributionInterest: values.distributionInterest,
-        canDrive: values.canDrive,
-        willingToDrive: values.willingToDrive,
-        vehicleType: values.vehicleType,
-        distance: values.distance,
-        firstAidTraining: values.firstAidTraining,
-        serveSafeKnowledge: values.serveSafeKnowledge,
-        transportationExperience: values.transportationExperience,
-        movingWarehouseExperience: values.movingWarehouseExperience,
-        foodServiceIndustryKnowledge: values.foodServiceIndustryKnowledge,
+        ...values,
+        userId: uid,
+        role,
         languages,
-        additionalInformation: values.additionalInformation,
+        email,
         availabilities: availability,
       };
-      console.log(payload);
       await AFCBackend.post('/users/', payload);
+
+      navigate('/');
     } catch (e) {
-      console.log(e.message);
+      console.error(e.message);
     }
   };
 
@@ -216,7 +234,12 @@ const CreateAccount = ({ setPageState, firstName, lastName, email }) => {
           </Steps>
           {formStep >= 0 && (
             <section hidden={formStep !== 0}>
-              <GeneralInfo firstName={firstName} lastName={lastName} email={email} />
+              <GeneralInfo
+                firstName={firstName}
+                lastName={lastName}
+                email={email}
+                password={password}
+              />
               <div>
                 <Button
                   className={styles['login-signup-button']}
@@ -235,6 +258,7 @@ const CreateAccount = ({ setPageState, firstName, lastName, email }) => {
           {formStep >= 1 && (
             <section hidden={formStep !== 1}>
               <WeeklyInfo availability={availability} setAvailability={setAvailability} />
+              <Text type="danger">{missingAvailabilityErrorMessage}</Text>
               <div>
                 <Button className={styles['previous-button']} onClick={decrementFormStep}>
                   Previous
@@ -265,7 +289,10 @@ const CreateAccount = ({ setPageState, firstName, lastName, email }) => {
                 <Button className={styles['previous-button']} onClick={decrementFormStep}>
                   Previous
                 </Button>
-                <Button className={styles['next-button']} htmlType="submit">
+                <Button
+                  className={styles['next-button']}
+                  onClick={() => onSubmit(methods.getValues())}
+                >
                   Finish
                 </Button>
               </div>
@@ -282,6 +309,9 @@ CreateAccount.propTypes = {
   firstName: PropTypes.string.isRequired,
   lastName: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
+  password: PropTypes.string.isRequired,
+  role: PropTypes.string.isRequired,
+  navigate: PropTypes.func.isRequired,
 };
 
 export default CreateAccount;

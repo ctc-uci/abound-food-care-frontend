@@ -9,17 +9,19 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
 } from '@ant-design/icons';
+import { useNavigate } from 'react-router';
+import { instanceOf } from 'prop-types';
+import { Cookies, withCookies } from '../../util/cookie_utils';
 import Logo from '../../assets/Logo.png';
 import './navMenu.css';
+import { logout } from '../../util/auth_utils';
 
 const { Sider } = Layout;
 
-const AdminNavMenu = () => {
+const AdminNavMenu = ({ cookies }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [menuTitle, setMenuTitle] = useState('Abound Food Care');
   const { pathname } = useLocation();
-  // TO-DO: remove console.log before shipping to AFC
-  console.log({ pathname });
   const handleToggle = () => {
     setCollapsed(!collapsed);
     if (!collapsed) {
@@ -29,9 +31,11 @@ const AdminNavMenu = () => {
     }
   };
 
+  const navigate = useNavigate();
+
   return (
     <>
-      {pathname !== '/' && (
+      {pathname !== '/auth' && (
         <div style={{ position: 'relative' }}>
           <Sider
             trigger={null}
@@ -47,7 +51,7 @@ const AdminNavMenu = () => {
             </Link>
             <Menu defaultSelectedKeys={['1']} mode="inline">
               <Menu.Item className="menu-item" key="1" icon={<DashboardOutlined />}>
-                <Link to="/admin" className="link">
+                <Link to="/" className="link">
                   Dashboard
                 </Link>
               </Menu.Item>
@@ -73,6 +77,7 @@ const AdminNavMenu = () => {
                 onClick: handleToggle,
               })}
             </Button>
+            <Button onClick={async () => logout('/auth', navigate, cookies)}> Sign Out </Button>
           </Sider>
         </div>
       )}
@@ -80,4 +85,8 @@ const AdminNavMenu = () => {
   );
 };
 
-export default AdminNavMenu;
+AdminNavMenu.propTypes = {
+  cookies: instanceOf(Cookies).isRequired,
+};
+
+export default withCookies(AdminNavMenu);

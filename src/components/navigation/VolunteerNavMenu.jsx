@@ -43,7 +43,7 @@ const VolunteerNavMenu = () => {
         </Link>
         <Menu defaultSelectedKeys={['1']} inlineCollapsed={collapsed} mode="inline">
           <Menu.Item className="menu-item" key="1" icon={<DashboardOutlined />}>
-            <Link to="/volunteers" className="link">
+            <Link to="/" className="link">
               Dashboard
             </Link>
           </Menu.Item>

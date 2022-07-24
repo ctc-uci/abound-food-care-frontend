@@ -4,4 +4,4 @@ const AUTH_ROLES = {
   VOLUNTEER_ROLE: 'volunteer',
 };
 
-export default { AUTH_ROLES };
+export default AUTH_ROLES;
