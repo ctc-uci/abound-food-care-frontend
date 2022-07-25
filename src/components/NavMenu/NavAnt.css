@@ -1,0 +1,13 @@
+@import '../../common/global.css';
+
+.ant-menu-item-selected {
+  color: var(--eden) !important;
+}
+
+.ant-menu-item-selected a {
+  color: var(--eden) !important;
+}
+
+.ant-menu-item:after {
+  border-right: 3px solid var(--green) !important;
+}

@@ -1,0 +1,69 @@
+@import '../../common/global.css';
+@import '~antd/dist/antd.css';
+
+.side-nav {
+  height: 100vh;
+  background-color: var(--eden);
+  color: white;
+  position: relative;
+}
+
+.collapsed {
+  padding-left: 15px !important;
+}
+
+.menu {
+  background-color: var(--eden);
+  color: white;
+}
+
+.menu-item:hover {
+  background-color: white;
+  color: var(--eden) !important;
+}
+
+.ant-menu-item-selected {
+  color: var(--eden) !important;
+}
+
+.link {
+  color: white !important;
+}
+
+.link:hover {
+  color: var(--eden) !important;
+}
+
+.logo .logo-img {
+  width: 50px;
+  margin: auto;
+  padding: 3%;
+}
+
+.logo {
+  font-weight: bold;
+  color: white;
+  width: 200px;
+  line-height: 50px;
+  margin: auto;
+  padding: 10px;
+}
+
+.logo:hover {
+  cursor: pointer;
+}
+
+.toggle-btn {
+  position: absolute;
+  padding: 50px 25px;
+  width: 75px;
+  bottom: 0;
+  background: none;
+  border: none;
+  color: white;
+}
+
+.toggle-btn:hover {
+  background: none;
+  color: white;
+}

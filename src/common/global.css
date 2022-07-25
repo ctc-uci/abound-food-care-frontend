@@ -1,0 +1,81 @@
+@import '~antd/dist/antd.css';
+@import '~antd/dist/antd.variable.min.css';
+
+@font-face {
+  font-family: 'Inter';
+  src: url('../assets/fonts/Inter-Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Inter Semibold';
+  src: url('../assets/fonts/Inter-SemiBold.ttf');
+}
+
+@font-face {
+  font-family: 'Inter Medium';
+  src: url('../assets/fonts/Inter-Medium.ttf');
+}
+
+@font-face {
+  font-family: 'Avenir';
+  src: url('../assets/fonts/AvenirNextLTProRegular.otf');
+}
+
+@font-face {
+  font-family: 'Avenir Bold';
+  src: url('../assets/fonts/AvenirNextLTProBold.otf');
+}
+
+:root {
+  --apple: #6cc24a;
+  --msu-green: #154734;
+  --eden: #115740;
+  --corn: #f6eb61;
+  --mustard: #eaaa00;
+  --orange: #ff8200;
+  --cherry: #da291c;
+  --green: #009a44;
+  --brown: #a1561c;
+  --purple: #4b384c;
+}
+
+.site-background {
+  background: white;
+  min-height: 100%;
+  width: 100%;
+  padding: 24px;
+  margin: 0;
+}
+
+* {
+  font-family: 'Inter';
+  font-weight: 300;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+  /* -webkit-font-smoothing: subpixel-antialiased; */
+  -moz-osx-font-smoothing: grayscale;
+
+  margin: 0;
+  padding: 0;
+  color: var(--text-color-dark);
+}
+
+input, textarea, button {
+    font-family: inherit;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.normal {
+    font-weight: normal;
+}
+
+.underline {
+    text-decoration: underline;
+}

@@ -1,0 +1,90 @@
+.events {
+  margin: auto;
+  width: 79vw;
+  border-width: 1px;
+  border-radius: 10px;
+  background-color: white;
+}
+
+.card {
+  margin: 15px 5px;
+  border-radius: 5px;
+}
+
+.filter-card {
+  margin: 15px;
+  margin-top: 25px;
+  border-radius: 5px;
+}
+
+.search-bar {
+  width: 750px;
+  margin-left: 15%;
+}
+
+.filters {
+  margin: 7px 5px;
+}
+
+.distribution-radio-btn {
+  border-color: var(--green);
+  color: var(--green);
+  margin-right: 1px;
+  margin-left: 0px;
+}
+
+.food-radio-btn {
+  border-color: var(--mustard);
+  border-left-color: var(--mustard);
+  color: var(--mustard);
+  margin-right: 1px;
+}
+
+.event-type-radio,
+.status-type-radio {
+  margin: 10px;
+}
+
+.new-event-btn,
+.new-event-btn:hover,
+.new-event-btn:focus {
+  background-color: var(--eden);
+  border-color: var(--eden);
+  color: white;
+  font-weight: 400;
+  margin-top: 10px;
+  float: right;
+}
+
+.new-event-type-btn,
+.new-event-type-btn:hover,
+.new-event-type-btn:focus {
+  background-color: white;
+  border-color: var(--eden);
+  color: var(--eden);
+  font-weight: 400;
+  margin-top: 10px;
+  margin-left: 15px;
+  margin-right: 5px;
+  float: right;
+}
+
+.events-grid {
+  max-height: 80vh;
+  overflow-y: scroll;
+  margin: 4px;
+}
+
+.events-grid::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 1050px) {
+  .search-bar {
+    width: 75%;
+  }
+}
+
+.mobile-new-event-btn {
+  margin-bottom: 1em;
+}

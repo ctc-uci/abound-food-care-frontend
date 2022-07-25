@@ -1,9 +1,9 @@
 import React from 'react';
-import 'antd/dist/antd.css';
-import EventPage from '../components/events/event/EventPage';
+import EventPage from '../components/events/event/EventPage/EventPage';
 
-function Event() {
+// TODO DEPRECATE THIS IF IT ONLY REFS A SINGLE COMPONENT
+const Event = () => {
   return <EventPage />;
-}
+};
 
 export default Event;
