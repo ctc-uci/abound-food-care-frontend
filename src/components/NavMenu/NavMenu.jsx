@@ -21,7 +21,6 @@ const NavMenu = ({ isAdmin }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [menuTitle, setMenuTitle] = useState('Abound Food Care');
   const location = useLocation();
-  console.log(location.pathname);
 
   const handleToggle = () => {
     setCollapsed(!collapsed);
