@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
-import { Button, Modal, Card, ConfigProvider } from 'antd';
+import { Button, Modal, Card } from 'antd';
 import PropTypes from 'prop-types';
 import AddEventTypeModal from './AddEventTypeModal';
 import EditEventTypeModal from './EditEventTypeModal';
-
-ConfigProvider.config({
-  theme: {
-    primaryColor: '#115740',
-  },
-});
 
 const EventTypeModal = ({ visible, setVisible, eventsData, setEventsData }) => {
   const [addVisible, setAddVisible] = useState(false);
@@ -37,7 +31,7 @@ const EventTypeModal = ({ visible, setVisible, eventsData, setEventsData }) => {
   };
 
   return (
-    <ConfigProvider>
+    <>
       <Modal
         visible={visible}
         animation={false}
@@ -99,7 +93,7 @@ const EventTypeModal = ({ visible, setVisible, eventsData, setEventsData }) => {
           />
         )}
       </div>
-    </ConfigProvider>
+    </>
   );
 };
 

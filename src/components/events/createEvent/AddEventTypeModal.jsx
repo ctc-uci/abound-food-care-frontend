@@ -1,12 +1,6 @@
 import React, { useState } from 'react';
-import { Modal, Form, Input, Button, ConfigProvider } from 'antd';
+import { Modal, Form, Input, Button } from 'antd';
 import PropTypes from 'prop-types';
-
-ConfigProvider.config({
-  theme: {
-    primaryColor: '#115740',
-  },
-});
 
 const AddEventTypeModal = ({ addVisible, setAddVisible, eventsData, setEventsData }) => {
   const [eventName, setEventName] = useState('');
@@ -34,7 +28,7 @@ const AddEventTypeModal = ({ addVisible, setAddVisible, eventsData, setEventsDat
     setAddVisible(false);
   };
   return (
-    <ConfigProvider>
+    <>
       <Modal
         visible={addVisible}
         animation={false}
@@ -64,7 +58,7 @@ const AddEventTypeModal = ({ addVisible, setAddVisible, eventsData, setEventsDat
           </Form.Item>
         </Form>
       </Modal>
-    </ConfigProvider>
+    </>
   );
 };
 

@@ -14,7 +14,7 @@ import Event from './pages/Event';
 import Waivers from './pages/Waivers';
 import useViewPort from './common/useViewPort';
 
-import AdminNavMenu from './components/navigation/AdminNavMenu';
+import NavMenu from './components/NavMenu/NavMenu';
 import AdminDashboard from './pages/AdminDashboard';
 import EventSignUp from './pages/EventSignUp';
 import VolunteerDashboard from './pages/VolunteerDashboard';
@@ -27,7 +27,7 @@ const App = () => {
     <div>
       <Layout>
         <Router>
-          {width > breakpoint ? <AdminNavMenu /> : <></>}
+          {width > breakpoint ? <NavMenu isAdmin /> : <></>}
           <div className="site-background">
             <Routes>
               <Route path="/" exact element={<Login />} />

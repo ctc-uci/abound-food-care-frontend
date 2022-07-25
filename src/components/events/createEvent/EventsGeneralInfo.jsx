@@ -16,7 +16,7 @@ import {
 } from 'antd';
 import useViewPort from '../../../common/useViewPort';
 import EventTypeModal from './EventTypeModal';
-import './createEvent.css';
+import styles from './CreateEvent.module.css';
 
 const { Option } = Select;
 const { Text, Title } = Typography;
@@ -164,12 +164,7 @@ const EventsGeneralInfo = () => {
                   )}
                 </div>
                 <div>
-                  <Button
-                    className="btn1"
-                    type="link"
-                    onClick={handleClickNewEventType}
-                    style={{ color: '#6CC24A' }}
-                  >
+                  <Button className={styles.btn1} type="link" onClick={handleClickNewEventType}>
                     + New Event Type
                   </Button>
                 </div>
@@ -198,7 +193,7 @@ const EventsGeneralInfo = () => {
                 render={({ field: { onChange, value, ref } }) => (
                   <Form.Item>
                     <Tag.CheckableTag
-                      style={{ borderColor: 'gray' }}
+                      className={styles.grayBorder}
                       onChange={onChange}
                       checked={value}
                     >
@@ -214,7 +209,7 @@ const EventsGeneralInfo = () => {
                 render={({ field: { onChange, value, ref } }) => (
                   <Form.Item>
                     <Tag.CheckableTag
-                      style={{ borderColor: 'gray' }}
+                      className={styles.grayBorder}
                       onChange={onChange}
                       checked={value}
                     >
@@ -230,7 +225,7 @@ const EventsGeneralInfo = () => {
                 render={({ field: { onChange, value, ref } }) => (
                   <Form.Item>
                     <Tag.CheckableTag
-                      style={{ borderColor: 'gray' }}
+                      className={styles.grayBorder}
                       onChange={onChange}
                       checked={value}
                     >
@@ -248,7 +243,7 @@ const EventsGeneralInfo = () => {
                 render={({ field: { onChange, value, ref } }) => (
                   <Form.Item>
                     <Tag.CheckableTag
-                      style={{ borderColor: 'gray' }}
+                      className={styles.grayBorder}
                       onChange={onChange}
                       checked={value}
                     >
@@ -264,7 +259,7 @@ const EventsGeneralInfo = () => {
                 render={({ field: { onChange, value, ref } }) => (
                   <Form.Item>
                     <Tag.CheckableTag
-                      style={{ borderColor: 'gray' }}
+                      className={styles.grayBorder}
                       onChange={onChange}
                       checked={value}
                     >
@@ -280,7 +275,7 @@ const EventsGeneralInfo = () => {
                 render={({ field: { onChange, value, ref } }) => (
                   <Form.Item>
                     <Tag.CheckableTag
-                      style={{ borderColor: 'gray' }}
+                      className={styles.grayBorder}
                       onChange={onChange}
                       checked={value}
                     >
@@ -298,7 +293,7 @@ const EventsGeneralInfo = () => {
                 render={({ field: { onChange, value, ref } }) => (
                   <Form.Item>
                     <Tag.CheckableTag
-                      style={{ borderColor: 'gray' }}
+                      className={styles.grayBorder}
                       onChange={onChange}
                       checked={value}
                     >
@@ -314,7 +309,7 @@ const EventsGeneralInfo = () => {
                 render={({ field: { onChange, value, ref } }) => (
                   <Form.Item>
                     <Tag.CheckableTag
-                      style={{ borderColor: 'gray' }}
+                      className={styles.grayBorder}
                       onChange={onChange}
                       checked={value}
                     >
@@ -454,14 +449,18 @@ const EventsGeneralInfo = () => {
               <Form.Item label="Event Type">
                 <Select
                   placeholder="Type"
-                  style={{ width: '100px' }}
+                  className={styles.selectEventTypeMenu}
                   onChange={onChange}
                   value={value}
                   ref={ref}
                 >
                   {eventTypeMenu}
                 </Select>
-                <Button type="link" onClick={handleClickNewEventType} style={{ color: '#6CC24A' }}>
+                <Button
+                  type="link"
+                  onClick={handleClickNewEventType}
+                  className={styles.newEventTypeBtn}
+                >
                   New Event Type
                 </Button>
                 <div>

@@ -1,0 +1,35 @@
+@import '../../../common/global.css';
+
+h2 {
+  font-size: 16px;
+  font-weight: normal;
+}
+
+.description {
+  line-height: 120%;
+}
+
+.btn1 {
+  float: right;
+  display: flex;
+  justify-content: flex-end;
+  color: var(--apple);
+}
+
+.uploadBtn {
+  background: rgba(108, 194, 74, 0.25);
+  color: rgba(0, 0, 0, 0.85);
+  border: rgba(17, 87, 64, 0.25);
+}
+
+.grayBorder {
+  border: 1px solid gray;
+}
+
+.selectEventTypeMenu {
+  width: 100px;
+}
+
+.newEventTypeBtn {
+  color: var(--apple);
+}

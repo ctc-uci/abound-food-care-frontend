@@ -5,7 +5,7 @@ import { RightOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import WaiversGrid from '../../waivers/WaiversGrid';
 import useViewPort from '../../../common/useViewPort';
-import './createEvent.css';
+import styles from './CreateEvent.module.css';
 
 const { TextArea } = Input;
 const { Title } = Typography;
@@ -65,14 +65,7 @@ const EventsAdditionalInfo = ({ isEdit }) => {
                     fileList={value}
                     customRequest={e => e.onSuccess('Ok')}
                   >
-                    <Button
-                      icon={<RightOutlined />}
-                      style={{
-                        background: 'rgba(108, 194, 74, 0.25)',
-                        color: 'rgba(0, 0, 0, 0.85)',
-                        border: 'rgba(17, 87, 64, 0.25)',
-                      }}
-                    >
+                    <Button icon={<RightOutlined />} className={styles.uploadBtn}>
                       {' '}
                       Click to Upload
                     </Button>
@@ -127,14 +120,7 @@ const EventsAdditionalInfo = ({ isEdit }) => {
                     fileList={value}
                     customRequest={e => e.onSuccess('Ok')}
                   >
-                    <Button
-                      icon={<RightOutlined />}
-                      style={{
-                        background: 'rgba(108, 194, 74, 0.25)',
-                        color: 'rgba(0, 0, 0, 0.85)',
-                        border: 'rgba(17, 87, 64, 0.25)',
-                      }}
-                    >
+                    <Button icon={<RightOutlined />} className={styles.uploadBtn}>
                       {' '}
                       Click to Upload
                     </Button>

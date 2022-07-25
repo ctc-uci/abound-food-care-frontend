@@ -1,12 +1,6 @@
 import React, { useState } from 'react';
-import { Modal, Form, Input, Button, ConfigProvider } from 'antd';
+import { Modal, Form, Input, Button } from 'antd';
 import PropTypes from 'prop-types';
-
-ConfigProvider.config({
-  theme: {
-    primaryColor: '#115740',
-  },
-});
 
 const EditEventTypeModal = ({
   editVisible,
@@ -41,7 +35,7 @@ const EditEventTypeModal = ({
     setEditVisible(false);
   };
   return (
-    <ConfigProvider>
+    <>
       <Modal
         visible={editVisible}
         animation={false}
@@ -65,7 +59,7 @@ const EditEventTypeModal = ({
           </Form.Item>
         </Form>
       </Modal>
-    </ConfigProvider>
+    </>
   );
 };
 

@@ -17,12 +17,12 @@
 }
 
 @font-face {
-  font-family: 'Avenir LT Pro';
+  font-family: 'Avenir';
   src: url('../assets/fonts/AvenirNextLTProRegular.otf');
 }
 
 @font-face {
-  font-family: 'Avenir LT Pro Bold';
+  font-family: 'Avenir Bold';
   src: url('../assets/fonts/AvenirNextLTProBold.otf');
 }
 
@@ -48,11 +48,12 @@
 }
 
 * {
-  font-family: "Inter";
+  font-family: 'Inter';
+  font-weight: 300;
 }
 
 body {
-  font-family: 'Assistant', sans-serif;
+  font-family: 'Inter', sans-serif;
 
   -webkit-font-smoothing: antialiased;
   /* -webkit-font-smoothing: subpixel-antialiased; */
