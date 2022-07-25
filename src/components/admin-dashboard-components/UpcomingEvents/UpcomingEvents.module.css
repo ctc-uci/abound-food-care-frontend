@@ -1,0 +1,157 @@
+@import '../../../common/global.css';
+
+h2 {
+  font-family: 'Avenir';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  /* line-height: 19px; */
+  text-align: center;
+  letter-spacing: -0.02em;
+  color: rgba(0, 0, 0, 0.45);
+  margin: 0;
+}
+
+h3 {
+  font-family: 'Avenir';
+  font-style: normal;
+  font-weight: 800;
+  font-size: 20px;
+  /* line-height: 27px; */
+  text-align: center;
+  letter-spacing: -0.02em;
+  color: #000000;
+}
+
+h4 {
+  font-family: 'Avenir';
+  font-style: normal;
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 27px;
+  letter-spacing: -0.02em;
+  color: #000000;
+}
+
+h5 {
+  font-family: 'Avenir';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 19px;
+  letter-spacing: -0.02em;
+  color: var(--eden);
+}
+
+h6 {
+  font-family: 'Avenir';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+
+h7 {
+  font-family: 'Avenir';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 13px;
+  text-align: center;
+  letter-spacing: -0.02em;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+h8 {
+  font-family: 'Avenir';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+  letter-spacing: -0.02em;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+h9 {
+  font-family: 'Avenir';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+  letter-spacing: -0.02em;
+  color: var(--eden);
+}
+
+.grid {
+  width: 100%;
+  text-align: center;
+  margin-top: 12px;
+  padding: 0;
+}
+
+.upcoming-events-title-mobile-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0px 0px -16px 0px;
+}
+
+.upcoming-event {
+  width: 33.3%;
+  text-align: left;
+  border-right: none;
+  font-size: 16px;
+  height: 165px;
+}
+
+.upcoming-event p {
+  margin-bottom: 0;
+  font-size: 16px;
+}
+
+.upcoming-event-start-date {
+  margin-top: 5px;
+}
+
+.upcoming-event-name {
+  color: var(--eden) !important;
+  font-weight: 600;
+}
+.upcoming-events {
+  width: 100%;
+  border-bottom: none;
+  margin-bottom: 3vh;
+}
+
+.ant-card-head {
+  font-size: 34px;
+}
+
+.ant-card-head-title {
+  font-weight: 600;
+}
+
+.show-event-mobile-container {
+  display: flex;
+  flex-direction: row;
+  background: #FFFFFF;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+.show-event-date-mobile {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 4% 0px 17px 20px;
+}
+
+.show-event-details-mobile {
+  display: flex;
+  flex-direction:column;
+  justify-content: center;
+  text-align: left;
+  padding-left: 5%;
+}
