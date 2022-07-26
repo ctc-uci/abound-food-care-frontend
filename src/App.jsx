@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
-import './App.css';
 import { Layout } from 'antd';
+import './common/global.css';
 
 // Pages
 import Login from './pages/Login';
@@ -15,31 +15,22 @@ import Event from './pages/Event';
 import Waivers from './pages/Waivers';
 import useViewPort from './common/useViewPort';
 
-import AdminNavMenu from './components/navigation/AdminNavMenu';
+import NavMenu from './components/NavMenu/NavMenu';
 import EventSignUp from './pages/EventSignUp';
 
 import ProtectedRoute from './util/ProtectedRoute';
 import AUTH_ROLES from './util/auth_config';
 import Dashboard from './pages/Dashboard';
 
-const { Content } = Layout;
-
-function App() {
+const App = () => {
   const { width } = useViewPort();
   const breakpoint = 720;
   return (
     <CookiesProvider>
       <Layout>
         <Router>
-          {width > breakpoint ? <AdminNavMenu /> : <></>}
-          <Content
-            className="site-background"
-            style={{
-              padding: 24,
-              margin: 0,
-              minHeight: 280,
-            }}
-          >
+          {width > breakpoint ? <NavMenu isAdmin /> : <></>}
+          <div className="site-background">
             <Routes>
               <Route
                 path="/"
@@ -78,11 +69,11 @@ function App() {
               <Route path="/profile" exact element={<Profile />} />
               <Route path="/waivers" exact element={<Waivers />} />
             </Routes>
-          </Content>
+          </div>
         </Router>
       </Layout>
     </CookiesProvider>
   );
-}
+};
 
 export default App;

@@ -1,11 +1,10 @@
 import { instanceOf } from 'prop-types';
-import '../styles/AdminDashboard.css';
 import { Row, Col } from 'antd';
 import React, { useState, useEffect } from 'react';
-import UpcomingEvents from '../components/admin-dashboard-components/UpcomingEvents';
-import DashboardHeader from '../components/admin-dashboard-components/DashboardHeader';
-import PastEvents from '../components/admin-dashboard-components/PastEvents';
-import EventList from '../components/events/EventList';
+import UpcomingEvents from '../components/admin-dashboard-components/UpcomingEvents/UpcomingEvents';
+import DashboardHeader from '../components/admin-dashboard-components/DashboardHeader/DashboardHeader';
+import PastEvents from '../components/admin-dashboard-components/PastEvents/PastEvents';
+import EventList from '../components/events/EventList/EventList';
 import useViewPort from '../common/useViewPort';
 import { AFCBackend } from '../util/utils';
 import { Cookies, withCookies, cookieKeys } from '../util/cookie_utils';

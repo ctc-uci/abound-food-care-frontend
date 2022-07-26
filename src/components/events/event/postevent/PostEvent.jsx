@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Input, Button, ConfigProvider } from 'antd';
+import { Input, Button } from 'antd';
 import { CalendarOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import { AFCBackend } from '../../../../util/utils';
@@ -7,12 +7,6 @@ import { AFCBackend } from '../../../../util/utils';
 const PostEvent = props => {
   const { name, date, time, eventId, setIsAddingPost, isEdit, setIsLoading } = props;
   const [postEventSection, setPostEventSection] = useState('');
-
-  ConfigProvider.config({
-    theme: {
-      primaryColor: '#115740',
-    },
-  });
 
   const sendPostEvent = async () => {
     setIsLoading(true);
@@ -25,7 +19,7 @@ const PostEvent = props => {
   };
 
   return (
-    <ConfigProvider>
+    <>
       <div
         style={{
           background: 'white',
@@ -146,7 +140,7 @@ const PostEvent = props => {
           </div>
         </div>
       </div>
-    </ConfigProvider>
+    </>
   );
 };
 

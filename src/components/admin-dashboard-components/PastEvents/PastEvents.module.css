@@ -1,0 +1,100 @@
+@import '../../../common/global.css';
+
+h4 {
+  font-family: 'Avenir';
+  font-style: normal;
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 27px;
+  letter-spacing: -0.02em;
+  color: #000000;
+}
+
+h5 {
+  font-family: 'Avenir';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 19px;
+  letter-spacing: -0.02em;
+  color: var(--eden);
+}
+
+.semi-opaque-black {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.grid {
+  width: 100%;
+  text-align: center;
+  margin-top: 12px;
+  padding: 0;
+}
+
+.mobile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0px 0px 0px 0px;
+}
+
+.past-events-container {
+  margin-bottom: 2vh;
+}
+
+.past-event {
+  width: 100%;
+  text-align: left;
+  border-right: none;
+  height: 174px;
+  font-size: 16px;
+}
+
+.past-event p {
+  margin-bottom: 0;
+}
+
+.past-event-name {
+  color: var(--eden) !important;
+  font-weight: 600;
+}
+
+.past-event-start-date {
+  margin-top: 5px;
+}
+
+.past-event-end {
+  margin-bottom: 5px !important;
+}
+
+.ant-card-head-title {
+  font-weight: 600;
+}
+
+.show-past-event-mobile-container {
+  display: flex;
+  flex-direction: row;
+  background: #ffffff;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+.show-past-event-date-mobile {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 4% 0px 17px 20px;
+}
+
+.show-past-event-details-mobile {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+  padding-left: 5%;
+}
+
+.upcoming-event-name {
+  color: var(--eden) !important;
+  font-weight: 600;
+}

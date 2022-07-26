@@ -5,9 +5,9 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, Button } from 'antd';
 import moment from 'moment';
-import uploadBoxPhoto from '../components/events/utils';
-import EventsGeneralInfo from '../components/events/createEvent/EventsGeneralInfo';
-import EventsAdditionalInfo from '../components/events/createEvent/EventsAdditionalInfo';
+import uploadWaiver from '../components/events/utils';
+import EventsGeneralInfo from '../components/events/CreateEvent/EventsGeneralInfo';
+import EventsAdditionalInfo from '../components/events/CreateEvent/EventsAdditionalInfo';
 import { AFCBackend } from '../util/utils';
 
 const CreateEvent = () => {
@@ -183,7 +183,7 @@ const CreateEvent = () => {
       const endDatetime = `${endDate} ${endTime} ${timeZone}`;
 
       let waivers = await Promise.all(
-        values.waivers.map(async file => uploadBoxPhoto(file.originFileObj)),
+        values.waivers.map(async file => uploadWaiver(file.originFileObj)),
       );
       waivers = values.waivers.map((file, index) => ({
         name: file.name,
