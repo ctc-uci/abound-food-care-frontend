@@ -347,41 +347,22 @@ const EventPage = () => {
               </div>
               {Date.parse(eventData.startDatetime) < new Date() ? (
                 <Button
-                  style={{
-                    width: '9em',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
+                  className={styles.editButton}
                   type="primary"
                   onClick={() => setIsAddingPost(true)}
                 >
-                  <p style={{ padding: 0, margin: 0, fontSize: '14px' }}>
+                  <p className={styles.buttonText}>
                     {eventData.posteventText ? 'Edit' : 'Add'} Post-Event
                   </p>
                 </Button>
               ) : (
                 Date.parse(eventData.startDatetime) >= new Date() && (
                   <Button
-                    style={{
-                      height: '45px',
-                      width: '9em',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
+                    className={`${styles.editEventButton} ${styles.editButton}`}
                     type="primary"
                     onClick={() => navigate(`/events/edit/${eventId}`)}
                   >
-                    <p
-                      style={{
-                        padding: 0,
-                        margin: 0,
-                        fontSize: '14px',
-                      }}
-                    >
-                      Edit Event
-                    </p>
+                    <p className={styles.buttonText}>Edit Event</p>
                   </Button>
                 )
               )}

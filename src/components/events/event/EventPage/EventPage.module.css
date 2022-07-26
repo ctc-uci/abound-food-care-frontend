@@ -36,3 +36,20 @@
   font-size: 14px;
   line-height: 28px;
 }
+
+.editButton {
+  width: 9em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.editEventButton {
+  height: 45px;
+}
+
+.buttonText {
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+}
