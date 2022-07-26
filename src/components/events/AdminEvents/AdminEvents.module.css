@@ -1,9 +1,18 @@
+@import '../../../common/global.css';
+
 .events {
   margin: auto;
   width: 79vw;
   border-width: 1px;
   border-radius: 10px;
   background-color: white;
+}
+
+.title {
+  font-size: 32px;
+  font-family: 'Inter';
+  font-weight: 600;
+  margin: 15px 5px;
 }
 
 .card {
@@ -15,10 +24,11 @@
   margin: 15px;
   margin-top: 25px;
   border-radius: 5px;
+  padding-bottom: 0px !important;
 }
 
 .search-bar {
-  width: 750px;
+  width: 70% !important;
   margin-left: 15%;
 }
 
@@ -27,16 +37,16 @@
 }
 
 .distribution-radio-btn {
-  border-color: var(--green);
-  color: var(--green);
+  border-color: var(--green) !important;
+  color: var(--green) !important;
   margin-right: 1px;
   margin-left: 0px;
 }
 
 .food-radio-btn {
-  border-color: var(--mustard);
-  border-left-color: var(--mustard);
-  color: var(--mustard);
+  border-color: var(--mustard) !important;
+  border-left-color: var(--mustard) !important;
+  color: var(--mustard) !important;
   margin-right: 1px;
 }
 
@@ -52,7 +62,7 @@
   border-color: var(--eden);
   color: white;
   font-weight: 400;
-  margin-top: 10px;
+  margin: 0 0 40px 0;
   float: right;
 }
 
@@ -63,9 +73,7 @@
   border-color: var(--eden);
   color: var(--eden);
   font-weight: 400;
-  margin-top: 10px;
-  margin-left: 15px;
-  margin-right: 5px;
+  margin: 0 5px 40px 15px;
   float: right;
 }
 

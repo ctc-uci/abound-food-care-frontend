@@ -13,6 +13,7 @@ import PostEvent from '../PostEvent/PostEvent';
 import EventVolunteerList from '../EventVolunteerList/EventVolunteerList';
 import EventPageImage from '../../../../assets/img/event-page-banner.png';
 import styles from './EventPage.module.css';
+import './EventPageAntStyles.css';
 
 const EventPage = () => {
   const [eventData, setEventData] = useState([]);
