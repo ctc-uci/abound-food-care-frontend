@@ -15,6 +15,7 @@ import { Cookies, withCookies } from '../util/cookie_utils';
 import { ReactComponent as AboundSignature } from '../Abound_Signature.svg';
 
 import CreateAccount from './CreateAccount/CreateAccount';
+import ForgotPassword from '../components/ForgotPassword/ForgotPassword';
 
 function Login({ cookies }) {
   const navigate = useNavigate();
@@ -42,7 +43,11 @@ function Login({ cookies }) {
 
   const [role, setRole] = useState(AUTH_ROLES.VOLUNTEER_ROLE);
 
-  const forgotPassword = () => {};
+  const [isOpen, setIsOpen] = useState(false);
+
+  const forgotPassword = () => {
+    setIsOpen(true);
+  };
 
   const logIn = async e => {
     e.preventDefault();
@@ -71,6 +76,7 @@ function Login({ cookies }) {
 
   return (
     <>
+      <ForgotPassword isOpen={isOpen} setIsOpen={setIsOpen} />
       {pageState === 'createPage' ? (
         <CreateAccount
           setPageState={setPageState}

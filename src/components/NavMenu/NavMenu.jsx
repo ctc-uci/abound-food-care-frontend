@@ -1,8 +1,8 @@
 /* eslint-disable react/require-default-props */
-import React, { useState, createElement } from 'react';
+import React, { useState, createElement, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, Layout, Button } from 'antd';
-import { PropTypes, instanceOf } from 'prop-types';
+import { instanceOf } from 'prop-types';
 import {
   ProfileOutlined,
   TableOutlined,
@@ -10,19 +10,22 @@ import {
   FormOutlined,
   MenuUnfoldOutlined,
   MenuFoldOutlined,
+  LogoutOutlined,
+  UserOutlined,
 } from '@ant-design/icons';
 import Logo from '../../assets/Logo.png';
 import styles from './NavMenu.module.css';
 import './NavAnt.css';
 
-import { Cookies, withCookies } from '../../util/cookie_utils';
-import { logout } from '../../util/auth_utils';
+import { Cookies, withCookies, cookieKeys } from '../../util/cookie_utils';
+import { AUTH_ROLES, logout } from '../../util/auth_utils';
 
 const { Sider } = Layout;
 
-const NavMenu = ({ isAdmin, cookies }) => {
+const NavMenu = ({ cookies }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [menuTitle, setMenuTitle] = useState('Abound Food Care');
+  const [isAdmin, setIsAdmin] = useState(false);
   const { pathname } = useLocation();
 
   const handleToggle = () => {
@@ -30,11 +33,18 @@ const NavMenu = ({ isAdmin, cookies }) => {
     setMenuTitle(collapsed ? 'Abound Food Care' : '');
   };
 
+  useEffect(() => {
+    const role = cookies.get(cookieKeys.USER_ROLE);
+    if (role === AUTH_ROLES.ADMIN_ROLE) {
+      setIsAdmin(true);
+    }
+  }, []);
+
   const navigate = useNavigate();
 
   return (
     <>
-      {pathname !== '/auth' && (
+      {pathname !== '/auth' && pathname !== '/reset-password' && (
         <Sider trigger={null} collapsible collapsed={collapsed} className={styles['side-nav']}>
           <Link to="/">
             <div className={`${collapsed ? styles.collapsed : ''} ${styles.logo}`}>
@@ -77,19 +87,23 @@ const NavMenu = ({ isAdmin, cookies }) => {
                     Volunteering History
                   </Link>
                 </Menu.Item>
-                <Menu.Item
-                  className={styles['menu-item']}
-                  key="/profile"
-                  icon={<ProfileOutlined />}
-                >
-                  <Link to="/profile" className={styles.link}>
-                    Profile
-                  </Link>
-                </Menu.Item>
               </>
             )}
+            <Menu.Item className={styles['menu-item']} key="/profile" icon={<UserOutlined />}>
+              <Link to="/profile" className={styles.link}>
+                Profile
+              </Link>
+            </Menu.Item>
+            <Menu.Item className={styles['menu-item']} key="/logout" icon={<LogoutOutlined />}>
+              <Link
+                to="/auth"
+                className={styles.link}
+                onClick={async () => logout('/auth', navigate, cookies)}
+              >
+                Log Out
+              </Link>
+            </Menu.Item>
           </Menu>
-          <Button onClick={async () => logout('/auth', navigate, cookies)}> Sign Out </Button>
           <Button onClick={() => handleToggle} className={styles['toggle-btn']}>
             {createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
               className: 'trigger',
@@ -103,7 +117,6 @@ const NavMenu = ({ isAdmin, cookies }) => {
 };
 
 NavMenu.propTypes = {
-  isAdmin: PropTypes.bool,
   cookies: instanceOf(Cookies).isRequired,
 };
 

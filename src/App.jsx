@@ -6,7 +6,6 @@ import './common/global.css';
 
 // Pages
 import Login from './pages/Login';
-import CreateAccount from './pages/CreateAccount/CreateAccount';
 import Events from './pages/Events';
 import CreateEvent from './pages/CreateEvent';
 import Volunteers from './pages/Volunteers';
@@ -22,6 +21,8 @@ import ProtectedRoute from './util/ProtectedRoute';
 import AUTH_ROLES from './util/auth_config';
 import Dashboard from './pages/Dashboard';
 
+import ResetPassword from './components/ForgotPassword/ResetPassword';
+
 const App = () => {
   const { width } = useViewPort();
   const breakpoint = 720;
@@ -29,7 +30,7 @@ const App = () => {
     <CookiesProvider>
       <Layout>
         <Router>
-          {width > breakpoint ? <NavMenu isAdmin /> : <></>}
+          {width > breakpoint ? <NavMenu /> : <></>}
           <div className="site-background">
             <Routes>
               <Route
@@ -43,30 +44,67 @@ const App = () => {
                   />
                 }
               />
+              <Route path="/reset-password" element={<ResetPassword redirectPath="/" />} />
               <Route path="/auth" exact element={<Login />} />
-              <Route
-                path="/users/create"
-                exact
-                element={<ProtectedRoute Component={CreateAccount} redirectPath="/" roles={[]} />}
-              />
               <Route
                 path="/events"
                 exact
                 element={
                   <ProtectedRoute
                     Component={Events}
-                    redirectPath="/auth"
+                    redirectPath="/"
                     roles={[AUTH_ROLES.ADMIN_ROLE, AUTH_ROLES.VOLUNTEER_ROLE]}
                   />
                 }
               />
-              <Route path="/events/create" exact element={<CreateEvent />} />
-              <Route path="/events/edit/:id" exact element={<CreateEvent />} />
-              <Route path="/events/:eventId" exact element={<Event />} />
+              <Route
+                path="/event/create"
+                exact
+                element={
+                  <ProtectedRoute
+                    Component={CreateEvent}
+                    redirectPath="/"
+                    roles={[AUTH_ROLES.ADMIN_ROLE]}
+                  />
+                }
+              />
+              <Route
+                path="/event/view/:id"
+                exact
+                element={
+                  <ProtectedRoute
+                    Component={Event}
+                    redirectPath="/"
+                    roles={[AUTH_ROLES.ADMIN_ROLE, AUTH_ROLES.VOLUNTEER_ROLE]}
+                  />
+                }
+              />
+
               <Route path="/events/register" exact element={<EventSignUp />} />
-              <Route path="/volunteers" exact element={<Volunteers />} />
-              {/* profile should be eventually be rendered under /volunteers. see Volunteers.jsx for note */}
-              <Route path="/profile" exact element={<Profile />} />
+
+              <Route
+                path="/volunteers"
+                exact
+                element={
+                  <ProtectedRoute
+                    Component={Volunteers}
+                    redirectPath="/"
+                    roles={[AUTH_ROLES.ADMIN_ROLE]}
+                  />
+                }
+              />
+              {/* TODO add /profile/:id capability */}
+              <Route
+                path="/profile"
+                exact
+                element={
+                  <ProtectedRoute
+                    Component={{ Profile }}
+                    redirectPath="/"
+                    roles={[AUTH_ROLES.ADMIN_ROLE, AUTH_ROLES.VOLUNTEER_ROLE]}
+                  />
+                }
+              />
               <Route path="/waivers" exact element={<Waivers />} />
             </Routes>
           </div>
