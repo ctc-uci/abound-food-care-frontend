@@ -9,7 +9,7 @@ import {
 import { Button, Divider, Tag, Space } from 'antd';
 import moment from 'moment';
 import { AFCBackend } from '../../../../util/utils';
-import PostEvent from '../PostEvent/PostEvent';
+import PostEvent from '../postevent/PostEvent';
 import EventVolunteerList from '../EventVolunteerList/EventVolunteerList';
 import EventPageImage from '../../../../assets/img/event-page-banner.png';
 import styles from './EventPage.module.css';
