@@ -8,7 +8,7 @@ const { Option } = Select;
 const { Text } = Typography;
 const { CheckableTag } = Tag;
 
-const ProfileRolesAndSkills = ({ userId }) => {
+const ProfileRolesAndSkills = ({ userId, volunteerData }) => {
   const [componentSize, setComponentSize] = useState('default');
   const [isEditable, setIsEditable] = useState(false);
   const [defaultValues, setDefaultValues] = useState({});
@@ -80,44 +80,39 @@ const ProfileRolesAndSkills = ({ userId }) => {
     }
   };
 
-  const getDriverData = async () => {
-    try {
-      const { data: volunteerData } = await AFCBackend.get(`/users/${userId}`);
-      setDefaultValues({
-        role: volunteerData.role,
-        foodRunning: volunteerData.foodRunsInterest,
-        distribution: volunteerData.distributionInterest,
-        firstAidTraining: volunteerData.firstAidTraining,
-        serveSafeKnowledge: volunteerData.serveSafeKnowledge,
-        transportationExperience: volunteerData.transportationExperience,
-        movingWarehouseExperience: volunteerData.movingWarehouseExperience,
-        foodServiceIndustryKnowledge: volunteerData.foodServiceIndustryKnowledge,
-        weightLiftingAbility: volunteerData.weightLiftingAbility,
-        completedChowmatch: volunteerData.completedChowmatchTraining,
-        canDrive: volunteerData.canDrive,
-        willingToDrive: volunteerData.willingToDrive,
-        vehicleType: volunteerData.vehicleType,
-        distance: volunteerData.distance,
-      });
-      setValue('role', volunteerData.role);
-      setValue('foodRunning', volunteerData.foodRunsInterest);
-      setValue('distribution', volunteerData.distributionInterest);
-      setValue('firstAidTraining', volunteerData.firstAidTraining);
-      setValue('serveSafeKnowledge', volunteerData.serveSafeKnowledge);
-      setValue('transportationExperience', volunteerData.transportationExperience);
-      setValue('movingWarehouseExperience', volunteerData.movingWarehouseExperience);
-      setValue('foodServiceIndustryKnowledge', volunteerData.foodServiceIndustryKnowledge);
-      setLanguages(volunteerData.languages);
-      setDefaultLanguages(volunteerData.languages);
-      setValue('weightLiftingAbility', volunteerData.weightLiftingAbility);
-      setValue('completedChowmatch', volunteerData.completedChowmatchTraining);
-      setValue('canDrive', volunteerData.canDrive);
-      setValue('willingToDrive', volunteerData.willingToDrive);
-      setValue('vehicleType', volunteerData.vehicleType);
-      setValue('distance', volunteerData.distance);
-    } catch (e) {
-      console.log(e.message);
-    }
+  const getDriverData = () => {
+    setDefaultValues({
+      role: volunteerData.role,
+      foodRunning: volunteerData.foodRunsInterest,
+      distribution: volunteerData.distributionInterest,
+      firstAidTraining: volunteerData.firstAidTraining,
+      serveSafeKnowledge: volunteerData.serveSafeKnowledge,
+      transportationExperience: volunteerData.transportationExperience,
+      movingWarehouseExperience: volunteerData.movingWarehouseExperience,
+      foodServiceIndustryKnowledge: volunteerData.foodServiceIndustryKnowledge,
+      weightLiftingAbility: volunteerData.weightLiftingAbility,
+      completedChowmatch: volunteerData.completedChowmatchTraining,
+      canDrive: volunteerData.canDrive,
+      willingToDrive: volunteerData.willingToDrive,
+      vehicleType: volunteerData.vehicleType,
+      distance: volunteerData.distance,
+    });
+    setValue('role', volunteerData.role);
+    setValue('foodRunning', volunteerData.foodRunsInterest);
+    setValue('distribution', volunteerData.distributionInterest);
+    setValue('firstAidTraining', volunteerData.firstAidTraining);
+    setValue('serveSafeKnowledge', volunteerData.serveSafeKnowledge);
+    setValue('transportationExperience', volunteerData.transportationExperience);
+    setValue('movingWarehouseExperience', volunteerData.movingWarehouseExperience);
+    setValue('foodServiceIndustryKnowledge', volunteerData.foodServiceIndustryKnowledge);
+    setLanguages(volunteerData.languages);
+    setDefaultLanguages(volunteerData.languages);
+    setValue('weightLiftingAbility', volunteerData.weightLiftingAbility);
+    setValue('completedChowmatch', volunteerData.completedChowmatchTraining);
+    setValue('canDrive', volunteerData.canDrive);
+    setValue('willingToDrive', volunteerData.willingToDrive);
+    setValue('vehicleType', volunteerData.vehicleType);
+    setValue('distance', volunteerData.distance);
   };
 
   const handleEdit = () => {
@@ -613,7 +608,8 @@ const ProfileRolesAndSkills = ({ userId }) => {
 };
 
 ProfileRolesAndSkills.propTypes = {
-  userId: PropTypes.number.isRequired,
+  userId: PropTypes.string.isRequired,
+  volunteerData: PropTypes.oneOfType([PropTypes.object]).isRequired,
 };
 
 export default ProfileRolesAndSkills;

@@ -167,7 +167,7 @@ const ProfileAvailability = ({ userId }) => {
 };
 
 ProfileAvailability.propTypes = {
-  userId: PropTypes.number.isRequired,
+  userId: PropTypes.string.isRequired,
 };
 
 export default ProfileAvailability;

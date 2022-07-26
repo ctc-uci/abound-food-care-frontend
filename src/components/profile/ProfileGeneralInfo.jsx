@@ -9,7 +9,7 @@ import { AFCBackend } from '../../util/utils';
 
 const { Text } = Typography;
 
-const ProfileGeneralInfo = ({ userId }) => {
+const ProfileGeneralInfo = ({ userId, volunteerData }) => {
   const [isEditable, setIsEditable] = useState(false);
   const [defaultValues, setDefaultValues] = useState({});
   const [componentSize, setComponentSize] = useState('default');
@@ -53,35 +53,32 @@ const ProfileGeneralInfo = ({ userId }) => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema), mode: 'onChange', delayError: 750 });
 
-  const getVolunteerData = async () => {
-    try {
-      const { data: volunteerData } = await AFCBackend.get(`/users/${userId}`);
-      setDefaultValues({
-        organization: volunteerData.organization,
-        phone: volunteerData.phone,
-        preferredContactMethod: volunteerData.preferredContactMethod,
-        addressStreet: volunteerData.addressStreet,
-        addressCity: volunteerData.addressCity,
-        addressState: volunteerData.addressState,
-        addressZip: volunteerData.addressZip,
-      });
-      setValue('firstName', volunteerData.firstName);
-      setValue('lastName', volunteerData.lastName);
-      setValue('organization', volunteerData.organization);
+  const getVolunteerData = () => {
+    setDefaultValues({
+      organization: volunteerData.organization,
+      phone: volunteerData.phone,
+      preferredContactMethod: volunteerData.preferredContactMethod,
+      addressStreet: volunteerData.addressStreet,
+      addressCity: volunteerData.addressCity,
+      addressState: volunteerData.addressState,
+      addressZip: volunteerData.addressZip,
+    });
+    setValue('firstName', volunteerData.firstName);
+    setValue('lastName', volunteerData.lastName);
+    setValue('organization', volunteerData.organization);
+    if (volunteerData.birthdate !== undefined) {
       setValue(
         'birthdate',
         moment(new Date(volunteerData.birthdate).toISOString().split('T')[0], 'YYYY-MM-DD'),
       );
-      setValue('email', volunteerData.email);
-      setValue('phone', volunteerData.phone);
-      setValue('preferredContactMethod', volunteerData.preferredContactMethod);
-      setValue('addressStreet', volunteerData.addressStreet);
-      setValue('addressCity', volunteerData.addressCity);
-      setValue('addressState', volunteerData.addressState);
-      setValue('addressZip', volunteerData.addressZip);
-    } catch (e) {
-      console.log(e.message);
     }
+    setValue('email', volunteerData.email);
+    setValue('phone', volunteerData.phone);
+    setValue('preferredContactMethod', volunteerData.preferredContactMethod);
+    setValue('addressStreet', volunteerData.addressStreet);
+    setValue('addressCity', volunteerData.addressCity);
+    setValue('addressState', volunteerData.addressState);
+    setValue('addressZip', volunteerData.addressZip);
   };
 
   const handleEdit = () => {
@@ -118,7 +115,7 @@ const ProfileGeneralInfo = ({ userId }) => {
 
   useEffect(() => {
     getVolunteerData();
-  }, []);
+  }, [volunteerData]);
 
   return (
     <>
@@ -332,7 +329,8 @@ const ProfileGeneralInfo = ({ userId }) => {
 };
 
 ProfileGeneralInfo.propTypes = {
-  userId: PropTypes.number.isRequired,
+  userId: PropTypes.string.isRequired,
+  volunteerData: PropTypes.oneOfType([PropTypes.object]).isRequired,
 };
 
 export default ProfileGeneralInfo;

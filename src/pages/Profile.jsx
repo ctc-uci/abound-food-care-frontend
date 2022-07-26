@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import 'antd/dist/antd.css';
 import { Tabs } from 'antd';
+import { AFCBackend } from '../util/utils';
 import ProfileGeneralInfo from '../components/profile/ProfileGeneralInfo';
 import ProfileDUICrimHistory from '../components/profile/ProfileDUICrimHistory';
 import ProfileRolesSkills from '../components/profile/ProfileRolesSkills';
@@ -11,6 +13,7 @@ import '../components/profile/profile.css';
 
 const { TabPane } = Tabs;
 function Profile() {
+  const { userId } = useParams();
   const waivers = [
     {
       name: 'Waiver Name',
@@ -32,28 +35,41 @@ function Profile() {
     },
   ];
 
+  const [user, setUser] = useState({});
+
+  useEffect(async () => {
+    const res = await AFCBackend.get(`/users/${userId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (res.status === 200) {
+      setUser(res.data);
+    }
+  }, [userId]);
+
   return (
     <div>
-      <p>This is the volunteer profile page - USER ID OF VOLUNTEER HARDCODED TEMPORARILY</p>
-      <h1>[VOLUNTEER NAME HERE]s Profile</h1>
+      <h1> {user.firstName}&apos;s Profile</h1>
+
       <Tabs defaultActiveKey="1">
         <TabPane tab="General Information" key="1">
-          <ProfileGeneralInfo userId={2} />
+          <ProfileGeneralInfo userId={userId} volunteerData={user} />
         </TabPane>
         <TabPane tab="Availability" key="2">
-          <ProfileAvailability userId={13} />
+          <ProfileAvailability userId={userId} />
         </TabPane>
         <TabPane tab="Roles & Skills" key="3">
-          <ProfileRolesSkills userId={6} />
+          <ProfileRolesSkills userId={userId} volunteerData={user} />
         </TabPane>
         <TabPane tab="DUI/Criminal History" key="4">
-          <ProfileDUICrimHistory userId={2} />
+          <ProfileDUICrimHistory userId={userId} volunteerData={user} />
         </TabPane>
         <TabPane tab="Training & Forms" key="5">
           <WaiversGrid waivers={waivers} />
         </TabPane>
         <TabPane tab="Volunteering History" key="6">
-          <VolunteeringHistory />
+          <VolunteeringHistory userId={userId} />
         </TabPane>
       </Tabs>
     </div>

@@ -16,7 +16,6 @@ h5 {
   line-height: 19px;
   letter-spacing: -0.02em;
   color: #115740;
-
 }
 
 .mobile-header {
@@ -62,7 +61,7 @@ h5 {
 .show-past-event-mobile-container {
   display: flex;
   flex-direction: row;
-  background: #FFFFFF;
+  background: #ffffff;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
 }
@@ -76,10 +75,10 @@ h5 {
 
 .show-past-event-details-mobile {
   display: flex;
-  flex-direction:column;
+  flex-direction: column;
   justify-content: center;
   text-align: left;
-  padding-left: 5%
+  padding-left: 5%;
 }
 
 .upcoming-event-name {

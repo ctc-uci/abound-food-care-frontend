@@ -50,7 +50,7 @@ function App() {
               <Route path="/events/register" exact element={<EventSignUp />} />
               <Route path="/volunteers" exact element={<Volunteers />} />
               {/* profile should be eventually be rendered under /volunteers. see Volunteers.jsx for note */}
-              <Route path="/profile" exact element={<Profile />} />
+              <Route path="/profile/:userId" exact element={<Profile />} />
               <Route path="/waivers" exact element={<Waivers />} />
             </Routes>
           </Content>
