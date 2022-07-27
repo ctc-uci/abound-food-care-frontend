@@ -8,7 +8,7 @@ import ProfileDUICrimHistory from '../components/profile/ProfileDUICrimHistory';
 import ProfileRolesSkills from '../components/profile/ProfileRolesSkills';
 import ProfileAvailability from '../components/profile/ProfileAvailability';
 import WaiversGrid from '../components/waivers/WaiversGrid';
-import VolunteeringHistory from '../components/profile/VolunteeringHistory';
+// import VolunteeringHistory from '../components/profile/VolunteeringHistory';
 import '../components/profile/profile.css';
 
 const { TabPane } = Tabs;
@@ -50,7 +50,10 @@ function Profile() {
 
   return (
     <div>
-      <h1> {user.firstName}&apos;s Profile</h1>
+      <h1 id="profile-heading">
+        {' '}
+        {user.firstName} {user.lastName}&apos;s Profile
+      </h1>
 
       <Tabs defaultActiveKey="1">
         <TabPane tab="General Information" key="1">
@@ -68,9 +71,9 @@ function Profile() {
         <TabPane tab="Training & Forms" key="5">
           <WaiversGrid waivers={waivers} />
         </TabPane>
-        <TabPane tab="Volunteering History" key="6">
+        {/* <TabPane tab="Volunteering History" key="6">
           <VolunteeringHistory userId={userId} />
-        </TabPane>
+        </TabPane> */}
       </Tabs>
     </div>
   );

@@ -1,3 +1,9 @@
+@import '../../common/global.css';
+
+#profile-heading {
+  font-family: 'Avenir Bold';
+  font-size: 36px;
+}
 .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
   color: var(--eden) !important;
   font-weight: 500;

@@ -1,0 +1,22 @@
+@import '../../../../common/global.css';
+
+.event-card {
+  margin: 10px;
+  border-color: #bfbfbf;
+  border-radius: 5px;
+  box-shadow: 0px 4px 4px #d3d3d3;
+}
+
+.event-date-time {
+  font-family: 'Inter';
+  font-weight: lighter;
+  font-size: 18px;
+  height: 5vh;
+}
+
+.num-volunteers {
+  font-family: 'Inter';
+  font-size: 18px;
+  color: #bfbfbf;
+  height: 1vh;
+}
