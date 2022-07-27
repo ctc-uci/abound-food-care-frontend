@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import 'antd/dist/antd.variable.min.css';
-import './database.css';
 import { Input, Button, Row, Col, Dropdown, Menu, Divider, Table } from 'antd';
 import { SearchOutlined, FilterFilled, DownOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import { AFCBackend } from '../../util/utils';
+import styles from './Database.module.css';
 
 function Database(props) {
   const [volunteerData, setVolunteerData] = useState([]);
@@ -36,7 +35,7 @@ function Database(props) {
       dataIndex: 'firstName',
       key: 'firstName',
       render: text => (
-        <a style={{ color: '#115740' }} href="/volunteers">
+        <a className={styles.eden} href="/volunteers">
           {text}
         </a>
       ),
@@ -126,45 +125,45 @@ function Database(props) {
   };
 
   const eventInterestMenu = (
-    <Menu className="menu">
-      <Menu.Item key="all" className="menu">
+    <Menu className={styles.menu}>
+      <Menu.Item key="all" className={styles.menu}>
         All
       </Menu.Item>
-      <Menu.Item key="distribution" className="menu">
+      <Menu.Item key="distribution" className={styles.menu}>
         Distributions
       </Menu.Item>
-      <Menu.Item key="food" className="menu">
+      <Menu.Item key="food" className={styles.menu}>
         Food Running
       </Menu.Item>
-      <Menu.Item key="other" className="menu">
+      <Menu.Item key="other" className={styles.menu}>
         Other
       </Menu.Item>
     </Menu>
   );
 
   const isDriverMenu = (
-    <Menu className="menu">
-      <Menu.Item key="1" className="menu" onClick={() => setDriver('All')}>
+    <Menu className={styles.menu}>
+      <Menu.Item key="1" className={styles.menu} onClick={() => setDriver('All')}>
         All
       </Menu.Item>
-      <Menu.Item key="2" className="menu" onClick={() => setDriver('Can Drive')}>
+      <Menu.Item key="2" className={styles.menu} onClick={() => setDriver('Can Drive')}>
         Can Drive
       </Menu.Item>
-      <Menu.Item key="3" className="menu" onClick={() => setDriver("Can't Drive")}>
+      <Menu.Item key="3" className={styles.menu} onClick={() => setDriver("Can't Drive")}>
         Cannot Drive
       </Menu.Item>
     </Menu>
   );
 
   const ageMenu = (
-    <Menu className="menu">
-      <Menu.Item key="all" className="menu">
+    <Menu className={styles.menu}>
+      <Menu.Item key="all" className={styles.menu}>
         All
       </Menu.Item>
-      <Menu.Item key="adult" className="menu">
+      <Menu.Item key="adult" className={styles.menu}>
         Adult (18 and older)
       </Menu.Item>
-      <Menu.Item key="minor" className="menu">
+      <Menu.Item key="minor" className={styles.menu}>
         Minor (17 and younger)
       </Menu.Item>
     </Menu>
@@ -174,7 +173,7 @@ function Database(props) {
     if (window.innerWidth > 1250) {
       return (
         <Col span={1}>
-          <FilterFilled style={{ fontSize: '28px' }} />
+          <FilterFilled className={styles.filterFilledMedium} />
         </Col>
       );
     }
@@ -190,35 +189,35 @@ function Database(props) {
 
   return (
     <>
-      <div className="database-tab">
-        <div className="database-header">
-          <Row style={{ height: '50%', flexWrap: 'wrap' }} align="middle">
+      <div className={styles['database-tab']}>
+        <div className={styles['database-header']}>
+          <Row className={styles.filterRow} align="middle">
             {filterIcon()}
-            <Col style={{ width: '40vw' }}>
+            <Col className={styles.filterSearch}>
               <Input
                 size="large"
                 placeholder="Search by name, email, role..."
                 onChange={onSearch}
-                prefix={<SearchOutlined style={{ fontSize: '22px', color: '#BFBFBF' }} />}
+                prefix={<SearchOutlined className={styles.filterSearchOutlined} />}
               />
             </Col>
             <Col span={3} />
-            <Col span={6} className="button-group">
+            <Col span={6} className={styles['button-group']}>
               <Button onClick={handleHideDatabase}>View Heatmap</Button>
               <Button>Export</Button>
-              <Button type="primary" style={{ backgroundColor: '#115740' }}>
+              <Button type="primary" className={styles.addUserBtn}>
                 + Add User
               </Button>
             </Col>
           </Row>
-          <Row style={{ height: '50%' }} align="middle">
+          <Row className={styles.filterRow} align="middle">
             {iconGap()}
             <Col span={4}>
-              <div className="dropdown-box">
-                <p className="dropdown-label">Event Types Interested In</p>
+              <div className={styles['dropdown-box']}>
+                <p className={styles['dropdown-label']}>Event Types Interested In</p>
                 <Dropdown overlay={eventInterestMenu}>
-                  <Button className="dropdown-button">
-                    <div className="dropdown-button-text">
+                  <Button className={styles['dropdown-button']}>
+                    <div className={styles['dropdown-button-text']}>
                       All
                       <DownOutlined />
                     </div>
@@ -228,11 +227,11 @@ function Database(props) {
             </Col>
             <Col span={3} />
             <Col span={4}>
-              <div className="dropdown-box">
-                <p className="dropdown-label">Driving Ability</p>
+              <div className={styles['dropdown-box']}>
+                <p className={styles['dropdown-label']}>Driving Ability</p>
                 <Dropdown overlay={isDriverMenu}>
-                  <Button className="dropdown-button">
-                    <div className="dropdown-button-text">
+                  <Button className={styles['dropdown-button']}>
+                    <div className={styles['dropdown-button-text']}>
                       All
                       <DownOutlined />
                     </div>
@@ -242,11 +241,11 @@ function Database(props) {
             </Col>
             <Col span={3} />
             <Col span={4}>
-              <div className="dropdown-box">
-                <p className="dropdown-label">Age</p>
+              <div className={styles['dropdown-box']}>
+                <p className={styles['dropdown-label']}>Age</p>
                 <Dropdown overlay={ageMenu}>
-                  <Button className="dropdown-button">
-                    <div className="dropdown-button-text">
+                  <Button className={styles['dropdown-button']}>
+                    <div className={styles['dropdown-button-text']}>
                       {currentDriverOption}
                       <DownOutlined />
                     </div>
@@ -256,16 +255,16 @@ function Database(props) {
             </Col>
           </Row>
         </div>
-        <Divider className="divider" />
-        <p className="table-label">Search Table</p>
+        <Divider className={styles.divider} />
+        <p className={styles['table-label']}>Search Table</p>
 
-        <div className="table">
+        <div className={styles.table}>
           <Table
             columns={columns}
             dataSource={filteredData}
             loading={isLoading}
             size="small"
-            rowClassName="table-row"
+            rowClassName={styles['table-row']}
           />
         </div>
       </div>
