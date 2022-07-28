@@ -52,7 +52,7 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
 
   const getEditLink = () => {
     return (
-      <Link to={`/events/edit/${id}`}>
+      <Link to={`/event/view/${id}`}>
         <EditOutlined key="edit" />
       </Link>
     );

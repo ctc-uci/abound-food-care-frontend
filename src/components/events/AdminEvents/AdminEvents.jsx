@@ -107,9 +107,10 @@ const AdminEvents = () => {
   const renderEventsGrid = events => {
     const rows = events.map(event => (
       <Col key={event.eventId} span={8}>
-        <Link to={`/events/${event.eventId}`}>
+        <Link to={`/event/view/${event.eventId}`}>
           <EventCard
             key={event.eventId}
+            id={event.eventId}
             name={event.name}
             type={event.eventType}
             startDateTime={event.startDatetime}

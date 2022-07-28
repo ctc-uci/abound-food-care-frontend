@@ -90,7 +90,7 @@ const NavMenu = ({ cookies }) => {
               </>
             )}
             <Menu.Item className={styles['menu-item']} key="/profile" icon={<UserOutlined />}>
-              <Link to="/profile" className={styles.link}>
+              <Link to={`/profile/${cookies.get(cookieKeys.USER_ID)}`} className={styles.link}>
                 Profile
               </Link>
             </Menu.Item>

@@ -11,7 +11,6 @@ import CreateEvent from './pages/CreateEvent';
 import Volunteers from './pages/Volunteers';
 import Profile from './pages/Profile';
 import Event from './pages/Event';
-import Waivers from './pages/Waivers';
 import useViewPort from './common/useViewPort';
 
 import NavMenu from './components/NavMenu/NavMenu';
@@ -69,7 +68,7 @@ const App = () => {
                 }
               />
               <Route
-                path="/event/view/:id"
+                path="/event/view/:eventId"
                 exact
                 element={
                   <ProtectedRoute
@@ -93,19 +92,17 @@ const App = () => {
                   />
                 }
               />
-              {/* TODO add /profile/:id capability */}
               <Route
-                path="/profile"
+                path="/profile/:userId"
                 exact
                 element={
                   <ProtectedRoute
-                    Component={{ Profile }}
+                    Component={Profile}
                     redirectPath="/"
                     roles={[AUTH_ROLES.ADMIN_ROLE, AUTH_ROLES.VOLUNTEER_ROLE]}
                   />
                 }
               />
-              <Route path="/waivers" exact element={<Waivers />} />
             </Routes>
           </div>
         </Router>
