@@ -137,42 +137,11 @@ const EventPage = () => {
     !viewVolunteers && (
       <>
         <img src={EventPageImage} alt="Event Page Banner" />
-        <div
-          style={{
-            width: '80vw',
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}
-        >
-          <div
-            style={{
-              width: '46%',
-              height: '50em',
-              display: 'flex',
-              flexDirection: 'column',
-              marginLeft: '5%',
-              marginTop: '0.75rem',
-            }}
-          >
-            <div
-              style={{
-                backgroundColor: 'white',
-                height: '2.5rem',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-              }}
-            >
-              <p className="header">{eventData.name}</p>
-              <p
-                style={{
-                  fontWeight: 500,
-                  fontSize: '16px',
-                  color: '#888888',
-                  margin: 0,
-                }}
-              >
+        <div className={styles.eventPageContainer}>
+          <div className={styles.eventPageLeftContainer}>
+            <div className={styles.eventPageLeftSection}>
+              <p className={styles.header}>{eventData.name}</p>
+              <p className={styles.subhead}>
                 {eventData.eventType ? eventData.eventType : 'General Event'}
               </p>
             </div>
@@ -269,12 +238,12 @@ const EventPage = () => {
                   href={
                     eventData.waivers.filter(waiver => {
                       return waiver.userId !== null;
-                    })[0].link
+                    })[0]?.link
                   }
                   download={
                     eventData.waivers.filter(waiver => {
                       return waiver.userId !== null;
-                    })[0].name
+                    })[0]?.name
                   }
                 >
                   <Button

@@ -221,6 +221,7 @@ const AdminEvents = () => {
                   Event Type:
                   <Radio.Group
                     className={styles['event-type-radio']}
+                    style={{ margin: '0px 10px' }}
                     defaultValue="all"
                     onChange={onTypeChange}
                     value={eventTypeValue}
@@ -242,6 +243,7 @@ const AdminEvents = () => {
                   Event Status:
                   <Radio.Group
                     className={styles['status-type-radio']}
+                    style={{ margin: '0px 10px' }}
                     options={eventStatusOptions}
                     onChange={onStatusChange}
                     value={eventStatusValue}
