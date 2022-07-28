@@ -1,3 +1,4 @@
+import { instanceOf } from 'prop-types';
 import { Row, Col } from 'antd';
 import React, { useState, useEffect } from 'react';
 import UpcomingEvents from '../components/admin-dashboard-components/UpcomingEvents/UpcomingEvents';
@@ -6,8 +7,9 @@ import PastEvents from '../components/admin-dashboard-components/PastEvents/Past
 import EventList from '../components/events/EventList/EventList';
 import useViewPort from '../common/useViewPort';
 import { AFCBackend } from '../util/utils';
+import { Cookies, withCookies, cookieKeys } from '../util/cookie_utils';
 
-const VolunteerDashboard = () => {
+const VolunteerDashboard = ({ cookies }) => {
   const { width } = useViewPort();
   const breakpoint = 720;
 
@@ -47,10 +49,14 @@ const VolunteerDashboard = () => {
   return (
     // HARDCODED USERID FOR NOW
     <div className="dashboard-container">
-      <DashboardHeader userId={10} isAdmin={false} />
+      <DashboardHeader userId={cookies.get(cookieKeys.USER_ID)} isAdmin={false} />
       {renderDashboard()}
     </div>
   );
 };
 
-export default VolunteerDashboard;
+VolunteerDashboard.propTypes = {
+  cookies: instanceOf(Cookies).isRequired,
+};
+
+export default withCookies(VolunteerDashboard);

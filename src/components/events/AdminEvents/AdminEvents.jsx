@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { Input, Button, Radio, Row, Col, Card, Typography } from 'antd';
 import { FilterOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { AFCBackend } from '../../../util/utils';
-import EventCard from '../event/EventCard/EventCard';
-import EventList from '../event/EventList/EventList';
+import EventCard from '../Event/EventCard/EventCard';
+import EventList from '../Event/EventList/EventList';
 import useViewPort from '../../../common/useViewPort';
 import styles from './AdminEvents.module.css';
 import 'antd/dist/antd.less';
@@ -107,9 +107,10 @@ const AdminEvents = () => {
   const renderEventsGrid = events => {
     const rows = events.map(event => (
       <Col key={event.eventId} span={8}>
-        <Link to={`/events/${event.eventId}`}>
+        <Link to={`/event/view/${event.eventId}`}>
           <EventCard
             key={event.eventId}
+            id={event.eventId}
             name={event.name}
             type={event.eventType}
             startDateTime={event.startDatetime}

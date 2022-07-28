@@ -13,7 +13,6 @@ const Availability = () => {
       };
     });
     setSeries(generatedSeries);
-    console.log(generatedSeries);
     return generatedSeries;
   };
 

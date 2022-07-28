@@ -1,16 +1,16 @@
-.event-list{
+.event-list {
   margin-top: 1.5em;
 }
 
-.list-title{
+.list-title {
   color: black;
   opacity: 85%;
   font-size: 20px;
   font-weight: 850;
-  font-family: 'Avenir'
+  font-family: 'Avenir';
 }
 
-.event-list-card{
+.event-list-card {
   display: flex;
   flex-direction: row;
 }
@@ -54,24 +54,23 @@
   margin-bottom: 0em;
 }
 
-.ant-card-body{
+.ant-card-body {
   padding: 1em;
 }
 
-.ant-card{
+.ant-card {
   margin-top: 0.5em;
   margin-bottom: 0.5em;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
-
 }
 
-.list-header{
+.list-header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-#view-all-link{
+#view-all-link {
   padding-top: 0.5em;
 }

@@ -1,17 +1,27 @@
 import React, { useState } from 'react';
-import { Form, Button } from 'antd';
+import PropTypes from 'prop-types';
+import { Form, Button, Steps, Typography } from 'antd';
 import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import GeneralInfo from '../components/create-account/GeneralInfo';
-import DuiAndCrimHis from '../components/create-account/DuiAndCrimHis';
-import RolesAndSkills from '../components/create-account/RolesAndSkills';
-import WeeklyInfo from '../components/create-account/WeeklyInfo';
-// import { AFCBackend } from '../util/utils';
+import GeneralInfo from '../../components/create-account/GeneralInfo/GeneralInfo';
+import DuiAndCrimHis from '../../components/create-account/DuiAndCrimHis/DuiAndCrimHis';
+import RolesAndSkills from '../../components/create-account/RolesAndSkills/RolesAndSkills';
+import WeeklyInfo from '../../components/create-account/WeeklyInfo/WeeklyInfo';
+import { AFCBackend } from '../../util/utils';
 
-const CreateAccount = () => {
+import { registerWithEmailAndPassword } from '../../util/auth_utils';
+
+import styles from './CreateAccount.module.css';
+
+const { Text } = Typography;
+
+const { Step } = Steps;
+
+const CreateAccount = ({ setPageState, firstName, lastName, email, password, role, navigate }) => {
   const [formStep, setFormStep] = useState(0);
   const [availability, setAvailability] = useState([]);
+  const [missingAvailabilityErrorMessage, setMissingAvailabilityErrorMessage] = useState('');
   const [componentSize, setComponentSize] = useState('default');
 
   const onFormLayoutChange = ({ size }) => {
@@ -25,6 +35,10 @@ const CreateAccount = () => {
   const schema = yup.object({
     firstName: yup.string().required('First name is a required field'),
     lastName: yup.string().required('Last name is a required field'),
+    password: yup
+      .string()
+      .required('Password must be at least 6 characters')
+      .test('len', 'Password must be at least 6 characters', val => val?.length >= 6),
     role: yup.string().required(),
     organization: yup.string().required(),
     birthdate: yup.date().required(),
@@ -68,12 +82,13 @@ const CreateAccount = () => {
 
   const methods = useForm({
     defaultValues: {
-      firstName: '',
-      lastName: '',
+      firstName,
+      lastName,
+      password,
       role: 'volunteer',
       organization: '',
       birthdate: '',
-      email: '',
+      email,
       phone: '',
       preferredContactMethod: '',
       addressStreet: '',
@@ -81,15 +96,15 @@ const CreateAccount = () => {
       addressCity: '',
       addressState: '',
       weightLiftingAbility: null,
-      criminalHistory: false,
+      criminalHistory: null,
       criminalHistoryDetails: '',
-      duiHistory: false,
+      duiHistory: null,
       duiHistoryDetails: '',
-      completedChowmatchTraining: false,
+      completedChowmatchTraining: null,
       foodRunsInterest: false,
       distributionInterest: false,
-      canDrive: false,
-      willingToDrive: false,
+      canDrive: null,
+      willingToDrive: null,
       vehicleType: '',
       distance: null,
       firstAidTraining: false,
@@ -105,8 +120,33 @@ const CreateAccount = () => {
     delayError: 750,
   });
 
-  const incrementFormStep = () => {
-    setFormStep(cur => cur + 1);
+  const incrementFormStep = async () => {
+    const triggers = {
+      0: [
+        'firstName',
+        'lastName',
+        'password',
+        'organization',
+        'birthdate',
+        'email',
+        'phone',
+        'preferredContactMethod',
+        'addressStreet',
+        'addressCity',
+        'addressState',
+        'addressZip',
+      ],
+      1: [],
+      2: ['weightLiftingAbility', 'canDrive', 'willingToDrive'],
+    };
+    if (formStep === 1 && availability.length === 0) {
+      setMissingAvailabilityErrorMessage('Please select at least one availability slot.');
+      return;
+    }
+    const result = await methods.trigger(triggers[formStep]);
+    if (result) {
+      setFormStep(cur => cur + 1);
+    }
   };
 
   const decrementFormStep = () => {
@@ -146,58 +186,37 @@ const CreateAccount = () => {
     return languages;
   };
 
-  // TODO: backend connection once auth is finalized
-  const onSubmit = values => {
+  const onSubmit = async values => {
+    const result = await methods.trigger([
+      'duiHistory',
+      'criminalHistory',
+      'completedChowmatchTraining',
+    ]);
+    if (!result) {
+      return;
+    }
     try {
       const languages = buildLanguagesArray(values);
+      const { uid } = await registerWithEmailAndPassword(values.email, values.password, role);
 
       const payload = {
-        firstName: values.firstName,
-        lastName: values.lastName,
-        role: values.role,
-        organization: values.organization,
-        birthdate: values.birthdate,
-        email: values.email,
-        phone: values.phone,
-        preferredContactMethod: values.preferredContactMethod,
-        addressStreet: values.addressStreet,
-        addressZip: values.addressZip,
-        addressCity: values.addressCity,
-        addressState: values.addressState,
-        weightLiftingAbility: values.weightLiftingAbility,
-        criminalHistory: values.criminalHistory,
-        criminalHistoryDetails: values.criminalHistoryDetails,
-        duiHistory: values.duiHistory,
-        duiHistoryDetails: values.duiHistoryDetails,
-        completedChowmatchTraining: values.completedChowmatchTraining,
-        foodRunsInterest: values.foodRunsInterest,
-        distributionInterest: values.distributionInterest,
-        canDrive: values.canDrive,
-        willingToDrive: values.willingToDrive,
-        vehicleType: values.vehicleType,
-        distance: values.distance,
-        firstAidTraining: values.firstAidTraining,
-        serveSafeKnowledge: values.serveSafeKnowledge,
-        transportationExperience: values.transportationExperience,
-        movingWarehouseExperience: values.movingWarehouseExperience,
-        foodServiceIndustryKnowledge: values.foodServiceIndustryKnowledge,
+        ...values,
+        userId: uid,
+        role,
         languages,
-        additionalInformation: values.additionalInformation,
+        email,
         availabilities: availability,
       };
-      console.log(payload);
-      // await AFCBackend.post('/users/', payload);
+      await AFCBackend.post('/users/', payload);
+
+      navigate('/');
     } catch (e) {
-      console.log(e.message);
+      console.error(e.message);
     }
   };
 
-  const onError = (errors, e) => {
-    console.log(errors, e);
-  };
-
   return (
-    <div>
+    <div className={styles.wrapper}>
       <FormProvider {...methods}>
         <Form
           labelWrap
@@ -205,21 +224,32 @@ const CreateAccount = () => {
           wrapperCol={{ span: 8 }}
           size={componentSize}
           onValuesChange={onFormLayoutChange}
-          onFinish={methods.handleSubmit(onSubmit, onError)}
+          onFinish={methods.handleSubmit(onSubmit)}
         >
+          <Steps progressDot current={formStep}>
+            <Step title="General" />
+            <Step title="Availability" />
+            <Step title="Roles &amp; Skills" />
+            <Step title="Additional Info" />
+          </Steps>
           {formStep >= 0 && (
             <section hidden={formStep !== 0}>
-              <GeneralInfo />
+              <GeneralInfo
+                firstName={firstName}
+                lastName={lastName}
+                email={email}
+                password={password}
+              />
               <div>
                 <Button
-                  style={{
-                    background: '#115740',
-                    color: 'white',
-                    borderColor: '#115740',
-                    float: 'right',
-                  }}
-                  onClick={incrementFormStep}
+                  className={styles['login-signup-button']}
+                  onClick={() => setPageState('login')}
                 >
+                  Back
+                </Button>
+              </div>
+              <div>
+                <Button className={styles['next-button']} onClick={incrementFormStep}>
                   Next
                 </Button>
               </div>
@@ -228,24 +258,12 @@ const CreateAccount = () => {
           {formStep >= 1 && (
             <section hidden={formStep !== 1}>
               <WeeklyInfo availability={availability} setAvailability={setAvailability} />
+              <Text type="danger">{missingAvailabilityErrorMessage}</Text>
               <div>
-                <Button
-                  style={{
-                    borderColor: '#D9D9D9',
-                  }}
-                  onClick={decrementFormStep}
-                >
+                <Button className={styles['previous-button']} onClick={decrementFormStep}>
                   Previous
                 </Button>
-                <Button
-                  style={{
-                    background: '#115740',
-                    color: 'white',
-                    borderColor: '#115740',
-                    float: 'right',
-                  }}
-                  onClick={incrementFormStep}
-                >
+                <Button className={styles['next-button']} onClick={incrementFormStep}>
                   Next
                 </Button>
               </div>
@@ -255,23 +273,10 @@ const CreateAccount = () => {
             <section hidden={formStep !== 2}>
               <RolesAndSkills />
               <div>
-                <Button
-                  style={{
-                    borderColor: '#D9D9D9',
-                  }}
-                  onClick={decrementFormStep}
-                >
+                <Button className={styles['previous-button']} onClick={decrementFormStep}>
                   Previous
                 </Button>
-                <Button
-                  style={{
-                    background: '#115740',
-                    color: 'white',
-                    borderColor: '#115740',
-                    float: 'right',
-                  }}
-                  onClick={incrementFormStep}
-                >
+                <Button className={styles['next-button']} onClick={incrementFormStep}>
                   Next
                 </Button>
               </div>
@@ -281,22 +286,12 @@ const CreateAccount = () => {
             <section hidden={formStep !== 3}>
               <DuiAndCrimHis />
               <div>
-                <Button
-                  style={{
-                    borderColor: '#D9D9D9',
-                  }}
-                  onClick={decrementFormStep}
-                >
+                <Button className={styles['previous-button']} onClick={decrementFormStep}>
                   Previous
                 </Button>
                 <Button
-                  style={{
-                    background: '#115740',
-                    color: 'white',
-                    borderColor: '#115740',
-                    float: 'right',
-                  }}
-                  htmlType="submit"
+                  className={styles['next-button']}
+                  onClick={() => onSubmit(methods.getValues())}
                 >
                   Finish
                 </Button>
@@ -307,6 +302,16 @@ const CreateAccount = () => {
       </FormProvider>
     </div>
   );
+};
+
+CreateAccount.propTypes = {
+  setPageState: PropTypes.string.isRequired,
+  firstName: PropTypes.string.isRequired,
+  lastName: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
+  password: PropTypes.string.isRequired,
+  role: PropTypes.string.isRequired,
+  navigate: PropTypes.func.isRequired,
 };
 
 export default CreateAccount;

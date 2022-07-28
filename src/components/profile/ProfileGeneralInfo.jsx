@@ -116,8 +116,8 @@ const ProfileGeneralInfo = ({ userId }) => {
     }
   };
 
-  useEffect(() => {
-    getVolunteerData();
+  useEffect(async () => {
+    await getVolunteerData();
   }, []);
 
   return (
@@ -332,7 +332,7 @@ const ProfileGeneralInfo = ({ userId }) => {
 };
 
 ProfileGeneralInfo.propTypes = {
-  userId: PropTypes.number.isRequired,
+  userId: PropTypes.string.isRequired,
 };
 
 export default ProfileGeneralInfo;

@@ -2,6 +2,8 @@ import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Input, Radio, Form, Select, Checkbox, Row, Typography } from 'antd';
 
+import styles from './RolesAndSkills.module.css';
+
 const { Text } = Typography;
 
 const { Option } = Select;
@@ -14,7 +16,9 @@ const RolesAndSkills = () => {
 
   return (
     <div>
-      <h1>Interested Roles and Skills</h1>
+      <center>
+        <h1 className={styles.heading}>Interested Roles and Skills</h1>
+      </center>
       <section>
         <Form.Item label="Events Interested In">
           <Row>

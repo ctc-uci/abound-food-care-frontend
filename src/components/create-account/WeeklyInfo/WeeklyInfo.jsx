@@ -3,6 +3,8 @@ import Chart from 'react-apexcharts';
 import ApexCharts from 'apexcharts';
 import PropTypes from 'prop-types';
 
+import styles from './WeeklyInfo.module.css';
+
 const WeeklyInfo = ({ availability, setAvailability }) => {
   const [options, setOptions] = useState(null);
   const [series, setSeries] = useState(null);
@@ -218,10 +220,12 @@ const WeeklyInfo = ({ availability, setAvailability }) => {
 
   return (
     <div className="app">
-      <h1>Weekly Availability</h1>
-      <div className="row">
-        <div className="mixed-chart"> {renderChart()} </div>
-      </div>
+      <center>
+        <h1 className={styles.heading}>Weekly Availability</h1>
+        <div className="row">
+          <div className="mixed-chart"> {renderChart()} </div>
+        </div>
+      </center>
     </div>
   );
 };

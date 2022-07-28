@@ -196,7 +196,7 @@ const ProfileDUIAndCrimHistory = ({ userId }) => {
 };
 
 ProfileDUIAndCrimHistory.propTypes = {
-  userId: PropTypes.number.isRequired,
+  userId: PropTypes.string.isRequired,
 };
 
 export default ProfileDUIAndCrimHistory;

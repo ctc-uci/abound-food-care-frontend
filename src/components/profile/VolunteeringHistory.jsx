@@ -21,13 +21,6 @@ function VolunteeringHistory() {
 
   const parseDate = date => {
     return new Date(date).toLocaleDateString();
-    /*
-    console.log(newDate);
-    const month = date.substring(5, 7);
-    const day = date.substring(8, 10);
-    const year = date.substring(0, 4);
-    return `${month}/${day}/${year}`;
-    */
   };
 
   const parseTime = time => {
@@ -36,19 +29,6 @@ function VolunteeringHistory() {
       timeString.substring(0, timeString.length - 6) +
       timeString.substring(timeString.length - 3, timeString.length)
     );
-    /*
-    let startTime = time.substring(11, 16);
-    if (parseInt(startTime.substring(0, 2), 10) > 12) {
-      startTime = `${parseInt(startTime.substring(0, 2), 10) - 12}:${startTime.substring(3, 5)} pm`;
-    } else if (parseInt(startTime.substring(0, 2), 10) > 9) {
-      startTime = `${startTime.substring(0, 5)} am`;
-    } else if (parseInt(startTime.substring(0, 2), 10) == 0) {
-      startTime = `12:${startTime.substring(3, 5)} am`;
-    } else {
-      startTime = `${startTime.substring(1, 5)} am`;
-    }
-    return startTime;
-    */
   };
 
   const getEventsCount = async () => {

@@ -2,6 +2,8 @@ import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Radio, Form, Input, Typography } from 'antd';
 
+import styles from './DuiAndCrimHis.module.css';
+
 const { Text } = Typography;
 
 const DuiAndCrimHis = () => {
@@ -12,7 +14,9 @@ const DuiAndCrimHis = () => {
 
   return (
     <div>
-      <h1>DUI/Criminal History, Training, & Additional History</h1>
+      <center>
+        <h1 className={styles.heading}>DUI/Criminal History, Training, & Additional History</h1>
+      </center>
       <Controller
         control={control}
         name="duiHistory"
@@ -67,7 +71,7 @@ const DuiAndCrimHis = () => {
       />
       <Controller
         control={control}
-        name="completedChowmatch"
+        name="completedChowmatchTraining"
         render={({ field: { onChange, ref, value } }) => (
           <Form.Item label="Completed Chowmatch Training?" required>
             <Radio.Group onChange={onChange} ref={ref} value={value}>
@@ -75,7 +79,9 @@ const DuiAndCrimHis = () => {
               <Radio value="false">No</Radio>
             </Radio.Group>
             <Text type="danger">
-              {errors.completedChowmatch && <p>{errors.completedChowmatch.message}</p>}
+              {errors.completedChowmatchTraining && (
+                <p>{errors.completedChowmatchTraining.message}</p>
+              )}
             </Text>
           </Form.Item>
         )}
