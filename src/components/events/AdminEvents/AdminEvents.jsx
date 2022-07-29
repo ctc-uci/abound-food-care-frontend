@@ -84,12 +84,14 @@ const AdminEvents = () => {
     let filteredEvents = allEvents;
     if (type === 'all') {
       filteredEvents = allEvents;
-    } else if (type === 'distribution') {
-      filteredEvents = filteredEvents.filter(event => event.eventType === type);
+    } else if (type === 'Distribution') {
+      filteredEvents = filteredEvents.filter(event => event.eventType.toLowerCase() === type);
     } else if (type === 'food') {
-      filteredEvents = filteredEvents.filter(event => event.eventType === type);
+      filteredEvents = filteredEvents.filter(
+        event => event.eventType.toLowerCase() === 'food running',
+      );
     } else {
-      filteredEvents = filteredEvents.filter(event => event.eventType === type);
+      filteredEvents = filteredEvents.filter(event => event.eventType.toLowerCase() === type);
     }
     return getEventsByStatus(filteredEvents, status);
   };
