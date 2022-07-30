@@ -60,7 +60,7 @@ function Profile() {
           <ProfileGeneralInfo userId={userId} volunteerData={user} />
         </TabPane>
         <TabPane tab="Availability" key="2">
-          <ProfileAvailability userId={userId} />
+          <ProfileAvailability volunteerAvailability={user.availabilities} />
         </TabPane>
         <TabPane tab="Roles & Skills" key="3">
           <ProfileRolesSkills userId={userId} volunteerData={user} />

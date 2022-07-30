@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Chart from 'react-apexcharts';
-import { AFCBackend } from '../../util/utils';
 
-const ProfileAvailability = ({ userId }) => {
+const ProfileAvailability = ({ volunteerAvailability }) => {
   const [options, setOptions] = useState(null);
   const [series, setSeries] = useState([]);
   const [availabilityData, setAvailabilityData] = useState([]);
@@ -62,16 +61,6 @@ const ProfileAvailability = ({ userId }) => {
     },
   };
 
-  const getUserAvailability = async () => {
-    try {
-      const { data: res } = await AFCBackend.get(`/availability/${userId}`);
-      const { availabilities } = res;
-      setAvailabilityData(availabilities);
-    } catch (e) {
-      console.log(e.message);
-    }
-  };
-
   const convertData = times => {
     const data = [];
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -81,13 +70,13 @@ const ProfileAvailability = ({ userId }) => {
       );
       const dayArray = [];
       if (dataAvailability.length > 0) {
-        const d = dataAvailability[0];
-        const startTime = d.startTime.slice(0, d.startTime.lastIndexOf(':'));
-        const endTime = d.endTime.slice(0, d.endTime.lastIndexOf(':'));
-        let available = false;
+        const startTimes = dataAvailability.map(d => {
+          return d.startTime.slice(0, d.startTime.lastIndexOf(':'));
+        });
+
         for (let i = 0; i < times.length; i += 1) {
-          if (times[i] === startTime) available = true;
-          if (times[i] === endTime) available = false;
+          let available = false;
+          if (startTimes.includes(times[i])) available = true;
 
           if (available) dayArray.push(2);
           else dayArray.push(1);
@@ -101,6 +90,7 @@ const ProfileAvailability = ({ userId }) => {
     }
     return data;
   };
+
   const generateData = (count, data, index) => {
     const dayOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
     let i = 0;
@@ -137,11 +127,11 @@ const ProfileAvailability = ({ userId }) => {
   };
 
   useEffect(() => {
-    getUserAvailability();
-    if (availabilityData.length > 0) {
+    setAvailabilityData(volunteerAvailability);
+    if (volunteerAvailability.length > 0) {
       setDataRetrieved(true);
     }
-  }, [availabilityData]);
+  }, [volunteerAvailability]);
 
   useEffect(() => {
     setOptions(chartOptions);
@@ -167,7 +157,13 @@ const ProfileAvailability = ({ userId }) => {
 };
 
 ProfileAvailability.propTypes = {
-  userId: PropTypes.string.isRequired,
+  volunteerAvailability: PropTypes.arrayOf(
+    PropTypes.shape({
+      endTime: PropTypes.string,
+      startTime: PropTypes.string,
+      dayOfWeek: PropTypes.string,
+    }),
+  ).isRequired,
 };
 
 export default ProfileAvailability;
