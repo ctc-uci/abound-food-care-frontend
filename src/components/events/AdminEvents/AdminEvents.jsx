@@ -64,33 +64,65 @@ const AdminEvents = () => {
   const determineStatus = startDatetime =>
     new Date(startDatetime) > new Date() ? 'upcoming' : 'past';
 
-  const getEventsByTypeAndStatus = (type, status) => {
-    let filteredEvents = allEvents;
-    if (type === 'all' && status === 'all') {
-      filteredEvents = allEvents;
-    } else if (type === 'all' || status === 'all') {
-      const fieldToFilterBy = type !== 'all' ? type : status;
+  const getEventsByStatus = (events, status) => {
+    let filteredEvents = events;
+    if (status === 'all') {
+      filteredEvents = events;
+    } else if (status === 'upcoming') {
       filteredEvents = filteredEvents.filter(
-        event =>
-          event.eventType === fieldToFilterBy ||
-          determineStatus(event.startDatetime) === fieldToFilterBy,
+        event => determineStatus(event.startDatetime) === 'upcoming',
       );
-    } else if (
-      (type === 'distribution' || type === 'food') &&
-      (status === 'upcoming' || status === 'past')
-    ) {
+    } else if (status === 'past') {
       filteredEvents = filteredEvents.filter(
-        event => event.eventType === type && determineStatus(event.startDatetime) === status,
-      );
-    } else {
-      filteredEvents = filteredEvents.filter(
-        event =>
-          (event.eventType === type || event.eventType === 'null') &&
-          determineStatus(event.startDatetime) === status,
+        event => determineStatus(event.startDatetime) === 'past',
       );
     }
     return filteredEvents;
   };
+
+  const getEventsByTypeAndStatus = (type, status) => {
+    let filteredEvents = allEvents;
+    if (type === 'all') {
+      filteredEvents = allEvents;
+    } else if (type === 'Distribution') {
+      filteredEvents = filteredEvents.filter(event => event.eventType.toLowerCase() === type);
+    } else if (type === 'food') {
+      filteredEvents = filteredEvents.filter(
+        event => event.eventType.toLowerCase() === 'food running',
+      );
+    } else {
+      filteredEvents = filteredEvents.filter(event => event.eventType.toLowerCase() === type);
+    }
+    return getEventsByStatus(filteredEvents, status);
+  };
+
+  // const getEventsByTypeAndStatus = (type, status) => {
+  //   let filteredEvents = allEvents;
+  //   if (type === 'all' && status === 'all') {
+  //     filteredEvents = allEvents;
+  //   } else if (type === 'all' || status === 'all') {
+  //     const fieldToFilterBy = type !== 'all' ? type : status;
+  //     filteredEvents = filteredEvents.filter(
+  //       event =>
+  //         event.eventType === fieldToFilterBy ||
+  //         determineStatus(event.startDatetime) === fieldToFilterBy,
+  //     );
+  //   } else if (
+  //     (type === 'distribution' || type === 'food') &&
+  //     (status === 'upcoming' || status === 'past')
+  //   ) {
+  //     filteredEvents = filteredEvents.filter(
+  //       event => event.eventType === type && determineStatus(event.startDatetime) === status,
+  //     );
+  //   } else {
+  //     filteredEvents = filteredEvents.filter(
+  //       event =>
+  //         (event.eventType === type || event.eventType === 'null') &&
+  //         determineStatus(event.startDatetime) === status,
+  //     );
+  //   }
+  //   return filteredEvents;
+  // };
 
   const onTypeChange = e => {
     setEventTypeValue(e.target.value);
