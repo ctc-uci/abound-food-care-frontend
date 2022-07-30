@@ -9,7 +9,7 @@ import {
 import { Button, Divider, Tag, Space } from 'antd';
 import moment from 'moment';
 import { AFCBackend } from '../../../../util/utils';
-import PostEvent from '../PostEvent/PostEvent';
+import PostEvent from '../postevent/PostEvent';
 import EventVolunteerList from '../EventVolunteerList/EventVolunteerList';
 import EventPageImage from '../../../../assets/img/event-page-banner.png';
 import styles from './EventPage.module.css';
@@ -22,6 +22,7 @@ const EventPage = () => {
   const [isAddingPost, setIsAddingPost] = useState(false);
   const [viewVolunteers, setViewVolunteers] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
+  const [handoutWaiver, setHandoutWaiver] = useState(null);
   /*
   const [postEvent, setPostEvent] = useState(null);
   */
@@ -35,6 +36,14 @@ const EventPage = () => {
       setEventData(eventResponse[0]);
       if (eventResponse[0].posteventText !== undefined) {
         setIsEdit(true);
+      }
+
+      // get handout waiver for volunteers to download
+      const waivers = eventResponse[0].waivers.filter(waiver => {
+        return waiver.userId === null;
+      });
+      if (waivers.length > 0) {
+        setHandoutWaiver(waivers[0]);
       }
     } catch (e) {
       console.log(e.message);
@@ -164,7 +173,7 @@ const EventPage = () => {
                 justifyContent: 'space-between',
               }}
             >
-              <p className="header">{eventData.name}</p>
+              <p className={styles.header}>{eventData.name}</p>
               <p
                 style={{
                   fontWeight: 500,
@@ -187,7 +196,7 @@ const EventPage = () => {
                 justifyContent: 'space-between',
               }}
             >
-              <p className="header">Event Information</p>
+              <p className={styles.header}>Event Information</p>
               <div
                 style={{
                   display: 'flex',
@@ -262,21 +271,10 @@ const EventPage = () => {
                 height: '6em',
               }}
             >
-              <p className="header">Waivers</p>
+              <p className={styles.header}>Waivers</p>
               {/* TODO Multiple waiver downloads; currently, only single waiver download button */}
-              {eventData.waivers && eventData.waivers.length > 0 && (
-                <a
-                  href={
-                    eventData.waivers.filter(waiver => {
-                      return waiver.userId !== null;
-                    })[0].link
-                  }
-                  download={
-                    eventData.waivers.filter(waiver => {
-                      return waiver.userId !== null;
-                    })[0].name
-                  }
-                >
+              {handoutWaiver ? (
+                <a href={handoutWaiver.link} download={handoutWaiver.name}>
                   <Button
                     style={{
                       width: '13em',
@@ -290,6 +288,8 @@ const EventPage = () => {
                     <p style={{ padding: 0, margin: 0, paddingLeft: '.7em' }}>Click to Download</p>
                   </Button>
                 </a>
+              ) : (
+                <p>Waiver not available</p>
               )}
             </div>
           </div>
@@ -320,7 +320,7 @@ const EventPage = () => {
               >
                 <p
                   style={{
-                    fontFamily: 'AvenirNextLTProBold',
+                    fontFamily: 'Avenir Bold',
                     fontSize: '15px',
                     color: '#000000',
                     margin: 0,
@@ -381,7 +381,7 @@ const EventPage = () => {
             </div>
             {eventData.requirements && (
               <div
-                className="containerBorder"
+                className={styles.containerBorder}
                 style={{
                   backgroundColor: 'white',
                   display: 'flex',
@@ -391,7 +391,7 @@ const EventPage = () => {
                 }}
               >
                 <p
-                  className="header"
+                  className={styles.header}
                   style={{ paddingLeft: '1em', paddingTop: '0.5rem', paddingBottom: '0.5rem' }}
                 >
                   Requirements
