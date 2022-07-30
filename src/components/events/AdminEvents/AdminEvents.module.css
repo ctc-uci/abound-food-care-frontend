@@ -21,10 +21,9 @@
 }
 
 .filter-card {
-  margin: 15px;
-  margin-top: 25px;
+  margin: 10px 0 !important;
+  height: 80px;
   border-radius: 5px;
-  padding-bottom: 0px !important;
   display: flex;
   justify-content: space-between;
 }
@@ -32,6 +31,12 @@
 .search-bar {
   width: 70% !important;
   margin-left: 15%;
+}
+
+.search-bar:hover,
+.search-bar:focus {
+  border-color: var(--eden) !important;
+  box-shadow: none !important;
 }
 
 .filters {
@@ -64,7 +69,7 @@
   border-color: var(--eden);
   color: white;
   font-weight: 400;
-  margin: 0 0 40px 0;
+  margin: 0 0 40px 20px;
   float: right;
 }
 
@@ -75,7 +80,7 @@
   border-color: var(--eden);
   color: var(--eden);
   font-weight: 400;
-  margin: 0 5px 40px 15px;
+  margin: 0 5px 40px 20px;
   float: right;
 }
 
@@ -97,4 +102,9 @@
 
 .mobile-new-event-btn {
   margin-bottom: 1em;
+}
+
+.event-card-row {
+  padding-top: 15px;
+  padding-bottom: 20px;
 }

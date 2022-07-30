@@ -1,11 +1,52 @@
 @import '../../../../common/global.css';
 
+.eventPageContainer {
+  width: 80vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.eventPageLeftContainer {
+  width: 46%;
+  height: 50em;
+  display: flex;
+  flex-direction: column;
+  margin-left: 2%;
+  margin-top: 0.75rem;
+}
+
+.eventPageLeftSection {
+  background-color: white;
+  height: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.eventInfoContainer {
+  position: relative;
+  background-color: white;
+  margin-top: 4rem;
+  height: 7rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 .header {
-  font-family: "Avenir Bold";
+  font-family: "Avenir";
   color: black;
-  font-weight: 500;
+  font-weight: 800;
   font-size: 28px;
   padding: 0;
+  margin: 0;
+}
+
+.subhead {
+  color: #888888;
+  font-weight: 500;
+  font-size: 16px;
   margin: 0;
 }
 
