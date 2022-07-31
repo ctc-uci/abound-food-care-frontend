@@ -96,34 +96,6 @@ const AdminEvents = () => {
     return getEventsByStatus(filteredEvents, status);
   };
 
-  // const getEventsByTypeAndStatus = (type, status) => {
-  //   let filteredEvents = allEvents;
-  //   if (type === 'all' && status === 'all') {
-  //     filteredEvents = allEvents;
-  //   } else if (type === 'all' || status === 'all') {
-  //     const fieldToFilterBy = type !== 'all' ? type : status;
-  //     filteredEvents = filteredEvents.filter(
-  //       event =>
-  //         event.eventType === fieldToFilterBy ||
-  //         determineStatus(event.startDatetime) === fieldToFilterBy,
-  //     );
-  //   } else if (
-  //     (type === 'distribution' || type === 'food') &&
-  //     (status === 'upcoming' || status === 'past')
-  //   ) {
-  //     filteredEvents = filteredEvents.filter(
-  //       event => event.eventType === type && determineStatus(event.startDatetime) === status,
-  //     );
-  //   } else {
-  //     filteredEvents = filteredEvents.filter(
-  //       event =>
-  //         (event.eventType === type || event.eventType === 'null') &&
-  //         determineStatus(event.startDatetime) === status,
-  //     );
-  //   }
-  //   return filteredEvents;
-  // };
-
   const onTypeChange = e => {
     setEventTypeValue(e.target.value);
     const filteredEvents = getEventsByTypeAndStatus(e.target.value, eventStatusValue);
