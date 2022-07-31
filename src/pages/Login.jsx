@@ -13,6 +13,7 @@ function Login() {
   const [registerLastName, setRegisterLastName] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
   const [registerEmail, setRegisterEmail] = useState('');
+  const [registerRole, setRegisterRole] = useState('Volunteer');
   const [registerCode, setRegisterCode] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -27,9 +28,15 @@ function Login() {
       registerFirstName.length > 0 &&
       registerLastName.length > 0 &&
       registerPassword.length > 0 &&
-      registerEmail.length > 0
+      registerEmail.length > 0 &&
+      (registerRole === 'Volunteer' || registerCode.length > 0)
     ) {
-      setPageState('createPage');
+      if (registerRole === 'Volunteer') {
+        setPageState('createPage');
+      } else if (registerRole === 'Admin') {
+        console.log('Admin sign up');
+        // TODO Validate admin signup code, do something here
+      }
     } else {
       setErrorMessage("Inputs can't be empty.");
     }
@@ -240,22 +247,28 @@ function Login() {
                           }
                         />
                       </Form.Item>
-                      <Form.Item
-                        name="code"
-                        rules={[{ required: true, message: 'Please input your admin code!' }]}
-                      >
-                        <Input
-                          value={registerCode}
-                          onChange={e => setRegisterCode(e.target.value)}
-                          placeholder="Admin Code"
-                          prefix={
-                            <LockOutlined style={{ color: '#009A44', paddingRight: '13px' }} />
-                          }
-                        />
-                      </Form.Item>
+                      {registerRole === 'Admin' && (
+                        <Form.Item
+                          name="code"
+                          rules={[{ required: true, message: 'Please input your admin code!' }]}
+                        >
+                          <Input
+                            value={registerCode}
+                            onChange={e => setRegisterCode(e.target.value)}
+                            placeholder="Admin Code"
+                            prefix={
+                              <LockOutlined style={{ color: '#009A44', paddingRight: '13px' }} />
+                            }
+                          />
+                        </Form.Item>
+                      )}
 
                       <Form.Item label="Role" name="role">
-                        <Radio.Group defaultValue="Volunteer" buttonStyle="solid">
+                        <Radio.Group
+                          defaultValue="Volunteer"
+                          buttonStyle="solid"
+                          onChange={e => setRegisterRole(e.target.value)}
+                        >
                           <Radio.Button value="Volunteer">Volunteer</Radio.Button>
                           <Radio.Button value="Admin">Admin</Radio.Button>
                         </Radio.Group>
