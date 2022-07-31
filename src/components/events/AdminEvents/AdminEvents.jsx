@@ -85,7 +85,9 @@ const AdminEvents = () => {
     if (type === 'all') {
       filteredEvents = allEvents;
     } else if (type === 'distribution') {
-      filteredEvents = filteredEvents.filter(event => event.eventType.toLowerCase() === type);
+      filteredEvents = filteredEvents.filter(
+        event => event.eventType.toLowerCase() === 'distribution',
+      );
     } else if (type === 'food') {
       filteredEvents = filteredEvents.filter(
         event => event.eventType.toLowerCase() === 'food running',
