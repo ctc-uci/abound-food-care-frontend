@@ -7,7 +7,7 @@ import CreateAccount from './CreateAccount/CreateAccount';
 
 import '../common/global.css';
 
-function Login() {
+const Login = () => {
   const [pageState, setPageState] = useState('login');
   const [registerFirstName, setRegisterFirstName] = useState('');
   const [registerLastName, setRegisterLastName] = useState('');
@@ -334,6 +334,6 @@ function Login() {
       )}
     </>
   );
-}
+};
 
 export default Login;
