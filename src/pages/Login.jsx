@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Divider, Form, Input, Button, Checkbox, Radio } from 'antd';
 import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
 import { ReactComponent as AboundSignature } from '../Abound_Signature.svg';
@@ -15,7 +15,11 @@ function Login() {
   const [registerEmail, setRegisterEmail] = useState('');
   const [registerRole, setRegisterRole] = useState('Volunteer');
   const [registerCode, setRegisterCode] = useState('');
+  const [registerTOSChecked, setRegisterTOSChecked] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  useEffect(() => {
+    setErrorMessage('');
+  }, [pageState]);
 
   const forgotPassword = () => {};
 
@@ -29,7 +33,8 @@ function Login() {
       registerLastName.length > 0 &&
       registerPassword.length > 0 &&
       registerEmail.length > 0 &&
-      (registerRole === 'Volunteer' || registerCode.length > 0)
+      (registerRole === 'Volunteer' || registerCode.length > 0) &&
+      registerTOSChecked
     ) {
       if (registerRole === 'Volunteer') {
         setPageState('createPage');
@@ -37,6 +42,10 @@ function Login() {
         console.log('Admin sign up');
         // TODO Validate admin signup code, do something here
       }
+    } else if (!registerTOSChecked) {
+      setErrorMessage('You must agree to the TOS and Privacy Policy.');
+    } else if (registerRole === 'Admin' && registerCode.length === 0) {
+      setErrorMessage('You must enter an admin code to proceed.');
     } else {
       setErrorMessage("Inputs can't be empty.");
     }
@@ -274,7 +283,7 @@ function Login() {
                         </Radio.Group>
                       </Form.Item>
                       <Form.Item name="TOSPP" valuePropName="checked">
-                        <Checkbox>
+                        <Checkbox onChange={e => setRegisterTOSChecked(e.target.checked)}>
                           I agree to the &nbsp;
                           <a className="TOS" href="*" style={{ color: '#009A44' }}>
                             Terms of Service
