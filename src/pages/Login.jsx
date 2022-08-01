@@ -5,7 +5,7 @@ import { ReactComponent as AboundSignature } from '../Abound_Signature.svg';
 
 import CreateAccount from './CreateAccount/CreateAccount';
 
-import 'antd/dist/antd.css';
+import '../common/global.css';
 
 function Login() {
   const [pageState, setPageState] = useState('login');
