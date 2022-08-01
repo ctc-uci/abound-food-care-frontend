@@ -64,32 +64,41 @@ const AdminEvents = () => {
   const determineStatus = startDatetime =>
     new Date(startDatetime) > new Date() ? 'upcoming' : 'past';
 
+  const getEventsByStatus = (events, status) => {
+    let filteredEvents = events;
+    if (status === 'all') {
+      filteredEvents = events;
+    } else if (status === 'upcoming') {
+      filteredEvents = filteredEvents.filter(
+        event => determineStatus(event.startDatetime) === 'upcoming',
+      );
+    } else if (status === 'past') {
+      filteredEvents = filteredEvents.filter(
+        event => determineStatus(event.startDatetime) === 'past',
+      );
+    }
+    return filteredEvents;
+  };
+
   const getEventsByTypeAndStatus = (type, status) => {
     let filteredEvents = allEvents;
-    if (type === 'all' && status === 'all') {
+    if (type === 'all') {
       filteredEvents = allEvents;
-    } else if (type === 'all' || status === 'all') {
-      const fieldToFilterBy = type !== 'all' ? type : status;
+    } else if (type === 'distribution') {
       filteredEvents = filteredEvents.filter(
-        event =>
-          event.eventType === fieldToFilterBy ||
-          determineStatus(event.startDatetime) === fieldToFilterBy,
+        event => event.eventType.toLowerCase() === 'distribution',
       );
-    } else if (
-      (type === 'distribution' || type === 'food') &&
-      (status === 'upcoming' || status === 'past')
-    ) {
+    } else if (type === 'food') {
       filteredEvents = filteredEvents.filter(
-        event => event.eventType === type && determineStatus(event.startDatetime) === status,
+        event => event.eventType.toLowerCase() === 'food running',
       );
     } else {
       filteredEvents = filteredEvents.filter(
         event =>
-          (event.eventType === type || event.eventType === 'null') &&
-          determineStatus(event.startDatetime) === status,
+          event.eventType !== 'Distribution' && event.eventType.toLowerCase() !== 'food running',
       );
     }
-    return filteredEvents;
+    return getEventsByStatus(filteredEvents, status);
   };
 
   const onTypeChange = e => {
