@@ -63,7 +63,7 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
       {loading && <div>Loading Event Data...</div>}
       {!loading && (
         <>
-          {type === 'distribution' && (
+          {type === 'Distribution' && (
             <Card
               className={styles['event-card']}
               title={name}
@@ -87,7 +87,7 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
               </p>
             </Card>
           )}
-          {type === 'food' && (
+          {type === 'Food Running' && (
             <Card
               className={styles['event-card']}
               title={name}
@@ -111,7 +111,7 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
               </p>
             </Card>
           )}
-          {type !== 'distribution' && type !== 'food' && (
+          {type !== 'Distribution' && type !== 'Food Running' && (
             <Card
               className={styles['event-card']}
               title={name}

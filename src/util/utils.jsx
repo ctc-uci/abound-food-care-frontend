@@ -36,4 +36,9 @@ const getHourDiff = (timestamp1, timestamp2) => {
   return Math.abs(d1 - d2) / 36e5;
 };
 
-export { AFCBackend, getMonthString, getTimeInPST, getHourDiff };
+const phoneRegExp =
+  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+
+const zipRegExp = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
+
+export { AFCBackend, getMonthString, getTimeInPST, getHourDiff, phoneRegExp, zipRegExp };

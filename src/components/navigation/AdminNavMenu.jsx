@@ -12,9 +12,9 @@ import {
 import { useNavigate } from 'react-router';
 import { instanceOf } from 'prop-types';
 import { Cookies, withCookies } from '../../util/cookie_utils';
-import Logo from '../../assets/Logo.png';
-import './navMenu.css';
 import { logout } from '../../util/auth_utils';
+import Logo from '../../assets/Logo.png';
+import '../NavMenu/NavMenu.module.css';
 
 const { Sider } = Layout;
 

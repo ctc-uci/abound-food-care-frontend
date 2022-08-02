@@ -219,11 +219,11 @@ const WeeklyInfo = ({ availability, setAvailability }) => {
   };
 
   return (
-    <div className="app">
+    <div>
       <center>
         <h1 className={styles.heading}>Weekly Availability</h1>
-        <div className="row">
-          <div className="mixed-chart"> {renderChart()} </div>
+        <div>
+          <div> {renderChart()} </div>
         </div>
       </center>
     </div>

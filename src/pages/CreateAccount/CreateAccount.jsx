@@ -8,7 +8,7 @@ import GeneralInfo from '../../components/create-account/GeneralInfo/GeneralInfo
 import DuiAndCrimHis from '../../components/create-account/DuiAndCrimHis/DuiAndCrimHis';
 import RolesAndSkills from '../../components/create-account/RolesAndSkills/RolesAndSkills';
 import WeeklyInfo from '../../components/create-account/WeeklyInfo/WeeklyInfo';
-import { AFCBackend } from '../../util/utils';
+import { AFCBackend, phoneRegExp, zipRegExp } from '../../util/utils';
 
 import { AUTH_ROLES, registerWithEmailAndPassword } from '../../util/auth_utils';
 
@@ -27,10 +27,6 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
   };
-
-  const phoneRegExp =
-    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
-  const zipRegExp = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
 
   const schema = yup.object({
     firstName: yup.string().required('First name is a required field'),

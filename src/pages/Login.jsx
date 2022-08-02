@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { instanceOf } from 'prop-types';
-import 'antd/dist/antd.css';
 import { Card, Divider, Form, Input, Button, Checkbox, Radio } from 'antd';
 import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
 
@@ -140,6 +139,8 @@ function Login({ cookies }) {
                         Sign Up
                       </Button>
                     </div>
+
+                    <Divider style={{ marginTop: 3 }} />
 
                     <Form>
                       <Form.Item
