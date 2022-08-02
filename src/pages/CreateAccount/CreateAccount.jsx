@@ -10,7 +10,7 @@ import RolesAndSkills from '../../components/create-account/RolesAndSkills/Roles
 import WeeklyInfo from '../../components/create-account/WeeklyInfo/WeeklyInfo';
 import { AFCBackend } from '../../util/utils';
 
-import { registerWithEmailAndPassword } from '../../util/auth_utils';
+import { AUTH_ROLES, registerWithEmailAndPassword } from '../../util/auth_utils';
 
 import styles from './CreateAccount.module.css';
 
@@ -139,11 +139,11 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
       1: [],
       2: ['weightLiftingAbility', 'canDrive', 'willingToDrive'],
     };
-    if (formStep === 1 && availability.length === 0) {
+    if (role === AUTH_ROLES.VOLUNTEER_ROLE && formStep === 1 && availability.length === 0) {
       setMissingAvailabilityErrorMessage('Please select at least one availability slot.');
       return;
     }
-    const result = await methods.trigger(triggers[formStep]);
+    const result = await methods.trigger(triggers[formStep + (role === AUTH_ROLES.ADMIN_ROLE)]);
     if (result) {
       setFormStep(cur => cur + 1);
     }
@@ -207,6 +207,7 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
         email,
         availabilities: availability,
       };
+      console.log(payload);
       await AFCBackend.post('/users/', payload);
 
       navigate('/');
@@ -228,7 +229,7 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
         >
           <Steps progressDot current={formStep}>
             <Step title="General" />
-            <Step title="Availability" />
+            {role === AUTH_ROLES.VOLUNTEER_ROLE && <Step title="Availability" />}
             <Step title="Roles &amp; Skills" />
             <Step title="Additional Info" />
           </Steps>
@@ -255,7 +256,7 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
               </div>
             </section>
           )}
-          {formStep >= 1 && (
+          {formStep >= 1 && role === AUTH_ROLES.VOLUNTEER_ROLE && (
             <section hidden={formStep !== 1}>
               <WeeklyInfo availability={availability} setAvailability={setAvailability} />
               <Text type="danger">{missingAvailabilityErrorMessage}</Text>
@@ -269,8 +270,8 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
               </div>
             </section>
           )}
-          {formStep >= 2 && (
-            <section hidden={formStep !== 2}>
+          {formStep >= 2 - (role === AUTH_ROLES.ADMIN_ROLE) && (
+            <section hidden={formStep !== 2 - (role === AUTH_ROLES.ADMIN_ROLE)}>
               <RolesAndSkills />
               <div>
                 <Button className={styles['previous-button']} onClick={decrementFormStep}>
@@ -282,8 +283,8 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
               </div>
             </section>
           )}
-          {formStep >= 3 && (
-            <section hidden={formStep !== 3}>
+          {formStep >= 3 - (role === AUTH_ROLES.ADMIN_ROLE) && (
+            <section hidden={formStep !== 3 - (role === AUTH_ROLES.ADMIN_ROLE)}>
               <DuiAndCrimHis />
               <div>
                 <Button className={styles['previous-button']} onClick={decrementFormStep}>

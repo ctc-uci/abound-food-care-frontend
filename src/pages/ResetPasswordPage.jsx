@@ -22,6 +22,7 @@ const schema = yup.object({
 const { Title, Text } = Typography;
 
 const ResetPasswordForm = ({ code }) => {
+  // SUGGESTION: COPY /auth DESIGN
   const [componentSize, setComponentSize] = useState('default');
   const {
     handleSubmit,

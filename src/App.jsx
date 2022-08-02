@@ -43,8 +43,8 @@ const App = () => {
                   />
                 }
               />
-              <Route path="/reset-password" element={<ResetPassword redirectPath="/" />} />
               <Route path="/auth" exact element={<Login />} />
+              <Route path="/reset-password" element={<ResetPassword redirectPath="/" />} />
               <Route
                 path="/events"
                 exact

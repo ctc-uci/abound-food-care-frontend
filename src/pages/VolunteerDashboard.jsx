@@ -47,7 +47,6 @@ const VolunteerDashboard = ({ cookies }) => {
   };
 
   return (
-    // HARDCODED USERID FOR NOW
     <div className="dashboard-container">
       <DashboardHeader userId={cookies.get(cookieKeys.USER_ID)} isAdmin={false} />
       {renderDashboard()}

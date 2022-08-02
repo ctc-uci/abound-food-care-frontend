@@ -63,7 +63,7 @@ const NavMenu = ({ cookies }) => {
                 Events
               </Link>
             </Menu.Item>
-            {isAdmin ? (
+            {isAdmin && (
               <>
                 <Menu.Item
                   className={styles['menu-item']}
@@ -77,14 +77,6 @@ const NavMenu = ({ cookies }) => {
                 <Menu.Item className={styles['menu-item']} key="/hours" icon={<ProfileOutlined />}>
                   <Link to="/hours" className={styles.link}>
                     Hours Log
-                  </Link>
-                </Menu.Item>
-              </>
-            ) : (
-              <>
-                <Menu.Item className={styles['menu-item']} key="/history" icon={<TableOutlined />}>
-                  <Link to="/volunteeringHistory" className={styles.link}>
-                    Volunteering History
                   </Link>
                 </Menu.Item>
               </>
