@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
-import { Form, Button } from 'antd';
+import PropTypes from 'prop-types';
+import { Form, Button, Steps } from 'antd';
 import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import GeneralInfo from '../components/create-account/GeneralInfo';
-import DuiAndCrimHis from '../components/create-account/DuiAndCrimHis';
-import RolesAndSkills from '../components/create-account/RolesAndSkills';
-import WeeklyInfo from '../components/create-account/WeeklyInfo';
-// import { AFCBackend } from '../util/utils';
+import GeneralInfo from '../../components/create-account/GeneralInfo/GeneralInfo';
+import DuiAndCrimHis from '../../components/create-account/DuiAndCrimHis/DuiAndCrimHis';
+import RolesAndSkills from '../../components/create-account/RolesAndSkills/RolesAndSkills';
+import WeeklyInfo from '../../components/create-account/WeeklyInfo/WeeklyInfo';
+import { AFCBackend, phoneRegExp, zipRegExp } from '../../util/utils';
 
-const CreateAccount = () => {
+import styles from './CreateAccount.module.css';
+
+const { Step } = Steps;
+
+const CreateAccount = ({ setPageState, firstName, lastName, email }) => {
   const [formStep, setFormStep] = useState(0);
   const [availability, setAvailability] = useState([]);
   const [componentSize, setComponentSize] = useState('default');
@@ -17,10 +22,6 @@ const CreateAccount = () => {
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
   };
-
-  const phoneRegExp =
-    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
-  const zipRegExp = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
 
   const schema = yup.object({
     firstName: yup.string().required('First name is a required field'),
@@ -68,12 +69,12 @@ const CreateAccount = () => {
 
   const methods = useForm({
     defaultValues: {
-      firstName: '',
-      lastName: '',
+      firstName,
+      lastName,
       role: 'volunteer',
       organization: '',
       birthdate: '',
-      email: '',
+      email,
       phone: '',
       preferredContactMethod: '',
       addressStreet: '',
@@ -147,57 +148,15 @@ const CreateAccount = () => {
   };
 
   // TODO: backend connection once auth is finalized
-  const onSubmit = values => {
-    try {
-      const languages = buildLanguagesArray(values);
+  const onSubmit = async values => {
+    const languages = buildLanguagesArray(values);
 
-      const payload = {
-        firstName: values.firstName,
-        lastName: values.lastName,
-        role: values.role,
-        organization: values.organization,
-        birthdate: values.birthdate,
-        email: values.email,
-        phone: values.phone,
-        preferredContactMethod: values.preferredContactMethod,
-        addressStreet: values.addressStreet,
-        addressZip: values.addressZip,
-        addressCity: values.addressCity,
-        addressState: values.addressState,
-        weightLiftingAbility: values.weightLiftingAbility,
-        criminalHistory: values.criminalHistory,
-        criminalHistoryDetails: values.criminalHistoryDetails,
-        duiHistory: values.duiHistory,
-        duiHistoryDetails: values.duiHistoryDetails,
-        completedChowmatchTraining: values.completedChowmatchTraining,
-        foodRunsInterest: values.foodRunsInterest,
-        distributionInterest: values.distributionInterest,
-        canDrive: values.canDrive,
-        willingToDrive: values.willingToDrive,
-        vehicleType: values.vehicleType,
-        distance: values.distance,
-        firstAidTraining: values.firstAidTraining,
-        serveSafeKnowledge: values.serveSafeKnowledge,
-        transportationExperience: values.transportationExperience,
-        movingWarehouseExperience: values.movingWarehouseExperience,
-        foodServiceIndustryKnowledge: values.foodServiceIndustryKnowledge,
-        languages,
-        additionalInformation: values.additionalInformation,
-        availabilities: availability,
-      };
-      console.log(payload);
-      // await AFCBackend.post('/users/', payload);
-    } catch (e) {
-      console.log(e.message);
-    }
-  };
-
-  const onError = (errors, e) => {
-    console.log(errors, e);
+    const payload = { ...values, languages, availabilities: availability };
+    await AFCBackend.post('/users/', payload);
   };
 
   return (
-    <div>
+    <div className={styles.wrapper}>
       <FormProvider {...methods}>
         <Form
           labelWrap
@@ -205,21 +164,27 @@ const CreateAccount = () => {
           wrapperCol={{ span: 8 }}
           size={componentSize}
           onValuesChange={onFormLayoutChange}
-          onFinish={methods.handleSubmit(onSubmit, onError)}
+          onFinish={methods.handleSubmit(onSubmit)}
         >
+          <Steps progressDot current={formStep}>
+            <Step title="General" />
+            <Step title="Availability" />
+            <Step title="Roles &amp; Skills" />
+            <Step title="Additional Info" />
+          </Steps>
           {formStep >= 0 && (
             <section hidden={formStep !== 0}>
-              <GeneralInfo />
+              <GeneralInfo firstName={firstName} lastName={lastName} email={email} />
               <div>
                 <Button
-                  style={{
-                    background: '#115740',
-                    color: 'white',
-                    borderColor: '#115740',
-                    float: 'right',
-                  }}
-                  onClick={incrementFormStep}
+                  className={styles['login-signup-button']}
+                  onClick={() => setPageState('login')}
                 >
+                  Back
+                </Button>
+              </div>
+              <div>
+                <Button className={styles['next-button']} onClick={incrementFormStep}>
                   Next
                 </Button>
               </div>
@@ -229,23 +194,10 @@ const CreateAccount = () => {
             <section hidden={formStep !== 1}>
               <WeeklyInfo availability={availability} setAvailability={setAvailability} />
               <div>
-                <Button
-                  style={{
-                    borderColor: '#D9D9D9',
-                  }}
-                  onClick={decrementFormStep}
-                >
+                <Button className={styles['previous-button']} onClick={decrementFormStep}>
                   Previous
                 </Button>
-                <Button
-                  style={{
-                    background: '#115740',
-                    color: 'white',
-                    borderColor: '#115740',
-                    float: 'right',
-                  }}
-                  onClick={incrementFormStep}
-                >
+                <Button className={styles['next-button']} onClick={incrementFormStep}>
                   Next
                 </Button>
               </div>
@@ -255,23 +207,10 @@ const CreateAccount = () => {
             <section hidden={formStep !== 2}>
               <RolesAndSkills />
               <div>
-                <Button
-                  style={{
-                    borderColor: '#D9D9D9',
-                  }}
-                  onClick={decrementFormStep}
-                >
+                <Button className={styles['previous-button']} onClick={decrementFormStep}>
                   Previous
                 </Button>
-                <Button
-                  style={{
-                    background: '#115740',
-                    color: 'white',
-                    borderColor: '#115740',
-                    float: 'right',
-                  }}
-                  onClick={incrementFormStep}
-                >
+                <Button className={styles['next-button']} onClick={incrementFormStep}>
                   Next
                 </Button>
               </div>
@@ -281,23 +220,10 @@ const CreateAccount = () => {
             <section hidden={formStep !== 3}>
               <DuiAndCrimHis />
               <div>
-                <Button
-                  style={{
-                    borderColor: '#D9D9D9',
-                  }}
-                  onClick={decrementFormStep}
-                >
+                <Button className={styles['previous-button']} onClick={decrementFormStep}>
                   Previous
                 </Button>
-                <Button
-                  style={{
-                    background: '#115740',
-                    color: 'white',
-                    borderColor: '#115740',
-                    float: 'right',
-                  }}
-                  htmlType="submit"
-                >
+                <Button className={styles['next-button']} htmlType="submit">
                   Finish
                 </Button>
               </div>
@@ -307,6 +233,13 @@ const CreateAccount = () => {
       </FormProvider>
     </div>
   );
+};
+
+CreateAccount.propTypes = {
+  setPageState: PropTypes.string.isRequired,
+  firstName: PropTypes.string.isRequired,
+  lastName: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
 };
 
 export default CreateAccount;
