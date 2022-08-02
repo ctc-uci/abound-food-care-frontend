@@ -8,7 +8,7 @@ import { AFCBackend } from '../../util/utils';
 
 const { Text } = Typography;
 
-const ProfileDUIAndCrimHistory = ({ userId }) => {
+const ProfileDUIAndCrimHistory = ({ userId, volunteerData }) => {
   const [componentSize, setComponentSize] = useState('default');
   const [isEditable, setIsEditable] = useState(false);
   const [defaultValues, setDefaultValues] = useState({});
@@ -36,24 +36,19 @@ const ProfileDUIAndCrimHistory = ({ userId }) => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema), mode: 'onChange', delayError: 750 });
 
-  const getVolunteerData = async () => {
-    try {
-      const { data: volunteerData } = await AFCBackend.get(`/users/${userId}`);
-      setDefaultValues({
-        duiHistory: volunteerData.duiHistory,
-        duiHistoryDetails: volunteerData.duiHistoryDetails,
-        criminalHistory: volunteerData.criminalHistory,
-        criminalHistoryDetails: volunteerData.criminalHistoryDetails,
-        additionalInformation: volunteerData.additionalInformation,
-      });
-      setValue('duiHistory', volunteerData.duiHistory);
-      setValue('duiHistoryDetails', volunteerData.duiHistoryDetails);
-      setValue('criminalHistory', volunteerData.criminalHistory);
-      setValue('criminalHistoryDetails', volunteerData.criminalHistoryDetails);
-      setValue('additionalInfo', volunteerData.additionalInformation);
-    } catch (e) {
-      console.log(e.message);
-    }
+  const getVolunteerData = () => {
+    setDefaultValues({
+      duiHistory: volunteerData.duiHistory,
+      duiHistoryDetails: volunteerData.duiHistoryDetails,
+      criminalHistory: volunteerData.criminalHistory,
+      criminalHistoryDetails: volunteerData.criminalHistoryDetails,
+      additionalInformation: volunteerData.additionalInformation,
+    });
+    setValue('duiHistory', volunteerData.duiHistory);
+    setValue('duiHistoryDetails', volunteerData.duiHistoryDetails);
+    setValue('criminalHistory', volunteerData.criminalHistory);
+    setValue('criminalHistoryDetails', volunteerData.criminalHistoryDetails);
+    setValue('additionalInfo', volunteerData.additionalInformation);
   };
 
   const handleEdit = () => {
@@ -196,7 +191,8 @@ const ProfileDUIAndCrimHistory = ({ userId }) => {
 };
 
 ProfileDUIAndCrimHistory.propTypes = {
-  userId: PropTypes.number.isRequired,
+  userId: PropTypes.string.isRequired,
+  volunteerData: PropTypes.oneOfType([PropTypes.object]).isRequired,
 };
 
 export default ProfileDUIAndCrimHistory;
