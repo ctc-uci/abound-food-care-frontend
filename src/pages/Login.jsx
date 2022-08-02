@@ -9,6 +9,7 @@ import {
   logInWithEmailAndPassword,
   useNavigate,
   getCurrentUser,
+  AFCBackend,
 } from '../util/auth_utils';
 import { Cookies, withCookies } from '../util/cookie_utils';
 import { ReactComponent as AboundSignature } from '../Abound_Signature.svg';
@@ -18,29 +19,20 @@ import ForgotPassword from '../components/ForgotPassword/ForgotPassword';
 
 function Login({ cookies }) {
   const navigate = useNavigate();
-  const [adminCodes, setAdminCodes] = useState([]);
+  const [adminCodeStatus, setAdminCodeStatus] = useState('');
 
   useEffect(async () => {
     const user = await getCurrentUser(auth);
     if (user !== null) {
       navigate('/');
     }
-    setAdminCodes(['test123', '123test']);
   }, []);
 
   const [pageState, setPageState] = useState('login');
-  // const [registerFirstName, setRegisterFirstName] = useState('');
-  // const [registerLastName, setRegisterLastName] = useState('');
-  // const [registerCode, setRegisterCode] = useState('');
-  // const [errorMessage, setErrorMessage] = useState('');
 
   const [loginEmail, setLoginEmail] = useState('');
 
   const [loginPassword, setLoginPassword] = useState('');
-
-  // const [registerEmail, setRegisterEmail] = useState('');
-
-  // const [registerPassword, setRegisterPassword] = useState('');
 
   const [role, setRole] = useState(AUTH_ROLES.VOLUNTEER_ROLE);
 
@@ -65,37 +57,21 @@ function Login({ cookies }) {
 
   const signUp = async () => {
     const vals = await form.validateFields();
-    console.log(vals);
-    // if (!adminCodes.includes(vals.code)) {
-    //   form.setFields([{ name: 'role', errors: ['Invalid admin code'] }]);
-    // }
-    setValues(vals);
-    // if (
-    //   registerFirstName.length > 0 &&
-    //   registerLastName.length > 0 &&
-    //   registerPassword.length > 0 &&
-    //   registerEmail.length > 0
-    // ) {
-    setPageState('createPage');
-    // } else {
-    //   setErrorMessage("Inputs can't be empty.");
-    // }
+    const { data } = await AFCBackend.get(`/adminCode/code/${vals.code}`);
+    if (!data.length) {
+      setAdminCodeStatus('error');
+    } else {
+      setAdminCodeStatus('');
+      setValues(vals);
+      setPageState('createPage');
+    }
   };
 
   return (
     <>
       <ForgotPassword isOpen={isOpen} setIsOpen={setIsOpen} />
       {pageState === 'createPage' ? (
-        <CreateAccount
-          setPageState={setPageState}
-          // firstName={registerFirstName}
-          // lastName={registerLastName}
-          // email={registerEmail}
-          // password={registerPassword}
-          {...values}
-          role={role}
-          navigate={navigate}
-        />
+        <CreateAccount setPageState={setPageState} {...values} role={role} navigate={navigate} />
       ) : (
         <Card
           style={{
@@ -167,11 +143,7 @@ function Login({ cookies }) {
                         />
                       </Form.Item>
 
-                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Form.Item name="remember" valuePropName="checked">
-                          <Checkbox>Remember me</Checkbox>
-                        </Form.Item>
-
+                      <div style={{ display: 'flex', justifyContent: 'center' }}>
                         <Form.Item>
                           <Button
                             style={{ padding: 0, color: '#009A44' }}
@@ -241,8 +213,6 @@ function Login({ cookies }) {
                         rules={[{ required: true, message: 'Please input your first name!' }]}
                       >
                         <Input
-                          // value={form.firstName}
-                          // onChange={e => setRegisterFirstName(e.target.value)}
                           placeholder="First Name"
                           prefix={
                             <UserOutlined style={{ color: '#009A44', paddingRight: '13px' }} />
@@ -254,8 +224,6 @@ function Login({ cookies }) {
                         rules={[{ required: true, message: 'Please input your last name!' }]}
                       >
                         <Input
-                          // value={registerLastName}
-                          // onChange={e => setRegisterLastName(e.target.value)}
                           placeholder="Last Name"
                           prefix={
                             <UserOutlined style={{ color: '#009A44', paddingRight: '13px' }} />
@@ -273,8 +241,6 @@ function Login({ cookies }) {
                         ]}
                       >
                         <Input
-                          // value={registerEmail}
-                          // onChange={e => setRegisterEmail(e.target.value)}
                           placeholder="Email"
                           prefix={
                             <MailOutlined style={{ color: '#009A44', paddingRight: '13px' }} />
@@ -293,8 +259,6 @@ function Login({ cookies }) {
                         ]}
                       >
                         <Input.Password
-                          // value={registerPassword}
-                          // onChange={e => setRegisterPassword(e.target.value)}
                           placeholder="Password"
                           prefix={
                             <LockOutlined style={{ color: '#009A44', paddingRight: '13px' }} />
@@ -307,15 +271,15 @@ function Login({ cookies }) {
                           rules={[
                             {
                               required: true,
-                              type: 'enum',
-                              enum: adminCodes,
+                              // type: 'enum',
+                              // enum: adminCodes,
                               message: 'Invalid admin code',
                             },
                           ]}
+                          hasFeedback
+                          validateStatus={adminCodeStatus}
                         >
                           <Input
-                            // value={registerCode}
-                            // onChange={e => setRegisterCode(e.target.value)}
                             placeholder="Admin Code"
                             prefix={
                               <LockOutlined style={{ color: '#009A44', paddingRight: '13px' }} />
@@ -326,7 +290,6 @@ function Login({ cookies }) {
 
                       <Form.Item label="Role" name="role" defaultValue={AUTH_ROLES.VOLUNTEER_ROLE}>
                         <Radio.Group
-                          // value={AUTH_ROLES.VOLUNTEER_ROLE}
                           defaultValue={AUTH_ROLES.VOLUNTEER_ROLE}
                           onChange={e => setRole(e.target.value)}
                           buttonStyle="solid"
@@ -358,7 +321,6 @@ function Login({ cookies }) {
                           </a>
                         </Checkbox>
                       </Form.Item>
-                      {/* {errorMessage.length > 0 && <p style={{ color: 'red' }}>{errorMessage}</p>} */}
                       <Button
                         onClick={signUp}
                         style={{ display: 'block', width: '100%', marginBottom: '4%' }}

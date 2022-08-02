@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Input, Button, Row, Col, Dropdown, Menu, Divider, Table } from 'antd';
 import { SearchOutlined, FilterFilled, DownOutlined } from '@ant-design/icons';
-import PropTypes from 'prop-types';
+import { PropTypes, instanceOf } from 'prop-types';
 import { AFCBackend } from '../../util/utils';
+import { withCookies, Cookies } from '../../util/cookie_utils';
 import styles from './Database.module.css';
+import ViewAdminCodes from './ViewAdminCodes/ViewAdminCodes';
 
-function Database(props) {
+function Database({ handleHideDatabase }) {
   const [volunteerData, setVolunteerData] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [filteredData, setFilteredData] = useState([]);
   const [currentDriverOption, setCurrentDriverOption] = useState('All');
   const [searchCriterion, setSearchCriterion] = useState('');
-
-  const { handleHideDatabase } = props;
+  const [isOpen, setIsOpen] = useState(false);
 
   const getVolunteers = async () => {
     try {
@@ -205,9 +206,6 @@ function Database(props) {
             <Col span={6} className={styles['button-group']}>
               <Button onClick={handleHideDatabase}>View Heatmap</Button>
               <Button>Export</Button>
-              <Button type="primary" className={styles.addUserBtn}>
-                + Add User
-              </Button>
             </Col>
           </Row>
           <Row className={styles.filterRow} align="middle">
@@ -267,13 +265,22 @@ function Database(props) {
             rowClassName={styles['table-row']}
           />
         </div>
+        <Button
+          type="primary"
+          className={styles['view-admin-codes-button']}
+          onClick={() => setIsOpen(true)}
+        >
+          View Admin Codes
+        </Button>
       </div>
+      <ViewAdminCodes isOpen={isOpen} setIsOpen={setIsOpen} />
     </>
   );
 }
 
 Database.propTypes = {
   handleHideDatabase: PropTypes.func.isRequired,
+  // cookies: instanceOf(Cookies).isRequired,
 };
 
-export default Database;
+export default withCookies(Database);

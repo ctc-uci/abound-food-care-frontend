@@ -353,7 +353,7 @@ const EventPage = () => {
                       justifyContent: 'center',
                     }}
                     type="primary"
-                    onClick={() => navigate(`/events/edit/${eventId}`)}
+                    onClick={() => navigate(`/event/edit/${eventId}`)}
                   >
                     <p style={{ padding: 0, margin: 0, fontSize: '14px' }}>Edit Event</p>
                   </Button>

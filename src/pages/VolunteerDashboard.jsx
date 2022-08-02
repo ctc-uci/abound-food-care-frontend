@@ -1,9 +1,11 @@
 import { instanceOf } from 'prop-types';
 import { Row, Col } from 'antd';
 import React, { useState, useEffect } from 'react';
-import UpcomingEvents from '../components/admin-dashboard-components/UpcomingEvents/UpcomingEvents';
+// import UpcomingEvents from '../components/admin-dashboard-components/UpcomingEvents/UpcomingEvents';
 import DashboardHeader from '../components/admin-dashboard-components/DashboardHeader/DashboardHeader';
-import PastEvents from '../components/admin-dashboard-components/PastEvents/PastEvents';
+// import PastEvents from '../components/admin-dashboard-components/PastEvents/PastEvents';
+import EventGrid from '../components/admin-dashboard-components/EventGrid/EventGrid';
+// import EventList from '../components/events/EventList/EventList';
 import EventList from '../components/events/EventList/EventList';
 import useViewPort from '../common/useViewPort';
 import { AFCBackend } from '../util/utils';
@@ -27,14 +29,25 @@ const VolunteerDashboard = ({ cookies }) => {
     // render desktop version
     if (width > breakpoint) {
       return (
-        <Row className="dashboard-row" gutter={[32, 16]}>
-          <Col className="dashboard-col" span={18}>
-            <UpcomingEvents />
-          </Col>
-          <Col className="dashboard-col" span={6}>
-            <PastEvents />
-          </Col>
-        </Row>
+        // <Row className="dashboard-row" gutter={[32, 16]}>
+        //   <Col className="dashboard-col" span={18}>
+        //     <UpcomingEvents />
+        //   </Col>
+        //   <Col className="dashboard-col" span={6}>
+        //     <PastEvents />
+        //   </Col>
+        // </Row>
+        <>
+          <Row className="dashboard-row" gutter={[32, 16]}>
+            <Col className="dashboard-col" span={18}>
+              <EventGrid title="Upcoming Events" eventStatus="upcoming" />
+              {/* <AdminNotifications /> */}
+            </Col>
+            <Col className="dashboard-col" span={6}>
+              <EventGrid title="Past Events" eventStatus="past" />
+            </Col>
+          </Row>
+        </>
       );
     }
     // render mobile version

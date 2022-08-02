@@ -1,0 +1,8 @@
+.admin-code-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.delete-button {
+    /* background-color: var(--) */
+}

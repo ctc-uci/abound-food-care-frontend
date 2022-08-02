@@ -29,12 +29,12 @@ const UpcomingEvents = () => {
                   </a>
                   <p className={styles['upcoming-event-start-date']}>
                     {getMonthString(upcomingEvent.startDateTime)}{' '}
-                    {new Date(upcomingEvent.startDateTime).getDate()},{' '}
-                    {new Date(upcomingEvent.startDateTime).getFullYear()}
+                    {new Date(upcomingEvent.startDatetime).getDate()},{' '}
+                    {new Date(upcomingEvent.startDatetime).getFullYear()}
                   </p>
                   <p>
-                    {getTimeInPST(upcomingEvent.startDateTime)} -{' '}
-                    {getTimeInPST(upcomingEvent.endDateTime)}
+                    {getTimeInPST(upcomingEvent.startDatetime)} -{' '}
+                    {getTimeInPST(upcomingEvent.endDatetime)}
                   </p>
                 </div>
               </Card.Grid>
@@ -55,16 +55,16 @@ const UpcomingEvents = () => {
               <Card.Grid key={upcomingEvent.name} className={styles.grid}>
                 <div className={styles['show-event-mobile-container']}>
                   <div className={styles['show-event-date-mobile']}>
-                    <h6>{getMonthString(upcomingEvent.startDateTime)}</h6>
-                    <h7>{new Date(upcomingEvent.startDateTime).getDate()}</h7>
+                    <h6>{getMonthString(upcomingEvent.startDatetime)}</h6>
+                    <h7>{new Date(upcomingEvent.startDatetime).getDate()}</h7>
                   </div>
                   <div className={styles['show-event-details-mobile']}>
                     <a className={styles['upcoming-event-name']} href="https://www.google.com">
                       {upcomingEvent.name}
                     </a>
                     <h8>
-                      {getTimeInPST(upcomingEvent.startDateTime)} -{' '}
-                      {getTimeInPST(upcomingEvent.endDateTime)}
+                      {getTimeInPST(upcomingEvent.startDatetime)} -{' '}
+                      {getTimeInPST(upcomingEvent.endDatetime)}
                     </h8>
                   </div>
                 </div>

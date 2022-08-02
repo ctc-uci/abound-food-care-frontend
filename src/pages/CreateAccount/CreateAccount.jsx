@@ -18,7 +18,16 @@ const { Text } = Typography;
 
 const { Step } = Steps;
 
-const CreateAccount = ({ setPageState, firstName, lastName, email, password, role, navigate }) => {
+const CreateAccount = ({
+  setPageState,
+  firstName,
+  lastName,
+  email,
+  password,
+  role,
+  navigate,
+  code,
+}) => {
   const [formStep, setFormStep] = useState(0);
   const [availability, setAvailability] = useState([]);
   const [missingAvailabilityErrorMessage, setMissingAvailabilityErrorMessage] = useState('');
@@ -203,8 +212,9 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
         email,
         availabilities: availability,
       };
-      console.log(payload);
       await AFCBackend.post('/users/', payload);
+
+      await AFCBackend.delete(`/adminCode/${code}`);
 
       navigate('/');
     } catch (e) {
@@ -308,6 +318,7 @@ CreateAccount.propTypes = {
   email: PropTypes.string.isRequired,
   password: PropTypes.string.isRequired,
   role: PropTypes.string.isRequired,
+  code: PropTypes.string.isRequired,
   navigate: PropTypes.func.isRequired,
 };
 

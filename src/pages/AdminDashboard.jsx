@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col } from 'antd';
 import { instanceOf } from 'prop-types';
-import AdminNotifications from '../components/admin-dashboard-components/AdminNotifications/AdminNotifications';
 import DashboardHeader from '../components/admin-dashboard-components/DashboardHeader/DashboardHeader';
 import EventGrid from '../components/admin-dashboard-components/EventGrid/EventGrid';
 import EventList from '../components/events/EventList/EventList';
@@ -31,7 +30,7 @@ const AdminDashboard = ({ cookies }) => {
           <Row className="dashboard-row" gutter={[32, 16]}>
             <Col className="dashboard-col" span={18}>
               <EventGrid title="Upcoming Events" eventStatus="upcoming" />
-              <AdminNotifications />
+              {/* <AdminNotifications /> */}
             </Col>
             <Col className="dashboard-col" span={6}>
               <EventGrid title="Past Events" eventStatus="past" />

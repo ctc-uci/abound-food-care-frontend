@@ -78,8 +78,19 @@ const App = () => {
                   />
                 }
               />
+              <Route
+                path="/event/edit/:id"
+                exact
+                element={
+                  <ProtectedRoute
+                    Component={CreateEvent}
+                    redirectPath="/"
+                    roles={[AUTH_ROLES.ADMIN_ROLE, AUTH_ROLES.VOLUNTEER_ROLE]}
+                  />
+                }
+              />
 
-              <Route path="/events/register" exact element={<EventSignUp />} />
+              <Route path="/event/register" exact element={<EventSignUp />} />
 
               <Route
                 path="/volunteers"
