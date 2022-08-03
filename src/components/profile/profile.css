@@ -1,6 +1,6 @@
 @import '../../common/global.css';
 
-#profile-heading {
+.profile-heading {
   font-family: 'Avenir Bold';
   font-size: 36px;
 }

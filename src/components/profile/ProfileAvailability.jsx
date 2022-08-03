@@ -73,14 +73,12 @@ const ProfileAvailability = ({ volunteerAvailability }) => {
         const startTimes = dataAvailability.map(d => {
           return d.startTime.slice(0, d.startTime.lastIndexOf(':'));
         });
-
-        for (let i = 0; i < times.length; i += 1) {
+        times.forEach(time => {
           let available = false;
-          if (startTimes.includes(times[i])) available = true;
-
+          if (startTimes.includes(time)) available = true;
           if (available) dayArray.push(2);
           else dayArray.push(1);
-        }
+        });
       } else {
         for (let i = 0; i < times.length; i += 1) {
           dayArray.push(1);
@@ -128,7 +126,7 @@ const ProfileAvailability = ({ volunteerAvailability }) => {
 
   useEffect(() => {
     setAvailabilityData(volunteerAvailability);
-    if (volunteerAvailability.length > 0) {
+    if (volunteerAvailability) {
       setDataRetrieved(true);
     }
   }, [volunteerAvailability]);

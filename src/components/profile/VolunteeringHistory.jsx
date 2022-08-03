@@ -8,7 +8,7 @@ import EditHours from '../volunteer-profile-history/EditHours';
 
 const { Title } = Typography;
 
-function VolunteeringHistory({ userId }) {
+const VolunteeringHistory = ({ userId }) => {
   const [hoursCount, setHoursCount] = useState(0);
   const [eventCount, setEventCount] = useState(0);
   const [unsubmittedData, setUnsubmittedData] = useState([]);
@@ -314,7 +314,7 @@ function VolunteeringHistory({ userId }) {
       </div>
     </ConfigProvider>
   );
-}
+};
 
 VolunteeringHistory.propTypes = {
   userId: PropTypes.string.isRequired,

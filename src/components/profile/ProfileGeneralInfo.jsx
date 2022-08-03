@@ -66,7 +66,7 @@ const ProfileGeneralInfo = ({ userId, volunteerData }) => {
     setValue('firstName', volunteerData.firstName);
     setValue('lastName', volunteerData.lastName);
     setValue('organization', volunteerData.organization);
-    if (volunteerData.birthdate !== undefined) {
+    if (volunteerData.birthdate) {
       setValue(
         'birthdate',
         moment(new Date(volunteerData.birthdate).toISOString().split('T')[0], 'YYYY-MM-DD'),

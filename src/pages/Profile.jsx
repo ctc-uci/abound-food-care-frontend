@@ -13,6 +13,7 @@ import '../components/profile/profile.css';
 
 const { TabPane } = Tabs;
 function Profile() {
+  // TODO: automatically use the userID of current logged in user when not admin/param not specified
   const { userId } = useParams();
   const waivers = [
     {
@@ -38,11 +39,7 @@ function Profile() {
   const [user, setUser] = useState({});
 
   useEffect(async () => {
-    const res = await AFCBackend.get(`/users/${userId}`, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const res = await AFCBackend.get(`/users/${userId}`);
     if (res.status === 200) {
       setUser(res.data);
     }
@@ -50,7 +47,7 @@ function Profile() {
 
   return (
     <div>
-      <h1 id="profile-heading">
+      <h1 className="profile-heading">
         {' '}
         {user.firstName} {user.lastName}&apos;s Profile
       </h1>
