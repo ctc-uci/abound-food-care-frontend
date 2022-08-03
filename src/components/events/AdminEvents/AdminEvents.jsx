@@ -6,6 +6,7 @@ import { AFCBackend } from '../../../util/utils';
 import EventCard from '../event/EventCard/EventCard';
 import EventList from '../event/EventList/EventList';
 import useViewPort from '../../../common/useViewPort';
+import PaginationController from '../PaginationController/PaginationController';
 import styles from './AdminEvents.module.css';
 import 'antd/dist/antd.less';
 
@@ -18,9 +19,12 @@ const AdminEvents = () => {
   const [eventsData, setEventsData] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
+  const [pageIndex, setPageIndex] = useState(1);
+  // const [numEvents, setNumEvents] = useState();
 
   const { width } = useViewPort();
   const breakpoint = 720;
+  const PAGE_SIZE = 6;
 
   const eventStatusOptions = [
     { label: 'All', value: 'all' },
@@ -61,44 +65,31 @@ const AdminEvents = () => {
     }
   };
 
-  const determineStatus = startDatetime =>
-    new Date(startDatetime) > new Date() ? 'upcoming' : 'past';
+  //  const determineStatus = startDatetime =>
+  //    new Date(startDatetime) > new Date() ? 'upcoming' : 'past';
 
-  const getEventsByStatus = (events, status) => {
-    let filteredEvents = events;
-    if (status === 'all') {
-      filteredEvents = events;
-    } else if (status === 'upcoming') {
-      filteredEvents = filteredEvents.filter(
-        event => determineStatus(event.startDatetime) === 'upcoming',
-      );
-    } else if (status === 'past') {
-      filteredEvents = filteredEvents.filter(
-        event => determineStatus(event.startDatetime) === 'past',
-      );
-    }
-    return filteredEvents;
-  };
+  const getEventsByTypeAndStatus = async (type, status) => {
+    try {
+      const filteredEvents = await AFCBackend.get('/events', {
+        params: {
+          status,
+          type,
+          pageSize: PAGE_SIZE,
+        },
+      });
 
-  const getEventsByTypeAndStatus = (type, status) => {
-    let filteredEvents = allEvents;
-    if (type === 'all') {
-      filteredEvents = allEvents;
-    } else if (type === 'distribution') {
-      filteredEvents = filteredEvents.filter(
-        event => event.eventType.toLowerCase() === 'distribution',
-      );
-    } else if (type === 'food') {
-      filteredEvents = filteredEvents.filter(
-        event => event.eventType.toLowerCase() === 'food running',
-      );
-    } else {
-      filteredEvents = filteredEvents.filter(
-        event =>
-          event.eventType !== 'Distribution' && event.eventType.toLowerCase() !== 'food running',
-      );
+      const eventCount = await AFCBackend.get('/events/total', {
+        status: eventStatusValue,
+        type: eventTypeValue,
+      });
+      console.log(eventCount);
+      // setNumEvents(eventCount);
+      return filteredEvents;
+    } catch (err) {
+      console.log(err);
     }
-    return getEventsByStatus(filteredEvents, status);
+    // please fix this, its wrong rn
+    return 1;
   };
 
   const onTypeChange = e => {
@@ -219,10 +210,10 @@ const AdminEvents = () => {
                   buttonStyle="solid"
                 >
                   <Radio.Button value="all">All</Radio.Button>
-                  <Radio.Button className={styles['distribution-radio-btn']} value="distribution">
+                  <Radio.Button className={styles['distribution-radio-btn']} value="Distribution">
                     Distributions
                   </Radio.Button>
-                  <Radio.Button className={styles['food-radio-btn']} value="food">
+                  <Radio.Button className={styles['food-radio-btn']} value="Food Running">
                     Food Running
                   </Radio.Button>
                   <Radio.Button value="other">Other</Radio.Button>
@@ -250,6 +241,14 @@ const AdminEvents = () => {
             {/* {width > breakpoint ? */}
             <Row className={styles['event-card-row']}>{renderEventsGrid(eventsData)}</Row>
           </div>
+          <PaginationController
+            paginatedIndex={pageIndex}
+            setPaginatedIndex={setPageIndex}
+            totalNumberOfPages={AFCBackend.get('/events/total', {
+              status: eventStatusValue,
+              type: eventTypeValue,
+            })}
+          />
         </>
       )}
     </div>
