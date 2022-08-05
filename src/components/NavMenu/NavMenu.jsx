@@ -34,7 +34,7 @@ const NavMenu = ({ cookies }) => {
   };
 
   useEffect(() => {
-    const role = cookies.get(cookieKeys.USER_ROLE);
+    const role = cookies.get(cookieKeys.ROLE);
     if (role === AUTH_ROLES.ADMIN_ROLE) {
       setIsAdmin(true);
     }
@@ -63,7 +63,6 @@ const NavMenu = ({ cookies }) => {
                 Events
               </Link>
             </Menu.Item>
-            {/* maybe replace vv with cookies.get(cookieKeys.USER_ROLE) === AUTH_ROLES.ADMIN_ROLE */}
             {isAdmin && (
               <>
                 <Menu.Item
@@ -78,15 +77,6 @@ const NavMenu = ({ cookies }) => {
                 <Menu.Item className={styles['menu-item']} key="/hours" icon={<ProfileOutlined />}>
                   <Link to="/hours" className={styles.link}>
                     Hours Log
-                  </Link>
-                </Menu.Item>
-                <Menu.Item
-                  className={styles['menu-item']}
-                  key="/volunteers"
-                  icon={<ProfileOutlined />}
-                >
-                  <Link to="/volunteers" className={styles.link}>
-                    Volunteers
                   </Link>
                 </Menu.Item>
               </>

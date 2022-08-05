@@ -26,7 +26,6 @@ const ViewAdminCodes = ({ isOpen, setIsOpen }) => {
       setLoading(false);
       setIsOpen(false);
     } catch (err) {
-      console.log(err.message);
       setLoading(false);
     }
   };

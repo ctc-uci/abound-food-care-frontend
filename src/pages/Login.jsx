@@ -57,9 +57,15 @@ function Login({ cookies }) {
 
   const signUp = async () => {
     const vals = await form.validateFields();
-    const { data } = await AFCBackend.get(`/adminCode/code/${vals.code}`);
-    if (!data.length) {
-      setAdminCodeStatus('error');
+    if (vals.role === AUTH_ROLES.ADMIN_ROLE) {
+      const { data } = await AFCBackend.get(`/adminCode/code/${vals.code}`);
+      if (!data.length) {
+        setAdminCodeStatus('error');
+      } else {
+        setAdminCodeStatus('');
+        setValues(vals);
+        setPageState('createPage');
+      }
     } else {
       setAdminCodeStatus('');
       setValues(vals);

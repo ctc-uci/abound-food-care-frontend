@@ -247,15 +247,10 @@ const CreateAccount = ({
                 email={email}
                 password={password}
               />
-              <div>
-                <Button
-                  className={styles['login-signup-button']}
-                  onClick={() => setPageState('login')}
-                >
+              <div className={styles['nav-buttons']}>
+                <Button className={styles['previous-button']} onClick={() => setPageState('login')}>
                   Back
                 </Button>
-              </div>
-              <div>
                 <Button className={styles['next-button']} onClick={incrementFormStep}>
                   Next
                 </Button>
@@ -266,7 +261,7 @@ const CreateAccount = ({
             <section hidden={formStep !== 1}>
               <WeeklyInfo availability={availability} setAvailability={setAvailability} />
               <Text type="danger">{missingAvailabilityErrorMessage}</Text>
-              <div>
+              <div className={styles['nav-buttons']}>
                 <Button className={styles['previous-button']} onClick={decrementFormStep}>
                   Previous
                 </Button>
@@ -279,7 +274,7 @@ const CreateAccount = ({
           {formStep >= 2 - (role === AUTH_ROLES.ADMIN_ROLE) && (
             <section hidden={formStep !== 2 - (role === AUTH_ROLES.ADMIN_ROLE)}>
               <RolesAndSkills />
-              <div>
+              <div className={styles['nav-buttons']}>
                 <Button className={styles['previous-button']} onClick={decrementFormStep}>
                   Previous
                 </Button>
@@ -292,7 +287,7 @@ const CreateAccount = ({
           {formStep >= 3 - (role === AUTH_ROLES.ADMIN_ROLE) && (
             <section hidden={formStep !== 3 - (role === AUTH_ROLES.ADMIN_ROLE)}>
               <DuiAndCrimHis />
-              <div>
+              <div className={styles['nav-buttons']}>
                 <Button className={styles['previous-button']} onClick={decrementFormStep}>
                   Previous
                 </Button>

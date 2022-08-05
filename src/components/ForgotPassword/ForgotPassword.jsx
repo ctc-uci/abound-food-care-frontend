@@ -17,11 +17,12 @@ const ForgotPassword = ({ isOpen, setIsOpen }) => {
       await sendPasswordReset(email);
       setEmailError(false);
       setTimeout(() => {
+        setEmail('');
+        setEmailError(null);
         setIsOpen(false);
         setLoading(false);
       }, 1000);
     } catch (err) {
-      console.log(err.message);
       setEmailError(true);
       setLoading(false);
     }
@@ -35,7 +36,11 @@ const ForgotPassword = ({ isOpen, setIsOpen }) => {
       onOk={onSubmit}
       onCancel={() => setIsOpen(false)}
     >
-      <Input placeholder="sample@email.com" onChange={e => setEmail(e.target.value)} />
+      <Input
+        placeholder="sample@email.com"
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+      />
       {emailError === true && <Text type="danger"> Email failed to send, please try again. </Text>}
       {emailError === false && <Text type="success"> Email sent! </Text>}
     </Modal>
