@@ -10,7 +10,7 @@ import {
   MenuFoldOutlined,
 } from '@ant-design/icons';
 import Logo from '../../assets/Logo.png';
-import './navMenu.css';
+import '../NavMenu/NavMenu.module.css';
 
 const { Sider } = Layout;
 

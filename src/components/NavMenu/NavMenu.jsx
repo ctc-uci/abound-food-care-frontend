@@ -1,5 +1,5 @@
 /* eslint-disable react/require-default-props */
-import React, { useState, createElement, useEffect } from 'react';
+import React, { useState, createElement } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, Layout, Button } from 'antd';
 import { instanceOf } from 'prop-types';
@@ -25,20 +25,12 @@ const { Sider } = Layout;
 const NavMenu = ({ cookies }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [menuTitle, setMenuTitle] = useState('Abound Food Care');
-  const [isAdmin, setIsAdmin] = useState(false);
   const { pathname } = useLocation();
 
   const handleToggle = () => {
     setCollapsed(!collapsed);
     setMenuTitle(collapsed ? 'Abound Food Care' : '');
   };
-
-  useEffect(() => {
-    const role = cookies.get(cookieKeys.ROLE);
-    if (role === AUTH_ROLES.ADMIN_ROLE) {
-      setIsAdmin(true);
-    }
-  }, []);
 
   const navigate = useNavigate();
 
@@ -63,7 +55,7 @@ const NavMenu = ({ cookies }) => {
                 Events
               </Link>
             </Menu.Item>
-            {isAdmin && (
+            {cookies.get(cookieKeys.ROLE) === AUTH_ROLES.ADMIN_ROLE && (
               <>
                 <Menu.Item
                   className={styles['menu-item']}

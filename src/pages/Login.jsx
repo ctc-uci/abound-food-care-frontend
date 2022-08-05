@@ -48,11 +48,7 @@ function Login({ cookies }) {
 
   const logIn = async e => {
     e.preventDefault();
-    try {
-      await logInWithEmailAndPassword(loginEmail, loginPassword, '/', navigate, cookies);
-    } catch (err) {
-      console.log(err);
-    }
+    await logInWithEmailAndPassword(loginEmail, loginPassword, '/', navigate, cookies);
   };
 
   const signUp = async () => {

@@ -200,26 +200,22 @@ const CreateAccount = ({
     if (!result) {
       return;
     }
-    try {
-      const languages = buildLanguagesArray(values);
-      const { uid } = await registerWithEmailAndPassword(values.email, values.password, role);
+    const languages = buildLanguagesArray(values);
+    const { uid } = await registerWithEmailAndPassword(values.email, values.password, role);
 
-      const payload = {
-        ...values,
-        userId: uid,
-        role,
-        languages,
-        email,
-        availabilities: availability,
-      };
-      await AFCBackend.post('/users/', payload);
+    const payload = {
+      ...values,
+      userId: uid,
+      role,
+      languages,
+      email,
+      availabilities: availability,
+    };
+    await AFCBackend.post('/users/', payload);
 
-      await AFCBackend.delete(`/adminCode/${code}`);
+    await AFCBackend.delete(`/adminCode/${code}`);
 
-      navigate('/');
-    } catch (e) {
-      console.error(e.message);
-    }
+    navigate('/');
   };
 
   return (

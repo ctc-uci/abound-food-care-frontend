@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Input, Button, Row, Col, Dropdown, Menu, Divider, Table } from 'antd';
 import { SearchOutlined, FilterFilled, DownOutlined } from '@ant-design/icons';
-import { PropTypes, instanceOf } from 'prop-types';
+import PropTypes from 'prop-types';
 import { AFCBackend } from '../../util/utils';
-import { withCookies, Cookies } from '../../util/cookie_utils';
 import styles from './Database.module.css';
 import ViewAdminCodes from './ViewAdminCodes/ViewAdminCodes';
 
@@ -21,7 +20,7 @@ function Database({ handleHideDatabase }) {
       setVolunteerData(volunteerResponse);
       setFilteredData(volunteerResponse);
     } catch (e) {
-      console.log('Error getting volunteer data!');
+      console.log(e);
     }
   };
 
@@ -280,7 +279,6 @@ function Database({ handleHideDatabase }) {
 
 Database.propTypes = {
   handleHideDatabase: PropTypes.func.isRequired,
-  // cookies: instanceOf(Cookies).isRequired,
 };
 
-export default withCookies(Database);
+export default Database;
