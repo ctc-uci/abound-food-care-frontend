@@ -1,5 +1,5 @@
 import React from 'react';
-import EventPage from '../components/events/Event/EventPage/EventPage';
+import EventPage from '../components/events/event/EventPage/EventPage';
 
 // TODO DEPRECATE THIS IF IT ONLY REFS A SINGLE COMPONENT
 const Event = () => {

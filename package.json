@@ -23,7 +23,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.0.0",
-    "firebase": "^9.9.0",
+    "firebase": "^9.9.2",
     "lint-staged": "^11.2.6",
     "moment": "^2.29.1",
     "prop-types": "^15.8.1",
