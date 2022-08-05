@@ -2,6 +2,7 @@
 
 .ant-menu-item-selected {
   color: var(--eden) !important;
+  background-color: #fff !important;
 }
 
 .ant-menu-item-selected a {
