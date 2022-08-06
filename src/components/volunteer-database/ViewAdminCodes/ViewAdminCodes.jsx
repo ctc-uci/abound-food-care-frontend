@@ -1,14 +1,17 @@
 import { React, useState, useEffect } from 'react';
 import { PropTypes } from 'prop-types';
-import { Modal, Button } from 'antd';
+import { Modal, Button, Typography } from 'antd';
 
 import { AFCBackend } from '../../../util/utils';
 
 import styles from './ViewAdminCodes.module.css';
 
+const { Text } = Typography;
+
 const ViewAdminCodes = ({ isOpen, setIsOpen }) => {
   const [codes, setCodes] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   const refreshCodes = async () => {
     const { data } = await AFCBackend.get('/adminCode/');
@@ -17,6 +20,7 @@ const ViewAdminCodes = ({ isOpen, setIsOpen }) => {
 
   useEffect(async () => {
     refreshCodes();
+    setError(undefined);
   }, [isOpen]);
 
   const onSubmit = async e => {
@@ -33,10 +37,15 @@ const ViewAdminCodes = ({ isOpen, setIsOpen }) => {
   const onDelete = async code => {
     await AFCBackend.delete(`/adminCode/${code}`);
     refreshCodes();
+    setError(undefined);
   };
 
   const generateAdminCode = async () => {
-    await AFCBackend.post('/adminCode/');
+    try {
+      await AFCBackend.post('/adminCode/');
+    } catch (err) {
+      setError('Reached maximum number of codes');
+    }
     await refreshCodes();
   };
 
@@ -72,6 +81,7 @@ const ViewAdminCodes = ({ isOpen, setIsOpen }) => {
             </div>
           );
         })}
+      {error && <Text type="danger">{error}</Text>}
     </Modal>
   );
 };
