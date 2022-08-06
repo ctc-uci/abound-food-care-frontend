@@ -19,7 +19,6 @@ import ForgotPassword from '../components/ForgotPassword/ForgotPassword';
 
 function Login({ cookies }) {
   const navigate = useNavigate();
-  const [adminCodeStatus, setAdminCodeStatus] = useState('');
 
   useEffect(async () => {
     const user = await getCurrentUser(auth);
@@ -38,7 +37,12 @@ function Login({ cookies }) {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const [form] = Form.useForm();
+  const [signupForm] = Form.useForm();
+  const [adminCodeStatus, setAdminCodeStatus] = useState('');
+  const [adminCodeError, setAdminCodeError] = useState('');
+
+  const [credentialsStatus, setCredentialsStatus] = useState('');
+  const [credentialsError, setCredentialsError] = useState('');
 
   const [values, setValues] = useState({});
 
@@ -48,25 +52,30 @@ function Login({ cookies }) {
 
   const logIn = async e => {
     e.preventDefault();
-    await logInWithEmailAndPassword(loginEmail, loginPassword, '/', navigate, cookies);
+    try {
+      await logInWithEmailAndPassword(loginEmail, loginPassword, '/', navigate, cookies);
+      setCredentialsStatus('');
+      setCredentialsError('');
+    } catch (err) {
+      setCredentialsStatus('error');
+      setCredentialsError('Invalid credentials');
+    }
   };
 
   const signUp = async () => {
-    const vals = await form.validateFields();
+    const vals = await signupForm.validateFields();
     if (vals.role === AUTH_ROLES.ADMIN_ROLE) {
       const { data } = await AFCBackend.get(`/adminCode/code/${vals.code}`);
       if (!data.length) {
         setAdminCodeStatus('error');
-      } else {
-        setAdminCodeStatus('');
-        setValues(vals);
-        setPageState('createPage');
+        setAdminCodeError('Invalid Admin Code');
+        return;
       }
-    } else {
-      setAdminCodeStatus('');
-      setValues(vals);
-      setPageState('createPage');
     }
+    setAdminCodeStatus('');
+    setAdminCodeError('');
+    setValues(vals);
+    setPageState('createPage');
   };
 
   return (
@@ -124,6 +133,7 @@ function Login({ cookies }) {
                       <Form.Item
                         name="email"
                         rules={[{ required: true, message: 'Please input your email!' }]}
+                        validateStatus={credentialsStatus}
                       >
                         <Input
                           placeholder="Email"
@@ -136,6 +146,8 @@ function Login({ cookies }) {
                       <Form.Item
                         name="password"
                         rules={[{ required: true, message: 'Please input your password!' }]}
+                        validateStatus={credentialsStatus}
+                        help={credentialsError}
                       >
                         <Input.Password
                           placeholder="Password"
@@ -209,7 +221,7 @@ function Login({ cookies }) {
 
                     <Divider style={{ marginTop: 3 }} />
 
-                    <Form form={form}>
+                    <Form form={signupForm}>
                       <Form.Item
                         name="firstName"
                         rules={[{ required: true, message: 'Please input your first name!' }]}
@@ -273,13 +285,12 @@ function Login({ cookies }) {
                           rules={[
                             {
                               required: true,
-                              // type: 'enum',
-                              // enum: adminCodes,
                               message: 'Invalid admin code',
                             },
                           ]}
                           hasFeedback
                           validateStatus={adminCodeStatus}
+                          help={adminCodeError}
                         >
                           <Input
                             placeholder="Admin Code"
