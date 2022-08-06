@@ -38,11 +38,11 @@ function Login({ cookies }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const [signupForm] = Form.useForm();
-  const [adminCodeStatus, setAdminCodeStatus] = useState('');
-  const [adminCodeError, setAdminCodeError] = useState('');
+  const [adminCodeStatus, setAdminCodeStatus] = useState(undefined);
+  const [adminCodeError, setAdminCodeError] = useState(undefined);
 
-  const [credentialsStatus, setCredentialsStatus] = useState('');
-  const [credentialsError, setCredentialsError] = useState('');
+  const [credentialsStatus, setCredentialsStatus] = useState(undefined);
+  const [credentialsError, setCredentialsError] = useState(undefined);
 
   const [values, setValues] = useState({});
 
@@ -54,8 +54,8 @@ function Login({ cookies }) {
     e.preventDefault();
     try {
       await logInWithEmailAndPassword(loginEmail, loginPassword, '/', navigate, cookies);
-      setCredentialsStatus('');
-      setCredentialsError('');
+      setCredentialsStatus(undefined);
+      setCredentialsError(undefined);
     } catch (err) {
       setCredentialsStatus('error');
       setCredentialsError('Invalid credentials');
@@ -72,8 +72,8 @@ function Login({ cookies }) {
         return;
       }
     }
-    setAdminCodeStatus('');
-    setAdminCodeError('');
+    setAdminCodeStatus(undefined);
+    setAdminCodeError(undefined);
     setValues(vals);
     setPageState('createPage');
   };
