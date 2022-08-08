@@ -23,9 +23,6 @@ const EventPage = () => {
   const [viewVolunteers, setViewVolunteers] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [handoutWaiver, setHandoutWaiver] = useState(null);
-  /*
-  const [postEvent, setPostEvent] = useState(null);
-  */
 
   const { eventId } = useParams();
   const navigate = useNavigate();

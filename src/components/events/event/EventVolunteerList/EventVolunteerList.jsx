@@ -78,7 +78,6 @@ const EventVolunteerList = ({ name, type, eventId, setViewVolunteers }) => {
       key: 'waiver',
       render: waiver => {
         return (
-          // TODO: add waiver functionality, remove email href
           <a style={{ color: '#115740' }} href={waiver} download>
             Download
           </a>
