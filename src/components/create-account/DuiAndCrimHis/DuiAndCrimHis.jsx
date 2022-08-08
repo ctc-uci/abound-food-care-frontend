@@ -2,6 +2,8 @@ import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Radio, Form, Input, Typography } from 'antd';
 
+import styles from './DuiAndCrimHis.module.css';
+
 const { Text } = Typography;
 
 const DuiAndCrimHis = () => {
@@ -12,7 +14,9 @@ const DuiAndCrimHis = () => {
 
   return (
     <div>
-      <h1>DUI/Criminal History, Training, & Additional History</h1>
+      <center>
+        <h1 className={styles.heading}>DUI/Criminal History, Training, & Additional History</h1>
+      </center>
       <Controller
         control={control}
         name="duiHistory"

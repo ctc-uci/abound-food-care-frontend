@@ -8,15 +8,15 @@
 }
 
 .event-date-time {
-  font-family: "Inter";
+  font-family: 'Inter';
   font-weight: lighter;
   font-size: 18px;
   height: 5vh;
 }
 
 .num-volunteers {
-  font-family: "Inter";
+  font-family: 'Inter';
   font-size: 18px;
-  color: #BFBFBF;
+  color: #bfbfbf;
   height: 1vh;
 }

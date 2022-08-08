@@ -64,18 +64,20 @@ body {
   color: var(--text-color-dark);
 }
 
-input, textarea, button {
-    font-family: inherit;
+input,
+textarea,
+button {
+  font-family: inherit;
 }
 
 .bold {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .normal {
-    font-weight: normal;
+  font-weight: normal;
 }
 
 .underline {
-    text-decoration: underline;
+  text-decoration: underline;
 }
