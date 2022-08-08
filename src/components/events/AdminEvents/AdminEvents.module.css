@@ -21,16 +21,18 @@
 }
 
 .filter-card {
-  margin: 10px 0 !important;
+  margin: 10px 0.5% !important;
   height: 80px;
+  width: 99%;
   border-radius: 5px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .search-bar {
   width: 70% !important;
   margin-left: 15%;
+  margin-bottom: 10px;
 }
 
 .search-bar:hover,
@@ -69,11 +71,11 @@
   border-color: var(--eden);
   color: white;
   font-weight: 400;
-  margin: 0 0 40px 20px;
+  margin: 0 0 40px 30px;
   float: right;
 }
 
-.new-event-type-btn,
+/* .new-event-type-btn,
 .new-event-type-btn:hover,
 .new-event-type-btn:focus {
   background-color: white;
@@ -82,7 +84,7 @@
   font-weight: 400;
   margin: 0 5px 40px 20px;
   float: right;
-}
+} */
 
 .events-grid {
   max-height: 80vh;

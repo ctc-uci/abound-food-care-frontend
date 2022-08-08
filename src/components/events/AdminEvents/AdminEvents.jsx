@@ -230,7 +230,7 @@ const AdminEvents = () => {
                   Event Type:
                   <Radio.Group
                     className={styles['event-type-radio']}
-                    style={{ margin: '0px 10px' }}
+                    style={{ margin: '0px 20px 0px 10px' }}
                     defaultValue="all"
                     onChange={onTypeChange}
                     value={eventTypeValue}
@@ -260,7 +260,7 @@ const AdminEvents = () => {
                     buttonStyle="solid"
                   />
                 </span>
-                <Button
+                {/* <Button
                   className={styles['new-event-type-btn']}
                   type="default"
                   onClick={() => {
@@ -268,7 +268,7 @@ const AdminEvents = () => {
                   }}
                 >
                   New Event Type
-                </Button>
+                </Button> */}
                 <Link to="/events/create">
                   <Button className={styles['new-event-btn']} type="primary">
                     New Event
