@@ -30,7 +30,6 @@ const EventPage = () => {
   const getEvent = async () => {
     try {
       const { data: eventResponse } = await AFCBackend.get(`/events/${eventId}`);
-      console.log(eventResponse[0]);
       setEventData(eventResponse[0]);
       if (eventResponse[0].posteventText) {
         setIsEdit(true);
