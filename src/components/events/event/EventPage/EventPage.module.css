@@ -1,7 +1,7 @@
 @import '../../../../common/global.css';
 
 .eventPageContainer {
-  width: 80vw;
+  width: 82vw;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -32,6 +32,84 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.topRightContainer {
+  width: 25%;
+  min-width: 265px;
+  height: 50em;
+  display: flex;
+  flex-direction: column;
+  margin-right: 0.5%;
+  margin-top: 1.5em;
+}
+
+.signedUpContainer {
+  background-color: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.waiversContainer {
+  background-color: white;
+  margin-top: 2.5em;
+  height: 6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.waiversButton {
+  width: 13em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.waiversButtonText {
+  padding: 0 0 0 0.7em;
+  margin: 0;
+}
+
+.leftPad {
+  padding-left: 0.1em;
+}
+
+.volunteers {
+  font-family: 'Avenir Bold';
+  font-size: 15px;
+  color: #000;
+  margin: 0;
+  padding-right: 1.2em;
+}
+
+.viewVolunteers {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  margin: 09;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--eden);
+}
+
+.centerContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.infoParagraph {
+  margin: 6px 12px;
+  font-size: 16px;
+}
+
+.headerImage {
+  width: 100%;
 }
 
 .header {

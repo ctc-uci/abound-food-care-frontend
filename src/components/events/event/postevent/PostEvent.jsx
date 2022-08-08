@@ -3,122 +3,58 @@ import { Input, Button } from 'antd';
 import { CalendarOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import { AFCBackend } from '../../../../util/utils';
+import styles from './PostEvent.module.css';
 
 const PostEvent = props => {
-  const { name, date, time, eventId, setIsAddingPost, isEdit, setIsLoading } = props;
-  const [postEventSection, setPostEventSection] = useState('');
+  const { name, date, time, eventId, prevText, setIsAddingPost, setIsLoading } = props;
+  const [postEventSection, setPostEventSection] = useState(prevText);
 
   const sendPostEvent = async () => {
     setIsLoading(true);
-    if (isEdit) {
-      await AFCBackend.put(`/events/add_post_text/${eventId}`, {
-        posteventText: postEventSection,
-      });
-      setIsAddingPost(false);
-    }
+    await AFCBackend.put(`/events/add_post_text/${eventId}`, {
+      posteventText: postEventSection,
+    });
+    setIsAddingPost(false);
   };
 
   return (
     <>
-      <div
-        style={{
-          background: 'white',
-          width: '80vw',
-          display: 'flex',
-          flexDirection: 'column',
-          margin: 'auto',
-        }}
-      >
-        <h1
-          style={{
-            fontSize: 34,
-            fontFamily: 'AvenirNextLTProBold',
-            marginBottom: '1%',
-            color: 'black',
-          }}
-        >
-          {' '}
-          Post-Event Recap{' '}
-        </h1>
-        <p style={{ fontWeight: 400 }}>
-          The post-event recap will be posted on the EventName page for all volunteers to see.
+      <div className={styles.container}>
+        <h1 className={styles.header}> Post-Event Recap </h1>
+        <p className={styles.subhead}>
+          The post-event recap will be posted on <span className={styles.bold}>{name}</span>&apos;s
+          event page for all volunteers to see.
         </p>
 
-        <div
-          style={{
-            width: '80vw',
-            display: 'flex',
-            flexDirection: 'column',
-            marginTop: '2em',
-          }}
-        >
-          <div
-            style={{
-              width: '80vw',
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
-            <h2
-              style={{
-                fontFamily: 'AvenirNextLTProBold',
-                fontSize: 20,
-                fontWeight: 600,
-                textAlign: 'left',
-                color: 'black',
-              }}
-            >
-              {' '}
-              {name}{' '}
-            </h2>
+        <div className={`${styles.flexColumn}${styles.bottomContainer}`}>
+          <div className={styles.flexColumn}>
+            <h2 className={styles.eventName}> {name} </h2>
 
-            <p style={{ fontSize: 16 }}>
+            <p className={styles.mediumFont}>
               <CalendarOutlined style={{ fontSize: 16, marginRight: '.3%' }} /> {date}
             </p>
 
-            <p style={{ fontSize: 16 }}>
+            <p className={styles.mediumFont}>
               <ClockCircleOutlined style={{ fontSize: 16, marginRight: '.3%' }} /> {time}
             </p>
 
-            <div
-              style={{
-                width: '80vw',
-                display: 'flex',
-                flexDirection: 'column',
-                marginTop: '3.0em',
-                marginBottom: '8.0em',
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  flexWrap: 'wrap',
-                }}
-              >
-                <p style={{ fontSize: 16, padding: 0, margin: 0, width: '15%' }}>
-                  Post-Event Section:
-                </p>
-
-                <Input
-                  style={{ width: '85%' }}
+            <div className={`${styles.flexColumn}${styles.inputContainer}`}>
+              <div className={styles.rowWrap}>
+                <p className={styles.inputTitle}>Post-Event Section:</p>
+                <Input.TextArea
                   value={postEventSection}
+                  className={styles.postEventInput}
                   onChange={e => setPostEventSection(e.target.value)}
                   placeholder="Write about the volunteers' impact and what happened at the event here!"
                 />
               </div>
 
-              <div
-                style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}
-              >
+              <div className={styles.buttonsContainer}>
                 <Button
                   onClick={() => {
                     setIsAddingPost(false);
                   }}
-                  style={{
-                    width: '9.0em',
-                    marginTop: '3.0em',
-                  }}
+                  className={styles.bottomButton}
                 >
                   Cancel
                 </Button>
@@ -127,10 +63,7 @@ const PostEvent = props => {
                   onClick={async () => {
                     await sendPostEvent();
                   }}
-                  style={{
-                    width: '9.0em',
-                    marginTop: '3.0em',
-                  }}
+                  className={styles.bottomButton}
                   type="primary"
                 >
                   Send
@@ -149,8 +82,8 @@ PostEvent.propTypes = {
   date: PropTypes.string,
   time: PropTypes.string,
   eventId: PropTypes.string,
+  prevText: PropTypes.string,
   setIsAddingPost: PropTypes.func,
-  isEdit: PropTypes.bool,
   setIsLoading: PropTypes.func,
 };
 
@@ -159,9 +92,9 @@ PostEvent.defaultProps = {
   date: '',
   time: '',
   eventId: '0',
+  prevText: '',
   setIsAddingPost: () => {},
   setIsLoading: () => {},
-  isEdit: false,
 };
 
 export default PostEvent;

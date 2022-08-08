@@ -35,7 +35,7 @@ const EventPage = () => {
       const { data: eventResponse } = await AFCBackend.get(`/events/${eventId}`);
       console.log(eventResponse[0]);
       setEventData(eventResponse[0]);
-      if (eventResponse[0].posteventText !== undefined) {
+      if (eventResponse[0].posteventText) {
         setIsEdit(true);
       }
 
@@ -119,11 +119,11 @@ const EventPage = () => {
   if (isAddingPost) {
     return (
       <PostEvent
-        isEdit={isEdit}
         name={eventData.name}
         date={parseDate().startDate}
         time={`${parseDate().startTime}-${parseDate().endTime}`}
         eventId={eventId}
+        prevText={eventData.posteventText ?? ''}
         setIsAddingPost={setIsAddingPost}
         setIsLoading={setLoading}
       />
@@ -146,7 +146,7 @@ const EventPage = () => {
     !isAddingPost &&
     !viewVolunteers && (
       <>
-        <img src={EventPageImage} alt="Event Page Banner" />
+        <img src={EventPageImage} alt="Event Page Banner" className={styles.headerImage} />
         <div className={styles.eventPageContainer}>
           <div className={styles.eventPageLeftContainer}>
             <div className={styles.eventPageLeftSection}>
@@ -155,107 +155,36 @@ const EventPage = () => {
                 {eventData.eventType ? eventData.eventType : 'General Event'}
               </p>
             </div>
-            <div
-              style={{
-                position: 'relative',
-                backgroundColor: 'white',
-                marginTop: '4rem',
-                height: '7rem',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-              }}
-            >
+            <div className={styles.eventInfoContainer}>
               <p className={styles.header}>Event Information</p>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-              >
+              <div className={styles.centerContainer}>
                 <AimOutlined style={{ fontSize: '16px' }} />
-                <p
-                  style={{
-                    padding: 0,
-                    margin: 0,
-                    paddingLeft: '.7em',
-                    paddingTop: '4px',
-                    fontSize: '16px',
-                  }}
-                >
+                <p className={styles.infoParagraph}>
                   {eventData.addressStreet} {eventData.addressCity}, {eventData.addressState}{' '}
                   {eventData.addressZip}
                 </p>
               </div>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-              >
+              <div className={styles.centerContainer}>
                 <CalendarOutlined style={{ fontSize: '16px' }} />
-                <p
-                  style={{
-                    padding: 0,
-                    margin: 0,
-                    paddingLeft: '.7em',
-                    paddingTop: '4px',
-                    fontSize: '16px',
-                  }}
-                >
-                  {parseDate().startDate}
-                </p>
+                <p className={styles.infoParagraph}>{parseDate().startDate}</p>
               </div>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-              >
+              <div className={styles.centerContainer}>
                 <ClockCircleOutlined style={{ fontSize: '16px' }} />
-                <p
-                  style={{
-                    padding: 0,
-                    margin: 0,
-                    paddingLeft: '.7em',
-                    paddingTop: '4px',
-                    fontSize: '16px',
-                  }}
-                >
+                <p className={styles.infoParagraph}>
                   {parseDate().startTime} - {parseDate().endTime}
                 </p>
               </div>
             </div>
             {getPostEvent()}
             {getNotes()}
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                backgroundColor: 'white',
-                marginTop: '2.5rem',
-                height: '6em',
-              }}
-            >
+            <div className={styles.waiversContainer}>
               <p className={styles.header}>Waivers</p>
               {/* TODO Multiple waiver downloads; currently, only single waiver download button */}
               {handoutWaiver ? (
                 <a href={handoutWaiver.link} download={handoutWaiver.name}>
-                  <Button
-                    style={{
-                      width: '13em',
-                      display: 'flex',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
+                  <Button className={styles.waiversButton}>
                     <VerticalAlignBottomOutlined />
-                    <p style={{ padding: 0, margin: 0, paddingLeft: '.7em' }}>Click to Download</p>
+                    <p className={styles.waiversButtonText}>Click to Download</p>
                   </Button>
                 </a>
               ) : (
@@ -263,53 +192,15 @@ const EventPage = () => {
               )}
             </div>
           </div>
-          <div
-            style={{
-              width: '25%',
-              minWidth: '265px',
-              height: '50em',
-              display: 'flex',
-              flexDirection: 'column',
-              marginRight: '5%',
-              marginTop: '1.5em',
-            }}
-          >
-            <div
-              style={{
-                backgroundColor: 'white',
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <div
-                style={{
-                  paddingLeft: '0.1em',
-                }}
-              >
-                <p
-                  style={{
-                    fontFamily: 'Avenir Bold',
-                    fontSize: '15px',
-                    color: '#000000',
-                    margin: 0,
-                    paddingRight: '1.2em',
-                  }}
-                >
+          <div className={styles.topRightContainer}>
+            <div className={styles.signedUpContainer}>
+              <div className={styles.leftPad}>
+                <p className={styles.volunteers}>
                   {numAttendees || 0}/{eventData.volunteerCapacity} Signed Up
                 </p>
                 <button
                   type="button"
-                  style={{
-                    backgroundColor: 'transparent',
-                    border: 'none',
-                    padding: 0,
-                    margin: 0,
-                    fontSize: '13px',
-                    cursor: 'pointer',
-                    color: '#115740',
-                  }}
+                  className={styles.viewVolunteers}
                   onClick={() => setViewVolunteers(true)}
                 >
                   View Volunteers
@@ -321,9 +212,7 @@ const EventPage = () => {
                   type="primary"
                   onClick={() => setIsAddingPost(true)}
                 >
-                  <p className={styles.buttonText}>
-                    {eventData.posteventText ? 'Edit' : 'Add'} Post-Event
-                  </p>
+                  <p className={styles.buttonText}>{isEdit ? 'Edit' : 'Add'} Post-Event</p>
                 </Button>
               ) : (
                 Date.parse(eventData.startDatetime) >= new Date() && (

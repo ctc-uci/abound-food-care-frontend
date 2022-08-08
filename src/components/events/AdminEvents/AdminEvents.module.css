@@ -26,7 +26,7 @@
   width: 99%;
   border-radius: 5px;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
 }
 
 .search-bar {

@@ -1,0 +1,83 @@
+@import '../../../../common/global.css';
+
+.container {
+  background: white;
+  width: 80vw;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+}
+
+.header {
+  font-size: 34px;
+  font-family: 'Avenir Bold';
+  margin-bottom: 1%;
+  color: black;
+}
+
+.subhead {
+  font-size: 16px;
+  font-family: 'Avenir';
+  font-weight: 200;
+}
+
+.flexColumn {
+  width: 80vw;
+  display: flex;
+  flex-direction: column;
+}
+
+.bottomContainer {
+  margin-top: 2em;
+}
+
+.inputContainer {
+  margin-top: 3em;
+  margin-bottom: 8em;
+}
+
+.buttonsContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.eventName {
+  font-family: 'Avenir Bold';
+  font-size: 20px;
+  font-weight: 600;
+  text-align: left;
+  color: black;
+  padding-bottom: 12px;
+}
+
+.mediumFont {
+  font-size: 16px;
+}
+
+.bold {
+  font-weight: 600;
+}
+
+.rowWrap {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.inputTitle {
+  font-size: 16px;
+  padding: 0;
+  margin: 0 0 10px 0;
+  width: 15%;
+}
+
+.bottomButton {
+  width: 9em;
+  margin-top: 3em;
+}
+
+.postEventInput:hover,
+.postEventInput:focus {
+  box-shadow: none;
+  border: 1px solid var(--eden);
+}
