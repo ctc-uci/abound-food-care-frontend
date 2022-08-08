@@ -10,7 +10,6 @@ const { Text } = Typography;
 
 const ViewAdminCodes = ({ isOpen, setIsOpen }) => {
   const [codes, setCodes] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
   const refreshCodes = async () => {
@@ -23,17 +22,6 @@ const ViewAdminCodes = ({ isOpen, setIsOpen }) => {
     setError(undefined);
   }, [isOpen]);
 
-  const onSubmit = async e => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      setLoading(false);
-      setIsOpen(false);
-    } catch (err) {
-      setLoading(false);
-    }
-  };
-
   const onDelete = async code => {
     await AFCBackend.delete(`/adminCode/${code}`);
     refreshCodes();
@@ -44,7 +32,11 @@ const ViewAdminCodes = ({ isOpen, setIsOpen }) => {
     try {
       await AFCBackend.post('/adminCode/');
     } catch (err) {
-      setError('Reached maximum number of codes');
+      if (codes.length >= 5) {
+        setError('Reached maximum number of codes');
+      } else {
+        setError(err.message);
+      }
     }
     await refreshCodes();
   };
@@ -53,8 +45,6 @@ const ViewAdminCodes = ({ isOpen, setIsOpen }) => {
     <Modal
       title="Admin Codes"
       visible={isOpen}
-      confirmLoading={loading}
-      onOk={onSubmit}
       onCancel={() => setIsOpen(false)}
       footer={
         <Button
@@ -66,7 +56,7 @@ const ViewAdminCodes = ({ isOpen, setIsOpen }) => {
         </Button>
       }
     >
-      {codes &&
+      {codes.length > 0 ? (
         codes.map(data => {
           return (
             <div key={data.code} className={styles['admin-code-container']}>
@@ -80,7 +70,13 @@ const ViewAdminCodes = ({ isOpen, setIsOpen }) => {
               </Button>
             </div>
           );
-        })}
+        })
+      ) : (
+        <Text type="danger">
+          You have not generated any codes yet for admin signups, select <b>Generate Admin Code</b>{' '}
+          to do so
+        </Text>
+      )}
       {error && <Text type="danger">{error}</Text>}
     </Modal>
   );

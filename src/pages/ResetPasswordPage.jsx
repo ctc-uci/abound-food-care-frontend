@@ -5,7 +5,6 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Input, Form, Typography } from 'antd';
 import { useNavigate } from 'react-router-dom';
-// import styles from './ResetPasswordForm.module.css';
 import { confirmNewPassword } from '../util/auth_utils';
 
 const schema = yup.object({
@@ -22,7 +21,6 @@ const schema = yup.object({
 const { Title, Text } = Typography;
 
 const ResetPasswordForm = ({ code }) => {
-  // SUGGESTION: COPY /auth DESIGN
   const [componentSize, setComponentSize] = useState('default');
   const {
     handleSubmit,

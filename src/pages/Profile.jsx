@@ -28,7 +28,7 @@ function Profile({ cookies }) {
     const currentUserId = cookies.get(cookieKeys.USER_ID);
     const role = cookies.get(cookieKeys.ROLE);
     if (role === AUTH_ROLES.VOLUNTEER_ROLE && userId !== currentUserId) {
-      navigate('/');
+      navigate(`/profile/${currentUserId}`);
     }
   }, []);
   const waivers = [

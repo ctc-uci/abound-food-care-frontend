@@ -1,7 +1,9 @@
+@import '../../common/global.css';
+
 .next-button {
-  background-color: #115740 !important;
+  background-color: var(--eden) !important;
   color: white !important;
-  border-color: #115740;
+  border-color: var(--eden);
 }
 
 .previous-button {

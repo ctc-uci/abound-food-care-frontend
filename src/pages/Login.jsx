@@ -17,7 +17,7 @@ import { ReactComponent as AboundSignature } from '../Abound_Signature.svg';
 import CreateAccount from './CreateAccount/CreateAccount';
 import ForgotPassword from '../components/ForgotPassword/ForgotPassword';
 
-function Login({ cookies }) {
+const Login = ({ cookies }) => {
   const navigate = useNavigate();
 
   useEffect(async () => {
@@ -72,6 +72,7 @@ function Login({ cookies }) {
         return;
       }
     }
+    // TODO: check if email already in db here
     setAdminCodeStatus(undefined);
     setAdminCodeError(undefined);
     setValues(vals);
@@ -82,7 +83,7 @@ function Login({ cookies }) {
     <>
       <ForgotPassword isOpen={isOpen} setIsOpen={setIsOpen} />
       {pageState === 'createPage' ? (
-        <CreateAccount setPageState={setPageState} {...values} role={role} navigate={navigate} />
+        <CreateAccount setPageState={setPageState} role={role} {...values} />
       ) : (
         <Card
           style={{
@@ -221,7 +222,7 @@ function Login({ cookies }) {
 
                     <Divider style={{ marginTop: 3 }} />
 
-                    <Form form={signupForm}>
+                    <Form form={signupForm} initialValues={{ role: AUTH_ROLES.VOLUNTEER_ROLE }}>
                       <Form.Item
                         name="firstName"
                         rules={[{ required: true, message: 'Please input your first name!' }]}
@@ -292,7 +293,7 @@ function Login({ cookies }) {
                           validateStatus={adminCodeStatus}
                           help={adminCodeError}
                         >
-                          <Input
+                          <Input.Password
                             placeholder="Admin Code"
                             prefix={
                               <LockOutlined style={{ color: '#009A44', paddingRight: '13px' }} />
@@ -301,12 +302,8 @@ function Login({ cookies }) {
                         </Form.Item>
                       )}
 
-                      <Form.Item label="Role" name="role" defaultValue={AUTH_ROLES.VOLUNTEER_ROLE}>
-                        <Radio.Group
-                          defaultValue={AUTH_ROLES.VOLUNTEER_ROLE}
-                          onChange={e => setRole(e.target.value)}
-                          buttonStyle="solid"
-                        >
+                      <Form.Item label="Role" name="role">
+                        <Radio.Group onChange={e => setRole(e.target.value)} buttonStyle="solid">
                           <Radio.Button value={AUTH_ROLES.VOLUNTEER_ROLE}>Volunteer</Radio.Button>
                           <Radio.Button value={AUTH_ROLES.ADMIN_ROLE}>Admin</Radio.Button>
                         </Radio.Group>
@@ -368,7 +365,7 @@ function Login({ cookies }) {
       )}
     </>
   );
-}
+};
 
 Login.propTypes = {
   cookies: instanceOf(Cookies).isRequired,

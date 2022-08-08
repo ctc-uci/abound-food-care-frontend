@@ -1,8 +1,10 @@
+@import '../../../common/global.css';
+
 .admin-code-container {
     display: flex;
     justify-content: space-between;
 }
 
-.delete-button {
-    /* background-color: var(--) */
+.generate-admin-code-button {
+    background-color: var(--eden) !important;
 }

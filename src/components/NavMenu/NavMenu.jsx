@@ -13,14 +13,15 @@ import {
   LogoutOutlined,
   UserOutlined,
 } from '@ant-design/icons';
+import { Cookies, withCookies, cookieKeys } from '../../util/cookie_utils';
+import { AUTH_ROLES, logout } from '../../util/auth_utils';
 import Logo from '../../assets/Logo.png';
 import styles from './NavMenu.module.css';
 import './NavAnt.css';
 
-import { Cookies, withCookies, cookieKeys } from '../../util/cookie_utils';
-import { AUTH_ROLES, logout } from '../../util/auth_utils';
-
 const { Sider } = Layout;
+
+const renderPaths = ['/auth', '/reset-password'];
 
 const NavMenu = ({ cookies }) => {
   const [collapsed, setCollapsed] = useState(false);
@@ -36,7 +37,7 @@ const NavMenu = ({ cookies }) => {
 
   return (
     <>
-      {pathname !== '/auth' && pathname !== '/reset-password' && (
+      {!renderPaths.includes(pathname) && (
         <Sider trigger={null} collapsible collapsed={collapsed} className={styles['side-nav']}>
           <Link to="/">
             <div className={`${collapsed ? styles.collapsed : ''} ${styles.logo}`}>

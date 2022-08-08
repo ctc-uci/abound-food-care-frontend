@@ -11,16 +11,17 @@ import CreateEvent from './pages/CreateEvent';
 import Volunteers from './pages/Volunteers';
 import Profile from './pages/Profile';
 import Event from './pages/Event';
-import useViewPort from './common/useViewPort';
-
-import NavMenu from './components/NavMenu/NavMenu';
 import EventSignUp from './pages/EventSignUp';
-
-import ProtectedRoute from './util/ProtectedRoute';
-import AUTH_ROLES from './util/auth_config';
 import Dashboard from './pages/Dashboard';
 
+// Components
+import NavMenu from './components/NavMenu/NavMenu';
 import ResetPassword from './components/ForgotPassword/ResetPassword';
+
+// Utils
+import useViewPort from './common/useViewPort';
+import AUTH_ROLES from './util/auth_config';
+import ProtectedRoute from './util/ProtectedRoute';
 
 const App = () => {
   const { width } = useViewPort();
@@ -29,6 +30,7 @@ const App = () => {
     <CookiesProvider>
       <Layout>
         <Router>
+          {/* TODO: implement mobile navbar here */}
           {width > breakpoint ? <NavMenu /> : <></>}
           <div className="site-background">
             <Routes>

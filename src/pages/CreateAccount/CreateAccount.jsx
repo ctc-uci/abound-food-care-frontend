@@ -10,7 +10,7 @@ import RolesAndSkills from '../../components/create-account/RolesAndSkills/Roles
 import WeeklyInfo from '../../components/create-account/WeeklyInfo/WeeklyInfo';
 import { AFCBackend, phoneRegExp, zipRegExp } from '../../util/utils';
 
-import { AUTH_ROLES, registerWithEmailAndPassword } from '../../util/auth_utils';
+import { AUTH_ROLES, registerWithEmailAndPassword, useNavigate } from '../../util/auth_utils';
 
 import styles from './CreateAccount.module.css';
 
@@ -18,20 +18,21 @@ const { Text } = Typography;
 
 const { Step } = Steps;
 
-const CreateAccount = ({
-  setPageState,
-  firstName,
-  lastName,
-  email,
-  password,
-  role,
-  navigate,
-  code,
-}) => {
-  const [formStep, setFormStep] = useState(0);
+const PAGE_NAME = {
+  GENERAL_INFO: 'GeneralInfo',
+  AVAILABILITY: 'Availability',
+  ROLES_AND_SKILLS: 'RolesAndSkills',
+  ADDITIONAL_INFO: 'AdditionalInfo',
+};
+
+const CreateAccount = ({ setPageState, firstName, lastName, email, password, role, code }) => {
+  const [formStep, setFormStep] = useState(PAGE_NAME.GENERAL_INFO);
+  const [progressNum, setProgressNum] = useState(0);
   const [availability, setAvailability] = useState([]);
   const [missingAvailabilityErrorMessage, setMissingAvailabilityErrorMessage] = useState('');
   const [componentSize, setComponentSize] = useState('default');
+
+  const navigate = useNavigate();
 
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
@@ -46,7 +47,7 @@ const CreateAccount = ({
       .test('len', 'Password must be at least 6 characters', val => val?.length >= 6),
     role: yup.string().required(),
     organization: yup.string().required(),
-    birthdate: yup.date().required(),
+    birthdate: yup.date().required().max(new Date()),
     email: yup.string().email('Must be a valid email').required('Email is required'),
     phone: yup
       .string()
@@ -127,7 +128,7 @@ const CreateAccount = ({
 
   const incrementFormStep = async () => {
     const triggers = {
-      0: [
+      [PAGE_NAME.GENERAL_INFO]: [
         'firstName',
         'lastName',
         'password',
@@ -141,21 +142,51 @@ const CreateAccount = ({
         'addressState',
         'addressZip',
       ],
-      1: [],
-      2: ['weightLiftingAbility', 'canDrive', 'willingToDrive'],
+      [PAGE_NAME.AVAILABILITY]: [],
+      [PAGE_NAME.ROLES_AND_SKILLS]: ['weightLiftingAbility', 'canDrive', 'willingToDrive'],
     };
-    if (role === AUTH_ROLES.VOLUNTEER_ROLE && formStep === 1 && availability.length === 0) {
+    const nextStepsVolunteer = {
+      [PAGE_NAME.GENERAL_INFO]: PAGE_NAME.AVAILABILITY,
+      [PAGE_NAME.AVAILABILITY]: PAGE_NAME.ROLES_AND_SKILLS,
+      [PAGE_NAME.ROLES_AND_SKILLS]: PAGE_NAME.ADDITIONAL_INFO,
+    };
+    const nextStepsAdmin = {
+      [PAGE_NAME.GENERAL_INFO]: PAGE_NAME.ROLES_AND_SKILLS,
+      [PAGE_NAME.ROLES_AND_SKILLS]: PAGE_NAME.ADDITIONAL_INFO,
+    };
+
+    if (formStep === PAGE_NAME.AVAILABILITY && availability.length === 0) {
       setMissingAvailabilityErrorMessage('Please select at least one availability slot.');
       return;
     }
-    const result = await methods.trigger(triggers[formStep + (role === AUTH_ROLES.ADMIN_ROLE)]);
+    const result = await methods.trigger(triggers[formStep]);
     if (result) {
-      setFormStep(cur => cur + 1);
+      if (role === AUTH_ROLES.VOLUNTEER_ROLE) {
+        setFormStep(cur => nextStepsVolunteer[cur]);
+      } else {
+        setFormStep(cur => nextStepsAdmin[cur]);
+      }
+      setProgressNum(cur => cur + 1);
     }
   };
 
   const decrementFormStep = () => {
-    setFormStep(cur => cur - 1);
+    const prevStepsVolunteer = {
+      [PAGE_NAME.AVAILABILITY]: PAGE_NAME.GENERAL_INFO,
+      [PAGE_NAME.ROLES_AND_SKILLS]: PAGE_NAME.AVAILABILITY,
+      [PAGE_NAME.ADDITIONAL_INFO]: PAGE_NAME.ROLES_AND_SKILLS,
+    };
+    const prevStepsAdmin = {
+      [PAGE_NAME.ROLES_AND_SKILLS]: PAGE_NAME.GENERAL_INFO,
+      [PAGE_NAME.ADDITIONAL_INFO]: PAGE_NAME.ROLES_AND_SKILLS,
+    };
+
+    if (role === AUTH_ROLES.VOLUNTEER_ROLE) {
+      setFormStep(cur => prevStepsVolunteer[cur]);
+    } else {
+      setFormStep(cur => prevStepsAdmin[cur]);
+    }
+    setProgressNum(cur => cur - 1);
   };
 
   const buildLanguagesArray = values => {
@@ -229,73 +260,67 @@ const CreateAccount = ({
           onValuesChange={onFormLayoutChange}
           onFinish={methods.handleSubmit(onSubmit)}
         >
-          <Steps progressDot current={formStep}>
-            <Step title="General" />
-            {role === AUTH_ROLES.VOLUNTEER_ROLE && <Step title="Availability" />}
-            <Step title="Roles &amp; Skills" />
-            <Step title="Additional Info" />
+          <Steps progressDot current={progressNum}>
+            <Step key={PAGE_NAME.GENERAL_INFO} title="General" />
+            {role === AUTH_ROLES.VOLUNTEER_ROLE && (
+              <Step key={PAGE_NAME.AVAILABILITY} title="Availability" />
+            )}
+            <Step key={PAGE_NAME.ROLES_AND_SKILLS} title="Roles &amp; Skills" />
+            <Step key={PAGE_NAME.ADDITIONAL_INFO} title="Additional Info" />
           </Steps>
-          {formStep >= 0 && (
-            <section hidden={formStep !== 0}>
-              <GeneralInfo
-                firstName={firstName}
-                lastName={lastName}
-                email={email}
-                password={password}
-              />
-              <div className={styles['nav-buttons']}>
-                <Button className={styles['previous-button']} onClick={() => setPageState('login')}>
-                  Back
-                </Button>
-                <Button className={styles['next-button']} onClick={incrementFormStep}>
-                  Next
-                </Button>
-              </div>
-            </section>
-          )}
-          {formStep >= 1 && role === AUTH_ROLES.VOLUNTEER_ROLE && (
-            <section hidden={formStep !== 1}>
-              <WeeklyInfo availability={availability} setAvailability={setAvailability} />
-              <Text type="danger">{missingAvailabilityErrorMessage}</Text>
-              <div className={styles['nav-buttons']}>
-                <Button className={styles['previous-button']} onClick={decrementFormStep}>
-                  Previous
-                </Button>
-                <Button className={styles['next-button']} onClick={incrementFormStep}>
-                  Next
-                </Button>
-              </div>
-            </section>
-          )}
-          {formStep >= 2 - (role === AUTH_ROLES.ADMIN_ROLE) && (
-            <section hidden={formStep !== 2 - (role === AUTH_ROLES.ADMIN_ROLE)}>
-              <RolesAndSkills />
-              <div className={styles['nav-buttons']}>
-                <Button className={styles['previous-button']} onClick={decrementFormStep}>
-                  Previous
-                </Button>
-                <Button className={styles['next-button']} onClick={incrementFormStep}>
-                  Next
-                </Button>
-              </div>
-            </section>
-          )}
-          {formStep >= 3 - (role === AUTH_ROLES.ADMIN_ROLE) && (
-            <section hidden={formStep !== 3 - (role === AUTH_ROLES.ADMIN_ROLE)}>
-              <DuiAndCrimHis />
-              <div className={styles['nav-buttons']}>
-                <Button className={styles['previous-button']} onClick={decrementFormStep}>
-                  Previous
-                </Button>
-                <Button
-                  className={styles['next-button']}
-                  onClick={() => onSubmit(methods.getValues())}
-                >
-                  Finish
-                </Button>
-              </div>
-            </section>
-          )}
+          <section hidden={formStep !== PAGE_NAME.GENERAL_INFO}>
+            <GeneralInfo
+              firstName={firstName}
+              lastName={lastName}
+              email={email}
+              password={password}
+            />
+            <div className={styles['nav-buttons']}>
+              <Button className={styles['previous-button']} onClick={() => setPageState('login')}>
+                Back
+              </Button>
+              <Button className={styles['next-button']} onClick={incrementFormStep}>
+                Next
+              </Button>
+            </div>
+          </section>
+          <section hidden={formStep !== PAGE_NAME.AVAILABILITY}>
+            <WeeklyInfo availability={availability} setAvailability={setAvailability} />
+            <Text type="danger">{missingAvailabilityErrorMessage}</Text>
+            <div className={styles['nav-buttons']}>
+              <Button className={styles['previous-button']} onClick={decrementFormStep}>
+                Previous
+              </Button>
+              <Button className={styles['next-button']} onClick={incrementFormStep}>
+                Next
+              </Button>
+            </div>
+          </section>
+          <section hidden={formStep !== PAGE_NAME.ROLES_AND_SKILLS}>
+            <RolesAndSkills />
+            <div className={styles['nav-buttons']}>
+              <Button className={styles['previous-button']} onClick={decrementFormStep}>
+                Previous
+              </Button>
+              <Button className={styles['next-button']} onClick={incrementFormStep}>
+                Next
+              </Button>
+            </div>
+          </section>
+          <section hidden={formStep !== PAGE_NAME.ADDITIONAL_INFO}>
+            <DuiAndCrimHis />
+            <div className={styles['nav-buttons']}>
+              <Button className={styles['previous-button']} onClick={decrementFormStep}>
+                Previous
+              </Button>
+              <Button
+                className={styles['next-button']}
+                onClick={() => onSubmit(methods.getValues())}
+              >
+                Finish
+              </Button>
+            </div>
+          </section>
         </Form>
       </FormProvider>
     </div>
@@ -310,7 +335,6 @@ CreateAccount.propTypes = {
   password: PropTypes.string.isRequired,
   role: PropTypes.string.isRequired,
   code: PropTypes.string.isRequired,
-  navigate: PropTypes.func.isRequired,
 };
 
 export default CreateAccount;
