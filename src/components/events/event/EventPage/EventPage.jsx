@@ -33,6 +33,7 @@ const EventPage = () => {
   const getEvent = async () => {
     try {
       const { data: eventResponse } = await AFCBackend.get(`/events/${eventId}`);
+      console.log(eventResponse[0]);
       setEventData(eventResponse[0]);
       if (eventResponse[0].posteventText !== undefined) {
         setIsEdit(true);
@@ -89,7 +90,7 @@ const EventPage = () => {
   };
 
   const getPostEvent = () =>
-    eventData.postEventText && (
+    eventData.posteventText && (
       <div className={styles.sectionContainer}>
         <p className={styles.header}>Post-Event Recap</p>
         <p className={styles.sectionText}>{eventData.posteventText}</p>

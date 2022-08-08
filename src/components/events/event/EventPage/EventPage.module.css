@@ -64,11 +64,13 @@
 }
 
 .sectionContainer {
+  position: relative;
+  top: 30px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   background-color: white;
-  margin-top: 2em;
+  margin-top: 10px;
 }
 
 .sectionText {
