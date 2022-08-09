@@ -15,6 +15,7 @@ import {
   registerWithEmailAndPassword,
   useNavigate,
   passwordRegex,
+  isEmailInUse,
 } from '../../util/auth_utils';
 
 import styles from './CreateAccount.module.css';
@@ -43,6 +44,8 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
     setComponentSize(size);
   };
 
+  const emailRegex = /^[\w-.]+@([\w-]+.)+[\w-]{2,4}$/;
+
   const schema = yup.object({
     firstName: yup.string().required('First name is a required field'),
     lastName: yup.string().required('Last name is a required field'),
@@ -54,8 +57,18 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
       ),
     role: yup.string().required(),
     organization: yup.string().required(),
-    birthdate: yup.date().required().max(new Date()),
-    email: yup.string().email('Must be a valid email').required('Email is required'),
+    birthdate: yup
+      .date()
+      .required()
+      .nullable()
+      .typeError('Birthdate is required')
+      .max(new Date(), `You couldn't possibly be born after today if you're signing up now!`),
+    email: yup
+      .string()
+      .email('Must be a valid email')
+      .required('Email is required')
+      .test('isValid', 'Invalid email', val => val.match(emailRegex))
+      .test('inUse', 'Email is already in use', val => val.match(emailRegex) && isEmailInUse(val)),
     phone: yup
       .string()
       .matches(phoneRegExp, 'Phone number is not valid')
