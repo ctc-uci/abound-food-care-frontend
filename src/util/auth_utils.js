@@ -33,6 +33,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,255}$/;
+
 const refreshUrl = `https://securetoken.googleapis.com/v1/token?key=${process.env.REACT_APP_FIREBASE_APIKEY}`;
 
 /**
@@ -331,6 +333,7 @@ export {
   AFCBackend,
   auth,
   AUTH_ROLES,
+  passwordRegex,
   useNavigate,
   deleteUser,
   signInWithGoogle,

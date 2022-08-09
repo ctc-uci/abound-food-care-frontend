@@ -10,7 +10,12 @@ import RolesAndSkills from '../../components/create-account/RolesAndSkills/Roles
 import WeeklyInfo from '../../components/create-account/WeeklyInfo/WeeklyInfo';
 import { AFCBackend, phoneRegExp, zipRegExp } from '../../util/utils';
 
-import { AUTH_ROLES, registerWithEmailAndPassword, useNavigate } from '../../util/auth_utils';
+import {
+  AUTH_ROLES,
+  registerWithEmailAndPassword,
+  useNavigate,
+  passwordRegex,
+} from '../../util/auth_utils';
 
 import styles from './CreateAccount.module.css';
 
@@ -24,8 +29,6 @@ const PAGE_NAME = {
   ROLES_AND_SKILLS: 'RolesAndSkills',
   ADDITIONAL_INFO: 'AdditionalInfo',
 };
-
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,255}$/;
 
 const CreateAccount = ({ setPageState, firstName, lastName, email, password, role, code }) => {
   const [formStep, setFormStep] = useState(PAGE_NAME.GENERAL_INFO);

@@ -11,14 +11,13 @@ import {
   getCurrentUser,
   AFCBackend,
   isEmailInUse,
+  passwordRegex,
 } from '../util/auth_utils';
 import { Cookies, withCookies } from '../util/cookie_utils';
 import { ReactComponent as AboundSignature } from '../Abound_Signature.svg';
 
 import CreateAccount from './CreateAccount/CreateAccount';
 import ForgotPassword from '../components/ForgotPassword/ForgotPassword';
-
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,255}$/;
 
 const Login = ({ cookies }) => {
   const navigate = useNavigate();
