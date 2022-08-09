@@ -25,6 +25,8 @@ const PAGE_NAME = {
   ADDITIONAL_INFO: 'AdditionalInfo',
 };
 
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,255}$/;
+
 const CreateAccount = ({ setPageState, firstName, lastName, email, password, role, code }) => {
   const [formStep, setFormStep] = useState(PAGE_NAME.GENERAL_INFO);
   const [progressNum, setProgressNum] = useState(0);
@@ -43,8 +45,10 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
     lastName: yup.string().required('Last name is a required field'),
     password: yup
       .string()
-      .required('Password must be at least 6 characters')
-      .test('len', 'Password must be at least 6 characters', val => val?.length >= 6),
+      .matches(
+        passwordRegex,
+        'Password must have at least 8 characters, with at least 1 lowercase letter, 1 uppercase letter, and 1 symbol',
+      ),
     role: yup.string().required(),
     organization: yup.string().required(),
     birthdate: yup.date().required().max(new Date()),

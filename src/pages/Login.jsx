@@ -10,12 +10,15 @@ import {
   useNavigate,
   getCurrentUser,
   AFCBackend,
+  isEmailInUse,
 } from '../util/auth_utils';
 import { Cookies, withCookies } from '../util/cookie_utils';
 import { ReactComponent as AboundSignature } from '../Abound_Signature.svg';
 
 import CreateAccount from './CreateAccount/CreateAccount';
 import ForgotPassword from '../components/ForgotPassword/ForgotPassword';
+
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,255}$/;
 
 const Login = ({ cookies }) => {
   const navigate = useNavigate();
@@ -40,6 +43,8 @@ const Login = ({ cookies }) => {
   const [signupForm] = Form.useForm();
   const [adminCodeStatus, setAdminCodeStatus] = useState(undefined);
   const [adminCodeError, setAdminCodeError] = useState(undefined);
+  const [emailStatus, setEmailStatus] = useState(undefined);
+  const [emailError, setEmailError] = useState(undefined);
 
   const [credentialsStatus, setCredentialsStatus] = useState(undefined);
   const [credentialsError, setCredentialsError] = useState(undefined);
@@ -72,9 +77,20 @@ const Login = ({ cookies }) => {
         return;
       }
     }
-    // TODO: check if email already in db here
+
+    const emailInUse = await isEmailInUse(vals.email);
+    if (!emailInUse) {
+      setEmailStatus('error');
+      setEmailError('Email already in use');
+      return;
+    }
+
+    setEmailStatus(undefined);
+    setEmailError(undefined);
+
     setAdminCodeStatus(undefined);
     setAdminCodeError(undefined);
+
     setValues(vals);
     setPageState('createPage');
   };
@@ -254,6 +270,8 @@ const Login = ({ cookies }) => {
                             type: 'email',
                           },
                         ]}
+                        validateStatus={emailStatus}
+                        help={emailError}
                       >
                         <Input
                           placeholder="Email"
@@ -268,8 +286,9 @@ const Login = ({ cookies }) => {
                           {
                             required: true,
                             type: 'string',
-                            min: 8,
-                            message: 'Your password must be at least 8 characters',
+                            pattern: passwordRegex,
+                            message:
+                              'Password must have at least 8 characters, with at least 1 lowercase letter, 1 uppercase letter, and 1 symbol',
                           },
                         ]}
                       >

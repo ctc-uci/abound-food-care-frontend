@@ -12,6 +12,7 @@ import {
   confirmPasswordReset,
   applyActionCode,
   deleteUser,
+  fetchSignInMethodsForEmail,
 } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { cookieKeys, cookieConfig, clearCookies } from './cookie_utils';
@@ -264,6 +265,11 @@ const logout = async (redirectPath, navigate, cookies) => {
   navigate(redirectPath);
 };
 
+const isEmailInUse = async email => {
+  const res = await fetchSignInMethodsForEmail(auth, email);
+  return res.length === 0;
+};
+
 /**
  * Adds an axios interceptor for auth to given axiosInstance
  * @param {AxiosInstance} axiosInstance instance of axios to apply interceptor to
@@ -339,4 +345,5 @@ export {
   confirmNewPassword,
   confirmVerifyEmail,
   finishGoogleLoginRegistration,
+  isEmailInUse,
 };
