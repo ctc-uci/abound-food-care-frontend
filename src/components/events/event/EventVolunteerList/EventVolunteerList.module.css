@@ -1,0 +1,76 @@
+@import '../../../../common/global.css';
+
+.volunteer-list-container {
+  display: flex;
+  flex-direction: row;
+  width: 80vw;
+  padding-top: 1.5em;
+  margin: auto;
+}
+
+.inner-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 10vh;
+}
+
+.top-container {
+  height: 50em;
+  display: flex;
+  flex-direction: column;
+}
+
+.event-header-container {
+  height: 4.5em;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.header {
+  font-family: "Avenir";
+  color: black;
+  font-weight: 800;
+  font-size: 28px;
+  line-height: 1em;
+  padding: 0;
+  margin: 0;
+}
+
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.buttons-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.event-type {
+  font-weight: 500;
+  font-size: 16px;
+  color: #888888;
+  padding: 0;
+  margin: 0;
+}
+
+.email-volunteers-button {
+  margin-right: 2vw;
+}
+
+.email-volunteers-button[disabled], .download-waivers-button[disabled] {
+  background-color: #fff !important;
+  color: #ccc;
+  border: 1px dashed var(--eden);
+}
+
+.back-arrow {
+  font-size: 24px;
+  padding-top: 0.25vw;
+  padding-right: 1vw;
+}
