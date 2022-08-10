@@ -29,16 +29,16 @@ const PastEvents = () => {
                     <p className={styles['past-event-start-date']}>
                       {' '}
                       {getMonthString(pastEvent.startDateTime)}{' '}
-                      {new Date(pastEvent.startDateTime).getDate()},{' '}
-                      {new Date(pastEvent.startDateTime).getFullYear()}
+                      {new Date(pastEvent.startDatetime).getDate()},{' '}
+                      {new Date(pastEvent.startDatetime).getFullYear()}
                     </p>
                     <p className={styles['past-event-end']}>
-                      {getTimeInPST(pastEvent.startDateTime)} -{' '}
-                      {getTimeInPST(pastEvent.endDateTime)}
+                      {getTimeInPST(pastEvent.startDatetime)} -{' '}
+                      {getTimeInPST(pastEvent.endDatetime)}
                     </p>
                     <p>
                       <span className={styles['semi-opaque-black']}>Total Hours: </span>
-                      {getHourDiff(pastEvent.startDateTime, pastEvent.endDateTime)} hrs
+                      {getHourDiff(pastEvent.startDatetime, pastEvent.endDatetime)} hrs
                     </p>
                   </div>
                 </Card.Grid>
@@ -59,15 +59,15 @@ const PastEvents = () => {
             <Card.Grid key={pastEvent.name} className={styles.grid}>
               <div className={styles['show-past-event-mobile-container']}>
                 <div className={styles['show-past-event-date-mobile']}>
-                  <h6>{getMonthString(pastEvent.startDateTime)}</h6>
-                  <h7>{new Date(pastEvent.startDateTime).getDate()}</h7>
+                  <h6>{getMonthString(pastEvent.startDatetime)}</h6>
+                  <h7>{new Date(pastEvent.startDatetime).getDate()}</h7>
                 </div>
                 <div className={styles['show-past-event-details-mobile']}>
                   <a className={styles['past-event-name']} href="https://www.google.com">
                     {pastEvent.name}
                   </a>
                   <h8>
-                    {getTimeInPST(pastEvent.startDateTime)} - {getTimeInPST(pastEvent.endDateTime)}
+                    {getTimeInPST(pastEvent.startDatetime)} - {getTimeInPST(pastEvent.endDatetime)}
                   </h8>
                 </div>
               </div>

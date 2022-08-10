@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col } from 'antd';
-import AdminNotifications from '../components/admin-dashboard-components/AdminNotifications/AdminNotifications';
+import { instanceOf } from 'prop-types';
 import DashboardHeader from '../components/admin-dashboard-components/DashboardHeader/DashboardHeader';
 import EventGrid from '../components/admin-dashboard-components/EventGrid/EventGrid';
 import EventList from '../components/events/EventList/EventList';
 import useViewPort from '../common/useViewPort';
 import { AFCBackend } from '../util/utils';
+import { cookieKeys, Cookies, withCookies } from '../util/cookie_utils';
 
-const AdminDashboard = () => {
+const AdminDashboard = ({ cookies }) => {
   const { width } = useViewPort();
   const breakpoint = 720;
 
@@ -23,13 +24,13 @@ const AdminDashboard = () => {
 
   return (
     <div style={{ padding: '16px' }}>
-      <DashboardHeader isAdmin userId={2} />
+      <DashboardHeader isAdmin userId={cookies.get(cookieKeys.USER_ID)} />
       {width > breakpoint ? (
         <>
           <Row className="dashboard-row" gutter={[32, 16]}>
             <Col className="dashboard-col" span={18}>
               <EventGrid title="Upcoming Events" eventStatus="upcoming" />
-              <AdminNotifications />
+              {/* <AdminNotifications /> */}
             </Col>
             <Col className="dashboard-col" span={6}>
               <EventGrid title="Past Events" eventStatus="past" />
@@ -48,4 +49,8 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+AdminDashboard.propTypes = {
+  cookies: instanceOf(Cookies).isRequired,
+};
+
+export default withCookies(AdminDashboard);

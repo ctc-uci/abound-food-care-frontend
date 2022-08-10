@@ -215,7 +215,7 @@ const EventPage = () => {
                   <Button
                     className={`${styles.editEventButton} ${styles.editButton}`}
                     type="primary"
-                    onClick={() => navigate(`/events/edit/${eventId}`)}
+                    onClick={() => navigate(`/event/edit/${eventId}`)}
                   >
                     <p className={styles.buttonText}>Edit Event</p>
                   </Button>

@@ -613,7 +613,7 @@ const ProfileRolesAndSkills = ({ userId }) => {
 };
 
 ProfileRolesAndSkills.propTypes = {
-  userId: PropTypes.number.isRequired,
+  userId: PropTypes.string.isRequired,
 };
 
 export default ProfileRolesAndSkills;
