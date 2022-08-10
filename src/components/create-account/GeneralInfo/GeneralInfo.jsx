@@ -74,9 +74,9 @@ const GeneralInfo = ({ firstName, lastName, email, password }) => {
       <Controller
         control={control}
         name="email"
-        render={({ field: { onChange, ref } }) => (
+        render={({ field: { ref } }) => (
           <Form.Item label="Email" required>
-            <Input onChange={onChange} ref={ref} defaultValue={email} />
+            <Input ref={ref} defaultValue={email} disabled />
             <Text type="danger">{errors.email && <p>{errors.email.message}</p>}</Text>
           </Form.Item>
         )}
