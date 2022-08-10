@@ -44,7 +44,8 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
     setComponentSize(size);
   };
 
-  const emailRegex = /^[\w-.]+@([\w-]+.)+[\w-]{2,4}$/;
+  const emailRegex =
+    /^[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
 
   const schema = yup.object({
     firstName: yup.string().required('First name is a required field'),
