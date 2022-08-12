@@ -1,10 +1,10 @@
 @import '../../../common/global.css';
 
 .admin-code-container {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 .generate-admin-code-button {
-    background-color: var(--eden) !important;
+  background-color: var(--eden) !important;
 }
