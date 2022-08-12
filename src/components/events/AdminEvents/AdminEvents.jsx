@@ -70,8 +70,8 @@ const AdminEvents = () => {
 
   const getEventsByTypeAndStatus = async (type, status) => {
     try {
-      const filteredEvents = await AFCBackend.get('/events', {
-        params: {
+      const filteredEvents = await AFCBackend.get('/', {
+        query: {
           status,
           type,
           pageSize: PAGE_SIZE,
@@ -216,7 +216,7 @@ const AdminEvents = () => {
                   <Radio.Button className={styles['food-radio-btn']} value="Food Running">
                     Food Running
                   </Radio.Button>
-                  <Radio.Button value="other">Other</Radio.Button>
+                  <Radio.Button value="Other">Other</Radio.Button>
                 </Radio.Group>
               </span>
               <span>
@@ -244,10 +244,12 @@ const AdminEvents = () => {
           <PaginationController
             paginatedIndex={pageIndex}
             setPaginatedIndex={setPageIndex}
-            totalNumberOfPages={AFCBackend.get('/events/total', {
-              status: eventStatusValue,
-              type: eventTypeValue,
-            })}
+            totalNumberOfPages={
+              AFCBackend.get('/events/', {
+                status: eventStatusValue,
+                type: eventTypeValue,
+              }).length
+            }
           />
         </>
       )}
