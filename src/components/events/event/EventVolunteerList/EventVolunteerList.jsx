@@ -33,11 +33,24 @@ const EventVolunteerList = ({ name, type, eventId, setViewVolunteers }) => {
           return volunteer.userId === waiver.userId;
         });
         matchingVolunteer.waiver = waiver.link;
+        matchingVolunteer.waiverName = waiver.name;
       }
     });
-
+    console.log(volunteerData);
     setVolunteers(volunteerData);
     setEmail(emailM);
+  };
+
+  const getAllWaivers = async volunteerData => {
+    const waiversZip = await AFCBackend.post(`/waivers/download/${eventId}`, {
+      name,
+      volunteerData,
+    });
+    window.open(waiversZip);
+    // console.log(waiversZip);
+    // const zip = fs.createWriteStream(`${name}-waivers.zip`, { flags: 'w' });
+    // const zipLink = window.URL.createObjectURL(zip);
+    // window.open(zipLink);
   };
 
   useEffect(async () => {
@@ -117,6 +130,7 @@ const EventVolunteerList = ({ name, type, eventId, setViewVolunteers }) => {
                 type="primary"
                 disabled={volunteers.length === 0}
                 className={styles['download-waivers-button']}
+                onClick={() => getAllWaivers(volunteers)}
               >
                 Download All Waivers
               </Button>
