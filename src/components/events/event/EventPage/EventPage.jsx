@@ -8,14 +8,17 @@ import {
 } from '@ant-design/icons';
 import { Button, Divider, Tag, Space } from 'antd';
 import moment from 'moment';
+import { instanceOf } from 'prop-types';
+import { withCookies, Cookies, cookieKeys } from '../../../../util/cookie_utils';
 import { AFCBackend } from '../../../../util/utils';
 import PostEvent from '../PostEvent/PostEvent';
 import EventVolunteerList from '../EventVolunteerList/EventVolunteerList';
 import EventPageImage from '../../../../assets/img/event-page-banner.png';
 import styles from './EventPage.module.css';
 import './EventPageAntStyles.css';
+import AUTH_ROLES from '../../../../util/auth_config';
 
-const EventPage = () => {
+const EventPage = ({ cookies }) => {
   const [eventData, setEventData] = useState([]);
   const [numAttendees, setNumAttendees] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -23,6 +26,7 @@ const EventPage = () => {
   const [viewVolunteers, setViewVolunteers] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [handoutWaiver, setHandoutWaiver] = useState(null);
+  const [signedUp, setSignedUp] = useState(false);
 
   const { eventId } = useParams();
   const navigate = useNavigate();
@@ -60,6 +64,14 @@ const EventPage = () => {
       console.log(e.message);
     }
   };
+
+  useEffect(async () => {
+    const { data } = await AFCBackend.get(`/volunteers/${cookies.get(cookieKeys.USER_ID)}`);
+    console.log(data);
+    if (data[0] && data[0].eventIds.includes(parseInt(eventId, 10))) {
+      setSignedUp(true);
+    }
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -137,6 +149,13 @@ const EventPage = () => {
     );
   }
 
+  const onUnregister = async () => {
+    const res = AFCBackend.delete(`/volunteers/${cookies.get(cookieKeys.USER_ID)}/${eventId}`);
+    console.log(res);
+    console.log('unregistered!');
+    setSignedUp(false);
+  };
+
   return (
     !loading &&
     !isAddingPost &&
@@ -202,25 +221,44 @@ const EventPage = () => {
                   View Volunteers
                 </button>
               </div>
-              {Date.parse(eventData.startDatetime) < new Date() ? (
-                <Button
-                  className={styles.editButton}
-                  type="primary"
-                  onClick={() => setIsAddingPost(true)}
-                >
-                  <p className={styles.buttonText}>{isEdit ? 'Edit' : 'Add'} Post-Event</p>
-                </Button>
-              ) : (
-                Date.parse(eventData.startDatetime) >= new Date() && (
+              {cookies.get(cookieKeys.ROLE) === AUTH_ROLES.ADMIN_ROLE &&
+                (Date.parse(eventData.startDatetime) < new Date() ? (
+                  <Button
+                    className={styles.editButton}
+                    type="primary"
+                    onClick={() => setIsAddingPost(true)}
+                  >
+                    <p className={styles.buttonText}>{isEdit ? 'Edit' : 'Add'} Post-Event</p>
+                  </Button>
+                ) : (
+                  Date.parse(eventData.startDatetime) >= new Date() && (
+                    <Button
+                      className={`${styles.editEventButton} ${styles.editButton}`}
+                      type="primary"
+                      onClick={() => navigate(`/event/edit/${eventId}`)}
+                    >
+                      <p className={styles.buttonText}>Edit Event</p>
+                    </Button>
+                  )
+                ))}
+              {cookies.get(cookieKeys.ROLE) === AUTH_ROLES.VOLUNTEER_ROLE &&
+                (!signedUp ? (
                   <Button
                     className={`${styles.editEventButton} ${styles.editButton}`}
                     type="primary"
-                    onClick={() => navigate(`/event/edit/${eventId}`)}
+                    onClick={() => navigate(`/event/register/${eventId}`)}
                   >
-                    <p className={styles.buttonText}>Edit Event</p>
+                    <p className={styles.buttonText}>Register</p>
                   </Button>
-                )
-              )}
+                ) : (
+                  <Button
+                    className={`${styles.editEventButton} ${styles.editButton}`}
+                    type="primary"
+                    onClick={onUnregister}
+                  >
+                    <p className={styles.buttonText}>Unregister</p>
+                  </Button>
+                ))}
               {/* Thank you note to be implemented if time */}
               {/* <Button
                 style={{
@@ -276,4 +314,8 @@ const EventPage = () => {
   );
 };
 
-export default EventPage;
+EventPage.propTypes = {
+  cookies: instanceOf(Cookies).isRequired,
+};
+
+export default withCookies(EventPage);

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Checkbox, Input, Radio } from 'antd';
-import FixedTitledInput from './FixedTitledInput';
+import { PropTypes } from 'prop-types';
+import TitledInput from './TitledInput';
 import { AFCBackend } from '../../util/utils';
 
 const Container = styled.div`
@@ -98,7 +99,7 @@ const allLanguages = [
   },
 ];
 
-const RolesAndSkills = () => {
+const RolesAndSkills = ({ userId }) => {
   const [loaded, setLoaded] = useState(false);
   const [roles, setRoles] = useState('');
   const [skills, setSkills] = useState('');
@@ -110,7 +111,6 @@ const RolesAndSkills = () => {
   const [distance, setDistance] = useState('');
 
   useEffect(async () => {
-    const userId = 6;
     const { data: res } = await AFCBackend.get(`/users/${userId}`);
     const newVals = [];
 
@@ -136,11 +136,7 @@ const RolesAndSkills = () => {
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <p style={{ marginBottom: '.5vh' }}>{title1}</p>
         <Row style={{ display: 'flex', alignItems: 'center' }}>
-          <Input
-            disabled
-            style={{ color: 'black', width: '5vw', marginRight: '1vw' }}
-            defaultValue={val}
-          />
+          <Input style={{ color: 'black', width: '5vw', marginRight: '1vw' }} defaultValue={val} />
           <p style={{ padding: 0, margin: 0 }}>{title2}</p>
         </Row>
       </div>
@@ -151,12 +147,8 @@ const RolesAndSkills = () => {
     return (
       <div>
         <p style={{ marginBottom: '.5vh' }}>{title}</p>
-        <Radio disabled defaultChecked={val}>
-          Yes
-        </Radio>
-        <Radio disabled defaultChecked={!val}>
-          No
-        </Radio>
+        <Radio defaultChecked={val}>Yes</Radio>
+        <Radio defaultChecked={!val}>No</Radio>
       </div>
     );
   };
@@ -166,26 +158,30 @@ const RolesAndSkills = () => {
       <Container>
         <Field>
           <p>Volunteering Roles Interested In</p>
-          <Checkbox.Group disabled options={allRoles} defaultValue={roles} />
+          <Checkbox.Group options={allRoles} defaultValue={roles} />
         </Field>
         <Field>
-          <p>Special Talents/ Skills</p>
-          <Checkbox.Group disabled options={allSkills} defaultValue={skills} />
+          <p>Special Talents/Skills</p>
+          <Checkbox.Group options={allSkills} defaultValue={skills} />
         </Field>
         <Field>
           <p>Languages Spoken</p>
-          <Checkbox.Group disabled options={allLanguages} defaultValue={languages} />
+          <Checkbox.Group options={allLanguages} defaultValue={languages} />
         </Field>
         {DoubleTitleField('Weight Lifting Ability', weightLift, 'pounds')}
         {YesNoField('Have you completed the food match training on Chowmatch?', training)}
         {YesNoField('Able to Drive', driving)}
         <div style={{ width: '10%' }}>
-          <FixedTitledInput title="Type of Vehicle" val={vehicle} />
+          <TitledInput title="Type of Vehicle" val={vehicle} />
         </div>
         {DoubleTitleField('Distance Comfortable Driving', distance, 'miles')}
       </Container>
     )
   );
+};
+
+RolesAndSkills.propTypes = {
+  userId: PropTypes.string.isRequired,
 };
 
 export default RolesAndSkills;
