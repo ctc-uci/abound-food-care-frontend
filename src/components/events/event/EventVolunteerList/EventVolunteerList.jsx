@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Table, ConfigProvider } from 'antd';
+import { saveAs } from 'file-saver';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import { AFCBackend } from '../../../../util/utils';
@@ -42,11 +43,20 @@ const EventVolunteerList = ({ name, type, eventId, setViewVolunteers }) => {
   };
 
   const getAllWaivers = async volunteerData => {
-    const waiversZip = await AFCBackend.post(`/waivers/download/${eventId}`, {
-      name,
-      volunteerData,
+    const waiversZip = await fetch(`http://localhost:3001/waivers/download/${eventId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        name,
+        volunteerData,
+        test: 'joemama',
+      }),
     });
-    window.open(waiversZip);
+    const waiversZipBlob = await waiversZip.blob();
+    await saveAs(waiversZipBlob, 'joemama.zip');
+    // window.open(waiversZip);
+    // console.log(waiversZip);
     // console.log(waiversZip);
     // const zip = fs.createWriteStream(`${name}-waivers.zip`, { flags: 'w' });
     // const zipLink = window.URL.createObjectURL(zip);
