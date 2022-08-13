@@ -80,40 +80,29 @@ const AdminEvents = () => {
     new Date(startDatetime) > new Date() ? 'upcoming' : 'past';
 
   const getEventsByStatus = (events, status) => {
-    let filteredEvents = events;
-    if (status === 'all') {
-      filteredEvents = events;
-    } else if (status === 'upcoming') {
-      filteredEvents = filteredEvents.filter(
-        event => determineStatus(event.startDatetime) === 'upcoming',
-      );
-    } else if (status === 'past') {
-      filteredEvents = filteredEvents.filter(
-        event => determineStatus(event.startDatetime) === 'past',
-      );
-    }
-    return filteredEvents;
+    const filteredEvents = {
+      all: events,
+      upcoming: events.filter(event => determineStatus(event.startDatetime) === 'upcoming'),
+      past: events.filter(event => determineStatus(event.startDatetime) === 'past'),
+    };
+    return filteredEvents[status];
   };
 
   const getEventsByTypeAndStatus = (type, status) => {
-    let filteredEvents = allEvents;
-    if (type === 'all') {
-      filteredEvents = allEvents;
-    } else if (type === 'distribution') {
-      filteredEvents = filteredEvents.filter(
-        event => event.eventType.toLowerCase() === 'distribution',
-      );
-    } else if (type === 'food') {
-      filteredEvents = filteredEvents.filter(
-        event => event.eventType.toLowerCase() === 'food running',
-      );
-    } else {
-      filteredEvents = filteredEvents.filter(
+    const filteredEvents = {
+      all: allEvents,
+      distribution: allEvents.filter(event => event.eventType.toLowerCase() === 'distribution'),
+      food: allEvents.filter(event => event.eventType.toLowerCase() === 'food running'),
+      other: allEvents.filter(
         event =>
-          event.eventType !== 'Distribution' && event.eventType.toLowerCase() !== 'food running',
-      );
-    }
-    return getEventsByStatus(filteredEvents, status);
+          event.eventType.toLowerCase() !== 'distribution' &&
+          event.eventType.toLowerCase() !== 'food running',
+      ),
+    };
+    return getEventsByStatus(
+      ['all', 'distribution', 'food'].includes(type) ? filteredEvents[type] : filteredEvents.other,
+      status,
+    );
   };
 
   const onTypeChange = e => {
