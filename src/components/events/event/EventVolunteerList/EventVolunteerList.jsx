@@ -37,30 +37,21 @@ const EventVolunteerList = ({ name, type, eventId, setViewVolunteers }) => {
         matchingVolunteer.waiverName = waiver.name;
       }
     });
-    console.log(volunteerData);
     setVolunteers(volunteerData);
     setEmail(emailM);
   };
 
   const getAllWaivers = async volunteerData => {
-    const waiversZip = await fetch(`http://localhost:3001/waivers/download/${eventId}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({
-        name,
-        volunteerData,
-        test: 'joemama',
-      }),
-    });
-    const waiversZipBlob = await waiversZip.blob();
-    await saveAs(waiversZipBlob, 'joemama.zip');
-    // window.open(waiversZip);
-    // console.log(waiversZip);
-    // console.log(waiversZip);
-    // const zip = fs.createWriteStream(`${name}-waivers.zip`, { flags: 'w' });
-    // const zipLink = window.URL.createObjectURL(zip);
-    // window.open(zipLink);
+    const waiversZip = await AFCBackend.post(
+      '/waivers/download',
+      { volunteerData },
+      {
+        headers: { 'Content-Type': 'application/json' },
+        withCredentials: true,
+        responseType: 'blob',
+      },
+    );
+    await saveAs(waiversZip.data, `${name}-waivers.zip`);
   };
 
   useEffect(async () => {
@@ -135,7 +126,6 @@ const EventVolunteerList = ({ name, type, eventId, setViewVolunteers }) => {
               >
                 Email Volunteers
               </Button>
-              {/* TODO: add waiver download functionality */}
               <Button
                 type="primary"
                 disabled={volunteers.length === 0}
@@ -146,7 +136,12 @@ const EventVolunteerList = ({ name, type, eventId, setViewVolunteers }) => {
               </Button>
             </div>
           </div>
-          <Table rowKey="email" dataSource={volunteers} columns={columns} loading={isLoading} />
+          <Table
+            rowKey={row => `${row.name} ${row.email}`}
+            dataSource={volunteers}
+            columns={columns}
+            loading={isLoading}
+          />
         </div>
       </div>
     </ConfigProvider>
