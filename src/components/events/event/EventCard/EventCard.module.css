@@ -1,8 +1,8 @@
 @import '../../../../common/global.css';
 
 .event-card {
-  margin: 10px;
-  border-color: #bfbfbf;
+  margin: 0 7.5px 20px 7.5px !important;
+  border-color: #BFBFBF;
   border-radius: 5px;
   box-shadow: 0px 4px 4px #d3d3d3;
 }

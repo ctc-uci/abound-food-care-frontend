@@ -53,7 +53,7 @@ const ProfileGeneralInfo = ({ userId, volunteerData }) => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema), mode: 'onChange', delayError: 750 });
 
-  const getVolunteerData = () => {
+  const getVolunteerData = async () => {
     setDefaultValues({
       organization: volunteerData.organization,
       phone: volunteerData.phone,
@@ -113,8 +113,11 @@ const ProfileGeneralInfo = ({ userId, volunteerData }) => {
     }
   };
 
-  useEffect(() => {
-    getVolunteerData();
+  useEffect(async () => {
+    if (!volunteerData) {
+      return;
+    }
+    await getVolunteerData();
   }, [volunteerData]);
 
   return (

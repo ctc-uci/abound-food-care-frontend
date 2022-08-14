@@ -161,7 +161,11 @@ ProfileAvailability.propTypes = {
       startTime: PropTypes.string,
       dayOfWeek: PropTypes.string,
     }),
-  ).isRequired,
+  ),
+};
+
+ProfileAvailability.defaultProps = {
+  volunteerAvailability: [],
 };
 
 export default ProfileAvailability;

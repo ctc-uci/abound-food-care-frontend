@@ -13,7 +13,6 @@ const ProfileRolesAndSkills = ({ userId, volunteerData }) => {
   const [isEditable, setIsEditable] = useState(false);
   const [defaultValues, setDefaultValues] = useState({});
   const [defaultLanguages, setDefaultLanguages] = useState([]);
-
   const {
     control,
     handleSubmit,
@@ -31,53 +30,19 @@ const ProfileRolesAndSkills = ({ userId, volunteerData }) => {
   };
 
   const setLanguages = languages => {
-    for (let i = 0; i < languages.length; i += 1) {
-      if (languages.includes('english')) {
-        setValue('english', true);
-      } else {
-        setValue('english', false);
-      }
-      if (languages.includes('spanish')) {
-        setValue('spanish', true);
-      } else {
-        setValue('spanish', false);
-      }
-      if (languages.includes('french')) {
-        setValue('french', true);
-      } else {
-        setValue('french', false);
-      }
-      if (languages.includes('chinese')) {
-        setValue('chinese', true);
-      } else {
-        setValue('chinese', false);
-      }
-      if (languages.includes('tagalog')) {
-        setValue('tagalog', true);
-      } else {
-        setValue('tagalog', false);
-      }
-      if (languages.includes('korean')) {
-        setValue('korean', true);
-      } else {
-        setValue('korean', false);
-      }
-      if (languages.includes('arabic')) {
-        setValue('arabic', true);
-      } else {
-        setValue('arabic', false);
-      }
-      if (languages.includes('german')) {
-        setValue('german', true);
-      } else {
-        setValue('german', false);
-      }
-      if (languages.includes('vietnamese')) {
-        setValue('vietnamese', true);
-      } else {
-        setValue('vietnamese', false);
-      }
-    }
+    [
+      'english',
+      'spanish',
+      'french',
+      'chinese',
+      'tagalog',
+      'korean',
+      'arabic',
+      'german',
+      'vietnamese',
+    ].forEach(lang => {
+      setValue(lang, languages.includes(lang));
+    });
   };
 
   const getDriverData = () => {

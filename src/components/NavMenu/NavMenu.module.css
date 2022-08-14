@@ -22,10 +22,6 @@
   color: var(--eden) !important;
 }
 
-.ant-menu-item-selected {
-  color: var(--eden) !important;
-}
-
 .link {
   color: white !important;
 }

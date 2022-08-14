@@ -1,235 +1,392 @@
-import React, { useState } from 'react';
-import 'antd/dist/antd.css';
+import React, { useEffect, useState } from 'react';
+import { instanceOf } from 'prop-types';
 import { Card, Divider, Form, Input, Button, Checkbox, Radio } from 'antd';
 import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
+
+import {
+  auth,
+  AUTH_ROLES,
+  logInWithEmailAndPassword,
+  useNavigate,
+  getCurrentUser,
+  AFCBackend,
+  isEmailInUse,
+  passwordRegex,
+} from '../util/auth_utils';
+import { Cookies, withCookies } from '../util/cookie_utils';
 import { ReactComponent as AboundSignature } from '../Abound_Signature.svg';
 
-function Login() {
-  const [state, setState] = useState('login');
+import CreateAccount from './CreateAccount/CreateAccount';
+import ForgotPassword from '../components/ForgotPassword/ForgotPassword';
 
-  const forgotPassword = () => {};
+const Login = ({ cookies }) => {
+  const navigate = useNavigate();
 
-  const logIn = () => {};
+  useEffect(async () => {
+    const user = await getCurrentUser(auth);
+    if (user !== null) {
+      navigate('/');
+    }
+  }, []);
 
-  const googleSignIn = () => {};
+  const [pageState, setPageState] = useState('login');
 
-  const signUp = () => {};
+  const [loginEmail, setLoginEmail] = useState('');
 
-  const googleSignUp = () => {};
+  const [loginPassword, setLoginPassword] = useState('');
+
+  const [role, setRole] = useState(AUTH_ROLES.VOLUNTEER_ROLE);
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const [signupForm] = Form.useForm();
+  const [adminCodeStatus, setAdminCodeStatus] = useState(undefined);
+  const [adminCodeError, setAdminCodeError] = useState(undefined);
+  const [emailStatus, setEmailStatus] = useState(undefined);
+  const [emailError, setEmailError] = useState(undefined);
+
+  const [credentialsStatus, setCredentialsStatus] = useState(undefined);
+  const [credentialsError, setCredentialsError] = useState(undefined);
+
+  const [values, setValues] = useState({});
+
+  const forgotPassword = () => {
+    setIsOpen(true);
+  };
+
+  const logIn = async e => {
+    e.preventDefault();
+    try {
+      await logInWithEmailAndPassword(loginEmail, loginPassword, '/', navigate, cookies);
+      setCredentialsStatus(undefined);
+      setCredentialsError(undefined);
+    } catch (err) {
+      setCredentialsStatus('error');
+      setCredentialsError('Invalid credentials');
+    }
+  };
+
+  const signUp = async () => {
+    const vals = await signupForm.validateFields();
+    if (vals.role === AUTH_ROLES.ADMIN_ROLE) {
+      const { data } = await AFCBackend.get(`/adminCode/code/${vals.code}`);
+      if (!data.length) {
+        setAdminCodeStatus('error');
+        setAdminCodeError('Invalid Admin Code');
+        return;
+      }
+    }
+
+    const emailInUse = await isEmailInUse(vals.email);
+    if (!emailInUse) {
+      setEmailStatus('error');
+      setEmailError('Email already in use');
+      return;
+    }
+
+    setEmailStatus(undefined);
+    setEmailError(undefined);
+
+    setAdminCodeStatus(undefined);
+    setAdminCodeError(undefined);
+
+    setValues(vals);
+    setPageState('createPage');
+  };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center' }}>
-      <Card
-        style={{
-          width: 400,
-          display: 'inline-block',
-          flexDirection: 'left',
-          boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-        }}
-      >
-        <AboundSignature style={{ marginBottom: 22 }} />
-        <div>
-          {state === 'login' && (
-            <>
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <Button type="link">
-                  <p
-                    style={{
-                      color: '#115740',
-                      textDecorationLine: 'underline',
-                      textUnderlineOffset: 10,
-                      textDecorationThickness: 3,
-                    }}
-                  >
-                    Log In
-                  </p>
-                </Button>
-                <Button type="link" onClick={() => setState('signup')}>
-                  Sign Up
-                </Button>
-              </div>
+    <>
+      <ForgotPassword isOpen={isOpen} setIsOpen={setIsOpen} />
+      {pageState === 'createPage' ? (
+        <CreateAccount setPageState={setPageState} role={role} {...values} />
+      ) : (
+        <Card
+          style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            margin: '0',
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Card
+              style={{
+                width: 400,
+                display: 'inline-block',
+                flexDirection: 'left',
+                border: 'none',
 
-              <Divider style={{ marginTop: 3 }} />
+                boxShadow: 'none',
+              }}
+            >
+              <AboundSignature style={{ marginBottom: 22 }} />
+              <div>
+                {pageState === 'login' && (
+                  <>
+                    <div style={{ display: 'flex', flexDirection: 'row' }}>
+                      <Button type="link">
+                        <p
+                          style={{
+                            color: '#115740',
+                            textDecorationLine: 'underline',
+                            textUnderlineOffset: 10,
+                            textDecorationThickness: 3,
+                          }}
+                        >
+                          Log In
+                        </p>
+                      </Button>
+                      <Button type="link" onClick={() => setPageState('signup')}>
+                        Sign Up
+                      </Button>
+                    </div>
 
-              <Form>
-                <Form.Item
-                  name="email"
-                  rules={[{ required: true, message: 'Please input your email!' }]}
-                >
-                  <Input
-                    placeholder="Email"
-                    prefix={<MailOutlined style={{ color: '#009A44' }} />}
-                  />
-                </Form.Item>
+                    <Divider style={{ marginTop: 3 }} />
 
-                <Form.Item
-                  name="password"
-                  rules={[{ required: true, message: 'Please input your password!' }]}
-                >
-                  <Input.Password
-                    placeholder="Password"
-                    prefix={<LockOutlined style={{ color: '#009A44' }} />}
-                  />
-                </Form.Item>
+                    <Form>
+                      <Form.Item
+                        name="email"
+                        rules={[{ required: true, message: 'Please input your email!' }]}
+                        validateStatus={credentialsStatus}
+                      >
+                        <Input
+                          placeholder="Email"
+                          prefix={<MailOutlined style={{ color: '#009A44' }} />}
+                          onChange={e => setLoginEmail(e.target.value)}
+                          value={loginEmail}
+                        />
+                      </Form.Item>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Form.Item name="remember" valuePropName="checked">
-                    <Checkbox>Remember me</Checkbox>
-                  </Form.Item>
+                      <Form.Item
+                        name="password"
+                        rules={[{ required: true, message: 'Please input your password!' }]}
+                        validateStatus={credentialsStatus}
+                        help={credentialsError}
+                      >
+                        <Input.Password
+                          placeholder="Password"
+                          prefix={<LockOutlined style={{ color: '#009A44' }} />}
+                          onChange={e => setLoginPassword(e.target.value)}
+                          value={loginPassword}
+                        />
+                      </Form.Item>
 
-                  <Form.Item>
-                    <Button
-                      style={{ padding: 0, color: '#009A44' }}
-                      onClick={forgotPassword}
-                      type="link"
+                      <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <Form.Item>
+                          <Button
+                            style={{ padding: 0, color: '#009A44' }}
+                            onClick={forgotPassword}
+                            type="link"
+                          >
+                            Forgot your password?
+                          </Button>
+                        </Form.Item>
+                      </div>
+
+                      <Button
+                        onClick={logIn}
+                        style={{ display: 'block', width: '100%', marginBottom: '4%' }}
+                        type="primary"
+                      >
+                        Log In
+                      </Button>
+                    </Form>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        flexDirection: 'row',
+                        marginTop: '4%',
+                      }}
                     >
-                      Forgot your password?
-                    </Button>
-                  </Form.Item>
-                </div>
-
-                <Button onClick={logIn} style={{ display: 'block', width: '100%' }} type="primary">
-                  Log In
-                </Button>
-                <Button onClick={googleSignIn} style={{ display: 'block', width: '100%' }}>
-                  Sign In with Google
-                </Button>
-              </Form>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  flexDirection: 'row',
-                  marginTop: '30px',
-                }}
-              >
-                <p>Not registered yet?</p>
-                <Button
-                  style={{ paddingLeft: '10px', marginTop: '-5px', color: '#009A44' }}
-                  onClick={() => setState('signup')}
-                  type="link"
-                >
-                  Sign Up
-                </Button>
-              </div>
-            </>
-          )}
-        </div>
-
-        <div>
-          {state === 'signup' && (
-            <>
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <Button type="link" onClick={() => setState('login')}>
-                  Log In
-                </Button>
-                <Button type="link">
-                  <p
-                    style={{
-                      color: '#009A44',
-                      textDecorationLine: 'underline',
-                      textUnderlineOffset: 10,
-                      textDecorationThickness: 3,
-                    }}
-                  >
-                    Sign Up
-                  </p>
-                </Button>
+                      <p>Not registered yet?</p>
+                      <Button
+                        style={{ paddingLeft: '10px', marginTop: '-5px', color: '#009A44' }}
+                        onClick={() => setPageState('signup')}
+                        type="link"
+                      >
+                        Sign Up
+                      </Button>
+                    </div>
+                  </>
+                )}
               </div>
 
-              <Divider style={{ marginTop: 3 }} />
+              <div>
+                {pageState === 'signup' && (
+                  <>
+                    <div style={{ display: 'flex', flexDirection: 'row' }}>
+                      <Button type="link" onClick={() => setPageState('login')}>
+                        Log In
+                      </Button>
+                      <Button type="link">
+                        <p
+                          style={{
+                            color: '#009A44',
+                            textDecorationLine: 'underline',
+                            textUnderlineOffset: 10,
+                            textDecorationThickness: 3,
+                          }}
+                        >
+                          Sign Up
+                        </p>
+                      </Button>
+                    </div>
 
-              <Form>
-                <Form.Item
-                  name="firstName"
-                  rules={[{ required: true, message: 'Please input your first name!' }]}
-                >
-                  <Input
-                    placeholder="First Name"
-                    prefix={<UserOutlined style={{ color: '#009A44' }} />}
-                  />
-                </Form.Item>
+                    <Divider style={{ marginTop: 3 }} />
 
-                <Form.Item
-                  name="lastName"
-                  rules={[{ required: true, message: 'Please input your last name!' }]}
-                >
-                  <Input
-                    placeholder="Last Name"
-                    prefix={<UserOutlined style={{ color: '#009A44' }} />}
-                  />
-                </Form.Item>
+                    <Form form={signupForm} initialValues={{ role: AUTH_ROLES.VOLUNTEER_ROLE }}>
+                      <Form.Item
+                        name="firstName"
+                        rules={[{ required: true, message: 'Please input your first name!' }]}
+                      >
+                        <Input
+                          placeholder="First Name"
+                          prefix={
+                            <UserOutlined style={{ color: '#009A44', paddingRight: '13px' }} />
+                          }
+                        />
+                      </Form.Item>
+                      <Form.Item
+                        name="lastName"
+                        rules={[{ required: true, message: 'Please input your last name!' }]}
+                      >
+                        <Input
+                          placeholder="Last Name"
+                          prefix={
+                            <UserOutlined style={{ color: '#009A44', paddingRight: '13px' }} />
+                          }
+                        />
+                      </Form.Item>
+                      <Form.Item
+                        name="email"
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Please input your email!',
+                            type: 'email',
+                          },
+                        ]}
+                        validateStatus={emailStatus}
+                        help={emailError}
+                      >
+                        <Input
+                          placeholder="Email"
+                          prefix={
+                            <MailOutlined style={{ color: '#009A44', paddingRight: '13px' }} />
+                          }
+                        />
+                      </Form.Item>
+                      <Form.Item
+                        name="password"
+                        rules={[
+                          {
+                            required: true,
+                            type: 'string',
+                            pattern: passwordRegex,
+                            message:
+                              'Password must have at least 8 characters, with at least 1 lowercase letter, 1 uppercase letter, and 1 symbol',
+                          },
+                        ]}
+                      >
+                        <Input.Password
+                          placeholder="Password"
+                          prefix={
+                            <LockOutlined style={{ color: '#009A44', paddingRight: '13px' }} />
+                          }
+                        />
+                      </Form.Item>
+                      {role === AUTH_ROLES.ADMIN_ROLE && (
+                        <Form.Item
+                          name="code"
+                          rules={[
+                            {
+                              required: true,
+                              message: 'Invalid admin code',
+                            },
+                          ]}
+                          hasFeedback
+                          validateStatus={adminCodeStatus}
+                          help={adminCodeError}
+                        >
+                          <Input.Password
+                            placeholder="Admin Code"
+                            prefix={
+                              <LockOutlined style={{ color: '#009A44', paddingRight: '13px' }} />
+                            }
+                          />
+                        </Form.Item>
+                      )}
 
-                <Form.Item
-                  name="email"
-                  rules={[{ required: true, message: 'Please input your email!' }]}
-                >
-                  <Input
-                    placeholder="Email"
-                    prefix={<MailOutlined style={{ color: '#009A44' }} />}
-                  />
-                </Form.Item>
-
-                <Form.Item
-                  name="password"
-                  rules={[{ required: true, message: 'Please input your password!' }]}
-                >
-                  <Input.Password
-                    placeholder="Password"
-                    prefix={<LockOutlined style={{ color: '#009A44' }} />}
-                  />
-                </Form.Item>
-
-                <Form.Item label="Role" name="role">
-                  <Radio.Group defaultValue="Volunteer" buttonStyle="solid">
-                    <Radio.Button value="Volunteer">Volunteer</Radio.Button>
-                    <Radio.Button value="Admin">Admin</Radio.Button>
-                  </Radio.Group>
-                </Form.Item>
-
-                <Form.Item name="TOSPP" valuePropName="checked">
-                  <Checkbox>
-                    I agree to the &nbsp;
-                    <a className="TOS" href="*" style={{ color: '#009A44' }}>
-                      Terms of Service
-                    </a>
-                    &nbsp;and&nbsp;
-                    <a className="privacyPolicy" href="*" style={{ color: '#009A44' }}>
-                      Privacy Policy
-                    </a>
-                  </Checkbox>
-                </Form.Item>
-              </Form>
-
-              <Button onClick={signUp} style={{ display: 'block', width: '100%' }} type="primary">
-                Sign Up
-              </Button>
-              <Button onClick={googleSignUp} style={{ display: 'block', width: '100%' }}>
-                Sign Up with Google
-              </Button>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  flexDirection: 'row',
-                  marginTop: '30px',
-                }}
-              >
-                <p>Already have an account?</p>
-                <Button
-                  style={{ paddingLeft: '10px', marginTop: '-5px', color: '#009A44' }}
-                  onClick={() => setState('login')}
-                  type="link"
-                >
-                  Log In
-                </Button>
+                      <Form.Item label="Role" name="role">
+                        <Radio.Group onChange={e => setRole(e.target.value)} buttonStyle="solid">
+                          <Radio.Button value={AUTH_ROLES.VOLUNTEER_ROLE}>Volunteer</Radio.Button>
+                          <Radio.Button value={AUTH_ROLES.ADMIN_ROLE}>Admin</Radio.Button>
+                        </Radio.Group>
+                      </Form.Item>
+                      <Form.Item
+                        name="TOSPP"
+                        valuePropName="checked"
+                        rules={[
+                          {
+                            required: true,
+                            type: 'enum',
+                            enum: [true],
+                            message: 'Please accept the terms and conditions!',
+                          },
+                        ]}
+                      >
+                        <Checkbox>
+                          I agree to the&nbsp;
+                          <a className="TOS" href="*" style={{ color: '#009A44' }}>
+                            Terms of Service
+                          </a>
+                          &nbsp;and&nbsp;
+                          <a className="privacyPolicy" href="*" style={{ color: '#009A44' }}>
+                            Privacy Policy
+                          </a>
+                        </Checkbox>
+                      </Form.Item>
+                      <Button
+                        onClick={signUp}
+                        style={{ display: 'block', width: '100%', marginBottom: '4%' }}
+                        type="submit"
+                      >
+                        Sign Up
+                      </Button>
+                    </Form>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        flexDirection: 'row',
+                        marginTop: '4%',
+                      }}
+                    >
+                      <p>Already have an account?</p>
+                      <Button
+                        style={{ paddingLeft: '10px', marginTop: '-5px', color: '#009A44' }}
+                        onClick={() => setPageState('login')}
+                        type="link"
+                      >
+                        Log In
+                      </Button>
+                    </div>
+                  </>
+                )}
               </div>
-            </>
-          )}
-        </div>
-      </Card>
-    </div>
+            </Card>
+          </div>
+        </Card>
+      )}
+    </>
   );
-}
+};
 
-export default Login;
+Login.propTypes = {
+  cookies: instanceOf(Cookies).isRequired,
+};
+
+export default withCookies(Login);

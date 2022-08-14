@@ -207,11 +207,11 @@ const CreateEvent = () => {
       // Check if this is editing or creating a new event
       if (isEdit) {
         await AFCBackend.put(`/events/${id}`, payload);
-        navigate(`/events/${id}`);
+        navigate(`/event/view/${id}`);
       } else {
         const { data: newEventResponse } = await AFCBackend.post('/events/', payload);
         const { eventId } = newEventResponse;
-        navigate(`/events/${eventId}`);
+        navigate(`/event/view/${eventId}`);
       }
     } catch (e) {
       console.log(e.message);
