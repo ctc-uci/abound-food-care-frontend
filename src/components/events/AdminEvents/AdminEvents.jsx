@@ -24,7 +24,7 @@ const AdminEvents = () => {
 
   const { width } = useViewPort();
   const breakpoint = 720;
-  const PAGE_SIZE = 6;
+  // const PAGE_SIZE = 6;
 
   const eventStatusOptions = [
     { label: 'All', value: 'all' },
@@ -34,7 +34,14 @@ const AdminEvents = () => {
 
   const fetchAllEvents = async () => {
     try {
-      const { data: eventResponse } = await AFCBackend.get('/events');
+      console.log(eventStatusValue, eventTypeValue);
+      const { data: eventResponse } = await AFCBackend.get('/events', {
+        query: {
+          status: eventStatusValue,
+          type: eventTypeValue,
+        },
+      });
+      console.log(eventResponse);
       setEventsData(eventResponse);
       setAllEvents(eventResponse);
     } catch (err) {
@@ -69,56 +76,61 @@ const AdminEvents = () => {
   //    new Date(startDatetime) > new Date() ? 'upcoming' : 'past';
 
   const getEventsByTypeAndStatus = async (type, status) => {
+    console.log('in function');
     try {
-      const filteredEvents = await AFCBackend.get('/', {
+      console.log('eventtypestatusparams', 'type', type, 'status', status);
+      const filteredEvents = await AFCBackend.get('/events', {
         query: {
           status,
           type,
-          pageSize: PAGE_SIZE,
+          // pageSize: PAGE_SIZE,
         },
       });
-
-      const eventCount = await AFCBackend.get('/events/total', {
-        status: eventStatusValue,
-        type: eventTypeValue,
-      });
-      console.log(eventCount);
+      const eventCount = filteredEvents.length;
+      console.log('eventcount', eventCount);
+      console.log('eventtypestatus', filteredEvents);
       // setNumEvents(eventCount);
       return filteredEvents;
     } catch (err) {
       console.log(err);
+      // pls fix this
+      return 1;
     }
-    // please fix this, its wrong rn
-    return 1;
   };
 
-  const onTypeChange = e => {
+  const onTypeChange = async e => {
     setEventTypeValue(e.target.value);
-    const filteredEvents = getEventsByTypeAndStatus(e.target.value, eventStatusValue);
+    const filteredEvents = await getEventsByTypeAndStatus(e.target.value, eventStatusValue);
+    console.log('filtered', filteredEvents);
     setEventsData(filteredEvents);
   };
 
-  const onStatusChange = e => {
+  const onStatusChange = async e => {
     setEventStatusValue(e.target.value);
-    const filteredEvents = getEventsByTypeAndStatus(eventTypeValue, e.target.value);
+    const filteredEvents = await getEventsByTypeAndStatus(eventTypeValue, e.target.value);
+    console.log('filtered', filteredEvents);
     setEventsData(filteredEvents);
   };
 
   const renderEventsGrid = events => {
-    const rows = events.map(event => (
-      <Col key={event.eventId} span={8}>
-        <Link to={`/events/${event.eventId}`}>
-          <EventCard
-            key={event.eventId}
-            name={event.name}
-            type={event.eventType}
-            startDateTime={event.startDatetime}
-            endDateTime={event.endDatetime}
-            volunteerCapacity={event.volunteerCapacity}
-          />
-        </Link>
-      </Col>
-    ));
+    console.log(events);
+    console.log('RIGHT ABOVE');
+    const rows = events.map(event => {
+      return (
+        <Col key={event.eventId} span={8}>
+          <Link to={`/events/${event.eventId}`}>
+            <EventCard
+              key={event.eventId}
+              name={event.name}
+              type={event.eventType}
+              startDateTime={event.startDatetime}
+              endDateTime={event.endDatetime}
+              volunteerCapacity={event.volunteerCapacity}
+            />
+          </Link>
+        </Col>
+      );
+    });
     return rows;
   };
 
@@ -245,7 +257,7 @@ const AdminEvents = () => {
             paginatedIndex={pageIndex}
             setPaginatedIndex={setPageIndex}
             totalNumberOfPages={
-              AFCBackend.get('/events/', {
+              AFCBackend.get('/events', {
                 status: eventStatusValue,
                 type: eventTypeValue,
               }).length
