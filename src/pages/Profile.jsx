@@ -21,14 +21,13 @@ function Profile({ cookies }) {
   const navigate = useNavigate();
 
   useEffect(async () => {
-    const { data: volunteerData } = await AFCBackend.get(`/users/${userId}`);
-    setName(`${volunteerData.firstName} ${volunteerData.lastName}`);
-
     const currentUserId = cookies.get(cookieKeys.USER_ID);
     const role = cookies.get(cookieKeys.ROLE);
-    if (role === AUTH_ROLES.VOLUNTEER_ROLE && userId !== currentUserId) {
+    if (!userId || (role === AUTH_ROLES.VOLUNTEER_ROLE && userId !== currentUserId)) {
       navigate(`/profile/${currentUserId}`);
     }
+    const { data: volunteerData } = await AFCBackend.get(`/users/${userId}`);
+    setName(`${volunteerData.firstName} ${volunteerData.lastName}`);
   }, []);
   // TODO Replace waivers with actual set of waivers
   const waivers = [
@@ -55,9 +54,12 @@ function Profile({ cookies }) {
   const [user, setUser] = useState({});
 
   useEffect(async () => {
-    const res = await AFCBackend.get(`/users/${userId}`);
-    if (res.status === 200) {
-      setUser(res.data);
+    try {
+      const { data: volData } = await AFCBackend.get(`/users/${userId}`);
+      setUser(volData);
+      setName(`${volData.firstName} ${volData.lastName}`);
+    } catch (err) {
+      console.log(err.messaage);
     }
   }, [userId]);
 

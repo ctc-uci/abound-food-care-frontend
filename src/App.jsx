@@ -106,6 +106,17 @@ const App = () => {
                 }
               />
               <Route
+                path="/profile/"
+                exact
+                element={
+                  <ProtectedRoute
+                    Component={Profile}
+                    redirectPath="/"
+                    roles={[AUTH_ROLES.ADMIN_ROLE, AUTH_ROLES.VOLUNTEER_ROLE]}
+                  />
+                }
+              />
+              <Route
                 path="/profile/:userId"
                 exact
                 element={
