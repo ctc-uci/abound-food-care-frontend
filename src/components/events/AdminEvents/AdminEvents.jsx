@@ -36,7 +36,7 @@ const AdminEvents = () => {
     try {
       console.log(eventStatusValue, eventTypeValue);
       const { data: eventResponse } = await AFCBackend.get('/events', {
-        query: {
+        params: {
           status: eventStatusValue,
           type: eventTypeValue,
         },
@@ -77,30 +77,31 @@ const AdminEvents = () => {
 
   const getEventsByTypeAndStatus = async (type, status) => {
     console.log('in function');
-    try {
-      console.log('eventtypestatusparams', 'type', type, 'status', status);
-      const filteredEvents = await AFCBackend.get('/events', {
-        query: {
-          status,
-          type,
-          // pageSize: PAGE_SIZE,
-        },
-      });
-      const eventCount = filteredEvents.length;
-      console.log('eventcount', eventCount);
-      console.log('eventtypestatus', filteredEvents);
-      // setNumEvents(eventCount);
-      return filteredEvents;
-    } catch (err) {
-      console.log(err);
-      // pls fix this
-      return 1;
-    }
+    // try {
+    console.log('eventtypestatusparams', 'type', type, 'status', status);
+    const { data: filteredEvents } = await AFCBackend.get('/events', {
+      params: {
+        status,
+        type,
+        // pageSize: PAGE_SIZE,
+      },
+    });
+    const eventCount = filteredEvents.length;
+    console.log('eventcount', eventCount);
+    console.log('eventtypestatus', filteredEvents);
+    // setNumEvents(eventCount);
+    return filteredEvents;
+    // } catch (err) {
+    //   console.log(err);
+    // }
   };
 
   const onTypeChange = async e => {
     setEventTypeValue(e.target.value);
-    const filteredEvents = await getEventsByTypeAndStatus(e.target.value, eventStatusValue);
+    const filteredEvents = await getEventsByTypeAndStatus(
+      e.target.value.toLowerCase(),
+      eventStatusValue,
+    );
     console.log('filtered', filteredEvents);
     setEventsData(filteredEvents);
   };
@@ -256,12 +257,8 @@ const AdminEvents = () => {
           <PaginationController
             paginatedIndex={pageIndex}
             setPaginatedIndex={setPageIndex}
-            totalNumberOfPages={
-              AFCBackend.get('/events', {
-                status: eventStatusValue,
-                type: eventTypeValue,
-              }).length
-            }
+            totalNumberOfPages={1}
+            // totalNumberOfPages={allEvents.length/something}
           />
         </>
       )}
