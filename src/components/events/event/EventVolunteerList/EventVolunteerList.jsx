@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Table, ConfigProvider } from 'antd';
+import { saveAs } from 'file-saver';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import { AFCBackend } from '../../../../util/utils';
+import styles from './EventVolunteerList.module.css';
 
 const EventVolunteerList = ({ name, type, eventId, setViewVolunteers }) => {
   const [volunteers, setVolunteers] = useState([]);
@@ -10,28 +12,50 @@ const EventVolunteerList = ({ name, type, eventId, setViewVolunteers }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const getUserData = async () => {
-    const volunteerPromises = [];
-    const volunteerData = [];
-    // TODO Retool this to use forEach and modern JS (alan - 7/3)
     let emailM = 'mailto:';
     const { data: userIds } = await AFCBackend.get(`/events/${eventId}/volunteers`);
-    for (let i = 0; i < userIds.length; i += 1) {
-      volunteerPromises.push(AFCBackend.get(`/users/${userIds[i].user_id}`));
-    }
-    await Promise.all(volunteerPromises).then(values => {
-      for (let i = 0; i < values.length; i += 1) {
-        const user = values[i].data;
-        user.name = `${user.firstName} ${user.lastName}`;
-        emailM += `${user.email}`;
-        volunteerData.push(user);
+    const volunteerPromises = userIds.map(user => AFCBackend.get(`/users/${user.user_id}`));
+    const volunteerData = [];
+    await Promise.all(volunteerPromises).then(values =>
+      values.forEach(user => {
+        emailM += `${emailM !== 'mailto:' ? ',' : ''}${user.data.email}`;
+        volunteerData.push({
+          ...user.data,
+          name: `${user.data.firstName} ${user.data.lastName}`,
+        });
+      }),
+    );
+
+    const { data: eventData } = await AFCBackend.get(`/events/${eventId}`);
+    const eventWaivers = eventData[0].waivers;
+    eventWaivers?.forEach(waiver => {
+      if (waiver.userId) {
+        const matchingVolunteer = volunteerData.find(volunteer => {
+          return volunteer.userId === waiver.userId;
+        });
+        matchingVolunteer.waiver = waiver.link;
+        matchingVolunteer.waiverName = waiver.name;
       }
     });
     setVolunteers(volunteerData);
     setEmail(emailM);
   };
 
-  useEffect(() => {
-    getUserData();
+  const getAllWaivers = async volunteerData => {
+    const waiversZip = await AFCBackend.post(
+      '/waivers/download',
+      { volunteerData },
+      {
+        headers: { 'Content-Type': 'application/json' },
+        withCredentials: true,
+        responseType: 'blob',
+      },
+    );
+    await saveAs(waiversZip.data, `${name}-waivers.zip`);
+  };
+
+  useEffect(async () => {
+    await getUserData();
     setIsLoading(false);
   }, []);
 
@@ -66,10 +90,9 @@ const EventVolunteerList = ({ name, type, eventId, setViewVolunteers }) => {
       title: 'Waiver',
       dataIndex: 'waiver',
       key: 'waiver',
-      render: () => {
+      render: waiver => {
         return (
-          // TODO: add waiver functionality, remove email href
-          <a style={{ color: '#115740' }} href={email}>
+          <a style={{ color: '#115740' }} href={waiver} download>
             Download
           </a>
         );
@@ -79,87 +102,46 @@ const EventVolunteerList = ({ name, type, eventId, setViewVolunteers }) => {
 
   return (
     <ConfigProvider>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          width: '80vw',
-          paddingTop: '1.5em',
-          margin: 'auto',
-        }}
-      >
+      <div className={styles['volunteer-list-container']}>
         <ArrowLeftOutlined
-          style={{ fontSize: '24px', paddingRight: '1vw' }}
+          className={styles['back-arrow']}
           onClick={() => setViewVolunteers(false)}
         />
-        <div
-          style={{
-            width: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              height: '10vh',
-            }}
-          >
-            <div
-              style={{
-                height: '50em',
-                display: 'flex',
-                flexDirection: 'column',
-              }}
-            >
-              <div
-                style={{
-                  height: '4.5em',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <p className="header" style={{ lineHeight: '1em' }}>
-                  {name}
-                </p>
-                <p
-                  style={{
-                    fontWeight: 500,
-                    fontSize: '16px',
-                    color: '#888888',
-                    padding: 0,
-                    margin: 0,
-                  }}
-                >
-                  {type}
-                </p>
+        <div className={styles.container}>
+          <div className={styles['inner-container']}>
+            <div className={styles['top-container']}>
+              <div className={styles['event-header-container']}>
+                <p className={styles.header}>{name}</p>
+                <p className={styles['event-type']}>{type}</p>
               </div>
             </div>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-                flexWrap: 'wrap',
-              }}
-            >
+            <div className={styles['buttons-container']}>
               <Button
                 type="primary"
-                style={{ marginRight: '2vw' }}
+                className={styles['email-volunteers-button']}
                 onClick={() => {
                   window.location = email;
                 }}
+                disabled={volunteers.length === 0}
               >
                 Email Volunteers
               </Button>
-              {/* TODO: add waiver download functionality */}
-              <Button type="primary">Download All Waivers</Button>
+              <Button
+                type="primary"
+                disabled={volunteers.length === 0}
+                className={styles['download-waivers-button']}
+                onClick={() => getAllWaivers(volunteers)}
+              >
+                Download All Waivers
+              </Button>
             </div>
           </div>
-          <Table rowKey="email" dataSource={volunteers} columns={columns} loading={isLoading} />
+          <Table
+            rowKey={row => `${row.name} ${row.email}`}
+            dataSource={volunteers}
+            columns={columns}
+            loading={isLoading}
+          />
         </div>
       </div>
     </ConfigProvider>

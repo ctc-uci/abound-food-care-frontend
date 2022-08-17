@@ -7,7 +7,7 @@ import styles from './GeneralInfo.module.css';
 
 const { Text } = Typography;
 
-const GeneralInfo = ({ firstName, lastName, email }) => {
+const GeneralInfo = ({ firstName, lastName, email, password }) => {
   const {
     control,
     formState: { errors },
@@ -26,7 +26,7 @@ const GeneralInfo = ({ firstName, lastName, email }) => {
         name="firstName"
         render={({ field: { onChange, ref } }) => (
           <Form.Item label="First Name" required>
-            <Input disabled onChange={onChange} ref={ref} value={firstName} />
+            <Input onChange={onChange} ref={ref} defaultValue={firstName} />
             <Text type="danger">{errors.firstName && <p>{errors.firstName.message}</p>}</Text>
           </Form.Item>
         )}
@@ -36,8 +36,18 @@ const GeneralInfo = ({ firstName, lastName, email }) => {
         name="lastName"
         render={({ field: { onChange, ref } }) => (
           <Form.Item label="Last Name" required>
-            <Input disabled onChange={onChange} ref={ref} value={lastName} />
+            <Input onChange={onChange} ref={ref} defaultValue={lastName} />
             <Text type="danger">{errors.lastName && <p>{errors.lastName.message}</p>}</Text>
+          </Form.Item>
+        )}
+      />
+      <Controller
+        control={control}
+        name="password"
+        render={({ field: { onChange, ref } }) => (
+          <Form.Item label="Password" required>
+            <Input.Password onChange={onChange} ref={ref} defaultValue={password} />
+            <Text type="danger">{errors.password && <p>{errors.password.message}</p>}</Text>
           </Form.Item>
         )}
       />
@@ -64,9 +74,9 @@ const GeneralInfo = ({ firstName, lastName, email }) => {
       <Controller
         control={control}
         name="email"
-        render={({ field: { onChange, ref } }) => (
+        render={({ field: { ref } }) => (
           <Form.Item label="Email" required>
-            <Input disabled onChange={onChange} ref={ref} value={email} />
+            <Input ref={ref} defaultValue={email} disabled />
             <Text type="danger">{errors.email && <p>{errors.email.message}</p>}</Text>
           </Form.Item>
         )}
@@ -146,6 +156,7 @@ GeneralInfo.propTypes = {
   firstName: PropTypes.string.isRequired,
   lastName: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
+  password: PropTypes.string.isRequired,
 };
 
 export default GeneralInfo;

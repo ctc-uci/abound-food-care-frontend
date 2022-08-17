@@ -33,10 +33,10 @@ const DashboardHeader = ({ userId, isAdmin }) => {
       // volunteer statistics
       const eventsVolunteered = await AFCBackend.get(`/volunteers/${userId}`);
       const totalHours = await AFCBackend.get(`/hours/user/${userId}/total`);
-      setFirstStatistic(eventsVolunteered.data.eventIds[0]);
+      setFirstStatistic(eventsVolunteered.data.length);
       setSecondStatistic(totalHours.data.count);
     }
-  });
+  }, []);
 
   const renderHeaderDesktop = () =>
     isAdmin ? (

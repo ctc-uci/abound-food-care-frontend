@@ -1,13 +1,14 @@
+import { instanceOf } from 'prop-types';
 import { Row, Col } from 'antd';
 import React, { useState, useEffect } from 'react';
-import UpcomingEvents from '../components/admin-dashboard-components/UpcomingEvents/UpcomingEvents';
 import DashboardHeader from '../components/admin-dashboard-components/DashboardHeader/DashboardHeader';
-import PastEvents from '../components/admin-dashboard-components/PastEvents/PastEvents';
+import EventGrid from '../components/admin-dashboard-components/EventGrid/EventGrid';
 import EventList from '../components/events/EventList/EventList';
 import useViewPort from '../common/useViewPort';
 import { AFCBackend } from '../util/utils';
+import { Cookies, withCookies, cookieKeys } from '../util/cookie_utils';
 
-const VolunteerDashboard = () => {
+const VolunteerDashboard = ({ cookies }) => {
   const { width } = useViewPort();
   const breakpoint = 720;
 
@@ -25,14 +26,17 @@ const VolunteerDashboard = () => {
     // render desktop version
     if (width > breakpoint) {
       return (
-        <Row className="dashboard-row" gutter={[32, 16]}>
-          <Col className="dashboard-col" span={18}>
-            <UpcomingEvents />
-          </Col>
-          <Col className="dashboard-col" span={6}>
-            <PastEvents />
-          </Col>
-        </Row>
+        <>
+          <Row className="dashboard-row" gutter={[32, 16]}>
+            <Col className="dashboard-col" span={18}>
+              <EventGrid title="Upcoming Events" eventStatus="upcoming" />
+              {/* <AdminNotifications /> */}
+            </Col>
+            <Col className="dashboard-col" span={6}>
+              <EventGrid title="Past Events" eventStatus="past" />
+            </Col>
+          </Row>
+        </>
       );
     }
     // render mobile version
@@ -45,12 +49,15 @@ const VolunteerDashboard = () => {
   };
 
   return (
-    // HARDCODED USERID FOR NOW
     <div className="dashboard-container">
-      <DashboardHeader userId={10} isAdmin={false} />
+      <DashboardHeader userId={cookies.get(cookieKeys.USER_ID)} isAdmin={false} />
       {renderDashboard()}
     </div>
   );
 };
 
-export default VolunteerDashboard;
+VolunteerDashboard.propTypes = {
+  cookies: instanceOf(Cookies).isRequired,
+};
+
+export default withCookies(VolunteerDashboard);

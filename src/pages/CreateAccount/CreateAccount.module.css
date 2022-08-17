@@ -1,17 +1,21 @@
+@import '../../common/global.css';
+
 .next-button {
-  position: absolute !important;
-  bottom: 10px;
-  right: 20px;
-  background-color: #115740 !important;
+  background-color: var(--eden) !important;
   color: white !important;
-  border-color: #115740;
+  border-color: var(--eden);
 }
 
 .previous-button {
   border-color: #d9d9d9;
-  position: absolute !important;
-  bottom: 10px;
 }
+
+.nav-buttons {
+  width: 100%;
+  display: flex;
+  justify-content: space-between; 
+}
+
 .login-signup-button {
   border-color: #d9d9d9;
   position: absolute !important;

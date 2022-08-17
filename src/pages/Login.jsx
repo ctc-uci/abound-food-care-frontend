@@ -1,66 +1,104 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { instanceOf } from 'prop-types';
 import { Card, Divider, Form, Input, Button, Checkbox, Radio } from 'antd';
 import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
+
+import {
+  auth,
+  AUTH_ROLES,
+  logInWithEmailAndPassword,
+  useNavigate,
+  getCurrentUser,
+  AFCBackend,
+  isEmailInUse,
+  passwordRegex,
+} from '../util/auth_utils';
+import { Cookies, withCookies } from '../util/cookie_utils';
 import { ReactComponent as AboundSignature } from '../Abound_Signature.svg';
 
 import CreateAccount from './CreateAccount/CreateAccount';
+import ForgotPassword from '../components/ForgotPassword/ForgotPassword';
 
-import '../common/global.css';
+const Login = ({ cookies }) => {
+  const navigate = useNavigate();
 
-const Login = () => {
+  useEffect(async () => {
+    const user = await getCurrentUser(auth);
+    if (user !== null) {
+      navigate('/');
+    }
+  }, []);
+
   const [pageState, setPageState] = useState('login');
-  const [registerFirstName, setRegisterFirstName] = useState('');
-  const [registerLastName, setRegisterLastName] = useState('');
-  const [registerPassword, setRegisterPassword] = useState('');
-  const [registerEmail, setRegisterEmail] = useState('');
-  const [registerRole, setRegisterRole] = useState('Volunteer');
-  const [registerCode, setRegisterCode] = useState('');
-  const [registerTOSChecked, setRegisterTOSChecked] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  useEffect(() => {
-    setErrorMessage('');
-  }, [pageState]);
 
-  const forgotPassword = () => {};
+  const [loginEmail, setLoginEmail] = useState('');
 
-  const logIn = () => {};
+  const [loginPassword, setLoginPassword] = useState('');
 
-  const googleSignIn = () => {};
+  const [role, setRole] = useState(AUTH_ROLES.VOLUNTEER_ROLE);
 
-  const signUp = () => {
-    if (
-      registerFirstName.length > 0 &&
-      registerLastName.length > 0 &&
-      registerPassword.length > 0 &&
-      registerEmail.length > 0 &&
-      (registerRole === 'Volunteer' || registerCode.length > 0) &&
-      registerTOSChecked
-    ) {
-      if (registerRole === 'Volunteer') {
-        setPageState('createPage');
-      } else if (registerRole === 'Admin') {
-        console.log('Admin sign up');
-        // TODO Validate admin signup code, do something here
-      }
-    } else if (!registerTOSChecked) {
-      setErrorMessage('You must agree to the TOS and Privacy Policy.');
-    } else if (registerRole === 'Admin' && registerCode.length === 0) {
-      setErrorMessage('You must enter an admin code to proceed.');
-    } else {
-      setErrorMessage("Inputs can't be empty.");
+  const [isOpen, setIsOpen] = useState(false);
+
+  const [signupForm] = Form.useForm();
+  const [adminCodeStatus, setAdminCodeStatus] = useState(undefined);
+  const [adminCodeError, setAdminCodeError] = useState(undefined);
+  const [emailStatus, setEmailStatus] = useState(undefined);
+  const [emailError, setEmailError] = useState(undefined);
+
+  const [credentialsStatus, setCredentialsStatus] = useState(undefined);
+  const [credentialsError, setCredentialsError] = useState(undefined);
+
+  const [values, setValues] = useState({});
+
+  const forgotPassword = () => {
+    setIsOpen(true);
+  };
+
+  const logIn = async e => {
+    e.preventDefault();
+    try {
+      await logInWithEmailAndPassword(loginEmail, loginPassword, '/', navigate, cookies);
+      setCredentialsStatus(undefined);
+      setCredentialsError(undefined);
+    } catch (err) {
+      setCredentialsStatus('error');
+      setCredentialsError('Invalid credentials');
     }
   };
-  const googleSignUp = () => {};
+
+  const signUp = async () => {
+    const vals = await signupForm.validateFields();
+    if (vals.role === AUTH_ROLES.ADMIN_ROLE) {
+      const { data } = await AFCBackend.get(`/adminCode/code/${vals.code}`);
+      if (!data.length) {
+        setAdminCodeStatus('error');
+        setAdminCodeError('Invalid Admin Code');
+        return;
+      }
+    }
+
+    const emailInUse = await isEmailInUse(vals.email);
+    if (!emailInUse) {
+      setEmailStatus('error');
+      setEmailError('Email already in use');
+      return;
+    }
+
+    setEmailStatus(undefined);
+    setEmailError(undefined);
+
+    setAdminCodeStatus(undefined);
+    setAdminCodeError(undefined);
+
+    setValues(vals);
+    setPageState('createPage');
+  };
 
   return (
     <>
+      <ForgotPassword isOpen={isOpen} setIsOpen={setIsOpen} />
       {pageState === 'createPage' ? (
-        <CreateAccount
-          setPageState={setPageState}
-          firstName={registerFirstName}
-          lastName={registerLastName}
-          email={registerEmail}
-        />
+        <CreateAccount setPageState={setPageState} role={role} {...values} />
       ) : (
         <Card
           style={{
@@ -111,32 +149,31 @@ const Login = () => {
                       <Form.Item
                         name="email"
                         rules={[{ required: true, message: 'Please input your email!' }]}
+                        validateStatus={credentialsStatus}
                       >
                         <Input
                           placeholder="Email"
-                          prefix={
-                            <MailOutlined style={{ color: '#009A44', paddingRight: '13px' }} />
-                          }
+                          prefix={<MailOutlined style={{ color: '#009A44' }} />}
+                          onChange={e => setLoginEmail(e.target.value)}
+                          value={loginEmail}
                         />
                       </Form.Item>
 
                       <Form.Item
                         name="password"
                         rules={[{ required: true, message: 'Please input your password!' }]}
+                        validateStatus={credentialsStatus}
+                        help={credentialsError}
                       >
                         <Input.Password
                           placeholder="Password"
-                          prefix={
-                            <LockOutlined style={{ color: '#009A44', paddingRight: '13px' }} />
-                          }
+                          prefix={<LockOutlined style={{ color: '#009A44' }} />}
+                          onChange={e => setLoginPassword(e.target.value)}
+                          value={loginPassword}
                         />
                       </Form.Item>
 
-                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Form.Item name="remember" valuePropName="checked">
-                          <Checkbox>Remember me</Checkbox>
-                        </Form.Item>
-
+                      <div style={{ display: 'flex', justifyContent: 'center' }}>
                         <Form.Item>
                           <Button
                             style={{ padding: 0, color: '#009A44' }}
@@ -154,9 +191,6 @@ const Login = () => {
                         type="primary"
                       >
                         Log In
-                      </Button>
-                      <Button onClick={googleSignIn} style={{ display: 'block', width: '100%' }}>
-                        Sign In with Google
                       </Button>
                     </Form>
                     <div
@@ -203,14 +237,12 @@ const Login = () => {
 
                     <Divider style={{ marginTop: 3 }} />
 
-                    <Form>
+                    <Form form={signupForm} initialValues={{ role: AUTH_ROLES.VOLUNTEER_ROLE }}>
                       <Form.Item
                         name="firstName"
                         rules={[{ required: true, message: 'Please input your first name!' }]}
                       >
                         <Input
-                          value={registerFirstName}
-                          onChange={e => setRegisterFirstName(e.target.value)}
                           placeholder="First Name"
                           prefix={
                             <UserOutlined style={{ color: '#009A44', paddingRight: '13px' }} />
@@ -222,8 +254,6 @@ const Login = () => {
                         rules={[{ required: true, message: 'Please input your last name!' }]}
                       >
                         <Input
-                          value={registerLastName}
-                          onChange={e => setRegisterLastName(e.target.value)}
                           placeholder="Last Name"
                           prefix={
                             <UserOutlined style={{ color: '#009A44', paddingRight: '13px' }} />
@@ -232,11 +262,17 @@ const Login = () => {
                       </Form.Item>
                       <Form.Item
                         name="email"
-                        rules={[{ required: true, message: 'Please input your email!' }]}
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Please input your email!',
+                            type: 'email',
+                          },
+                        ]}
+                        validateStatus={emailStatus}
+                        help={emailError}
                       >
                         <Input
-                          value={registerEmail}
-                          onChange={e => setRegisterEmail(e.target.value)}
                           placeholder="Email"
                           prefix={
                             <MailOutlined style={{ color: '#009A44', paddingRight: '13px' }} />
@@ -245,25 +281,37 @@ const Login = () => {
                       </Form.Item>
                       <Form.Item
                         name="password"
-                        rules={[{ required: true, message: 'Please input your password!' }]}
+                        rules={[
+                          {
+                            required: true,
+                            type: 'string',
+                            pattern: passwordRegex,
+                            message:
+                              'Password must have at least 8 characters, with at least 1 lowercase letter, 1 uppercase letter, and 1 symbol',
+                          },
+                        ]}
                       >
                         <Input.Password
-                          value={registerPassword}
-                          onChange={e => setRegisterPassword(e.target.value)}
                           placeholder="Password"
                           prefix={
                             <LockOutlined style={{ color: '#009A44', paddingRight: '13px' }} />
                           }
                         />
                       </Form.Item>
-                      {registerRole === 'Admin' && (
+                      {role === AUTH_ROLES.ADMIN_ROLE && (
                         <Form.Item
                           name="code"
-                          rules={[{ required: true, message: 'Please input your admin code!' }]}
+                          rules={[
+                            {
+                              required: true,
+                              message: 'Invalid admin code',
+                            },
+                          ]}
+                          hasFeedback
+                          validateStatus={adminCodeStatus}
+                          help={adminCodeError}
                         >
-                          <Input
-                            value={registerCode}
-                            onChange={e => setRegisterCode(e.target.value)}
+                          <Input.Password
                             placeholder="Admin Code"
                             prefix={
                               <LockOutlined style={{ color: '#009A44', paddingRight: '13px' }} />
@@ -273,18 +321,25 @@ const Login = () => {
                       )}
 
                       <Form.Item label="Role" name="role">
-                        <Radio.Group
-                          defaultValue="Volunteer"
-                          buttonStyle="solid"
-                          onChange={e => setRegisterRole(e.target.value)}
-                        >
-                          <Radio.Button value="Volunteer">Volunteer</Radio.Button>
-                          <Radio.Button value="Admin">Admin</Radio.Button>
+                        <Radio.Group onChange={e => setRole(e.target.value)} buttonStyle="solid">
+                          <Radio.Button value={AUTH_ROLES.VOLUNTEER_ROLE}>Volunteer</Radio.Button>
+                          <Radio.Button value={AUTH_ROLES.ADMIN_ROLE}>Admin</Radio.Button>
                         </Radio.Group>
                       </Form.Item>
-                      <Form.Item name="TOSPP" valuePropName="checked">
-                        <Checkbox onChange={e => setRegisterTOSChecked(e.target.checked)}>
-                          I agree to the &nbsp;
+                      <Form.Item
+                        name="TOSPP"
+                        valuePropName="checked"
+                        rules={[
+                          {
+                            required: true,
+                            type: 'enum',
+                            enum: [true],
+                            message: 'Please accept the terms and conditions!',
+                          },
+                        ]}
+                      >
+                        <Checkbox>
+                          I agree to the&nbsp;
                           <a className="TOS" href="*" style={{ color: '#009A44' }}>
                             Terms of Service
                           </a>
@@ -294,7 +349,6 @@ const Login = () => {
                           </a>
                         </Checkbox>
                       </Form.Item>
-                      {errorMessage.length > 0 && <p style={{ color: 'red' }}>{errorMessage}</p>}
                       <Button
                         onClick={signUp}
                         style={{ display: 'block', width: '100%', marginBottom: '4%' }}
@@ -303,11 +357,6 @@ const Login = () => {
                         Sign Up
                       </Button>
                     </Form>
-
-                    <Button onClick={googleSignUp} style={{ display: 'block', width: '100%' }}>
-                      Sign Up with Google
-                    </Button>
-
                     <div
                       style={{
                         display: 'flex',
@@ -336,4 +385,8 @@ const Login = () => {
   );
 };
 
-export default Login;
+Login.propTypes = {
+  cookies: instanceOf(Cookies).isRequired,
+};
+
+export default withCookies(Login);

@@ -1,53 +1,126 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { CookiesProvider } from 'react-cookie';
 import { Layout } from 'antd';
 import './common/global.css';
 
 // Pages
 import Login from './pages/Login';
-import CreateAccount from './pages/CreateAccount/CreateAccount';
 import Events from './pages/Events';
 import CreateEvent from './pages/CreateEvent';
 import Volunteers from './pages/Volunteers';
 import Profile from './pages/Profile';
 import Event from './pages/Event';
-import Waivers from './pages/Waivers';
-import useViewPort from './common/useViewPort';
-
-import NavMenu from './components/NavMenu/NavMenu';
-import AdminDashboard from './pages/AdminDashboard';
 import EventSignUp from './pages/EventSignUp';
-import VolunteerDashboard from './pages/VolunteerDashboard';
-// import VolunteerNavMenu from './components/navigation/VolunteerNavMenu';
+import Dashboard from './pages/Dashboard';
+
+// Components
+import NavMenu from './components/NavMenu/NavMenu';
+import ResetPassword from './components/ForgotPassword/ResetPassword';
+
+// Utils
+import useViewPort from './common/useViewPort';
+import AUTH_ROLES from './util/auth_config';
+import ProtectedRoute from './util/ProtectedRoute';
 
 const App = () => {
   const { width } = useViewPort();
   const breakpoint = 720;
   return (
-    <div>
+    <CookiesProvider>
       <Layout>
         <Router>
-          {width > breakpoint ? <NavMenu isAdmin /> : <></>}
+          {/* TODO: implement mobile navbar here */}
+          {width > breakpoint ? <NavMenu /> : <></>}
           <div className="site-background">
             <Routes>
-              <Route path="/" exact element={<Login />} />
-              <Route path="/users/create" exact element={<CreateAccount />} />
-              <Route path="/admin" exact element={<AdminDashboard />} />
-              <Route path="/volunteer" exact element={<VolunteerDashboard />} />
-              <Route path="/events" exact element={<Events />} />
-              <Route path="/events/create" exact element={<CreateEvent />} />
-              <Route path="/events/edit/:id" exact element={<CreateEvent />} />
-              <Route path="/events/:eventId" exact element={<Event />} />
-              <Route path="/events/register" exact element={<EventSignUp />} />
-              <Route path="/volunteers" exact element={<Volunteers />} />
-              {/* profile should be eventually be rendered under /volunteers. see Volunteers.jsx for note */}
-              <Route path="/profile" exact element={<Profile />} />
-              <Route path="/waivers" exact element={<Waivers />} />
+              <Route
+                path="/"
+                exact
+                element={
+                  <ProtectedRoute
+                    Component={Dashboard}
+                    redirectPath="/auth"
+                    roles={[AUTH_ROLES.ADMIN_ROLE, AUTH_ROLES.VOLUNTEER_ROLE]}
+                  />
+                }
+              />
+              <Route path="/auth" exact element={<Login />} />
+              <Route path="/reset-password" element={<ResetPassword redirectPath="/" />} />
+              <Route
+                path="/events"
+                exact
+                element={
+                  <ProtectedRoute
+                    Component={Events}
+                    redirectPath="/"
+                    roles={[AUTH_ROLES.ADMIN_ROLE, AUTH_ROLES.VOLUNTEER_ROLE]}
+                  />
+                }
+              />
+              <Route
+                path="/event/create"
+                exact
+                element={
+                  <ProtectedRoute
+                    Component={CreateEvent}
+                    redirectPath="/"
+                    roles={[AUTH_ROLES.ADMIN_ROLE]}
+                  />
+                }
+              />
+              <Route
+                path="/event/view/:eventId"
+                exact
+                element={
+                  <ProtectedRoute
+                    Component={Event}
+                    redirectPath="/"
+                    roles={[AUTH_ROLES.ADMIN_ROLE, AUTH_ROLES.VOLUNTEER_ROLE]}
+                  />
+                }
+              />
+              <Route
+                path="/event/edit/:id"
+                exact
+                element={
+                  <ProtectedRoute
+                    Component={CreateEvent}
+                    redirectPath="/"
+                    roles={[AUTH_ROLES.ADMIN_ROLE, AUTH_ROLES.VOLUNTEER_ROLE]}
+                  />
+                }
+              />
+
+              <Route path="/event/register" exact element={<EventSignUp />} />
+
+              <Route
+                path="/volunteers"
+                exact
+                element={
+                  <ProtectedRoute
+                    Component={Volunteers}
+                    redirectPath="/"
+                    roles={[AUTH_ROLES.ADMIN_ROLE]}
+                  />
+                }
+              />
+              <Route
+                path="/profile/:userId"
+                exact
+                element={
+                  <ProtectedRoute
+                    Component={Profile}
+                    redirectPath="/"
+                    roles={[AUTH_ROLES.ADMIN_ROLE, AUTH_ROLES.VOLUNTEER_ROLE]}
+                  />
+                }
+              />
             </Routes>
           </div>
         </Router>
       </Layout>
-    </div>
+    </CookiesProvider>
   );
 };
 

@@ -1,10 +1,4 @@
-@import '~antd/dist/antd.variable.min.css';
 @import '../../../common/global.css';
-
-.title {
-  margin-left: 5px;
-  font-family: 'Inter';
-}
 
 .events {
   margin: auto;
@@ -14,30 +8,54 @@
   background-color: white;
 }
 
+.title {
+  font-size: 32px;
+  font-family: 'Inter';
+  font-weight: 600;
+  margin: 15px 5px;
+}
+
 .card {
   margin: 15px 5px;
   border-radius: 5px;
 }
 
+.filter-card {
+  margin: 10px 0.5% !important;
+  height: 80px;
+  width: 99%;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
 .search-bar {
-  width: 750px;
+  width: 70% !important;
+  margin-left: 15%;
+  margin-bottom: 10px;
+}
+
+.search-bar:hover,
+.search-bar:focus {
+  border-color: var(--eden) !important;
+  box-shadow: none !important;
 }
 
 .filters {
-  margin: 40px 5px 20px;
+  margin: 7px 5px;
 }
 
 .distribution-radio-btn {
-  border-color: var(--green);
-  color: var(--green);
+  border-color: var(--green) !important;
+  color: var(--green) !important;
   margin-right: 1px;
   margin-left: 0px;
 }
 
 .food-radio-btn {
-  border-color: var(--mustard);
-  border-left-color: var(--mustard);
-  color: var(--mustard);
+  border-color: var(--mustard) !important;
+  border-left-color: var(--mustard) !important;
+  color: var(--mustard) !important;
   margin-right: 1px;
 }
 
@@ -52,10 +70,21 @@
   background-color: var(--eden);
   border-color: var(--eden);
   color: white;
-  font-weight: 600;
-  margin-top: 15px;
+  font-weight: 400;
+  margin: 0 0 40px 30px;
   float: right;
 }
+
+/* .new-event-type-btn,
+.new-event-type-btn:hover,
+.new-event-type-btn:focus {
+  background-color: white;
+  border-color: var(--eden);
+  color: var(--eden);
+  font-weight: 400;
+  margin: 0 5px 40px 20px;
+  float: right;
+} */
 
 .events-grid {
   max-height: 80vh;
@@ -75,4 +104,9 @@
 
 .mobile-new-event-btn {
   margin-bottom: 1em;
+}
+
+.event-card-row {
+  padding-top: 15px;
+  padding-bottom: 20px;
 }

@@ -33,7 +33,8 @@ const getTimeInPST = timestamp => {
 const getHourDiff = (timestamp1, timestamp2) => {
   const d1 = new Date(timestamp1);
   const d2 = new Date(timestamp2);
-  return Math.abs(d1 - d2) / 36e5;
+  const diff = Math.abs(d1 - d2) / 36e5;
+  return diff % 1 === 0 ? diff : diff.toFixed(2);
 };
 
 const phoneRegExp =
