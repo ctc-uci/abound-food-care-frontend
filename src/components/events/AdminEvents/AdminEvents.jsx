@@ -54,6 +54,7 @@ const AdminEvents = () => {
           type: eventTypeValue,
         },
       });
+      console.log('below is eventresponse');
       console.log(eventResponse);
       setEventsData(eventResponse);
       setAllEvents(eventResponse);
