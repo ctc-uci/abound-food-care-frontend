@@ -27,7 +27,6 @@ const AvailabilityChart = ({ availability, setAvailability, title, days, currDay
       }
       data.push(dayArray);
     }
-    console.log(data);
     return data;
   };
   const generateData = (count, data, index) => {
@@ -111,13 +110,11 @@ const AvailabilityChart = ({ availability, setAvailability, title, days, currDay
   };
 
   const onSquareClick = (event, chartContext, config) => {
-    console.log(config);
     // Get square coordinates
     const rowIndex = config.seriesIndex;
     const colIndex = config.dataPointIndex;
     const currSeries = config.w.config.series;
     const curValue = currSeries[rowIndex].data[colIndex].y;
-    console.log(rowIndex, colIndex, curValue);
     // check if it's selected already or not
     // toggle that value
     const newValue = curValue === 2 ? 1 : 2;

@@ -166,8 +166,6 @@ const EventSignUp = ({ cookies }) => {
 
     form.reset(res);
 
-    console.log(res);
-
     setDefaultValues(res);
   }, []);
 
@@ -202,12 +200,10 @@ const EventSignUp = ({ cookies }) => {
       link: waivers[index],
       eventId,
     }));
-    console.log(waivers);
 
-    const uploadWaiverRes = await Promise.all(
+    await Promise.all(
       waivers.map(async waiverPayload => AFCBackend.post('/waivers/volunteer', waiverPayload)),
     );
-    console.log(uploadWaiverRes);
     delete values.waivers;
 
     const payload = {
@@ -223,7 +219,6 @@ const EventSignUp = ({ cookies }) => {
       movingWarehouseExperience,
       foodServiceIndustryKnowledge,
     };
-    console.log(payload);
 
     // update user info
     await AFCBackend.put(`/users/${userId}`, payload);
