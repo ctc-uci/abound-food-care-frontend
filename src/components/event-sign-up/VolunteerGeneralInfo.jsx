@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { PropTypes } from 'prop-types';
-import { AFCBackend } from '../../util/utils';
+import { Controller, useFormContext } from 'react-hook-form';
+import { Radio, Typography } from 'antd';
 import TitledInput from './TitledInput';
+
+const { Text } = Typography;
 
 const Container = styled.div`
   padding: 2%;
@@ -17,69 +20,135 @@ const Row = styled.div`
   flex-direction: row;
 `;
 
-const VolunteerGeneralInfo = ({ userId }) => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [org, setOrg] = useState('');
-  const [dob, setDob] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [contactMethod, setContactMethod] = useState('');
-  const [address, setAddress] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setState] = useState('');
-  const [zip, setZip] = useState('');
-
-  useEffect(async () => {
-    const { data: res } = await AFCBackend.get(`/users/${userId}`);
-
-    setFirstName(res.firstName);
-    setLastName(res.lastName);
-    setOrg(res.organization);
-
-    const date = res.birthdate;
-    const year = date.substring(0, 4);
-    const month = date.substring(5, 7);
-    const day = date.substring(8, 10);
-    setDob(`${month}/${day}/${year}`);
-
-    setEmail(res.email);
-    setPhone(res.phone);
-
-    const method = res.preferredContactMethod;
-    const m0 = method[0].toUpperCase();
-    setContactMethod(m0 + method.substring(1));
-
-    setAddress(res.addressStreet);
-    setCity(res.addressCity);
-    setState(res.addressState);
-    setZip(res.addressZip);
-  }, []);
+const VolunteerGeneralInfo = ({
+  firstName,
+  lastName,
+  organization,
+  birthdate,
+  email,
+  phone,
+  addressStreet,
+  addressCity,
+  addressState,
+  addressZip,
+}) => {
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext();
 
   return (
     <Container>
       <Row>
-        <TitledInput disabled title="First Name" val={firstName} />
+        <Controller
+          control={control}
+          name="firstName"
+          render={() => <TitledInput disabled title="First Name" defaultValue={firstName} />}
+        />
         <div style={{ width: '5vw' }} />
-        <TitledInput disabled title="Last Name" val={lastName} />
+        <Controller
+          control={control}
+          name="lastName"
+          render={() => <TitledInput disabled title="Last Name" defaultValue={lastName} />}
+        />
       </Row>
-      <TitledInput title="Organization" val={org} onChange={setOrg} />
-      <TitledInput disabled title="Date of Birth" val={dob} />
-      <TitledInput disabled title="Email" val={email} />
-      <TitledInput title="Phone" val={phone} onChange={setPhone} />
-      <TitledInput
-        title="Preferred Contact Method"
-        val={contactMethod}
-        onChange={setContactMethod}
+      <Controller
+        control={control}
+        name="organization"
+        render={({ field: { onChange } }) => (
+          <>
+            <TitledInput title="Organization" onChange={onChange} defaultValue={organization} />
+            <Text type="danger">{errors.organization && <p>{errors.organization.message}</p>}</Text>
+          </>
+        )}
       />
-      <TitledInput title="Street Address" val={address} onChange={setAddress} />
+      <Controller
+        control={control}
+        name="birthdate"
+        render={() => <TitledInput disabled title="Birthdate" defaultValue={birthdate} />}
+      />
+      <Controller
+        control={control}
+        name="email"
+        render={() => <TitledInput disabled title="Email" defaultValue={email} />}
+      />
+      <Controller
+        control={control}
+        name="phone"
+        render={({ field: { onChange } }) => (
+          <>
+            <TitledInput title="Phone" onChange={onChange} defaultValue={phone} />
+            <Text type="danger">{errors.phone && <p>{errors.phone.message}</p>}</Text>
+          </>
+        )}
+      />
+      <Controller
+        control={control}
+        name="preferredContactMethod"
+        render={({ field: { onChange, value } }) => (
+          // TODO: change this to radio options
+          <>
+            <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+              <p style={{ marginBottom: '.5vh' }}>Preferred Contact Method</p>
+              <Radio.Group onChange={onChange} value={value}>
+                <Radio value="email">Email</Radio>
+                <Radio value="phone">Phone</Radio>
+              </Radio.Group>
+            </div>
+            <Text type="danger">
+              {errors.preferredContactMethod && <p>{errors.preferredContactMethod.message}</p>}
+            </Text>
+          </>
+        )}
+      />
+      <Controller
+        control={control}
+        name="addressStreet"
+        render={({ field: { onChange } }) => (
+          <>
+            <TitledInput title="Street Address" onChange={onChange} defaultValue={addressStreet} />
+            <Text type="danger">
+              {errors.addressStreet && <p>{errors.addressStreet.message}</p>}
+            </Text>
+          </>
+        )}
+      />
       <Row>
-        <TitledInput title="City" val={city} onChange={setCity} />
+        <Controller
+          control={control}
+          name="addressCity"
+          render={({ field: { onChange } }) => (
+            <>
+              <TitledInput title="City" onChange={onChange} defaultValue={addressCity} />
+              <Text type="danger">{errors.addressCity && <p>{errors.addressCity.message}</p>}</Text>
+            </>
+          )}
+        />
         <div style={{ width: '3vw' }} />
         <Row>
-          <TitledInput title="State" val={state} onChange={setState} />
+          <Controller
+            control={control}
+            name="addressState"
+            render={({ field: { onChange } }) => (
+              <>
+                <TitledInput title="State" onChange={onChange} defaultValue={addressState} />
+                <Text type="danger">
+                  {errors.addressState && <p>{errors.addressState.message}</p>}
+                </Text>
+              </>
+            )}
+          />
           <div style={{ width: '3vw' }} />
-          <TitledInput title="Zip Code" val={zip} onChange={setZip} />
+          <Controller
+            control={control}
+            name="addressZip"
+            render={({ field: { onChange } }) => (
+              <>
+                <TitledInput title="Zip Code" onChange={onChange} defaultValue={addressZip} />
+                <Text type="danger">{errors.addressZip && <p>{errors.addressZip.message}</p>}</Text>
+              </>
+            )}
+          />
         </Row>
       </Row>
     </Container>
@@ -87,7 +156,16 @@ const VolunteerGeneralInfo = ({ userId }) => {
 };
 
 VolunteerGeneralInfo.propTypes = {
-  userId: PropTypes.string.isRequired,
+  firstName: PropTypes.string.isRequired,
+  lastName: PropTypes.string.isRequired,
+  organization: PropTypes.string.isRequired,
+  birthdate: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
+  phone: PropTypes.string.isRequired,
+  addressStreet: PropTypes.string.isRequired,
+  addressCity: PropTypes.string.isRequired,
+  addressState: PropTypes.string.isRequired,
+  addressZip: PropTypes.string.isRequired,
 };
 
 export default VolunteerGeneralInfo;

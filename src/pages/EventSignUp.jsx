@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from 'react';
+import { React, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Button, Form, Tabs } from 'antd';
 import { instanceOf } from 'prop-types';
@@ -6,6 +6,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
+import uploadWaiver from '../components/events/utils';
 import { Cookies, cookieKeys, withCookies } from '../util/cookie_utils';
 import { AFCBackend, phoneRegExp, zipRegExp } from '../util/utils';
 import VolunteerGeneralInfo from '../components/event-sign-up/VolunteerGeneralInfo';
@@ -15,9 +16,7 @@ import Availability from '../components/event-sign-up/Availability';
 
 /**
  * TODOS
- * - handle any updates to user info and update them in users table (signup form validation)
- * - fix waiver uploading (CORS error)
- * - fix availability
+ * - add modal in event view page post event to insert # hours worked
  */
 
 const { TabPane } = Tabs;
@@ -62,24 +61,14 @@ const Card = styled.div`
 const EventSignUp = ({ cookies }) => {
   const navigate = useNavigate();
   const { eventId } = useParams();
-
-  useEffect(async () => {
-    const { data } = await AFCBackend.get(`/volunteers/${cookies.get(cookieKeys.USER_ID)}`);
-    if (data[0] && data[0].eventIds.includes(parseInt(eventId, 10))) {
-      navigate(`/event/view/${eventId}`);
-    }
-  }, []);
-
-  const [genInfo, setGenInfo] = useState({});
-  const [availability, setAvailability] = useState({});
-  const [rolesAndSkills, setRolesAndSkills] = useState({});
-  const [forms, setForms] = useState({});
+  const [defaultValues, setDefaultValues] = useState(undefined);
+  const [availability, setAvailability] = useState(undefined);
+  const [dayOfWeekIdx, setDayOfWeekIdx] = useState(undefined);
 
   const schema = yup.object({
     firstName: yup.string(),
     lastName: yup.string(),
     password: yup.string(),
-    role: yup.string().required(),
     organization: yup.string().required(),
     birthdate: yup.date(),
     email: yup.string(),
@@ -118,6 +107,7 @@ const EventSignUp = ({ cookies }) => {
     foodServiceIndustryKnowledge: yup.bool().required(),
     languages: yup.array().of(yup.string()),
     additionalInformation: yup.string().nullable(true),
+    waivers: yup.array().required(),
   });
 
   const form = useForm({
@@ -126,21 +116,120 @@ const EventSignUp = ({ cookies }) => {
     delayError: 750,
   });
 
+  useEffect(async () => {
+    const userId = cookies.get(cookieKeys.USER_ID);
+
+    const { data: eventData } = await AFCBackend.get(`/events/${eventId}`);
+    setDayOfWeekIdx(new Date(eventData[0].startDatetime).getDay());
+
+    const { data: availabilityData } = await AFCBackend.get(`/availability/${userId}`);
+    const formatAvailability = availabilityData.availabilities.map(a => {
+      return {
+        endTime: a.endTime.substring(0, a.endTime.length - 3),
+        startTime: a.startTime.substring(0, a.startTime.length - 3),
+        dayOfWeek: a.dayOfWeek,
+      };
+    });
+
+    setAvailability(formatAvailability);
+
+    const { data } = await AFCBackend.get(`/volunteers/${userId}`);
+    const eventIdNum = parseInt(eventId, 10);
+    const eventIds = data[0]?.eventIds;
+
+    if (eventIds?.includes(eventIdNum)) {
+      navigate(`/event/view/${eventId}`);
+    }
+
+    const { data: res } = await AFCBackend.get(`/users/${userId}`);
+
+    // convert Date to MM/DD/YYYY
+    const date = new Date(res.birthdate);
+    const dateString = `${date.getMonth() > 8 ? date.getMonth() + 1 : `0${date.getMonth() + 1}`}/${
+      date.getDate() > 9 ? date.getDate() : `0${date.getDate()}`
+    }/${date.getFullYear()}`;
+    res.birthdate = dateString;
+
+    res.roles = [
+      res.foodRunsInterest && 'foodRunsInterest',
+      res.distributionInterest && 'distributionInterest',
+    ].filter(e => !!e);
+    res.skills = [
+      res.firstAidTraining && 'firstAidTraining',
+      res.serveSafeKnowledge && 'serveSafeKnowledge',
+      res.transportationExperience && 'transportationExperience',
+      res.movingWarehouseExperience && 'movingWarehouseExperience',
+      res.foodServiceIndustryKnowledge && 'foodServiceIndustryKnowledge',
+    ].filter(e => !!e);
+
+    res.waivers = [];
+
+    form.reset(res);
+
+    console.log(res);
+
+    setDefaultValues(res);
+  }, []);
+
   const onSubmit = async () => {
-    console.log(genInfo, availability, rolesAndSkills, forms);
+    const userId = cookies.get(cookieKeys.USER_ID);
 
-    // update user in users table
-    // const result = await form.trigger();
-    // console.log(result);
+    const result = await form.trigger();
+    if (!result) {
+      return;
+    }
 
-    // const values = form.getValues();
-    // const payload = { ...values };
-    // console.log(payload);
-    // const res = await AFCBackend.put(`/users/${cookies.get(cookieKeys.USER_ID)}`, payload);
-    // console.log(res);
+    const values = form.getValues();
+
+    const { roles, skills } = values;
+    delete values.roles;
+    delete values.skills;
+
+    const foodRunsInterest = roles.includes('foodRunsInterest');
+    const distributionInterest = roles.includes('distributionInterest');
+
+    const firstAidTraining = skills.includes('firstAidTraining');
+    const serveSafeKnowledge = skills.includes('serveSafeKnowledge');
+    const transportationExperience = skills.includes('transportationExperience');
+    const movingWarehouseExperience = skills.includes('movingWarehouseExperience');
+    const foodServiceIndustryKnowledge = skills.includes('foodServiceIndustryKnowledge');
+
+    let waivers = await Promise.all(
+      values.waivers.map(async file => uploadWaiver(file.originFileObj)),
+    );
+    waivers = values.waivers.map((file, index) => ({
+      name: file.name,
+      link: waivers[index],
+      eventId,
+    }));
+    console.log(waivers);
+
+    const uploadWaiverRes = await Promise.all(
+      waivers.map(async waiverPayload => AFCBackend.post('/waivers/volunteer', waiverPayload)),
+    );
+    console.log(uploadWaiverRes);
+    delete values.waivers;
+
+    const payload = {
+      ...values,
+      userId,
+      role: cookies.get(cookieKeys.ROLE),
+      availabilities: availability,
+      foodRunsInterest,
+      distributionInterest,
+      firstAidTraining,
+      serveSafeKnowledge,
+      transportationExperience,
+      movingWarehouseExperience,
+      foodServiceIndustryKnowledge,
+    };
+    console.log(payload);
+
+    // update user info
+    await AFCBackend.put(`/users/${userId}`, payload);
 
     // sign up user for event
-    await AFCBackend.post(`/volunteers/${cookies.get(cookieKeys.USER_ID)}/${eventId}`);
+    await AFCBackend.post(`/volunteers/${userId}/${eventId}`);
 
     // redirect back to event view page
     navigate(`/event/view/${eventId}`);
@@ -151,7 +240,9 @@ const EventSignUp = ({ cookies }) => {
       <SignUpHeader>
         <HeaderText>Sign Up</HeaderText>
         <ButtonRow>
-          <Button style={{ marginRight: '3vw' }}>Cancel</Button>
+          <Button style={{ marginRight: '3vw' }} onClick={() => navigate(`/event/view/${eventId}`)}>
+            Cancel
+          </Button>
           <Button type="primary" onClick={onSubmit}>
             Submit
           </Button>
@@ -162,28 +253,37 @@ const EventSignUp = ({ cookies }) => {
           <Tabs>
             <TabPane tab="General Information" key="1">
               <Card>
-                <VolunteerGeneralInfo
-                  userId={cookies.get(cookieKeys.USER_ID)}
-                  onSubmit={setGenInfo}
-                />
+                {defaultValues && (
+                  <VolunteerGeneralInfo
+                    userId={cookies.get(cookieKeys.USER_ID)}
+                    {...defaultValues}
+                  />
+                )}
               </Card>
             </TabPane>
             <TabPane tab="Availability" key="2">
               <Card>
-                <Availability userId={cookies.get(cookieKeys.USER_ID)} onSubmit={setAvailability} />
+                {availability && (
+                  <Availability
+                    availability={availability}
+                    setAvailability={setAvailability}
+                    dayOfWeekIdx={dayOfWeekIdx}
+                  />
+                )}
               </Card>
             </TabPane>
             <TabPane tab="Roles & Skills" key="3">
               <Card>
-                <RolesAndSkills
-                  userId={cookies.get(cookieKeys.USER_ID)}
-                  onSubmit={setRolesAndSkills}
-                />
+                {defaultValues && (
+                  <RolesAndSkills userId={cookies.get(cookieKeys.USER_ID)} {...defaultValues} />
+                )}
               </Card>
             </TabPane>
             <TabPane tab="Upload Forms" key="4">
               <Card>
-                <UploadForms userId={cookies.get(cookieKeys.USER_ID)} onSubmit={setForms} />
+                {defaultValues && (
+                  <UploadForms userId={cookies.get(cookieKeys.USER_ID)} {...defaultValues} />
+                )}
               </Card>
             </TabPane>
           </Tabs>

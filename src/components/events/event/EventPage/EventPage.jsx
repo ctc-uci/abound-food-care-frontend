@@ -40,10 +40,10 @@ const EventPage = ({ cookies }) => {
       }
 
       // get handout waiver for volunteers to download
-      const waivers = eventResponse[0].waivers.filter(waiver => {
+      const waivers = eventResponse[0].waivers?.filter(waiver => {
         return waiver.userId === null;
       });
-      if (waivers.length > 0) {
+      if (waivers?.length > 0) {
         setHandoutWaiver(waivers[0]);
       }
     } catch (e) {
@@ -67,7 +67,6 @@ const EventPage = ({ cookies }) => {
 
   useEffect(async () => {
     const { data } = await AFCBackend.get(`/volunteers/${cookies.get(cookieKeys.USER_ID)}`);
-    console.log(data);
     if (data[0] && data[0].eventIds.includes(parseInt(eventId, 10))) {
       setSignedUp(true);
     }
@@ -150,10 +149,10 @@ const EventPage = ({ cookies }) => {
   }
 
   const onUnregister = async () => {
-    const res = AFCBackend.delete(`/volunteers/${cookies.get(cookieKeys.USER_ID)}/${eventId}`);
-    console.log(res);
-    console.log('unregistered!');
+    if (!signedUp) return;
+    await AFCBackend.delete(`/volunteers/${cookies.get(cookieKeys.USER_ID)}/${eventId}`);
     setSignedUp(false);
+    setNumAttendees(e => e - 1);
   };
 
   return (
