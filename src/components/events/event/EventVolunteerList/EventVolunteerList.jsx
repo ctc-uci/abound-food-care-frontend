@@ -30,9 +30,12 @@ const EventVolunteerList = ({ name, type, eventId, setViewVolunteers }) => {
     const eventWaivers = eventData[0].waivers;
     eventWaivers?.forEach(waiver => {
       if (waiver.userId) {
-        const matchingVolunteer = volunteerData.find(volunteer => {
+        let matchingVolunteer = volunteerData.find(volunteer => {
           return volunteer.userId === waiver.userId;
         });
+        if (!matchingVolunteer) {
+          matchingVolunteer = {};
+        }
         matchingVolunteer.waiver = waiver.link;
         matchingVolunteer.waiverName = waiver.name;
       }
