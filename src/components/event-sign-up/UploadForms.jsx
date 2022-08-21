@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { saveAs } from 'file-saver';
 import { Button, Upload } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import { useFormContext, Controller } from 'react-hook-form';
@@ -21,8 +22,12 @@ const UploadForms = () => {
   const { eventId } = useParams();
 
   const downloadWaivers = async () => {
-    const res = await AFCBackend(`/waivers/${eventId}`);
-    console.log(res);
+    const { data } = await AFCBackend(`/waivers/event/${eventId}`, {
+      headers: { 'Content-Type': 'application/json' },
+      withCredentials: true,
+      responseType: 'blob',
+    });
+    await saveAs(data, `-waivers.zip`);
   };
 
   return (

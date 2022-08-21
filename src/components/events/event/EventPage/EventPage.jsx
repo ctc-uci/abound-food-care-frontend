@@ -150,7 +150,9 @@ const EventPage = ({ cookies }) => {
 
   const onUnregister = async () => {
     if (!signedUp) return;
-    await AFCBackend.delete(`/volunteers/${cookies.get(cookieKeys.USER_ID)}/${eventId}`);
+    const userId = cookies.get(cookieKeys.USER_ID);
+    await AFCBackend.delete(`/volunteers/${userId}/${eventId}`);
+    await AFCBackend.delete(`/waivers/${userId}/${eventId}`);
     setSignedUp(false);
     setNumAttendees(e => e - 1);
   };
