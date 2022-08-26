@@ -9,13 +9,13 @@ const HeatMap = () => {
 
   const generateData = (count, startHour, endHour, data) => {
     const dayOfWeek = [
-      'sunday',
-      'monday',
-      'tuesday',
-      'wednesday',
-      'thursday',
-      'friday',
-      'saturday',
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
     ];
     let i = 0;
     const generatedSeries = [];
@@ -67,6 +67,7 @@ const HeatMap = () => {
         times.push(String(formattedHour).concat(':30').concat(period));
       }
     }
+    console.log('times', times);
 
     const generatedSeries = times.reverse().map(time => {
       return {
@@ -74,6 +75,7 @@ const HeatMap = () => {
         data: generateData(7, time, afterTimes[time], data),
       };
     });
+    // console.log('generatedSeries', generatedSeries);
     await setSeries(generatedSeries);
   };
 
@@ -104,6 +106,8 @@ const HeatMap = () => {
     };
     setOptions(values);
     generateSeries(9, 17);
+    // console.log(options);
+    // console.log(series);
   }, []);
 
   const renderChart = () => {

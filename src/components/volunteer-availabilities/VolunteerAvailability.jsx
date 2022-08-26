@@ -7,7 +7,7 @@ const VolunteerAvailability = props => {
   const VOLUNTEERS_DUMMY_DATA = [
     {
       id: 0,
-      name: 'John Stone',
+      name: 'John Stones',
       available: true,
     },
     {
