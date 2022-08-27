@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Input, Button, Radio, Row, Col, Card } from 'antd';
+import { Input, Button, Radio, Row, Col, Card, Pagination } from 'antd';
 import { FilterOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { AFCBackend } from '../../../util/utils';
 import EventCard from '../event/EventCard/EventCard';
@@ -21,6 +21,8 @@ const AdminEvents = () => {
   const [allEvents, setAllEvents] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [showEventTypeModal, setShowEventTypeModal] = useState(false);
+  const [numEvents, setNumEvents] = useState(0);
+  const [displayedEvents, setDisplayedEvents] = useState([]);
 
   const defaultEventTypes = [
     {
@@ -37,7 +39,7 @@ const AdminEvents = () => {
 
   const { width } = useViewPort();
   const breakpoint = 720;
-  // const PAGE_SIZE = 6;
+  const PAGE_SIZE = 6;
 
   const eventStatusOptions = [
     { label: 'All', value: 'all' },
@@ -54,10 +56,10 @@ const AdminEvents = () => {
           type: eventTypeValue,
         },
       });
-      console.log('below is eventresponse');
-      console.log(eventResponse);
+      setDisplayedEvents(eventResponse.slice(0, 6));
       setEventsData(eventResponse);
       setAllEvents(eventResponse);
+      setNumEvents(eventResponse.length);
     } catch (err) {
       console.error(err.message);
     }
@@ -121,15 +123,25 @@ const AdminEvents = () => {
       e.target.value.toLowerCase(),
       eventStatusValue,
     );
-    console.log('filtered', filteredEvents);
+    setDisplayedEvents(filteredEvents.slice(0, 6));
     setEventsData(filteredEvents);
+    setNumEvents(filteredEvents.length);
   };
 
   const onStatusChange = async e => {
     setEventStatusValue(e.target.value);
     const filteredEvents = await getEventsByTypeAndStatus(eventTypeValue, e.target.value);
-    console.log('filtered', filteredEvents);
+    setDisplayedEvents(filteredEvents.slice(0, 6));
     setEventsData(filteredEvents);
+    setNumEvents(filteredEvents.length);
+  };
+
+  const onPageChange = (page, pageSize) => {
+    if (eventsData.slice(pageSize * (page - 1)).length >= PAGE_SIZE) {
+      setDisplayedEvents(eventsData.slice(pageSize * (page - 1), pageSize * (page - 1) + pageSize));
+    } else {
+      setDisplayedEvents(eventsData.slice(pageSize * (page - 1)));
+    }
   };
 
   const renderEventsGrid = events => {
@@ -290,7 +302,13 @@ const AdminEvents = () => {
             {eventsData.length > 0 ? (
               <div className={styles['events-grid']}>
                 {/* {width > breakpoint ? ( */}
-                <Row className={styles['event-card-row']}>{renderEventsGrid(eventsData)}</Row>
+                <Row className={styles['event-card-row']}>{renderEventsGrid(displayedEvents)}</Row>
+                <Pagination
+                  defaultCurrent={1}
+                  pageSize={PAGE_SIZE}
+                  total={numEvents}
+                  onChange={onPageChange}
+                />
               </div>
             ) : (
               <Card className={styles.card}>
