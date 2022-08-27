@@ -59,7 +59,7 @@ const AvailabilityChart = ({ availability, setAvailability, title, days, currDay
     let [hour, min] = startTime.split(':');
     min = parseInt(min, 10) + 30;
     if (min >= 60) {
-      hour += 1;
+      hour = parseInt(hour, 10) + 1;
       min %= 60;
     }
     return `${hour}:${min}:00`;
