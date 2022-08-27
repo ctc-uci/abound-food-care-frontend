@@ -12,7 +12,7 @@ import { AFCBackend, phoneRegExp, zipRegExp } from '../util/utils';
 import VolunteerGeneralInfo from '../components/event-sign-up/VolunteerGeneralInfo';
 import RolesAndSkills from '../components/event-sign-up/RolesAndSkills';
 import UploadForms from '../components/event-sign-up/UploadForms';
-import Availability from '../components/event-sign-up/Availability';
+import AvailabilityChart from '../components/AvailabilityChart/AvailabilityChart';
 
 /**
  * TODOS
@@ -61,6 +61,7 @@ const Card = styled.div`
 const EventSignUp = ({ cookies }) => {
   const navigate = useNavigate();
   const { eventId } = useParams();
+  const [showWaivers, setShowWaivers] = useState(false);
   const [defaultValues, setDefaultValues] = useState(undefined);
   const [availability, setAvailability] = useState(undefined);
   const [dayOfWeekIdx, setDayOfWeekIdx] = useState(undefined);
@@ -164,9 +165,14 @@ const EventSignUp = ({ cookies }) => {
 
     res.waivers = [];
 
+    res.vehicleType = res.vehicleType || 'NULL';
+
     form.reset(res);
 
     setDefaultValues(res);
+
+    const { data: waivers } = await AFCBackend(`/waivers/event/${eventId}`);
+    setShowWaivers(waivers.length > 0);
   }, []);
 
   const onSubmit = async () => {
@@ -259,10 +265,11 @@ const EventSignUp = ({ cookies }) => {
             <TabPane tab="Availability" key="2">
               <Card>
                 {availability && (
-                  <Availability
+                  <AvailabilityChart
                     availability={availability}
                     setAvailability={setAvailability}
-                    dayOfWeekIdx={dayOfWeekIdx}
+                    days={1}
+                    currDayOfWeek={dayOfWeekIdx}
                   />
                 )}
               </Card>
@@ -274,13 +281,15 @@ const EventSignUp = ({ cookies }) => {
                 )}
               </Card>
             </TabPane>
-            <TabPane tab="Upload Forms" key="4">
-              <Card>
-                {defaultValues && (
-                  <UploadForms userId={cookies.get(cookieKeys.USER_ID)} {...defaultValues} />
-                )}
-              </Card>
-            </TabPane>
+            {showWaivers && (
+              <TabPane tab="Upload Forms" key="4">
+                <Card>
+                  {defaultValues && (
+                    <UploadForms userId={cookies.get(cookieKeys.USER_ID)} {...defaultValues} />
+                  )}
+                </Card>
+              </TabPane>
+            )}
           </Tabs>
         </Form>
       </FormProvider>

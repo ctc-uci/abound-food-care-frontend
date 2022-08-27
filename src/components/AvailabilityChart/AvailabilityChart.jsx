@@ -11,23 +11,14 @@ const AvailabilityChart = ({ availability, setAvailability, title, days, currDay
   const [series, setSeries] = useState(null);
 
   const convertData = times => {
-    const data = [];
-    for (let day = 0; day < 7; day += 1) {
-      const dayArray = [];
-      for (let i = 0; i < times.length; i += 1) {
-        const dayAvailabilities = availability.filter(a => a.dayOfWeek === dayOfWeek[day]);
-        const available = dayAvailabilities.filter(
-          d => d.startTime.substring(0, d.startTime.lastIndexOf(':')) === times[i],
-        );
-        if (available.length > 0) {
-          dayArray.push(2);
-        } else {
-          dayArray.push(1);
-        }
-      }
-      data.push(dayArray);
-    }
-    return data;
+    return dayOfWeek.map(day => {
+      return times.map(time => {
+        const available = availability
+          .filter(a => a.dayOfWeek === day)
+          .filter(d => d.startTime.substring(0, d.startTime.lastIndexOf(':')) === time);
+        return available.length > 0 ? 2 : 1;
+      });
+    });
   };
   const generateData = (count, data, index) => {
     let i = 0;
@@ -65,23 +56,13 @@ const AvailabilityChart = ({ availability, setAvailability, title, days, currDay
   };
 
   const getEndTime = startTime => {
-    const startMinutes = startTime.slice(startTime.indexOf(':') + 1, startTime.lastIndexOf(':'));
-    let startHour = startTime.split(':')[0];
-    let endMinutes = '';
-    switch (startMinutes) {
-      case '00':
-        endMinutes = '30';
-        break;
-      case '30':
-        endMinutes = '00';
-        break;
-      default:
-        endMinutes = '00';
+    let [hour, min] = startTime.split(':');
+    min = parseInt(min, 10) + 30;
+    if (min >= 60) {
+      hour += 1;
+      min %= 60;
     }
-    if (endMinutes === '00') {
-      startHour = (parseInt(startHour, 10) + 1).toString();
-    }
-    return `${startHour}:${endMinutes}:00`;
+    return `${hour}:${min}:00`;
   };
 
   const updateAvailability = (currSeries, rowIndex, colIndex, value) => {
@@ -95,18 +76,16 @@ const AvailabilityChart = ({ availability, setAvailability, title, days, currDay
       endTime,
     };
 
-    if (value === 2) {
-      setAvailability(prevAvailability => [...prevAvailability, selectedAvailability]);
-    } else {
-      setAvailability(prevAvailability =>
-        prevAvailability.filter(
-          avail =>
-            selectedAvailability.dayOfWeek !== avail.dayOfWeek ||
-            selectedAvailability.startTime !== avail.startTime ||
-            selectedAvailability.endTime !== avail.endTime,
-        ),
-      );
-    }
+    setAvailability(prevAvailability =>
+      value === 2
+        ? [...prevAvailability, selectedAvailability]
+        : prevAvailability.filter(
+            avail =>
+              selectedAvailability.dayOfWeek !== avail.dayOfWeek ||
+              selectedAvailability.startTime !== avail.startTime ||
+              selectedAvailability.endTime !== avail.endTime,
+          ),
+    );
   };
 
   const onSquareClick = (event, chartContext, config) => {

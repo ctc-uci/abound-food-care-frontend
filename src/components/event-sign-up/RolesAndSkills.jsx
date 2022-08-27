@@ -218,7 +218,7 @@ const RolesAndSkills = ({
         name="vehicleType"
         render={({ field: { onChange, ref } }) => (
           <Field>
-            <p style={{ marginBottom: '.5vh' }}>Are you willing to drive?</p>
+            <p style={{ marginBottom: '.5vh' }}>Vehicle Type:</p>
             <Select
               placeholder="Please select"
               onChange={onChange}
@@ -231,6 +231,7 @@ const RolesAndSkills = ({
               </Option>
               <Option value="Mid-Size Vehicle">Mid-Size Vehicle</Option>
               <Option value="Small Vehicle (Compact, Sedan)">Small Vehicle (Compact, Sedan)</Option>
+              <Option value="NULL">N/A</Option>
             </Select>
             <Text type="danger">{errors.vehicleType && <p>{errors.vehicleType.message}</p>}</Text>
           </Field>

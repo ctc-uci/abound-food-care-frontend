@@ -38,36 +38,19 @@ const getHourDiff = (timestamp1, timestamp2) => {
 };
 
 const buildLanguagesArray = values => {
-  const languages = [];
-  if (values.english) {
-    languages.push('english');
-  }
-  if (values.spanish) {
-    languages.push('spanish');
-  }
-  if (values.french) {
-    languages.push('french');
-  }
-  if (values.chinese) {
-    languages.push('chinese');
-  }
-  if (values.tagalog) {
-    languages.push('tagalog');
-  }
-  if (values.korean) {
-    languages.push('korean');
-  }
-  if (values.arabic) {
-    languages.push('arabic');
-  }
-  if (values.german) {
-    languages.push('german');
-  }
-  if (values.vietnamese) {
-    languages.push('vietnamese');
-  }
+  const languages = [
+    'english',
+    'spanish',
+    'french',
+    'chinese',
+    'tagalog',
+    'korean',
+    'arabic',
+    'german',
+    'vietnamese',
+  ];
 
-  return languages;
+  return languages.filter(lang => values[lang]);
 };
 
 const dayOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];

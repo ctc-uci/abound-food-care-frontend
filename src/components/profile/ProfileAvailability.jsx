@@ -7,9 +7,13 @@ const ProfileAvailability = ({ userId }) => {
   const [availabilityData, setAvailabilityData] = useState(undefined);
 
   useEffect(async () => {
-    const { data: res } = await AFCBackend.get(`/availability/${userId}`);
-    const { availabilities } = res;
-    setAvailabilityData(availabilities);
+    try {
+      const { data: res } = await AFCBackend.get(`/availability/${userId}`);
+      const { availabilities } = res;
+      setAvailabilityData(availabilities);
+    } catch (e) {
+      console.log(e.message);
+    }
   }, []);
 
   return (

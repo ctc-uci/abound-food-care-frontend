@@ -22,18 +22,20 @@ const UploadForms = () => {
   const { eventId } = useParams();
 
   const downloadWaivers = async () => {
-    const { data } = await AFCBackend(`/waivers/event/${eventId}`, {
+    const { data } = await AFCBackend(`/waivers/event/download/${eventId}`, {
       headers: { 'Content-Type': 'application/json' },
       withCredentials: true,
       responseType: 'blob',
     });
-    await saveAs(data, `-waivers.zip`);
+    const { data: eventRes } = await AFCBackend.get(`/events/${eventId}`);
+    const name = eventRes[0].name.replace(/\s+/g, '-');
+    await saveAs(data, `${name}-waivers.zip`);
   };
 
   return (
     <Container>
       <Button onClick={downloadWaivers} icon={<DownloadOutlined />}>
-        Click to Download
+        Click to Download Event Waivers
       </Button>
       <Controller
         control={control}
@@ -46,7 +48,7 @@ const UploadForms = () => {
             fileList={value}
             customRequest={e => e.onSuccess('Ok')}
           >
-            <Button>Click to Upload</Button>
+            <Button>Click to Upload Signed Waivers</Button>
           </Upload>
         )}
       />
