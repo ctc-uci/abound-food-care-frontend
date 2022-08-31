@@ -23,6 +23,7 @@ const AdminEvents = () => {
   const [showEventTypeModal, setShowEventTypeModal] = useState(false);
   const [numEvents, setNumEvents] = useState(0);
   const [displayedEvents, setDisplayedEvents] = useState([]);
+  const [pageSize, setPageSize] = useState(30);
 
   const defaultEventTypes = [
     {
@@ -39,7 +40,7 @@ const AdminEvents = () => {
 
   const { width } = useViewPort();
   const breakpoint = 720;
-  const PAGE_SIZE = 6;
+  // const PAGE_SIZE = 6;
 
   const eventStatusOptions = [
     { label: 'All', value: 'all' },
@@ -56,7 +57,7 @@ const AdminEvents = () => {
           type: eventTypeValue,
         },
       });
-      setDisplayedEvents(eventResponse.slice(0, 6));
+      setDisplayedEvents(eventResponse.slice(0, pageSize));
       setEventsData(eventResponse);
       setAllEvents(eventResponse);
       setNumEvents(eventResponse.length);
@@ -123,7 +124,7 @@ const AdminEvents = () => {
       e.target.value.toLowerCase(),
       eventStatusValue,
     );
-    setDisplayedEvents(filteredEvents.slice(0, 6));
+    setDisplayedEvents(filteredEvents.slice(0, pageSize));
     setEventsData(filteredEvents);
     setNumEvents(filteredEvents.length);
   };
@@ -131,16 +132,19 @@ const AdminEvents = () => {
   const onStatusChange = async e => {
     setEventStatusValue(e.target.value);
     const filteredEvents = await getEventsByTypeAndStatus(eventTypeValue, e.target.value);
-    setDisplayedEvents(filteredEvents.slice(0, 6));
+    setDisplayedEvents(filteredEvents.slice(0, { pageSize }));
     setEventsData(filteredEvents);
     setNumEvents(filteredEvents.length);
   };
 
-  const onPageChange = (page, pageSize) => {
-    if (eventsData.slice(pageSize * (page - 1)).length >= PAGE_SIZE) {
-      setDisplayedEvents(eventsData.slice(pageSize * (page - 1), pageSize * (page - 1) + pageSize));
+  const onPageChange = (page, newPageSize) => {
+    setPageSize(newPageSize);
+    if (eventsData.slice(newPageSize * (page - 1)).length >= newPageSize) {
+      setDisplayedEvents(
+        eventsData.slice(newPageSize * (page - 1), newPageSize * (page - 1) + newPageSize),
+      );
     } else {
-      setDisplayedEvents(eventsData.slice(pageSize * (page - 1)));
+      setDisplayedEvents(eventsData.slice(newPageSize * (page - 1)));
     }
   };
 
@@ -305,7 +309,7 @@ const AdminEvents = () => {
                 <Row className={styles['event-card-row']}>{renderEventsGrid(displayedEvents)}</Row>
                 <Pagination
                   defaultCurrent={1}
-                  pageSize={PAGE_SIZE}
+                  pageSize={pageSize}
                   total={numEvents}
                   onChange={onPageChange}
                 />
