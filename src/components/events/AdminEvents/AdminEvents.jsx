@@ -50,6 +50,7 @@ const AdminEvents = () => {
 
   const fetchAllEvents = async () => {
     try {
+      console.log('from fetchAllEvents');
       console.log(eventStatusValue, eventTypeValue);
       const { data: eventResponse } = await AFCBackend.get('/events', {
         params: {
@@ -132,7 +133,7 @@ const AdminEvents = () => {
   const onStatusChange = async e => {
     setEventStatusValue(e.target.value);
     const filteredEvents = await getEventsByTypeAndStatus(eventTypeValue, e.target.value);
-    setDisplayedEvents(filteredEvents.slice(0, { pageSize }));
+    setDisplayedEvents(filteredEvents.slice(0, pageSize));
     setEventsData(filteredEvents);
     setNumEvents(filteredEvents.length);
   };
@@ -308,10 +309,12 @@ const AdminEvents = () => {
                 {/* {width > breakpoint ? ( */}
                 <Row className={styles['event-card-row']}>{renderEventsGrid(displayedEvents)}</Row>
                 <Pagination
+                  className={styles.pagination}
                   defaultCurrent={1}
                   pageSize={pageSize}
                   total={numEvents}
                   onChange={onPageChange}
+                  pageSizeOptions={[10, 20, 30, 50]}
                 />
               </div>
             ) : (
