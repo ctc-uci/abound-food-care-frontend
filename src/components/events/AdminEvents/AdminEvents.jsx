@@ -24,6 +24,7 @@ const AdminEvents = () => {
   const [numEvents, setNumEvents] = useState(0);
   const [displayedEvents, setDisplayedEvents] = useState([]);
   const [pageSize, setPageSize] = useState(30);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const defaultEventTypes = [
     {
@@ -138,6 +139,7 @@ const AdminEvents = () => {
 
   const onPageChange = (page, newPageSize) => {
     setPageSize(newPageSize);
+    setCurrentPage(page);
     if (eventsData.slice(newPageSize * (page - 1)).length >= newPageSize) {
       setDisplayedEvents(
         eventsData.slice(newPageSize * (page - 1), newPageSize * (page - 1) + newPageSize),
@@ -308,7 +310,7 @@ const AdminEvents = () => {
                 <Row className={styles['event-card-row']}>{renderEventsGrid(displayedEvents)}</Row>
                 <Pagination
                   className={styles.pagination}
-                  defaultCurrent={1}
+                  current={currentPage}
                   pageSize={pageSize}
                   total={numEvents}
                   onChange={onPageChange}
