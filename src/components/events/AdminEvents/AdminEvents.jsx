@@ -50,8 +50,6 @@ const AdminEvents = () => {
 
   const fetchAllEvents = async () => {
     try {
-      console.log('from fetchAllEvents');
-      console.log(eventStatusValue, eventTypeValue);
       const { data: eventResponse } = await AFCBackend.get('/events', {
         params: {
           status: eventStatusValue,
