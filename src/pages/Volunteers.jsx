@@ -4,7 +4,7 @@ import './Volunteers.css';
 import VolunteerAvailability from '../components/volunteer-availabilities/VolunteerAvailability';
 
 const Volunteers = () => {
-  const [viewDatabase, setViewDatabase] = useState(true);
+  const [viewDatabase, setViewDatabase] = useState(false);
 
   const handleViewDatabase = () => {
     setViewDatabase(true);

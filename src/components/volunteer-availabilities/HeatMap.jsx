@@ -1,9 +1,10 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
+import PropTypes from 'prop-types';
 // import ApexCharts from 'apexcharts';
 import { AFCBackend } from '../../util/utils';
 
-const HeatMap = () => {
+const HeatMap = ({ eventInterest, driverOption, searchQuery }) => {
   const [options, setOptions] = React.useState(null);
   const [series, setSeries] = React.useState([]);
 
@@ -56,9 +57,19 @@ const HeatMap = () => {
       '17:00PM': '17:30PM',
     };
     let data = {};
-    await AFCBackend.get('/volunteers/available').then(res => {
-      data = res.data;
-    });
+    try {
+      await AFCBackend.get(`/volunteers/available/`, {
+        params: {
+          driverOption,
+          eventInterest,
+          searchQuery,
+        },
+      }).then(res => {
+        data = res.data;
+      });
+    } catch (err) {
+      console.log(err);
+    }
     for (let hour = startHour; hour <= endHour; hour += 1) {
       const formattedHour = hour < 10 ? `0${String(hour)}` : String(hour);
       const period = hour >= 12 ? 'PM' : 'AM';
@@ -67,7 +78,7 @@ const HeatMap = () => {
         times.push(String(formattedHour).concat(':30').concat(period));
       }
     }
-    console.log('times', times);
+    // console.log('times', times);
 
     const generatedSeries = times.reverse().map(time => {
       return {
@@ -108,7 +119,7 @@ const HeatMap = () => {
     generateSeries(9, 17);
     // console.log(options);
     // console.log(series);
-  }, []);
+  }, [eventInterest, driverOption, searchQuery]);
 
   const renderChart = () => {
     if (options) {
@@ -122,6 +133,12 @@ const HeatMap = () => {
       <div className="mixed-chart"> {renderChart()} </div>
     </div>
   );
+};
+
+HeatMap.propTypes = {
+  eventInterest: PropTypes.string.isRequired,
+  driverOption: PropTypes.string.isRequired,
+  searchQuery: PropTypes.string.isRequired,
 };
 
 export default HeatMap;
