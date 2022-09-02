@@ -2,181 +2,46 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Menu, Dropdown, Button, Space } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
-import styles from './VolunteerAvailability.module.css';
 import HeatMap from './HeatMap';
 import { AFCBackend } from '../../util/utils';
+import styles from './VolunteerAvailability.module.css';
 
 const VolunteerAvailability = props => {
   const { handleViewDatabase } = props;
-  const VOLUNTEERS_DUMMY_DATA = [
-    {
-      id: 0,
-      name: 'John Stones',
-      available: true,
-    },
-    {
-      id: 1,
-      name: 'Ponnappa Priya',
-      available: true,
-    },
-    {
-      id: 2,
-      name: 'Mia Wong',
-      available: true,
-    },
-    {
-      id: 3,
-      name: 'Peter Stanbridge',
-      available: true,
-    },
-    {
-      id: 4,
-      name: 'Natalie Lee-Walsh',
-      available: true,
-    },
-    {
-      id: 5,
-      name: 'Ang Li',
-      available: true,
-    },
-    {
-      id: 6,
-      name: 'Nguta Ithya',
-      available: true,
-    },
-    {
-      id: 7,
-      name: 'John Stone',
-      available: true,
-    },
-    {
-      id: 8,
-      name: 'Ponnappa Priya',
-      available: true,
-    },
-    {
-      id: 9,
-      name: 'Mia Wong',
-      available: true,
-    },
-    {
-      id: 10,
-      name: 'Peter Stanbridge',
-      available: true,
-    },
-    {
-      id: 11,
-      name: 'Natalie Lee-Walsh',
-      available: true,
-    },
-    {
-      id: 12,
-      name: 'Ang Li',
-      available: true,
-    },
-    {
-      id: 13,
-      name: 'Nguta Ithya',
-      available: true,
-    },
-    {
-      id: 14,
-      name: 'John Stone',
-      available: true,
-    },
-    {
-      id: 15,
-      name: 'Ponnappa Priya',
-      available: true,
-    },
-    {
-      id: 16,
-      name: 'Mia Wong',
-      available: true,
-    },
-    {
-      id: 17,
-      name: 'Peter Stanbridge',
-      available: true,
-    },
-    {
-      id: 18,
-      name: 'Natalie Lee-Walsh',
-      available: true,
-    },
-    {
-      id: 19,
-      name: 'Ang Li',
-      available: true,
-    },
-    {
-      id: 20,
-      name: 'Nguta Ithya',
-      available: true,
-    },
-    {
-      id: 21,
-      name: 'John Stone',
-      available: false,
-    },
-    {
-      id: 22,
-      name: 'Ponnappa Priya',
-      available: false,
-    },
-    {
-      id: 23,
-      name: 'Mia Wong',
-      available: false,
-    },
-    {
-      id: 24,
-      name: 'Peter Stanbridge',
-      available: false,
-    },
-    {
-      id: 25,
-      name: 'Natalie Lee-Walsh',
-      available: false,
-    },
-    {
-      id: 26,
-      name: 'Ang Li',
-      available: false,
-    },
-  ];
 
   const showDatabase = () => {
     handleViewDatabase();
   };
-  const [volunteers, setVolunteers] = useState([]);
+  const [totalVolunteers, setTotalVolunteers] = useState(-1);
   const [availableVolunteers, setAvailableVolunteers] = useState([]);
   const [eventInterest, setEventInterest] = useState('All');
   const [driverOption, setDriverOption] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    setVolunteers(VOLUNTEERS_DUMMY_DATA);
-    setAvailableVolunteers(VOLUNTEERS_DUMMY_DATA.filter(v => v.available));
-  }, []);
+  const getVolunteers = async () => {
+    try {
+      const { data } = await AFCBackend.get(`/volunteers/`, {
+        params: {
+          driverOption,
+          ageOption: 'All',
+          eventInterest,
+          searchQuery,
+        },
+      });
+      setAvailableVolunteers(data);
 
-  // useEffect(async () => {
-  //   try {
-  //     let { data } = await AFCBackend.get(`/volunteers/available/`, {
-  //       params: {
-  //         driverOption,
-  //         eventInterest,
-  //         searchQuery,
-  //       },
-  //     });
-  //     console.log(data);
-  //     data = data.map(user => `${user.firstName} ${user.lastName}`);
-  //     console.log(data);
-  //     setAvailableVolunteers(data);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }, [eventInterest, driverOption, searchQuery]);
+      // sets the total # volunteers only the first time
+      if (totalVolunteers === -1) {
+        setTotalVolunteers(data.length);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getVolunteers();
+  }, [eventInterest, driverOption, searchQuery]);
 
   const eventInterestMenu = (
     <Menu className={styles.menu}>
@@ -273,15 +138,12 @@ const VolunteerAvailability = props => {
       </div>
       <div className="available-volunteers">
         <h2>
-          Volunteers ({availableVolunteers.length}/{volunteers.length})
+          Volunteers ({availableVolunteers.length}/{totalVolunteers})
         </h2>
         {availableVolunteers.map(v => {
-          const nameArr = v.name.split(' ');
-          const lastName = nameArr[1];
-          const firstName = nameArr[0];
           return (
-            <p key={v.id}>
-              {lastName}, {firstName}
+            <p key={v.userId}>
+              {v.firstName} {v.lastName}
             </p>
           );
         })}
