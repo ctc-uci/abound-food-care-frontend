@@ -7,7 +7,6 @@ import EventCard from '../event/EventCard/EventCard';
 import EventList from '../event/EventList/EventList';
 import AddEventTypeModal from '../CreateEvent/AddEventTypeModal';
 import useViewPort from '../../../common/useViewPort';
-// import PaginationController from '../PaginationController/PaginationController';
 import styles from './AdminEvents.module.css';
 import 'antd/dist/antd.less';
 
