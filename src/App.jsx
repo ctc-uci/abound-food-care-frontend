@@ -92,7 +92,18 @@ const App = () => {
                 }
               />
 
-              <Route path="/event/register" exact element={<EventSignUp />} />
+              <Route
+                path="/event/register/:eventId"
+                exact
+                element={
+                  <ProtectedRoute
+                    Component={EventSignUp}
+                    redirectPath="/"
+                    // FIXME: can admins sign up for event?
+                    roles={[AUTH_ROLES.ADMIN_ROLE, AUTH_ROLES.VOLUNTEER_ROLE]}
+                  />
+                }
+              />
 
               <Route
                 path="/volunteers"
