@@ -7,8 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import GeneralInfo from '../../components/create-account/GeneralInfo/GeneralInfo';
 import DuiAndCrimHis from '../../components/create-account/DuiAndCrimHis/DuiAndCrimHis';
 import RolesAndSkills from '../../components/create-account/RolesAndSkills/RolesAndSkills';
-import WeeklyInfo from '../../components/create-account/WeeklyInfo/WeeklyInfo';
-import { AFCBackend, phoneRegExp, zipRegExp } from '../../util/utils';
+import { AFCBackend, buildLanguagesArray, phoneRegExp, zipRegExp } from '../../util/utils';
 
 import {
   AUTH_ROLES,
@@ -18,6 +17,7 @@ import {
 } from '../../util/auth_utils';
 
 import styles from './CreateAccount.module.css';
+import AvailabilityChart from '../../components/AvailabilityChart/AvailabilityChart';
 
 const { Text } = Typography;
 
@@ -201,39 +201,6 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
     setProgressNum(cur => cur - 1);
   };
 
-  const buildLanguagesArray = values => {
-    const languages = [];
-    if (values.english) {
-      languages.push('english');
-    }
-    if (values.spanish) {
-      languages.push('spanish');
-    }
-    if (values.french) {
-      languages.push('french');
-    }
-    if (values.chinese) {
-      languages.push('chinese');
-    }
-    if (values.tagalog) {
-      languages.push('tagalog');
-    }
-    if (values.korean) {
-      languages.push('korean');
-    }
-    if (values.arabic) {
-      languages.push('arabic');
-    }
-    if (values.german) {
-      languages.push('german');
-    }
-    if (values.vietnamese) {
-      languages.push('vietnamese');
-    }
-
-    return languages;
-  };
-
   const onSubmit = async values => {
     const result = await methods.trigger([
       'duiHistory',
@@ -296,7 +263,12 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
             </div>
           </section>
           <section hidden={formStep !== PAGE_NAME.AVAILABILITY}>
-            <WeeklyInfo availability={availability} setAvailability={setAvailability} />
+            <AvailabilityChart
+              availability={availability}
+              setAvailability={setAvailability}
+              title="Weekly Availability"
+              days={7}
+            />
             <Text type="danger">{missingAvailabilityErrorMessage}</Text>
             <div className={styles['nav-buttons']}>
               <Button className={styles['previous-button']} onClick={decrementFormStep}>

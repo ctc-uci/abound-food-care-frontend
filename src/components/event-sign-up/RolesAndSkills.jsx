@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { Checkbox, Input, Radio } from 'antd';
-import FixedTitledInput from './FixedTitledInput';
-import { AFCBackend } from '../../util/utils';
+import { Checkbox, Input, Radio, Typography, Select } from 'antd';
+import { Controller, useFormContext } from 'react-hook-form';
+import { PropTypes } from 'prop-types';
 
 const Container = styled.div`
   padding: 2%;
@@ -65,20 +65,16 @@ const allLanguages = [
     value: 'spanish',
   },
   {
+    label: 'French',
+    value: 'french',
+  },
+  {
     label: 'Chinese',
     value: 'chinese',
   },
   {
     label: 'Tagalog',
     value: 'tagalog',
-  },
-  {
-    label: 'Vietnamese',
-    value: 'vietnamese',
-  },
-  {
-    label: 'French',
-    value: 'french',
   },
   {
     label: 'Korean',
@@ -93,99 +89,186 @@ const allLanguages = [
     value: 'german',
   },
   {
-    label: 'Other',
-    value: 'other',
+    label: 'Vietnamese',
+    value: 'vietnamese',
   },
 ];
 
-const RolesAndSkills = () => {
-  const [loaded, setLoaded] = useState(false);
-  const [roles, setRoles] = useState('');
-  const [skills, setSkills] = useState('');
-  const [languages, setLanguages] = useState('');
-  const [weightLift, setWeightLift] = useState('');
-  const [training, setTraining] = useState(false);
-  const [driving, setDriving] = useState('');
-  const [vehicle, setVehicle] = useState('');
-  const [distance, setDistance] = useState('');
+const { Text } = Typography;
 
-  useEffect(async () => {
-    const userId = 6;
-    const { data: res } = await AFCBackend.get(`/users/${userId}`);
-    const newVals = [];
+const { Option } = Select;
 
-    Object.keys(res).forEach(key => {
-      if (res[key]) newVals.push(key);
-    });
-    res.languages.forEach(lang => {
-      newVals.push(lang);
-    });
-    setRoles(newVals);
-    setSkills(newVals);
-    setLanguages(newVals);
-    setWeightLift(res.weightLiftingAbility);
-    setTraining(res.completedChowmatchTraining);
-    setDriving(res.canDrive);
-    setVehicle(res.vehicleType);
-    setDistance(res.distance);
-    setLoaded(true);
-  }, []);
-
-  const DoubleTitleField = (title1, val, title2) => {
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <p style={{ marginBottom: '.5vh' }}>{title1}</p>
-        <Row style={{ display: 'flex', alignItems: 'center' }}>
-          <Input
-            disabled
-            style={{ color: 'black', width: '5vw', marginRight: '1vw' }}
-            defaultValue={val}
-          />
-          <p style={{ padding: 0, margin: 0 }}>{title2}</p>
-        </Row>
-      </div>
-    );
-  };
-
-  const YesNoField = (title, val) => {
-    return (
-      <div>
-        <p style={{ marginBottom: '.5vh' }}>{title}</p>
-        <Radio disabled defaultChecked={val}>
-          Yes
-        </Radio>
-        <Radio disabled defaultChecked={!val}>
-          No
-        </Radio>
-      </div>
-    );
-  };
+const RolesAndSkills = ({
+  roles,
+  skills,
+  languages,
+  weightLiftingAbility,
+  vehicleType,
+  distance,
+}) => {
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext();
 
   return (
-    loaded && (
-      <Container>
-        <Field>
-          <p>Volunteering Roles Interested In</p>
-          <Checkbox.Group disabled options={allRoles} defaultValue={roles} />
-        </Field>
-        <Field>
-          <p>Special Talents/ Skills</p>
-          <Checkbox.Group disabled options={allSkills} defaultValue={skills} />
-        </Field>
-        <Field>
-          <p>Languages Spoken</p>
-          <Checkbox.Group disabled options={allLanguages} defaultValue={languages} />
-        </Field>
-        {DoubleTitleField('Weight Lifting Ability', weightLift, 'pounds')}
-        {YesNoField('Have you completed the food match training on Chowmatch?', training)}
-        {YesNoField('Able to Drive', driving)}
-        <div style={{ width: '10%' }}>
-          <FixedTitledInput title="Type of Vehicle" val={vehicle} />
-        </div>
-        {DoubleTitleField('Distance Comfortable Driving', distance, 'miles')}
-      </Container>
-    )
+    <Container>
+      <Controller
+        control={control}
+        name="roles"
+        render={({ field: { onChange, ref } }) => (
+          <Field>
+            <p>Volunteering Roles Interested In</p>
+            <Checkbox.Group options={allRoles} onChange={onChange} ref={ref} defaultValue={roles} />
+            <Text type="danger">{errors.roles && <p>{errors.roles.message}</p>}</Text>
+          </Field>
+        )}
+      />
+      <Controller
+        control={control}
+        name="skills"
+        render={({ field: { onChange, ref } }) => (
+          <Field>
+            <p>Special Talents/Skills</p>
+            <Checkbox.Group
+              options={allSkills}
+              onChange={onChange}
+              ref={ref}
+              defaultValue={skills}
+            />
+            <Text type="danger">{errors.skills && <p>{errors.skills.message}</p>}</Text>
+          </Field>
+        )}
+      />
+      <Controller
+        control={control}
+        name="languages"
+        render={({ field: { onChange, ref } }) => (
+          <Field>
+            <p>Languages Spoken</p>
+            <Checkbox.Group
+              options={allLanguages}
+              onChange={onChange}
+              ref={ref}
+              defaultValue={languages}
+            />
+            <Text type="danger">{errors.languages && <p>{errors.languages.message}</p>}</Text>
+          </Field>
+        )}
+      />
+      <Controller
+        control={control}
+        name="weightLiftingAbility"
+        render={({ field: { onChange, ref } }) => (
+          <Field>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <p style={{ marginBottom: '.5vh' }}>Weight Lifting Ability</p>
+              <Row style={{ display: 'flex', alignItems: 'center' }}>
+                <Input
+                  style={{ color: 'black', width: '5vw', marginRight: '1vw' }}
+                  ref={ref}
+                  onChange={onChange}
+                  defaultValue={weightLiftingAbility}
+                />
+                <p style={{ padding: 0, margin: 0 }}>pounds</p>
+              </Row>
+            </div>
+            <Text type="danger">
+              {errors.weightLiftingAbility && <p>{errors.weightLiftingAbility.message}</p>}
+            </Text>
+          </Field>
+        )}
+      />
+      <Controller
+        control={control}
+        name="completedChowmatchTraining"
+        render={({ field: { onChange, ref, value } }) => (
+          <Field>
+            <p style={{ marginBottom: '.5vh' }}>
+              Have you completed the food match training on Chowmatch?
+            </p>
+            <Radio.Group onChange={onChange} ref={ref} value={`${value}`}>
+              <Radio value="true">Yes</Radio>
+              <Radio value="false">No</Radio>
+            </Radio.Group>
+            <Text type="danger">
+              {errors.completedChowmatchTraining && (
+                <p>{errors.completedChowmatchTraining.message}</p>
+              )}
+            </Text>
+          </Field>
+        )}
+      />
+      <Controller
+        control={control}
+        name="canDrive"
+        render={({ field: { onChange, ref, value } }) => (
+          <Field>
+            <p style={{ marginBottom: '.5vh' }}>Are you willing to drive?</p>
+            <Radio.Group onChange={onChange} ref={ref} value={`${value}`}>
+              <Radio value="true">Yes</Radio>
+              <Radio value="false">No</Radio>
+            </Radio.Group>
+            <Text type="danger">{errors.canDrive && <p>{errors.canDrive.message}</p>}</Text>
+          </Field>
+        )}
+      />
+      <Controller
+        control={control}
+        name="vehicleType"
+        render={({ field: { onChange, ref } }) => (
+          <Field>
+            <p style={{ marginBottom: '.5vh' }}>Vehicle Type:</p>
+            <Select
+              placeholder="Please select"
+              onChange={onChange}
+              ref={ref}
+              style={{ maxWidth: '20%' }}
+              defaultValue={vehicleType}
+            >
+              <Option value="Large Vehicle (Van, Truck, SUV)">
+                Large Vehicle (Van, Truck, SUV)
+              </Option>
+              <Option value="Mid-Size Vehicle">Mid-Size Vehicle</Option>
+              <Option value="Small Vehicle (Compact, Sedan)">Small Vehicle (Compact, Sedan)</Option>
+              <Option value="NULL">N/A</Option>
+            </Select>
+            <Text type="danger">{errors.vehicleType && <p>{errors.vehicleType.message}</p>}</Text>
+          </Field>
+        )}
+      />
+      <Controller
+        control={control}
+        name="distance"
+        render={({ field: { onChange, ref } }) => (
+          <Field>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <p style={{ marginBottom: '.5vh' }}>Distance Comfortable Driving</p>
+              <Row style={{ display: 'flex', alignItems: 'center' }}>
+                <Input
+                  style={{ color: 'black', width: '5vw', marginRight: '1vw' }}
+                  ref={ref}
+                  onChange={onChange}
+                  defaultValue={distance}
+                />
+                <p style={{ padding: 0, margin: 0 }}>miles</p>
+              </Row>
+            </div>
+            <Text type="danger">{errors.distance && <p>{errors.distance.message}</p>}</Text>
+          </Field>
+        )}
+      />
+    </Container>
   );
+};
+
+RolesAndSkills.propTypes = {
+  roles: PropTypes.arrayOf(PropTypes.string).isRequired,
+  skills: PropTypes.arrayOf(PropTypes.string).isRequired,
+  languages: PropTypes.arrayOf(PropTypes.string).isRequired,
+  weightLiftingAbility: PropTypes.number.isRequired,
+  vehicleType: PropTypes.string.isRequired,
+  distance: PropTypes.number.isRequired,
 };
 
 export default RolesAndSkills;
