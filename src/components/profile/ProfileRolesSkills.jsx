@@ -62,22 +62,24 @@ const ProfileRolesAndSkills = ({ userId, volunteerData }) => {
       vehicleType: volunteerData.vehicleType,
       distance: volunteerData.distance,
     });
-    setValue('role', volunteerData.role);
-    setValue('foodRunning', volunteerData.foodRunsInterest);
-    setValue('distribution', volunteerData.distributionInterest);
-    setValue('firstAidTraining', volunteerData.firstAidTraining);
-    setValue('serveSafeKnowledge', volunteerData.serveSafeKnowledge);
-    setValue('transportationExperience', volunteerData.transportationExperience);
-    setValue('movingWarehouseExperience', volunteerData.movingWarehouseExperience);
-    setValue('foodServiceIndustryKnowledge', volunteerData.foodServiceIndustryKnowledge);
-    setLanguages(volunteerData.languages);
+    [
+      'role',
+      'foodRunning',
+      'distribution',
+      'firstAidTraining',
+      'serveSafeKnowledge',
+      'transportationExperience',
+      'movingWarehouseExperience',
+      'foodServiceIndustryKnowledge',
+      'weightLiftingAbility',
+      'completedChowmatch',
+      'canDrive',
+      'willingToDrive',
+      'vehicleType',
+      'distance',
+    ].forEach(field => setValue(field, defaultValues[field]));
     setDefaultLanguages(volunteerData.languages);
-    setValue('weightLiftingAbility', volunteerData.weightLiftingAbility);
-    setValue('completedChowmatch', volunteerData.completedChowmatchTraining);
-    setValue('canDrive', volunteerData.canDrive);
-    setValue('willingToDrive', volunteerData.willingToDrive);
-    setValue('vehicleType', volunteerData.vehicleType);
-    setValue('distance', volunteerData.distance);
+    setLanguages(volunteerData.languages);
   };
 
   const handleEdit = () => {
@@ -86,55 +88,37 @@ const ProfileRolesAndSkills = ({ userId, volunteerData }) => {
 
   const handleCancel = () => {
     setIsEditable(false);
-    setValue('role', defaultValues.role);
-    setValue('foodRunning', defaultValues.foodRunsInterest);
-    setValue('distribution', defaultValues.distributionInterest);
-    setValue('firstAidTraining', defaultValues.firstAidTraining);
-    setValue('serveSafeKnowledge', defaultValues.serveSafeKnowledge);
-    setValue('transportationExperience', defaultValues.transportationExperience);
-    setValue('movingWarehouseExperience', defaultValues.movingWarehouseExperience);
-    setValue('foodServiceIndustryKnowledge', defaultValues.foodServiceIndustryKnowledge);
+    [
+      'role',
+      'foodRunning',
+      'distribution',
+      'firstAidTraining',
+      'serveSafeKnowledge',
+      'transportationExperience',
+      'movingWarehouseExperience',
+      'foodServiceIndustryKnowledge',
+      'weightLiftingAbility',
+      'completedChowmatch',
+      'canDrive',
+      'willingToDrive',
+      'vehicleType',
+      'distance',
+    ].forEach(field => setValue(field, defaultValues[field]));
     setLanguages(defaultLanguages);
-    setValue('weightLiftingAbility', defaultValues.weightLiftingAbility);
-    setValue('completedChowmatch', defaultValues.completedChowmatch);
-    setValue('canDrive', defaultValues.canDrive);
-    setValue('willingToDrive', defaultValues.willingToDrive);
-    setValue('vehicleType', defaultValues.vehicleType);
-    setValue('distance', defaultValues.distance);
   };
 
-  const buildLanguagesArray = values => {
-    const languages = [];
-    if (values.english) {
-      languages.push('english');
-    }
-    if (values.spanish) {
-      languages.push('spanish');
-    }
-    if (values.french) {
-      languages.push('french');
-    }
-    if (values.chinese) {
-      languages.push('chinese');
-    }
-    if (values.tagalog) {
-      languages.push('tagalog');
-    }
-    if (values.korean) {
-      languages.push('korean');
-    }
-    if (values.arabic) {
-      languages.push('arabic');
-    }
-    if (values.german) {
-      languages.push('german');
-    }
-    if (values.vietnamese) {
-      languages.push('vietnamese');
-    }
-
-    return languages;
-  };
+  const buildLanguagesArray = values =>
+    [
+      'english',
+      'spanish',
+      'french',
+      'chinese',
+      'tagalog',
+      'korean',
+      'arabic',
+      'german',
+      'vietnamese',
+    ].filter(lang => values[lang]);
 
   const saveVolunteerData = async values => {
     const languages = buildLanguagesArray(values);

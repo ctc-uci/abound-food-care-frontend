@@ -1,0 +1,45 @@
+@import '../../common/global.css';
+
+.generalInfoContainer {
+  margin-top: 10px;
+}
+
+.btnsContainer {
+  float: right;
+  width: 150px;
+  margin-top: 2px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cancelBtn {
+  margin-right: 10px;
+}
+
+.giEditBtnInactive {
+  width: 100%;
+}
+
+.giRow {
+  width: 100%;
+}
+
+.giRadioOpt {
+  margin-right: 15px;
+}
+
+.firstNameCol {
+  margin-right: 75px;
+}
+
+.halfWidth {
+  width: 50%;
+}
+
+.giCityField {
+  width: 85%;
+}
+
+.giStateField {
+  width: 55%;
+}
