@@ -6,6 +6,8 @@ import { Radio, Form, Input, Button, Typography } from 'antd';
 import PropTypes from 'prop-types';
 import { AFCBackend } from '../../util/utils';
 
+import styles from './ProfileComponents.module.css';
+
 const { Text } = Typography;
 
 const ProfileDUIAndCrimHistory = ({ userId, volunteerData }) => {
@@ -84,7 +86,7 @@ const ProfileDUIAndCrimHistory = ({ userId, volunteerData }) => {
   }, []);
 
   return (
-    <div>
+    <div className={styles.duiCrimHistoryContainer}>
       <Form
         onFinish={handleSubmit(saveVolunteerData)}
         layout="vertical"
@@ -93,13 +95,17 @@ const ProfileDUIAndCrimHistory = ({ userId, volunteerData }) => {
         size={componentSize}
         onValuesChange={onFormLayoutChange}
       >
-        <div style={{ float: 'right' }}>
+        <div className={styles.btnsContainer}>
           {isEditable && (
-            <Button className="cancel-btn" onClick={handleCancel}>
+            <Button className={styles.cancelBtn} onClick={handleCancel}>
               Cancel
             </Button>
           )}
-          <Button className="edit-save-btn" htmlType="submit" onClick={handleEdit}>
+          <Button
+            className={`${styles.editSaveBtn} ${!isEditable && styles.editBtnInactive}`}
+            htmlType="submit"
+            onClick={handleEdit}
+          >
             {isEditable ? 'Save' : 'Edit'}
           </Button>
         </div>

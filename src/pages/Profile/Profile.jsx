@@ -21,27 +21,7 @@ const Profile = ({ cookies }) => {
   const navigate = useNavigate();
 
   const [user, setUser] = useState(null);
-  // TODO Replace waivers with actual set of waivers
-  const [waivers, setWaivers] = useState([
-    {
-      name: 'Waiver Name',
-      link: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
-      uploadDate: 'Uploaded 1/9/2022',
-      waiverId: 1,
-    },
-    {
-      name: 'Waiver Name',
-      link: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
-      uploadDate: 'Uploaded 1/9/2022',
-      waiverId: 2,
-    },
-    {
-      name: 'Waiver Name',
-      link: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
-      uploadDate: 'Uploaded 1/9/2022',
-      waiverId: 3,
-    },
-  ]);
+  const [waivers, setWaivers] = useState([]);
 
   useEffect(async () => {
     const currentUserId = cookies.get(cookieKeys.USER_ID);
@@ -51,6 +31,27 @@ const Profile = ({ cookies }) => {
     }
     const { data: volunteerData } = await AFCBackend.get(`/users/${userId}`);
     setUser(volunteerData);
+    // TODO Replace waivers with actual set of waivers
+    setWaivers([
+      {
+        name: 'Waiver Name',
+        link: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
+        uploadDate: 'Uploaded 1/9/2022',
+        waiverId: 1,
+      },
+      {
+        name: 'Waiver Name',
+        link: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
+        uploadDate: 'Uploaded 1/9/2022',
+        waiverId: 2,
+      },
+      {
+        name: 'Waiver Name',
+        link: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
+        uploadDate: 'Uploaded 1/9/2022',
+        waiverId: 3,
+      },
+    ]);
   }, []);
 
   ConfigProvider.config({

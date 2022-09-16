@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Input, Radio, Form, Select, Checkbox, Row, Tag, Typography, Space, Button } from 'antd';
 import PropTypes from 'prop-types';
-import { AFCBackend } from '../../util/utils';
+import { AFCBackend, languageOptions, buildLanguagesArray } from '../../util/utils';
+
+import styles from './ProfileComponents.module.css';
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -30,17 +32,7 @@ const ProfileRolesAndSkills = ({ userId, volunteerData }) => {
   };
 
   const setLanguages = languages => {
-    [
-      'english',
-      'spanish',
-      'french',
-      'chinese',
-      'tagalog',
-      'korean',
-      'arabic',
-      'german',
-      'vietnamese',
-    ].forEach(lang => {
+    languageOptions.forEach(lang => {
       setValue(lang, languages.includes(lang));
     });
   };
@@ -107,19 +99,6 @@ const ProfileRolesAndSkills = ({ userId, volunteerData }) => {
     setLanguages(defaultLanguages);
   };
 
-  const buildLanguagesArray = values =>
-    [
-      'english',
-      'spanish',
-      'french',
-      'chinese',
-      'tagalog',
-      'korean',
-      'arabic',
-      'german',
-      'vietnamese',
-    ].filter(lang => values[lang]);
-
   const saveVolunteerData = async values => {
     const languages = buildLanguagesArray(values);
     try {
@@ -151,23 +130,28 @@ const ProfileRolesAndSkills = ({ userId, volunteerData }) => {
   }, []);
 
   return (
-    <div>
+    <div className={styles.rolesSkillsContainer}>
       <Form
         onFinish={handleSubmit(saveVolunteerData)}
         layout="vertical"
         size={componentSize}
         onValuesChange={onFormLayoutChange}
       >
-        <div style={{ float: 'right' }}>
+        <div className={styles.btnsContainer}>
           {isEditable && (
-            <Button className="cancel-btn" onClick={handleCancel}>
+            <Button className={styles.cancelBtn} onClick={handleCancel}>
               Cancel
             </Button>
           )}
-          <Button className="edit-save-btn" htmlType="submit" onClick={handleEdit}>
+          <Button
+            className={`${styles.editSaveBtn} ${!isEditable && styles.editBtnInactive}`}
+            htmlType="submit"
+            onClick={handleEdit}
+          >
             {isEditable ? 'Save' : 'Edit'}
           </Button>
         </div>
+        {/* TODO This field only shows based on cookies admin role */}
         <Controller
           control={control}
           name="role"
@@ -188,53 +172,59 @@ const ProfileRolesAndSkills = ({ userId, volunteerData }) => {
           )}
         />
         <section>
-          <Form.Item label="Events Interested In">
-            <Space>
-              <Controller
-                control={control}
-                name="foodRunning"
-                // eslint-disable-next-line no-unused-vars
-                render={({ field: { onChange, value, ref } }) => (
-                  <Form.Item>
-                    {isEditable && (
-                      <CheckableTag onChange={onChange} checked={value}>
-                        Food Running
-                      </CheckableTag>
-                    )}
-                    {!isEditable && getValues('foodRunning') && (
-                      <Tag onChange={onChange} checked={value}>
-                        Food Running
-                      </Tag>
-                    )}
-                    <Text type="danger">
-                      {errors.foodRunning && <p>{errors.foodRunning.message}</p>}
-                    </Text>
-                  </Form.Item>
-                )}
-              />
-              <Controller
-                control={control}
-                name="distribution"
-                // eslint-disable-next-line no-unused-vars
-                render={({ field: { onChange, value, ref } }) => (
-                  <Form.Item>
-                    {isEditable && (
-                      <CheckableTag onChange={onChange} checked={value}>
-                        Distribution
-                      </CheckableTag>
-                    )}
-                    {!isEditable && getValues('distribution') && (
-                      <Tag onChange={onChange} checked={value}>
-                        Distribution
-                      </Tag>
-                    )}
-                    <Text type="danger">
-                      {errors.distribution && <p>{errors.distribution.message}</p>}
-                    </Text>
-                  </Form.Item>
-                )}
-              />
-            </Space>
+          <Form.Item label="Events Interested In" className={styles.rsEventTagsContainer}>
+            <Controller
+              control={control}
+              name="foodRunning"
+              render={({ field: { onChange, value } }) => (
+                <Form.Item>
+                  {isEditable && (
+                    <CheckableTag onChange={onChange} checked={value}>
+                      Food Running
+                    </CheckableTag>
+                  )}
+                  {!isEditable && getValues('foodRunning') && (
+                    <Tag
+                      onChange={onChange}
+                      checked={value}
+                      color="#115740"
+                      className={styles.rsEventTag}
+                    >
+                      Food Running
+                    </Tag>
+                  )}
+                  <Text type="danger">
+                    {errors.foodRunning && <p>{errors.foodRunning.message}</p>}
+                  </Text>
+                </Form.Item>
+              )}
+            />
+            <Controller
+              control={control}
+              name="distribution"
+              render={({ field: { onChange, value } }) => (
+                <Form.Item>
+                  {isEditable && (
+                    <CheckableTag onChange={onChange} checked={value}>
+                      Distribution
+                    </CheckableTag>
+                  )}
+                  {!isEditable && getValues('distribution') && (
+                    <Tag
+                      onChange={onChange}
+                      checked={value}
+                      color="#115740"
+                      className={styles.rsEventTag}
+                    >
+                      Distribution
+                    </Tag>
+                  )}
+                  <Text type="danger">
+                    {errors.distribution && <p>{errors.distribution.message}</p>}
+                  </Text>
+                </Form.Item>
+              )}
+            />
           </Form.Item>
         </section>
         <section>
@@ -322,117 +312,27 @@ const ProfileRolesAndSkills = ({ userId, volunteerData }) => {
         <section>
           <Form.Item label="Languages Spoken">
             <Row>
-              <Controller
-                control={control}
-                name="english"
-                render={({ field: { onChange, value, ref } }) => (
-                  <Form.Item>
-                    <Checkbox onChange={onChange} ref={ref} checked={value} disabled={!isEditable}>
-                      English
-                    </Checkbox>
-                    <Text type="danger">{errors.english && <p>{errors.english.message}</p>}</Text>
-                  </Form.Item>
-                )}
-              />
-              <Controller
-                control={control}
-                name="spanish"
-                render={({ field: { onChange, value, ref } }) => (
-                  <Form.Item>
-                    <Checkbox onChange={onChange} ref={ref} checked={value} disabled={!isEditable}>
-                      Spanish
-                    </Checkbox>
-                    <Text type="danger">{errors.spanish && <p>{errors.spanish.message}</p>}</Text>
-                  </Form.Item>
-                )}
-              />
-              <Controller
-                control={control}
-                name="french"
-                render={({ field: { onChange, value, ref } }) => (
-                  <Form.Item>
-                    <Checkbox onChange={onChange} ref={ref} checked={value} disabled={!isEditable}>
-                      French
-                    </Checkbox>
-                    {errors.french && <p>{errors.french.message}</p>}
-                  </Form.Item>
-                )}
-              />
-              <Controller
-                control={control}
-                name="chinese"
-                render={({ field: { onChange, value, ref } }) => (
-                  <Form.Item>
-                    <Checkbox onChange={onChange} ref={ref} checked={value} disabled={!isEditable}>
-                      Chinese
-                    </Checkbox>
-                    <Text type="danger">{errors.chinese && <p>{errors.chinese.message}</p>}</Text>
-                  </Form.Item>
-                )}
-              />
-              <Controller
-                control={control}
-                name="tagalog"
-                render={({ field: { onChange, value, ref } }) => (
-                  <Form.Item>
-                    <Checkbox onChange={onChange} ref={ref} checked={value} disabled={!isEditable}>
-                      Tagalog
-                    </Checkbox>
-                    <Text type="danger" />
-                    {errors.tagalog && <p>{errors.tagalog.message}</p>}
-                  </Form.Item>
-                )}
-              />
-              <Controller
-                control={control}
-                name="korean"
-                render={({ field: { onChange, value, ref } }) => (
-                  <Form.Item>
-                    <Checkbox onChange={onChange} ref={ref} checked={value} disabled={!isEditable}>
-                      Korean
-                    </Checkbox>
-                    <Text type="danger">{errors.korean && <p>{errors.korean.message}</p>}</Text>
-                  </Form.Item>
-                )}
-              />
-              <Controller
-                control={control}
-                name="arabic"
-                render={({ field: { onChange, value, ref } }) => (
-                  <Form.Item>
-                    <Checkbox onChange={onChange} ref={ref} checked={value} disabled={!isEditable}>
-                      Arabic
-                    </Checkbox>
-                    <Text type="danger">{errors.arabic && <p>{errors.arabic.message}</p>}</Text>
-                  </Form.Item>
-                )}
-              />
-              <Controller
-                control={control}
-                name="german"
-                render={({ field: { onChange, value, ref } }) => (
-                  <Form.Item>
-                    <Checkbox onChange={onChange} ref={ref} checked={value} disabled={!isEditable}>
-                      German
-                    </Checkbox>
-                    <Text type="danger">{errors.german && <p>{errors.german.message}</p>}</Text>
-                  </Form.Item>
-                )}
-              />
-              <Controller
-                control={control}
-                name="vietnamese"
-                render={({ field: { onChange, value, ref } }) => (
-                  <Form.Item>
-                    <Checkbox onChange={onChange} ref={ref} checked={value} disabled={!isEditable}>
-                      Vietnamese
-                    </Checkbox>
-                    <Text type="danger">
-                      {errors.vietnamese && <p>{errors.vietnamese.message}</p>}
-                    </Text>
-                  </Form.Item>
-                )}
-              />
+              <div className={styles.rsLangOptionsContainer}>
+                {languageOptions.map(lang => (
+                  <Controller
+                    control={control}
+                    name={lang}
+                    key={lang}
+                    render={({ field: { onChange, value, ref } }) => (
+                      <Form.Item className={styles.rsLangOption}>
+                        <Checkbox
+                          onChange={onChange}
+                          ref={ref}
+                          checked={value}
+                          disabled={!isEditable}
+                        >
+                          {lang[0].toUpperCase() + lang.substring(1)}
+                        </Checkbox>
+                      </Form.Item>
+                    )}
+                  />
+                ))}
+              </div>
             </Row>
           </Form.Item>
         </section>
@@ -490,7 +390,7 @@ const ProfileRolesAndSkills = ({ userId, volunteerData }) => {
             name="willingToDrive"
             style={{ margin: '10%' }}
             render={({ field: { onChange, ref, value } }) => (
-              <Form.Item label="Prefers to Drvie">
+              <Form.Item label="Prefers to Drive">
                 <Radio.Group onChange={onChange} ref={ref} value={value} disabled={!isEditable}>
                   <Radio value>Yes</Radio>
                   <Radio value={false}>No</Radio>

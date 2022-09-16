@@ -137,7 +137,7 @@ const ProfileGeneralInfo = ({ userId, volunteerData }) => {
               </Button>
             )}
             <Button
-              className={`${styles.editSaveBtn} ${!isEditable && styles.giEditBtnInactive}`}
+              className={`${styles.editSaveBtn} ${!isEditable && styles.editBtnInactive}`}
               htmlType="submit"
               onClick={handleEdit}
             >

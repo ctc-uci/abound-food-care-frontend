@@ -37,21 +37,19 @@ const getHourDiff = (timestamp1, timestamp2) => {
   return diff % 1 === 0 ? diff : diff.toFixed(2);
 };
 
-const buildLanguagesArray = values => {
-  const languages = [
-    'english',
-    'spanish',
-    'french',
-    'chinese',
-    'tagalog',
-    'korean',
-    'arabic',
-    'german',
-    'vietnamese',
-  ];
+const languageOptions = [
+  'english',
+  'spanish',
+  'french',
+  'chinese',
+  'tagalog',
+  'korean',
+  'arabic',
+  'german',
+  'vietnamese',
+];
 
-  return languages.filter(lang => values[lang]);
-};
+const buildLanguagesArray = values => languageOptions.filter(lang => values[lang]);
 
 const dayOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -122,6 +120,7 @@ export {
   getMonthString,
   getTimeInPST,
   getHourDiff,
+  languageOptions,
   buildLanguagesArray,
   dayOfWeek,
   timeOfDay,

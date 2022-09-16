@@ -1,6 +1,6 @@
 @import '../../common/global.css';
 
-.generalInfoContainer {
+.generalInfoContainer, .rolesSkillsContainer, .duiCrimHistoryContainer {
   margin-top: 10px;
 }
 
@@ -16,7 +16,7 @@
   margin-right: 10px;
 }
 
-.giEditBtnInactive {
+.editBtnInactive {
   width: 100%;
 }
 
@@ -42,4 +42,22 @@
 
 .giStateField {
   width: 55%;
+}
+
+.rsLangOptionsContainer {
+  width: 400px;
+  display: flex;
+}
+
+.rsLangOption {
+  width: 100px;
+  flex: 1 1 100px;
+}
+
+.rsEventTagsContainer {
+  display: flex;
+}
+
+.rsEventTag {
+  margin-right: 20px;
 }
