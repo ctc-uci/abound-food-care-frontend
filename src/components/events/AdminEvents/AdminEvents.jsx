@@ -71,14 +71,23 @@ const AdminEvents = () => {
     setLoading(false);
   }, []);
 
-  const onSearch = e => {
+  const onSearch = async e => {
     if (e.target.value === '') {
       setShowSearchResults(false);
       setEventsData(allEvents);
     } else {
       setShowSearchResults(true);
-      const searchSpecificEventData = eventsData.filter(event => event.name === e.target.value);
+      // const searchSpecificEventData = eventsData.filter(event => event.name === e.target.value);
+      const { data: searchSpecificEventData } = await AFCBackend.get('/events', {
+        params: {
+          status: eventStatusValue,
+          type: eventTypeValue,
+          searchInput: e.target.value,
+        },
+      });
       setEventsData(searchSpecificEventData);
+      setDisplayedEvents(searchSpecificEventData);
+      setNumEvents(searchSpecificEventData.length);
     }
   };
 
