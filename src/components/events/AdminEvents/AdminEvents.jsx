@@ -88,6 +88,7 @@ const AdminEvents = () => {
       setEventsData(searchSpecificEventData);
       setDisplayedEvents(searchSpecificEventData);
       setNumEvents(searchSpecificEventData.length);
+      setCurrentPage(1);
     }
   };
 
@@ -135,6 +136,7 @@ const AdminEvents = () => {
     setDisplayedEvents(filteredEvents.slice(0, pageSize));
     setEventsData(filteredEvents);
     setNumEvents(filteredEvents.length);
+    setCurrentPage(1);
   };
 
   const onStatusChange = async e => {
@@ -143,6 +145,7 @@ const AdminEvents = () => {
     setDisplayedEvents(filteredEvents.slice(0, pageSize));
     setEventsData(filteredEvents);
     setNumEvents(filteredEvents.length);
+    setCurrentPage(1);
   };
 
   const onPageChange = (page, newPageSize) => {
