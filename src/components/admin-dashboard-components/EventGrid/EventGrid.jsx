@@ -10,7 +10,8 @@ const EventGrid = ({ title, eventStatus }) => {
   useEffect(async () => {
     // eventStatus is either 'past' or 'upcoming'
     const response = await AFCBackend.get(`/events/${eventStatus}`);
-    setEvents(response.data);
+    console.log(response.data[0]);
+    setEvents(response.data.slice(0, 6));
   }, []);
 
   const renderTotalHours = (startDatetime, endDatetime) => {
@@ -22,14 +23,16 @@ const EventGrid = ({ title, eventStatus }) => {
     );
   };
 
+  const allEventsLink = () => <a href="/events">View all events</a>;
+
   return (
     <div className={styles['events-container']}>
-      <Card title={title}>
+      <Card title={title} extra={allEventsLink()}>
         {events.map((event, index) => (
           // eslint-disable-next-line react/no-array-index-key
           <Card.Grid key={index} className={styles[`${eventStatus}-event`]}>
             <div>
-              <a className={styles['event-name']} href="https://www.google.com">
+              <a className={styles['event-name']} href={`/event/view/${event.eventId}`}>
                 {event.name}
               </a>
               <p className={styles['event-start-date']}>

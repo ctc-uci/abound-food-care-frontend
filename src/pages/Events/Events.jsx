@@ -262,7 +262,7 @@ const Events = ({ cookies }) => {
                 >
                   New Event Type
                 </Button> */}
-                {cookies.get(cookieKeys.ROLE) === 'Admin' && (
+                {cookies.get(cookieKeys.ROLE) === 'admin' && (
                   <>
                     <Link to="/events/create">
                       <Button className={styles['new-event-btn']} type="primary">
