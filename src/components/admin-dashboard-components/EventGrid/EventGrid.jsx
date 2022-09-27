@@ -10,7 +10,6 @@ const EventGrid = ({ title, eventStatus }) => {
   useEffect(async () => {
     // eventStatus is either 'past' or 'upcoming'
     const response = await AFCBackend.get(`/events/${eventStatus}`);
-    console.log(response.data[0]);
     setEvents(response.data.slice(0, 6));
   }, []);
 
