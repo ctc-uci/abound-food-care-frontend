@@ -4,7 +4,8 @@ import { AFCBackend } from '../../util/utils';
 import AvailabilityChart from '../AvailabilityChart/AvailabilityChart';
 
 const ProfileAvailability = ({ userId }) => {
-  const [availabilityData, setAvailabilityData] = useState(undefined);
+  const [availabilityData, setAvailabilityData] = useState([]);
+  // TODO Need to display availabilities correctly & update on edit
 
   useEffect(async () => {
     try {

@@ -45,13 +45,13 @@
 }
 
 .rsLangOptionsContainer {
-  width: 400px;
+  width: 800px;
   display: flex;
+  flex-wrap: wrap;
 }
 
 .rsLangOption {
-  width: 100px;
-  flex: 1 1 100px;
+  flex: 1 1 25%;
 }
 
 .rsEventTagsContainer {
@@ -60,4 +60,22 @@
 
 .rsEventTag {
   margin-right: 20px;
+}
+
+.rsTalentsContainer {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.rsTalentCB {
+  flex: 1 1 50%;
+}
+
+.rsWlField {
+  margin-right: 10px;
+}
+
+.rsDistanceField {
+  width: 40%;
+  margin-right: 10px;
 }

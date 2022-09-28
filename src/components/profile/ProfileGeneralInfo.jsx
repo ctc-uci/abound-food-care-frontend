@@ -153,7 +153,7 @@ const ProfileGeneralInfo = ({ userId, volunteerData }) => {
                   <Form.Item label="First Name">
                     <Input onChange={onChange} value={value} ref={ref} disabled />
                     <Text type="danger">
-                      {errors.firstName && <p>{errors.firstName.message}</p>}
+                      {isEditable && errors.firstName && <p>{errors.firstName.message}</p>}
                     </Text>
                   </Form.Item>
                 )}
@@ -166,7 +166,9 @@ const ProfileGeneralInfo = ({ userId, volunteerData }) => {
                 render={({ field: { onChange, value, ref } }) => (
                   <Form.Item label="Last Name">
                     <Input onChange={onChange} value={value} ref={ref} disabled />
-                    <Text type="danger">{errors.lastName && <p>{errors.lastName.message}</p>}</Text>
+                    <Text type="danger">
+                      {isEditable && errors.lastName && <p>{errors.lastName.message}</p>}
+                    </Text>
                   </Form.Item>
                 )}
               />
@@ -186,7 +188,7 @@ const ProfileGeneralInfo = ({ userId, volunteerData }) => {
                   disabled={!isEditable}
                 />
                 <Text type="danger">
-                  {errors.organization && <p>{errors.organization.message}</p>}
+                  {isEditable && errors.organization && <p>{errors.organization.message}</p>}
                 </Text>
               </Form.Item>
             )}
@@ -205,7 +207,9 @@ const ProfileGeneralInfo = ({ userId, volunteerData }) => {
                   ref={ref}
                   disabled
                 />
-                <Text type="danger">{errors.birthdate && <p>{errors.birthdate.message}</p>}</Text>
+                <Text type="danger">
+                  {isEditable && errors.birthdate && <p>{errors.birthdate.message}</p>}
+                </Text>
               </Form.Item>
             )}
           />
@@ -222,7 +226,9 @@ const ProfileGeneralInfo = ({ userId, volunteerData }) => {
                   ref={ref}
                   disabled
                 />
-                <Text type="danger">{errors.email && <p>{errors.email.message}</p>}</Text>
+                <Text type="danger">
+                  {isEditable && errors.email && <p>{errors.email.message}</p>}
+                </Text>
               </Form.Item>
             )}
           />
@@ -239,7 +245,9 @@ const ProfileGeneralInfo = ({ userId, volunteerData }) => {
                   ref={ref}
                   disabled={!isEditable}
                 />
-                <Text type="danger">{errors.phone && <p>{errors.phone.message}</p>}</Text>
+                <Text type="danger">
+                  {isEditable && errors.phone && <p>{errors.phone.message}</p>}
+                </Text>
               </Form.Item>
             )}
           />
@@ -258,7 +266,9 @@ const ProfileGeneralInfo = ({ userId, volunteerData }) => {
                   </Radio>
                 </Radio.Group>
                 <Text type="danger">
-                  {errors.preferredContactMethod && <p>{errors.preferredContactMethod.message}</p>}
+                  {isEditable && errors.preferredContactMethod && (
+                    <p>{errors.preferredContactMethod.message}</p>
+                  )}
                 </Text>
               </Form.Item>
             )}
@@ -277,7 +287,7 @@ const ProfileGeneralInfo = ({ userId, volunteerData }) => {
                   disabled={!isEditable}
                 />
                 <Text type="danger">
-                  {errors.addressStreet && <p>{errors.addressStreet.message}</p>}
+                  {isEditable && errors.addressStreet && <p>{errors.addressStreet.message}</p>}
                 </Text>
               </Form.Item>
             )}
@@ -298,7 +308,7 @@ const ProfileGeneralInfo = ({ userId, volunteerData }) => {
                       disabled={!isEditable}
                     />
                     <Text type="danger">
-                      {errors.addressCity && <p>{errors.addressCity.message}</p>}
+                      {isEditable && errors.addressCity && <p>{errors.addressCity.message}</p>}
                     </Text>
                   </Form.Item>
                 )}
@@ -318,7 +328,7 @@ const ProfileGeneralInfo = ({ userId, volunteerData }) => {
                       disabled={!isEditable}
                     />
                     <Text type="danger">
-                      {errors.addressState && <p>{errors.addressState.message}</p>}
+                      {isEditable && errors.addressState && <p>{errors.addressState.message}</p>}
                     </Text>
                   </Form.Item>
                 )}
@@ -332,7 +342,7 @@ const ProfileGeneralInfo = ({ userId, volunteerData }) => {
                   <Form.Item label="Zipcode">
                     <Input onChange={onChange} value={value} ref={ref} disabled={!isEditable} />
                     <Text type="danger">
-                      {errors.addressZip && <p>{errors.addressZip.message}</p>}
+                      {isEditable && errors.addressZip && <p>{errors.addressZip.message}</p>}
                     </Text>
                   </Form.Item>
                 )}

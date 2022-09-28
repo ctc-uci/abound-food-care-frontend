@@ -14,6 +14,7 @@ import AUTH_ROLES from '../../util/auth_config';
 import { AFCBackend } from '../../util/auth_utils';
 
 import styles from './Profile.module.css';
+import AFCPlaceholder from '../../assets/img/afc-logo.png';
 
 const { TabPane } = Tabs;
 const Profile = ({ cookies }) => {
@@ -31,28 +32,27 @@ const Profile = ({ cookies }) => {
     }
     const { data: volunteerData } = await AFCBackend.get(`/users/${userId}`);
     setUser(volunteerData);
+    const { data: waiversData } = await AFCBackend.get(`/waivers/user/${userId}`);
+    console.log(waiversData);
     // TODO Replace waivers with actual set of waivers
-    setWaivers([
-      {
-        name: 'Waiver Name',
-        link: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
-        uploadDate: 'Uploaded 1/9/2022',
-        waiverId: 1,
-      },
-      {
-        name: 'Waiver Name',
-        link: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
-        uploadDate: 'Uploaded 1/9/2022',
-        waiverId: 2,
-      },
-      {
-        name: 'Waiver Name',
-        link: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
-        uploadDate: 'Uploaded 1/9/2022',
-        waiverId: 3,
-      },
-    ]);
-  }, []);
+    setWaivers(
+      waiversData.length
+        ? waiversData.map(waiver => {
+            const uploadDate = new Date(waiver.uploadDate);
+            return {
+              eventName: waiver.eventInfo[0].name,
+              waiverName: waiver.name,
+              imgSrc: AFCPlaceholder,
+              link: waiver.link,
+              description: `Uploaded ${
+                uploadDate.getMonth() + 1
+              }/${uploadDate.getDate()}/${uploadDate.getFullYear()}`,
+              waiverId: waiver.waiverId,
+            };
+          })
+        : [],
+    );
+  }, [userId]);
 
   ConfigProvider.config({
     theme: {
@@ -65,7 +65,7 @@ const Profile = ({ cookies }) => {
       <div className={styles.profileContainer}>
         <h1 className={styles.profileHeader}>
           {' '}
-          {user ? `${user.firstName} ${user.lastName}` : 'Unknown User'}&apos;s Profile{' '}
+          {user ? `${user?.firstName} ${user?.lastName}` : 'Unknown User'}&apos;s Profile{' '}
         </h1>
         <Tabs defaultActiveKey="1" size="large">
           <TabPane tab="General Information" key="1">
@@ -82,7 +82,13 @@ const Profile = ({ cookies }) => {
             <ProfileDUICrimHistory userId={userId} volunteerData={user} />
           </TabPane>
           <TabPane tab="Training & Forms" key="5">
-            <WaiversGrid waivers={waivers} />
+            {waivers.length ? (
+              <WaiversGrid waivers={waivers} />
+            ) : (
+              <p className={styles.noWaivers}>
+                There are no waivers available for {`${user?.firstName} ${user?.lastName}`}.
+              </p>
+            )}
           </TabPane>
         </Tabs>
       </div>
