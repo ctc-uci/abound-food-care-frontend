@@ -73,7 +73,7 @@ const Profile = ({ cookies }) => {
           </TabPane>
           <TabPane tab="Availability" key="2">
             {/* TODO: make availability editable */}
-            <ProfileAvailability availability={user?.availabilities} />
+            <ProfileAvailability userId={userId} availability={user?.availabilities} />
           </TabPane>
           <TabPane tab="Roles & Skills" key="3">
             <ProfileRolesSkills userId={userId} volunteerData={user} />
