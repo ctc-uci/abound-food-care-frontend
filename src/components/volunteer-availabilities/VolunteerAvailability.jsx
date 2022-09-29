@@ -6,6 +6,7 @@ import { AFCBackend } from '../../util/utils';
 const VolunteerAvailability = ({ handleViewDatabase }) => {
   const [volunteers, setVolunteers] = useState([]);
   const [availableVolunteers, setAvailableVolunteers] = useState([]);
+  const [filteredVolunteers, setFilteredVolunteers] = useState([]);
 
   useEffect(async () => {
     const { data } = await AFCBackend.get('/volunteers/');
@@ -16,8 +17,27 @@ const VolunteerAvailability = ({ handleViewDatabase }) => {
       available: !!availabilities,
     }));
     setVolunteers(mappedVolunteers);
-    setAvailableVolunteers(mappedVolunteers.filter(v => v.available));
+    const availables = mappedVolunteers.filter(v => v.available);
+    setAvailableVolunteers(availables);
+    setFilteredVolunteers(availables);
   }, []);
+
+  const onSelectedTimeslot = async (day, time) => {
+    // reading state variables here always returns their default value
+    if (availableVolunteers.length) {
+      // console.log(availableVolunteers);
+      setFilteredVolunteers(availableVolunteers);
+      return;
+    }
+    const { data } = await AFCBackend.get(
+      `volunteers/available/day/${day}/start/${time[0]}/end/${time[1]}`,
+    );
+    const processedData = data.map(e => {
+      const { first_name: firstName, last_name: lastName, user_id: id } = e;
+      return { id, firstName, lastName };
+    });
+    setFilteredVolunteers(processedData);
+  };
 
   return (
     <div className="volunteer-availabilities">
@@ -62,13 +82,13 @@ const VolunteerAvailability = ({ handleViewDatabase }) => {
             </label>
           </div>
         </div>
-        <HeatMap />
+        <HeatMap onSelectedTimeslot={onSelectedTimeslot} />
       </div>
       <div className="available-volunteers">
         <h2>
-          Volunteers ({availableVolunteers.length}/{volunteers.length})
+          Volunteers ({filteredVolunteers.length}/{volunteers.length})
         </h2>
-        {availableVolunteers.map(({ id, firstName, lastName }) => (
+        {filteredVolunteers.map(({ id, firstName, lastName }) => (
           <p key={id}>
             {lastName}, {firstName}
           </p>
