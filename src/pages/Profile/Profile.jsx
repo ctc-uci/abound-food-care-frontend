@@ -33,7 +33,6 @@ const Profile = ({ cookies }) => {
     const { data: volunteerData } = await AFCBackend.get(`/users/${userId}`);
     setUser(volunteerData);
     const { data: waiversData } = await AFCBackend.get(`/waivers/user/${userId}`);
-    console.log(waiversData);
     // TODO Replace waivers with actual set of waivers
     setWaivers(
       waiversData.length
@@ -76,7 +75,7 @@ const Profile = ({ cookies }) => {
             <ProfileAvailability userId={userId} availability={user?.availabilities} />
           </TabPane>
           <TabPane tab="Roles & Skills" key="3">
-            <ProfileRolesSkills userId={userId} volunteerData={user} />
+            <ProfileRolesSkills userId={userId} volunteerData={user} setVolunteerData={setUser} />
           </TabPane>
           <TabPane tab="DUI/Criminal History" key="4">
             <ProfileDUICrimHistory userId={userId} volunteerData={user} />

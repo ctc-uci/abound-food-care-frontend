@@ -10,18 +10,33 @@ const { Option } = Select;
 const { Text } = Typography;
 const { CheckableTag } = Tag;
 
-const ProfileRolesAndSkills = ({ userId, volunteerData }) => {
+const ProfileRolesAndSkills = ({ userId, volunteerData, setVolunteerData }) => {
   const [componentSize, setComponentSize] = useState('default');
   const [isEditable, setIsEditable] = useState(false);
-  const [defaultValues, setDefaultValues] = useState({});
-  const [defaultLanguages, setDefaultLanguages] = useState([]);
   const {
     control,
     handleSubmit,
     setValue,
     getValues,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      role: volunteerData.role,
+      foodRunning: volunteerData.foodRunsInterest,
+      distribution: volunteerData.distributionInterest,
+      firstAidTraining: volunteerData.firstAidTraining,
+      serveSafeKnowledge: volunteerData.serveSafeKnowledge,
+      transportationExperience: volunteerData.transportationExperience,
+      movingWarehouseExperience: volunteerData.movingWarehouseExperience,
+      foodServiceIndustryKnowledge: volunteerData.foodServiceIndustryKnowledge,
+      weightLiftingAbility: volunteerData.weightLiftingAbility,
+      completedChowmatch: volunteerData.completedChowmatchTraining,
+      canDrive: volunteerData.canDrive,
+      willingToDrive: volunteerData.willingToDrive,
+      vehicleType: volunteerData.vehicleType,
+      distance: volunteerData.distance,
+    },
+  });
 
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
@@ -38,22 +53,6 @@ const ProfileRolesAndSkills = ({ userId, volunteerData }) => {
   };
 
   const getDriverData = () => {
-    setDefaultValues({
-      role: volunteerData.role,
-      foodRunning: volunteerData.foodRunsInterest,
-      distribution: volunteerData.distributionInterest,
-      firstAidTraining: volunteerData.firstAidTraining,
-      serveSafeKnowledge: volunteerData.serveSafeKnowledge,
-      transportationExperience: volunteerData.transportationExperience,
-      movingWarehouseExperience: volunteerData.movingWarehouseExperience,
-      foodServiceIndustryKnowledge: volunteerData.foodServiceIndustryKnowledge,
-      weightLiftingAbility: volunteerData.weightLiftingAbility,
-      completedChowmatch: volunteerData.completedChowmatchTraining,
-      canDrive: volunteerData.canDrive,
-      willingToDrive: volunteerData.willingToDrive,
-      vehicleType: volunteerData.vehicleType,
-      distance: volunteerData.distance,
-    });
     [
       'role',
       'foodRunning',
@@ -64,14 +63,12 @@ const ProfileRolesAndSkills = ({ userId, volunteerData }) => {
       'movingWarehouseExperience',
       'foodServiceIndustryKnowledge',
       'weightLiftingAbility',
-      'completedChowmatch',
+      'completedChowmatchTraining',
       'canDrive',
       'willingToDrive',
       'vehicleType',
       'distance',
-    ].forEach(field => setValue(field, defaultValues[field]));
-    setDefaultLanguages(volunteerData.languages);
-    setLanguages(volunteerData.languages);
+    ].forEach(field => setValue(field, volunteerData[field]));
   };
 
   const handleEdit = () => {
@@ -90,16 +87,17 @@ const ProfileRolesAndSkills = ({ userId, volunteerData }) => {
       'movingWarehouseExperience',
       'foodServiceIndustryKnowledge',
       'weightLiftingAbility',
-      'completedChowmatch',
+      'completedChowmatchTraining',
       'canDrive',
       'willingToDrive',
       'vehicleType',
       'distance',
-    ].forEach(field => setValue(field, defaultValues[field]));
-    setLanguages(defaultLanguages);
+    ].forEach(field => setValue(field, volunteerData[field]));
+    setLanguages(volunteerData.languages);
   };
 
   const saveVolunteerData = async values => {
+    // const values = getValues();
     const languages = buildLanguagesArray(values);
     try {
       const payload = {
@@ -113,13 +111,14 @@ const ProfileRolesAndSkills = ({ userId, volunteerData }) => {
         foodServiceIndustryKnowledge: values.foodServiceIndustryKnowledge,
         languages,
         weightLiftingAbility: values.weightLiftingAbility,
-        completedChowmatchTraining: values.completedChowmatch,
+        completedChowmatchTraining: values.completedChowmatchTraining,
         canDrive: values.canDrive,
         willingToDrive: values.willingToDrive,
         vehicleType: values.vehicleType,
         distance: values.distance,
       };
-      await AFCBackend.put(`/users/roles-skills/${userId}`, payload);
+      const updatedUser = await AFCBackend.put(`/users/roles-skills/${userId}`, payload);
+      setVolunteerData(updatedUser.data);
     } catch (e) {
       console.log(e.message);
     }
@@ -503,6 +502,7 @@ const ProfileRolesAndSkills = ({ userId, volunteerData }) => {
 ProfileRolesAndSkills.propTypes = {
   userId: PropTypes.string.isRequired,
   volunteerData: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  setVolunteerData: PropTypes.func.isRequired,
 };
 
 export default ProfileRolesAndSkills;
