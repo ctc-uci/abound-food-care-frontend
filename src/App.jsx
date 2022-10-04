@@ -6,7 +6,7 @@ import './common/global.css';
 
 // Pages
 import Login from './pages/Login';
-import Events from './pages/Events';
+import Events from './pages/Events/Events';
 import CreateEvent from './pages/CreateEvent';
 import Volunteers from './pages/Volunteers';
 import Profile from './pages/Profile';

@@ -1,18 +1,21 @@
 import { React, useState, useEffect } from 'react';
+import { instanceOf } from 'prop-types';
 import { Link } from 'react-router-dom';
+import { withCookies, Cookies } from 'react-cookie';
 import { Input, Button, Radio, Row, Col, Card } from 'antd';
 import { FilterOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { AFCBackend } from '../../../util/utils';
-import EventCard from '../event/EventCard/EventCard';
-import EventList from '../event/EventList/EventList';
-import AddEventTypeModal from '../CreateEvent/AddEventTypeModal';
-import useViewPort from '../../../common/useViewPort';
-import styles from './AdminEvents.module.css';
+import { AFCBackend } from '../../util/utils';
+import EventCard from '../../components/events/event/EventCard/EventCard';
+import EventList from '../../components/events/event/EventList/EventList';
+import AddEventTypeModal from '../../components/events/CreateEvent/AddEventTypeModal';
+import useViewPort from '../../common/useViewPort';
+import { cookieKeys } from '../../util/cookie_utils';
+import styles from './Events.module.css';
 import 'antd/dist/antd.less';
 
 // const { Title } = Typography;
 
-const AdminEvents = () => {
+const Events = ({ cookies }) => {
   const [eventTypeValue, setEventTypeValue] = useState('all');
   const [eventStatusValue, setEventStatusValue] = useState('all');
   const [loading, setLoading] = useState(true);
@@ -259,17 +262,21 @@ const AdminEvents = () => {
                 >
                   New Event Type
                 </Button> */}
-                <Link to="/events/create">
-                  <Button className={styles['new-event-btn']} type="primary">
-                    New Event
-                  </Button>
-                </Link>
-                <AddEventTypeModal
-                  addVisible={showEventTypeModal}
-                  setAddVisible={setShowEventTypeModal}
-                  eventsData={eventTypes}
-                  setEventsData={setEventTypes}
-                />
+                {cookies.get(cookieKeys.ROLE) === 'admin' && (
+                  <>
+                    <Link to="/events/create">
+                      <Button className={styles['new-event-btn']} type="primary">
+                        New Event
+                      </Button>
+                    </Link>
+                    <AddEventTypeModal
+                      addVisible={showEventTypeModal}
+                      setAddVisible={setShowEventTypeModal}
+                      eventsData={eventTypes}
+                      setEventsData={setEventTypes}
+                    />
+                  </>
+                )}
               </div>
             </Card>
             {eventsData.length > 0 ? (
@@ -291,4 +298,8 @@ const AdminEvents = () => {
   return width > breakpoint ? renderAdminEventsView() : renderMobileAdminEventsView();
 };
 
-export default AdminEvents;
+Events.propTypes = {
+  cookies: instanceOf(Cookies).isRequired,
+};
+
+export default withCookies(Events);
