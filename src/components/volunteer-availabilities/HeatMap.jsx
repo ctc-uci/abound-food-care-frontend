@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Chart from 'react-apexcharts';
-// import ApexCharts from 'apexcharts';
 import { PropTypes } from 'prop-types';
 import { AFCBackend, dayOfWeek } from '../../util/utils';
 
@@ -31,9 +30,9 @@ const timePairs = Object.entries(afterTimes).map(([start, end]) => [
   end.substring(0, 5),
 ]);
 
-const HeatMap = ({ onSelectedTimeslot }) => {
-  const [options, setOptions] = React.useState(null);
-  const [series, setSeries] = React.useState([]);
+const HeatMap = ({ setSelectedTimeslot }) => {
+  const [options, setOptions] = useState(null);
+  const [series, setSeries] = useState([]);
 
   const generateData = (startHour, endHour, data) => {
     return dayOfWeek.map(x => {
@@ -59,11 +58,10 @@ const HeatMap = ({ onSelectedTimeslot }) => {
       name: time,
       data: generateData(time, afterTimes[time], data),
     }));
-    // console.log(generatedSeries);
     await setSeries(generatedSeries);
   };
 
-  const onSquareClick = (event, chartContext, config) => {
+  const onSquareClick = async (event, chartContext, config) => {
     // Get square coordinates
     const rowIndex = config.seriesIndex;
     const colIndex = config.dataPointIndex;
@@ -73,7 +71,12 @@ const HeatMap = ({ onSelectedTimeslot }) => {
     const time = timePairs[18 - rowIndex];
 
     // Update selected time
-    onSelectedTimeslot(day, time);
+    setSelectedTimeslot(prev => {
+      if (prev.day === day && prev?.time && prev.time[0] === time[0] && prev.time[1] === time[1]) {
+        return {};
+      }
+      return { day, time };
+    });
   };
 
   useEffect(() => {
@@ -93,7 +96,9 @@ const HeatMap = ({ onSelectedTimeslot }) => {
           },
         },
         events: {
-          dataPointSelection: onSquareClick,
+          dataPointSelection: async (event, chartContext, config) => {
+            await onSquareClick(event, chartContext, config);
+          },
         },
       },
       dataLabels: {
@@ -114,7 +119,7 @@ const HeatMap = ({ onSelectedTimeslot }) => {
 };
 
 HeatMap.propTypes = {
-  onSelectedTimeslot: PropTypes.func.isRequired,
+  setSelectedTimeslot: PropTypes.func.isRequired,
 };
 
 export default HeatMap;

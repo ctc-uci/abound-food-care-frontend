@@ -4,6 +4,7 @@ import HeatMap from './HeatMap';
 import { AFCBackend } from '../../util/utils';
 
 const VolunteerAvailability = ({ handleViewDatabase }) => {
+  const [selectedTimeslot, setSelectedTimeslot] = useState({});
   const [volunteers, setVolunteers] = useState([]);
   const [availableVolunteers, setAvailableVolunteers] = useState([]);
   const [filteredVolunteers, setFilteredVolunteers] = useState([]);
@@ -22,22 +23,22 @@ const VolunteerAvailability = ({ handleViewDatabase }) => {
     setFilteredVolunteers(availables);
   }, []);
 
-  const onSelectedTimeslot = async (day, time) => {
-    // reading state variables here always returns their default value
-    if (availableVolunteers.length) {
-      // console.log(availableVolunteers);
+  useEffect(async () => {
+    const { day, time } = selectedTimeslot;
+    if (selectedTimeslot === {} || !day || !time) {
       setFilteredVolunteers(availableVolunteers);
       return;
     }
+    const [start, end] = time;
     const { data } = await AFCBackend.get(
-      `volunteers/available/day/${day}/start/${time[0]}/end/${time[1]}`,
+      `volunteers/available/day/${day}/start/${start}/end/${end}`,
     );
     const processedData = data.map(e => {
       const { first_name: firstName, last_name: lastName, user_id: id } = e;
       return { id, firstName, lastName };
     });
     setFilteredVolunteers(processedData);
-  };
+  }, [selectedTimeslot]);
 
   return (
     <div className="volunteer-availabilities">
@@ -82,7 +83,7 @@ const VolunteerAvailability = ({ handleViewDatabase }) => {
             </label>
           </div>
         </div>
-        <HeatMap onSelectedTimeslot={onSelectedTimeslot} />
+        <HeatMap setSelectedTimeslot={setSelectedTimeslot} />
       </div>
       <div className="available-volunteers">
         <h2>
