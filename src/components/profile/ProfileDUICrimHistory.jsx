@@ -10,10 +10,9 @@ import styles from './ProfileComponents.module.css';
 
 const { Text } = Typography;
 
-const ProfileDUIAndCrimHistory = ({ userId, volunteerData }) => {
+const ProfileDUIAndCrimHistory = ({ userId, volunteerData, setVolunteerData }) => {
   const [componentSize, setComponentSize] = useState('default');
   const [isEditable, setIsEditable] = useState(false);
-  const [defaultValues, setDefaultValues] = useState({});
 
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
@@ -39,13 +38,6 @@ const ProfileDUIAndCrimHistory = ({ userId, volunteerData }) => {
   } = useForm({ resolver: yupResolver(schema), mode: 'onChange', delayError: 750 });
 
   const getVolunteerData = () => {
-    setDefaultValues({
-      duiHistory: volunteerData.duiHistory,
-      duiHistoryDetails: volunteerData.duiHistoryDetails,
-      criminalHistory: volunteerData.criminalHistory,
-      criminalHistoryDetails: volunteerData.criminalHistoryDetails,
-      additionalInformation: volunteerData.additionalInformation,
-    });
     setValue('duiHistory', volunteerData.duiHistory);
     setValue('duiHistoryDetails', volunteerData.duiHistoryDetails);
     setValue('criminalHistory', volunteerData.criminalHistory);
@@ -59,11 +51,11 @@ const ProfileDUIAndCrimHistory = ({ userId, volunteerData }) => {
 
   const handleCancel = () => {
     setIsEditable(false);
-    setValue('duiHistory', defaultValues.duiHistory);
-    setValue('duiHistoryDetails', defaultValues.duiHistoryDetails);
-    setValue('criminalHistory', defaultValues.criminalHistory);
-    setValue('criminalHistoryDetails', defaultValues.criminalHistoryDetails);
-    setValue('additionalInfo', defaultValues.additionalInformation);
+    setValue('duiHistory', volunteerData.duiHistory);
+    setValue('duiHistoryDetails', volunteerData.duiHistoryDetails);
+    setValue('criminalHistory', volunteerData.criminalHistory);
+    setValue('criminalHistoryDetails', volunteerData.criminalHistoryDetails);
+    setValue('additionalInfo', volunteerData.additionalInformation);
   };
 
   const saveVolunteerData = async values => {
@@ -75,7 +67,8 @@ const ProfileDUIAndCrimHistory = ({ userId, volunteerData }) => {
         criminalHistoryDetails: values.criminalHistoryDetails,
         additionalInformation: values.additionalInfo,
       };
-      await AFCBackend.put(`/users/dui-criminal/${userId}`, payload);
+      const updatedUser = await AFCBackend.put(`/users/dui-criminal/${userId}`, payload);
+      setVolunteerData(updatedUser.data);
     } catch (e) {
       console.log(e.message);
     }
@@ -199,6 +192,7 @@ const ProfileDUIAndCrimHistory = ({ userId, volunteerData }) => {
 ProfileDUIAndCrimHistory.propTypes = {
   userId: PropTypes.string.isRequired,
   volunteerData: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  setVolunteerData: PropTypes.func.isRequired,
 };
 
 export default ProfileDUIAndCrimHistory;

@@ -68,7 +68,7 @@ const Profile = ({ cookies }) => {
         </h1>
         <Tabs defaultActiveKey="1" size="large">
           <TabPane tab="General Information" key="1">
-            <ProfileGeneralInfo userId={userId} volunteerData={user} />
+            <ProfileGeneralInfo userId={userId} volunteerData={user} setVolunteerData={setUser} />
           </TabPane>
           <TabPane tab="Availability" key="2">
             {/* TODO: make availability editable */}
@@ -78,7 +78,11 @@ const Profile = ({ cookies }) => {
             <ProfileRolesSkills userId={userId} volunteerData={user} setVolunteerData={setUser} />
           </TabPane>
           <TabPane tab="DUI/Criminal History" key="4">
-            <ProfileDUICrimHistory userId={userId} volunteerData={user} />
+            <ProfileDUICrimHistory
+              userId={userId}
+              volunteerData={user}
+              setVolunteerData={setUser}
+            />
           </TabPane>
           <TabPane tab="Training & Forms" key="5">
             {waivers.length ? (

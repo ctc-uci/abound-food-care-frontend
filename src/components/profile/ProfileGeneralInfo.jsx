@@ -11,9 +11,8 @@ import styles from './ProfileComponents.module.css';
 
 const { Text } = Typography;
 
-const ProfileGeneralInfo = ({ userId, volunteerData }) => {
+const ProfileGeneralInfo = ({ userId, volunteerData, setVolunteerData }) => {
   const [isEditable, setIsEditable] = useState(false);
-  const [defaultValues, setDefaultValues] = useState({});
   const [componentSize, setComponentSize] = useState('default');
 
   const onFormLayoutChange = ({ size }) => {
@@ -48,16 +47,7 @@ const ProfileGeneralInfo = ({ userId, volunteerData }) => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema), mode: 'onChange', delayError: 750 });
 
-  const getVolunteerData = async () => {
-    setDefaultValues({
-      organization: volunteerData.organization,
-      phone: volunteerData.phone,
-      preferredContactMethod: volunteerData.preferredContactMethod,
-      addressStreet: volunteerData.addressStreet,
-      addressCity: volunteerData.addressCity,
-      addressState: volunteerData.addressState,
-      addressZip: volunteerData.addressZip,
-    });
+  const getVolunteerData = () => {
     [
       'firstName',
       'lastName',
@@ -92,7 +82,7 @@ const ProfileGeneralInfo = ({ userId, volunteerData }) => {
       'addressCity',
       'addressState',
       'addressZip',
-    ].forEach(attr => setValue(attr, defaultValues[attr]));
+    ].forEach(attr => setValue(attr, volunteerData[attr]));
   };
 
   const saveVolunteerData = async values => {
@@ -106,17 +96,18 @@ const ProfileGeneralInfo = ({ userId, volunteerData }) => {
         addressState: values.addressState,
         addressZip: values.addressZip,
       };
-      await AFCBackend.put(`/users/general-info/${userId}`, payload);
+      const updatedUser = await AFCBackend.put(`/users/general-info/${userId}`, payload);
+      setVolunteerData(updatedUser.data);
     } catch (e) {
       console.log(e.message);
     }
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     if (!volunteerData) {
       return;
     }
-    await getVolunteerData();
+    getVolunteerData();
   }, [volunteerData]);
 
   return (
@@ -358,6 +349,7 @@ const ProfileGeneralInfo = ({ userId, volunteerData }) => {
 ProfileGeneralInfo.propTypes = {
   userId: PropTypes.string.isRequired,
   volunteerData: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  setVolunteerData: PropTypes.func.isRequired,
 };
 
 export default ProfileGeneralInfo;
