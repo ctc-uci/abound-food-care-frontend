@@ -1,157 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import HeatMap from './HeatMap';
+import { AFCBackend } from '../../util/utils';
 
-const VolunteerAvailability = props => {
-  const { handleViewDatabase } = props;
-  const VOLUNTEERS_DUMMY_DATA = [
-    {
-      id: 0,
-      name: 'John Stone',
-      available: true,
-    },
-    {
-      id: 1,
-      name: 'Ponnappa Priya',
-      available: true,
-    },
-    {
-      id: 2,
-      name: 'Mia Wong',
-      available: true,
-    },
-    {
-      id: 3,
-      name: 'Peter Stanbridge',
-      available: true,
-    },
-    {
-      id: 4,
-      name: 'Natalie Lee-Walsh',
-      available: true,
-    },
-    {
-      id: 5,
-      name: 'Ang Li',
-      available: true,
-    },
-    {
-      id: 6,
-      name: 'Nguta Ithya',
-      available: true,
-    },
-    {
-      id: 7,
-      name: 'John Stone',
-      available: true,
-    },
-    {
-      id: 8,
-      name: 'Ponnappa Priya',
-      available: true,
-    },
-    {
-      id: 9,
-      name: 'Mia Wong',
-      available: true,
-    },
-    {
-      id: 10,
-      name: 'Peter Stanbridge',
-      available: true,
-    },
-    {
-      id: 11,
-      name: 'Natalie Lee-Walsh',
-      available: true,
-    },
-    {
-      id: 12,
-      name: 'Ang Li',
-      available: true,
-    },
-    {
-      id: 13,
-      name: 'Nguta Ithya',
-      available: true,
-    },
-    {
-      id: 14,
-      name: 'John Stone',
-      available: true,
-    },
-    {
-      id: 15,
-      name: 'Ponnappa Priya',
-      available: true,
-    },
-    {
-      id: 16,
-      name: 'Mia Wong',
-      available: true,
-    },
-    {
-      id: 17,
-      name: 'Peter Stanbridge',
-      available: true,
-    },
-    {
-      id: 18,
-      name: 'Natalie Lee-Walsh',
-      available: true,
-    },
-    {
-      id: 19,
-      name: 'Ang Li',
-      available: true,
-    },
-    {
-      id: 20,
-      name: 'Nguta Ithya',
-      available: true,
-    },
-    {
-      id: 21,
-      name: 'John Stone',
-      available: false,
-    },
-    {
-      id: 22,
-      name: 'Ponnappa Priya',
-      available: false,
-    },
-    {
-      id: 23,
-      name: 'Mia Wong',
-      available: false,
-    },
-    {
-      id: 24,
-      name: 'Peter Stanbridge',
-      available: false,
-    },
-    {
-      id: 25,
-      name: 'Natalie Lee-Walsh',
-      available: false,
-    },
-    {
-      id: 26,
-      name: 'Ang Li',
-      available: false,
-    },
-  ];
-
-  const showDatabase = () => {
-    handleViewDatabase();
-  };
+const VolunteerAvailability = ({ handleViewDatabase }) => {
+  const [selectedTimeslot, setSelectedTimeslot] = useState({});
   const [volunteers, setVolunteers] = useState([]);
   const [availableVolunteers, setAvailableVolunteers] = useState([]);
+  const [filteredVolunteers, setFilteredVolunteers] = useState([]);
 
-  useEffect(() => {
-    setVolunteers(VOLUNTEERS_DUMMY_DATA);
-    setAvailableVolunteers(VOLUNTEERS_DUMMY_DATA.filter(v => v.available));
+  useEffect(async () => {
+    const { data } = await AFCBackend.get('/volunteers/');
+    const mappedVolunteers = data.map(({ userId, firstName, lastName, availabilities }) => ({
+      id: userId,
+      firstName,
+      lastName,
+      available: !!availabilities,
+    }));
+    setVolunteers(mappedVolunteers);
+    const availables = mappedVolunteers.filter(v => v.available);
+    setAvailableVolunteers(availables);
+    setFilteredVolunteers(availables);
   }, []);
+
+  useEffect(async () => {
+    const { day, time } = selectedTimeslot;
+    if (selectedTimeslot === {} || !day || !time) {
+      setFilteredVolunteers(availableVolunteers);
+      return;
+    }
+    const [start, end] = time;
+    const { data } = await AFCBackend.get(
+      `volunteers/available/day/${day}/start/${start}/end/${end}`,
+    );
+    const processedData = data.map(e => {
+      const { first_name: firstName, last_name: lastName, user_id: id } = e;
+      return { id, firstName, lastName };
+    });
+    setFilteredVolunteers(processedData);
+  }, [selectedTimeslot]);
 
   return (
     <div className="volunteer-availabilities">
@@ -166,7 +53,7 @@ const VolunteerAvailability = props => {
               id="search-volunteers"
             />
             <div className="right-align">
-              <button type="button" onClick={showDatabase}>
+              <button type="button" onClick={handleViewDatabase}>
                 View Database
               </button>
               <button type="button">Export</button>
@@ -196,22 +83,17 @@ const VolunteerAvailability = props => {
             </label>
           </div>
         </div>
-        <HeatMap />
+        <HeatMap setSelectedTimeslot={setSelectedTimeslot} />
       </div>
       <div className="available-volunteers">
         <h2>
-          Volunteers ({availableVolunteers.length}/{volunteers.length})
+          Volunteers ({filteredVolunteers.length}/{volunteers.length})
         </h2>
-        {availableVolunteers.map(v => {
-          const nameArr = v.name.split(' ');
-          const lastName = nameArr[1];
-          const firstName = nameArr[0];
-          return (
-            <p key={v.id}>
-              {lastName}, {firstName}
-            </p>
-          );
-        })}
+        {filteredVolunteers.map(({ id, firstName, lastName }) => (
+          <p key={id}>
+            {lastName}, {firstName}
+          </p>
+        ))}
       </div>
     </div>
   );
