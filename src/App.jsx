@@ -13,6 +13,7 @@ import Profile from './pages/Profile';
 import Event from './pages/Event';
 import EventSignUp from './pages/EventSignUp';
 import Dashboard from './pages/Dashboard';
+import VolunteeringHistory from './pages/VolunteeringHistory';
 
 // Components
 import NavMenu from './components/NavMenu/NavMenu';
@@ -91,7 +92,6 @@ const App = () => {
                   />
                 }
               />
-
               <Route
                 path="/event/register/:eventId"
                 exact
@@ -122,6 +122,17 @@ const App = () => {
                 element={
                   <ProtectedRoute
                     Component={Profile}
+                    redirectPath="/"
+                    roles={[AUTH_ROLES.ADMIN_ROLE, AUTH_ROLES.VOLUNTEER_ROLE]}
+                  />
+                }
+              />
+              <Route
+                path="/volunteeringHistory"
+                exact
+                element={
+                  <ProtectedRoute
+                    Component={VolunteeringHistory}
                     redirectPath="/"
                     roles={[AUTH_ROLES.ADMIN_ROLE, AUTH_ROLES.VOLUNTEER_ROLE]}
                   />
