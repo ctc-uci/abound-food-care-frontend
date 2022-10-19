@@ -1,13 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { Menu, Dropdown, Button, Space } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
 import HeatMap from './HeatMap';
 import { AFCBackend } from '../../util/utils';
+import styles from './VolunteerAvailability.module.css';
 
-const VolunteerAvailability = ({ handleViewDatabase }) => {
+const VolunteerAvailability = props => {
+  const { handleViewDatabase } = props;
+
+  // const showDatabase = () => {
+  //   handleViewDatabase();
+  // };
   const [selectedTimeslot, setSelectedTimeslot] = useState({});
   const [volunteers, setVolunteers] = useState([]);
   const [availableVolunteers, setAvailableVolunteers] = useState([]);
   const [filteredVolunteers, setFilteredVolunteers] = useState([]);
+  const [eventInterest, setEventInterest] = useState('All');
+  const [driverOption, setDriverOption] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(async () => {
     const { data } = await AFCBackend.get('/volunteers/');
@@ -22,6 +33,67 @@ const VolunteerAvailability = ({ handleViewDatabase }) => {
     setAvailableVolunteers(availables);
     setFilteredVolunteers(availables);
   }, []);
+
+  const getVolunteers = async () => {
+    try {
+      const { data } = await AFCBackend.get(`/volunteers/`, {
+        params: {
+          driverOption,
+          ageOption: 'All',
+          eventInterest,
+          searchQuery,
+        },
+      });
+      setAvailableVolunteers(data);
+
+      // // sets the total # volunteers only the first time
+      // if (availableVolunteers.length === 0) {
+      //   setTotalVolunteers(data.length);
+      // }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getVolunteers();
+  }, [eventInterest, driverOption, searchQuery]);
+
+  const eventInterestMenu = (
+    <Menu className={styles.menu}>
+      <Menu.Item key="all" className={styles.menu} onClick={() => setEventInterest('All')}>
+        All
+      </Menu.Item>
+      <Menu.Item
+        key="distribution"
+        className={styles.menu}
+        onClick={() => setEventInterest('Distributions')}
+      >
+        Distributions
+      </Menu.Item>
+      <Menu.Item
+        key="food"
+        className={styles.menu}
+        onClick={() => setEventInterest('Food Running')}
+      >
+        Food Running
+      </Menu.Item>
+    </Menu>
+  );
+
+  const isDriverMenu = (
+    <Menu className={styles.menu}>
+      <Menu.Item key="1" className={styles.menu} onClick={() => setDriverOption('All')}>
+        All
+      </Menu.Item>
+      <Menu.Item key="2" className={styles.menu} onClick={() => setDriverOption('Can Drive')}>
+        Can Drive
+      </Menu.Item>
+      <Menu.Item key="3" className={styles.menu} onClick={() => setDriverOption('Cannot Drive')}>
+        Cannot Drive
+      </Menu.Item>
+    </Menu>
+  );
 
   useEffect(async () => {
     const { day, time } = selectedTimeslot;
@@ -51,6 +123,7 @@ const VolunteerAvailability = ({ handleViewDatabase }) => {
               type="search"
               placeholder="Search by name, email, role..."
               id="search-volunteers"
+              onChange={e => setSearchQuery(e.target.value)}
             />
             <div className="right-align">
               <button type="button" onClick={handleViewDatabase}>
@@ -63,27 +136,38 @@ const VolunteerAvailability = ({ handleViewDatabase }) => {
             </div>
           </div>
           <div>
-            <label htmlFor="event-types">
+            <label htmlFor="event-types" className={styles['dropdown-label']}>
               Event Types
               <br />
-              <select name="event-types" id="event-types">
-                <option value="all">All</option>
-                <option value="option1">Option 1</option>
-                <option value="option2">Option 2</option>
-                <option value="option3">Option 3</option>
-              </select>
+              <Dropdown overlay={eventInterestMenu}>
+                <Button className={styles['dropdown-button']}>
+                  <Space className={styles['dropdown-button-text']}>
+                    {eventInterest}
+                    <DownOutlined />
+                  </Space>
+                </Button>
+              </Dropdown>
             </label>
-            <label htmlFor="drivers">
-              Drivers?
+            <label htmlFor="drivers" className={styles['dropdown-label']}>
+              Driving Ability
               <br />
-              <select name="drivers" id="drivers">
-                <option value="can-drive">Can Drive</option>
-                <option value="cant-drive">Can&apos;t Drive</option>
-              </select>
+              <Dropdown overlay={isDriverMenu}>
+                <Button className={styles['dropdown-button']}>
+                  <Space className={styles['dropdown-button-text']}>
+                    {driverOption}
+                    <DownOutlined />
+                  </Space>
+                </Button>
+              </Dropdown>
             </label>
           </div>
         </div>
-        <HeatMap setSelectedTimeslot={setSelectedTimeslot} />
+        <HeatMap
+          setSelectedTimeslot={setSelectedTimeslot}
+          eventInterest={eventInterest}
+          driverOption={driverOption}
+          searchQuery={searchQuery}
+        />
       </div>
       <div className="available-volunteers">
         <h2>

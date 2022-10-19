@@ -9,16 +9,24 @@ import styles from './Database.module.css';
 function Database({ handleHideDatabase }) {
   const [volunteerData, setVolunteerData] = useState([]);
   const [isLoading, setLoading] = useState(true);
-  const [filteredData, setFilteredData] = useState([]);
-  const [currentDriverOption, setCurrentDriverOption] = useState('All');
-  const [searchCriterion, setSearchCriterion] = useState('');
   const [isOpen, setIsOpen] = useState(false);
+
+  const [driverOption, setDriverOption] = useState('All');
+  const [ageOption, setAgeOption] = useState('All');
+  const [eventInterest, setEventInterest] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const getVolunteers = async () => {
     try {
-      const { data: volunteerResponse } = await AFCBackend.get('/volunteers');
+      const { data: volunteerResponse } = await AFCBackend.get('/volunteers', {
+        params: {
+          driverOption,
+          ageOption,
+          eventInterest,
+          searchQuery,
+        },
+      });
       setVolunteerData(volunteerResponse);
-      setFilteredData(volunteerResponse);
     } catch (e) {
       console.log(e);
     }
@@ -27,7 +35,7 @@ function Database({ handleHideDatabase }) {
   useEffect(() => {
     getVolunteers();
     setLoading(false);
-  }, []);
+  }, [ageOption, driverOption, eventInterest, searchQuery]);
 
   const columns = [
     {
@@ -72,84 +80,37 @@ function Database({ handleHideDatabase }) {
     },
   ];
 
-  const onSearch = e => {
-    const data = [];
-    for (let i = 0; i < volunteerData.length; i += 1) {
-      const person = volunteerData[i];
-      if (
-        person.firstName.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        person.lastName.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        person.role.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        person.email.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        person.phone.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        person.addressCity.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        person.addressState.toLowerCase().includes(e.target.value.toLowerCase())
-      ) {
-        if (
-          (currentDriverOption === 'Can Drive' && person.canDrive) ||
-          (currentDriverOption === "Can't Drive" && !person.canDrive) ||
-          currentDriverOption === 'All'
-        ) {
-          data.push(person);
-        }
-      }
-    }
-    setSearchCriterion(e.target.value.toLowerCase());
-    setFilteredData(data);
-  };
-
-  const setDriver = option => {
-    const data = [];
-    for (let i = 0; i < volunteerData.length; i += 1) {
-      const person = volunteerData[i];
-      if (
-        person.firstName.toLowerCase().includes(searchCriterion) ||
-        person.lastName.toLowerCase().includes(searchCriterion) ||
-        person.role.toLowerCase().includes(searchCriterion) ||
-        person.email.toLowerCase().includes(searchCriterion) ||
-        person.phone.toLowerCase().includes(searchCriterion) ||
-        person.addressCity.toLowerCase().includes(searchCriterion) ||
-        person.addressState.toLowerCase().includes(searchCriterion)
-      ) {
-        if (
-          (option === 'Can Drive' && person.canDrive) ||
-          (option === "Can't Drive" && !person.canDrive) ||
-          option === 'All'
-        ) {
-          data.push(person);
-        }
-      }
-    }
-    setCurrentDriverOption(option);
-    setFilteredData(data);
-  };
-
   const eventInterestMenu = (
     <Menu className={styles.menu}>
-      <Menu.Item key="all" className={styles.menu}>
+      <Menu.Item key="all" className={styles.menu} onClick={() => setEventInterest('All')}>
         All
       </Menu.Item>
-      <Menu.Item key="distribution" className={styles.menu}>
+      <Menu.Item
+        key="distribution"
+        className={styles.menu}
+        onClick={() => setEventInterest('Distributions')}
+      >
         Distributions
       </Menu.Item>
-      <Menu.Item key="food" className={styles.menu}>
+      <Menu.Item
+        key="food"
+        className={styles.menu}
+        onClick={() => setEventInterest('Food Running')}
+      >
         Food Running
-      </Menu.Item>
-      <Menu.Item key="other" className={styles.menu}>
-        Other
       </Menu.Item>
     </Menu>
   );
 
   const isDriverMenu = (
     <Menu className={styles.menu}>
-      <Menu.Item key="1" className={styles.menu} onClick={() => setDriver('All')}>
+      <Menu.Item key="1" className={styles.menu} onClick={() => setDriverOption('All')}>
         All
       </Menu.Item>
-      <Menu.Item key="2" className={styles.menu} onClick={() => setDriver('Can Drive')}>
+      <Menu.Item key="2" className={styles.menu} onClick={() => setDriverOption('Can Drive')}>
         Can Drive
       </Menu.Item>
-      <Menu.Item key="3" className={styles.menu} onClick={() => setDriver("Can't Drive")}>
+      <Menu.Item key="3" className={styles.menu} onClick={() => setDriverOption('Cannot Drive')}>
         Cannot Drive
       </Menu.Item>
     </Menu>
@@ -157,14 +118,14 @@ function Database({ handleHideDatabase }) {
 
   const ageMenu = (
     <Menu className={styles.menu}>
-      <Menu.Item key="all" className={styles.menu}>
+      <Menu.Item key="all" className={styles.menu} onClick={() => setAgeOption('All')}>
         All
       </Menu.Item>
-      <Menu.Item key="adult" className={styles.menu}>
-        Adult (18 and older)
+      <Menu.Item key="adult" className={styles.menu} onClick={() => setAgeOption('Adult')}>
+        Adult (18+)
       </Menu.Item>
-      <Menu.Item key="minor" className={styles.menu}>
-        Minor (17 and younger)
+      <Menu.Item key="minor" className={styles.menu} onClick={() => setAgeOption('Minor')}>
+        Minor (&lt;18)
       </Menu.Item>
     </Menu>
   );
@@ -197,7 +158,7 @@ function Database({ handleHideDatabase }) {
               <Input
                 size="large"
                 placeholder="Search by name, email, role..."
-                onChange={onSearch}
+                onChange={e => setSearchQuery(e.target.value)}
                 prefix={<SearchOutlined className={styles.filterSearchOutlined} />}
               />
             </Col>
@@ -215,7 +176,7 @@ function Database({ handleHideDatabase }) {
                 <Dropdown overlay={eventInterestMenu}>
                   <Button className={styles['dropdown-button']}>
                     <div className={styles['dropdown-button-text']}>
-                      All
+                      {eventInterest}
                       <DownOutlined />
                     </div>
                   </Button>
@@ -229,7 +190,7 @@ function Database({ handleHideDatabase }) {
                 <Dropdown overlay={isDriverMenu}>
                   <Button className={styles['dropdown-button']}>
                     <div className={styles['dropdown-button-text']}>
-                      All
+                      {driverOption}
                       <DownOutlined />
                     </div>
                   </Button>
@@ -243,7 +204,7 @@ function Database({ handleHideDatabase }) {
                 <Dropdown overlay={ageMenu}>
                   <Button className={styles['dropdown-button']}>
                     <div className={styles['dropdown-button-text']}>
-                      {currentDriverOption}
+                      {ageOption}
                       <DownOutlined />
                     </div>
                   </Button>
@@ -258,7 +219,7 @@ function Database({ handleHideDatabase }) {
         <div className={styles.table}>
           <Table
             columns={columns}
-            dataSource={filteredData}
+            dataSource={volunteerData}
             loading={isLoading}
             size="small"
             rowClassName={styles['table-row']}

@@ -30,7 +30,7 @@ const timePairs = Object.entries(afterTimes).map(([start, end]) => [
   end.substring(0, 5),
 ]);
 
-const HeatMap = ({ setSelectedTimeslot }) => {
+const HeatMap = ({ eventInterest, driverOption, searchQuery, setSelectedTimeslot }) => {
   const [options, setOptions] = useState(null);
   const [series, setSeries] = useState([]);
 
@@ -111,7 +111,7 @@ const HeatMap = ({ setSelectedTimeslot }) => {
     };
     setOptions(values);
     generateSeries(9, 17);
-  }, []);
+  }, [eventInterest, driverOption, searchQuery]);
 
   return (
     options && <Chart options={options} series={series} type="heatmap" width="800" height="500" />
@@ -119,6 +119,9 @@ const HeatMap = ({ setSelectedTimeslot }) => {
 };
 
 HeatMap.propTypes = {
+  eventInterest: PropTypes.string.isRequired,
+  driverOption: PropTypes.string.isRequired,
+  searchQuery: PropTypes.string.isRequired,
   setSelectedTimeslot: PropTypes.func.isRequired,
 };
 

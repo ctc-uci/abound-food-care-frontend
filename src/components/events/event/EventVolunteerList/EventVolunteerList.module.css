@@ -29,7 +29,7 @@
 }
 
 .header {
-  font-family: "Avenir";
+  font-family: 'Avenir';
   color: black;
   font-weight: 800;
   font-size: 28px;
@@ -63,7 +63,8 @@
   margin-right: 2vw;
 }
 
-.email-volunteers-button[disabled], .download-waivers-button[disabled] {
+.email-volunteers-button[disabled],
+.download-waivers-button[disabled] {
   background-color: #fff !important;
   color: #ccc;
   border: 1px dashed var(--eden);
