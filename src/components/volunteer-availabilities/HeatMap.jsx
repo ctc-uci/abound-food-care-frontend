@@ -78,7 +78,6 @@ const HeatMap = ({ eventInterest, driverOption, searchQuery }) => {
         times.push(String(formattedHour).concat(':30').concat(period));
       }
     }
-    // console.log('times', times);
 
     const generatedSeries = times.reverse().map(time => {
       return {
@@ -86,7 +85,6 @@ const HeatMap = ({ eventInterest, driverOption, searchQuery }) => {
         data: generateData(7, time, afterTimes[time], data),
       };
     });
-    // console.log('generatedSeries', generatedSeries);
     await setSeries(generatedSeries);
   };
 
@@ -117,8 +115,6 @@ const HeatMap = ({ eventInterest, driverOption, searchQuery }) => {
     };
     setOptions(values);
     generateSeries(9, 17);
-    // console.log(options);
-    // console.log(series);
   }, [eventInterest, driverOption, searchQuery]);
 
   const renderChart = () => {
