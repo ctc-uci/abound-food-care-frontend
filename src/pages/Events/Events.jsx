@@ -185,7 +185,7 @@ const Events = ({ cookies }) => {
   const renderMobileCreateNewEventButton = () => {
     return (
       <div>
-        <Link to="/events/create">
+        <Link to="/event/create">
           <Button
             className={styles['mobile-new-event-btn']}
             type="primary"
