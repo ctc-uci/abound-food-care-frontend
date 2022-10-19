@@ -96,6 +96,11 @@
   display: none;
 }
 
+.pagination {
+  display: flex;
+  justify-content: center;
+}
+
 @media (max-width: 1050px) {
   .search-bar {
     width: 75%;

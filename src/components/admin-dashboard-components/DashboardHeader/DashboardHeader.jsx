@@ -20,7 +20,12 @@ const DashboardHeader = ({ userId, isAdmin }) => {
 
     if (isAdmin) {
       // admin statistics
-      const totalEvents = await AFCBackend.get('/events/total');
+      const totalEvents = await AFCBackend.get('/events/total', {
+        params: {
+          status: '',
+          type: 'all',
+        },
+      });
       const totalVolunteers = await AFCBackend.get('/volunteers/total');
       setFirstStatistic(totalEvents.data.count);
       setSecondStatistic(totalVolunteers.data.count);
