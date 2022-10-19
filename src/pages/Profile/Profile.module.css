@@ -1,0 +1,19 @@
+@import '../../common/global.css';
+
+.profileContainer {
+  margin-left: 15px;
+}
+
+.profileHeader {
+  font-family: Avenir;
+  font-size: 36px;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.noWaivers {
+  font-family: Avenir;
+  font-size: 16px;
+  font-weight: 300;
+  margin-top: 8px;
+}

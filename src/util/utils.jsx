@@ -37,25 +37,78 @@ const getHourDiff = (timestamp1, timestamp2) => {
   return diff % 1 === 0 ? diff : diff.toFixed(2);
 };
 
-const buildLanguagesArray = values => {
-  const languages = [
-    'english',
-    'spanish',
-    'french',
-    'chinese',
-    'tagalog',
-    'korean',
-    'arabic',
-    'german',
-    'vietnamese',
-  ];
+const languageOptions = [
+  'english',
+  'spanish',
+  'french',
+  'chinese',
+  'tagalog',
+  'korean',
+  'arabic',
+  'german',
+  'vietnamese',
+];
 
-  return languages.filter(lang => values[lang]);
-};
+const buildLanguagesArray = values => languageOptions.filter(lang => values[lang]);
 
 const dayOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 const timeOfDay = ['9:00', '10:00', '11:00', '12:00', '1:00', '2:00', '3:00', '4:00', '5:00'];
+
+const stateAbbrs = [
+  'AK',
+  'AL',
+  'AR',
+  'AZ',
+  'CA',
+  'CO',
+  'CT',
+  'DC',
+  'DE',
+  'FL',
+  'GA',
+  'HI',
+  'IA',
+  'ID',
+  'IL',
+  'IN',
+  'KS',
+  'KY',
+  'LA',
+  'MA',
+  'MD',
+  'ME',
+  'MI',
+  'MN',
+  'MO',
+  'MS',
+  'MT',
+  'NC',
+  'ND',
+  'NE',
+  'NH',
+  'NJ',
+  'NM',
+  'NV',
+  'NY',
+  'OH',
+  'OK',
+  'OR',
+  'PA',
+  'PR',
+  'RI',
+  'SC',
+  'SD',
+  'TN',
+  'TX',
+  'UT',
+  'VA',
+  'VT',
+  'WA',
+  'WI',
+  'WV',
+  'WY',
+];
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -67,9 +120,11 @@ export {
   getMonthString,
   getTimeInPST,
   getHourDiff,
+  languageOptions,
   buildLanguagesArray,
   dayOfWeek,
   timeOfDay,
+  stateAbbrs,
   phoneRegExp,
   zipRegExp,
 };

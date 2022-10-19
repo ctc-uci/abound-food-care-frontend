@@ -6,12 +6,13 @@ import { Radio, Form, Input, Button, Typography } from 'antd';
 import PropTypes from 'prop-types';
 import { AFCBackend } from '../../util/utils';
 
+import styles from './ProfileComponents.module.css';
+
 const { Text } = Typography;
 
-const ProfileDUIAndCrimHistory = ({ userId }) => {
+const ProfileDUIAndCrimHistory = ({ userId, volunteerData, setVolunteerData }) => {
   const [componentSize, setComponentSize] = useState('default');
   const [isEditable, setIsEditable] = useState(false);
-  const [defaultValues, setDefaultValues] = useState({});
 
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
@@ -36,24 +37,12 @@ const ProfileDUIAndCrimHistory = ({ userId }) => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema), mode: 'onChange', delayError: 750 });
 
-  const getVolunteerData = async () => {
-    try {
-      const { data: volunteerData } = await AFCBackend.get(`/users/${userId}`);
-      setDefaultValues({
-        duiHistory: volunteerData.duiHistory,
-        duiHistoryDetails: volunteerData.duiHistoryDetails,
-        criminalHistory: volunteerData.criminalHistory,
-        criminalHistoryDetails: volunteerData.criminalHistoryDetails,
-        additionalInformation: volunteerData.additionalInformation,
-      });
-      setValue('duiHistory', volunteerData.duiHistory);
-      setValue('duiHistoryDetails', volunteerData.duiHistoryDetails);
-      setValue('criminalHistory', volunteerData.criminalHistory);
-      setValue('criminalHistoryDetails', volunteerData.criminalHistoryDetails);
-      setValue('additionalInfo', volunteerData.additionalInformation);
-    } catch (e) {
-      console.log(e.message);
-    }
+  const getVolunteerData = () => {
+    setValue('duiHistory', volunteerData.duiHistory);
+    setValue('duiHistoryDetails', volunteerData.duiHistoryDetails);
+    setValue('criminalHistory', volunteerData.criminalHistory);
+    setValue('criminalHistoryDetails', volunteerData.criminalHistoryDetails);
+    setValue('additionalInfo', volunteerData.additionalInformation);
   };
 
   const handleEdit = () => {
@@ -62,11 +51,11 @@ const ProfileDUIAndCrimHistory = ({ userId }) => {
 
   const handleCancel = () => {
     setIsEditable(false);
-    setValue('duiHistory', defaultValues.duiHistory);
-    setValue('duiHistoryDetails', defaultValues.duiHistoryDetails);
-    setValue('criminalHistory', defaultValues.criminalHistory);
-    setValue('criminalHistoryDetails', defaultValues.criminalHistoryDetails);
-    setValue('additionalInfo', defaultValues.additionalInformation);
+    setValue('duiHistory', volunteerData.duiHistory);
+    setValue('duiHistoryDetails', volunteerData.duiHistoryDetails);
+    setValue('criminalHistory', volunteerData.criminalHistory);
+    setValue('criminalHistoryDetails', volunteerData.criminalHistoryDetails);
+    setValue('additionalInfo', volunteerData.additionalInformation);
   };
 
   const saveVolunteerData = async values => {
@@ -78,7 +67,8 @@ const ProfileDUIAndCrimHistory = ({ userId }) => {
         criminalHistoryDetails: values.criminalHistoryDetails,
         additionalInformation: values.additionalInfo,
       };
-      await AFCBackend.put(`/users/dui-criminal/${userId}`, payload);
+      const updatedUser = await AFCBackend.put(`/users/dui-criminal/${userId}`, payload);
+      setVolunteerData(updatedUser.data);
     } catch (e) {
       console.log(e.message);
     }
@@ -89,7 +79,7 @@ const ProfileDUIAndCrimHistory = ({ userId }) => {
   }, []);
 
   return (
-    <div>
+    <div className={styles.duiCrimHistoryContainer}>
       <Form
         onFinish={handleSubmit(saveVolunteerData)}
         layout="vertical"
@@ -98,13 +88,17 @@ const ProfileDUIAndCrimHistory = ({ userId }) => {
         size={componentSize}
         onValuesChange={onFormLayoutChange}
       >
-        <div style={{ float: 'right' }}>
+        <div className={styles.btnsContainer}>
           {isEditable && (
-            <Button className="cancel-btn" onClick={handleCancel}>
+            <Button className={styles.cancelBtn} onClick={handleCancel}>
               Cancel
             </Button>
           )}
-          <Button className="edit-save-btn" htmlType="submit" onClick={handleEdit}>
+          <Button
+            className={`${styles.editSaveBtn} ${!isEditable && styles.editBtnInactive}`}
+            htmlType="submit"
+            onClick={handleEdit}
+          >
             {isEditable ? 'Save' : 'Edit'}
           </Button>
         </div>
@@ -197,6 +191,8 @@ const ProfileDUIAndCrimHistory = ({ userId }) => {
 
 ProfileDUIAndCrimHistory.propTypes = {
   userId: PropTypes.string.isRequired,
+  volunteerData: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  setVolunteerData: PropTypes.func.isRequired,
 };
 
 export default ProfileDUIAndCrimHistory;
