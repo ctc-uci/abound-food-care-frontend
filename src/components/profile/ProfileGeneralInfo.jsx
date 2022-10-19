@@ -5,26 +5,19 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, DatePicker, Form, Input, Radio, Row, Col, Typography } from 'antd';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import { AFCBackend } from '../../util/utils';
+import { AFCBackend, phoneRegExp, zipRegExp, stateAbbrs } from '../../util/utils';
+
+import styles from './ProfileComponents.module.css';
 
 const { Text } = Typography;
 
-const ProfileGeneralInfo = ({ userId }) => {
+const ProfileGeneralInfo = ({ userId, volunteerData, setVolunteerData }) => {
   const [isEditable, setIsEditable] = useState(false);
-  const [defaultValues, setDefaultValues] = useState({});
   const [componentSize, setComponentSize] = useState('default');
 
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
   };
-
-  const inputBoxStyle = {
-    width: '50%',
-  };
-
-  const phoneRegExp =
-    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
-  const zipRegExp = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
 
   const schema = yup.object({
     organization: yup.string().required(),
@@ -43,6 +36,7 @@ const ProfileGeneralInfo = ({ userId }) => {
     addressState: yup
       .string()
       .test('len', 'Must be a 2-letter state code', val => val.length === 2)
+      .test('validState', 'Must be a valid state abbreviation', val => stateAbbrs.includes(val))
       .required('State is a required field'),
   });
 
@@ -53,34 +47,24 @@ const ProfileGeneralInfo = ({ userId }) => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema), mode: 'onChange', delayError: 750 });
 
-  const getVolunteerData = async () => {
-    try {
-      const { data: volunteerData } = await AFCBackend.get(`/users/${userId}`);
-      setDefaultValues({
-        organization: volunteerData.organization,
-        phone: volunteerData.phone,
-        preferredContactMethod: volunteerData.preferredContactMethod,
-        addressStreet: volunteerData.addressStreet,
-        addressCity: volunteerData.addressCity,
-        addressState: volunteerData.addressState,
-        addressZip: volunteerData.addressZip,
-      });
-      setValue('firstName', volunteerData.firstName);
-      setValue('lastName', volunteerData.lastName);
-      setValue('organization', volunteerData.organization);
+  const getVolunteerData = () => {
+    [
+      'firstName',
+      'lastName',
+      'organization',
+      'email',
+      'phone',
+      'preferredContactMethod',
+      'addressStreet',
+      'addressCity',
+      'addressState',
+      'addressZip',
+    ].forEach(attr => setValue(attr, volunteerData[attr]));
+    if (volunteerData.birthdate) {
       setValue(
         'birthdate',
         moment(new Date(volunteerData.birthdate).toISOString().split('T')[0], 'YYYY-MM-DD'),
       );
-      setValue('email', volunteerData.email);
-      setValue('phone', volunteerData.phone);
-      setValue('preferredContactMethod', volunteerData.preferredContactMethod);
-      setValue('addressStreet', volunteerData.addressStreet);
-      setValue('addressCity', volunteerData.addressCity);
-      setValue('addressState', volunteerData.addressState);
-      setValue('addressZip', volunteerData.addressZip);
-    } catch (e) {
-      console.log(e.message);
     }
   };
 
@@ -90,13 +74,15 @@ const ProfileGeneralInfo = ({ userId }) => {
 
   const handleCancel = () => {
     setIsEditable(false);
-    setValue('organization', defaultValues.organization);
-    setValue('phone', defaultValues.phone);
-    setValue('preferredContactMethod', defaultValues.preferredContactMethod);
-    setValue('addressStreet', defaultValues.addressStreet);
-    setValue('addressCity', defaultValues.addressCity);
-    setValue('addressState', defaultValues.addressState);
-    setValue('addressZip', defaultValues.addressZip);
+    [
+      'organization',
+      'phone',
+      'preferredContactMethod',
+      'addressStreet',
+      'addressCity',
+      'addressState',
+      'addressZip',
+    ].forEach(attr => setValue(attr, volunteerData[attr]));
   };
 
   const saveVolunteerData = async values => {
@@ -110,19 +96,23 @@ const ProfileGeneralInfo = ({ userId }) => {
         addressState: values.addressState,
         addressZip: values.addressZip,
       };
-      await AFCBackend.put(`/users/general-info/${userId}`, payload);
+      const updatedUser = await AFCBackend.put(`/users/general-info/${userId}`, payload);
+      setVolunteerData(updatedUser.data);
     } catch (e) {
       console.log(e.message);
     }
   };
 
-  useEffect(async () => {
-    await getVolunteerData();
-  }, []);
+  useEffect(() => {
+    if (!volunteerData) {
+      return;
+    }
+    getVolunteerData();
+  }, [volunteerData]);
 
   return (
     <>
-      <div>
+      <div className={styles.generalInfoContainer}>
         <Form
           onFinish={handleSubmit(saveVolunteerData)}
           onValuesChange={onFormLayoutChange}
@@ -131,18 +121,22 @@ const ProfileGeneralInfo = ({ userId }) => {
           labelCol={{ span: 20 }}
           name="nest-messages"
         >
-          <div style={{ float: 'right' }}>
+          <div className={styles.btnsContainer}>
             {isEditable && (
-              <Button className="cancel-btn" onClick={handleCancel}>
+              <Button className={styles.cancelBtn} onClick={handleCancel}>
                 Cancel
               </Button>
             )}
-            <Button className="edit-save-btn" htmlType="submit" onClick={handleEdit}>
+            <Button
+              className={`${styles.editSaveBtn} ${!isEditable && styles.editBtnInactive}`}
+              htmlType="submit"
+              onClick={handleEdit}
+            >
               {isEditable ? 'Save' : 'Edit'}
             </Button>
           </div>
           <Row>
-            <Col span={6}>
+            <Col span={6} className={styles.firstNameCol}>
               <Controller
                 control={control}
                 name="firstName"
@@ -150,20 +144,22 @@ const ProfileGeneralInfo = ({ userId }) => {
                   <Form.Item label="First Name">
                     <Input onChange={onChange} value={value} ref={ref} disabled />
                     <Text type="danger">
-                      {errors.firstName && <p>{errors.firstName.message}</p>}
+                      {isEditable && errors.firstName && <p>{errors.firstName.message}</p>}
                     </Text>
                   </Form.Item>
                 )}
               />
             </Col>
-            <Col span={6}>
+            <Col span={6} className={styles.lastNameCol}>
               <Controller
                 control={control}
                 name="lastName"
                 render={({ field: { onChange, value, ref } }) => (
                   <Form.Item label="Last Name">
                     <Input onChange={onChange} value={value} ref={ref} disabled />
-                    <Text type="danger">{errors.lastName && <p>{errors.lastName.message}</p>}</Text>
+                    <Text type="danger">
+                      {isEditable && errors.lastName && <p>{errors.lastName.message}</p>}
+                    </Text>
                   </Form.Item>
                 )}
               />
@@ -176,14 +172,14 @@ const ProfileGeneralInfo = ({ userId }) => {
             render={({ field: { onChange, value, ref } }) => (
               <Form.Item label="Organization">
                 <Input
-                  style={inputBoxStyle}
+                  className={styles.halfWidth}
                   onChange={onChange}
                   value={value}
                   ref={ref}
                   disabled={!isEditable}
                 />
                 <Text type="danger">
-                  {errors.organization && <p>{errors.organization.message}</p>}
+                  {isEditable && errors.organization && <p>{errors.organization.message}</p>}
                 </Text>
               </Form.Item>
             )}
@@ -195,13 +191,16 @@ const ProfileGeneralInfo = ({ userId }) => {
             render={({ field: { onChange, value, ref } }) => (
               <Form.Item label="Birthday">
                 <DatePicker
+                  className={styles.halfWidth}
                   placeholder="Select date"
                   onChange={onChange}
                   value={value}
                   ref={ref}
                   disabled
                 />
-                <Text type="danger">{errors.birthdate && <p>{errors.birthdate.message}</p>}</Text>
+                <Text type="danger">
+                  {isEditable && errors.birthdate && <p>{errors.birthdate.message}</p>}
+                </Text>
               </Form.Item>
             )}
           />
@@ -211,8 +210,16 @@ const ProfileGeneralInfo = ({ userId }) => {
             name="email"
             render={({ field: { onChange, value, ref } }) => (
               <Form.Item label="Email">
-                <Input style={inputBoxStyle} onChange={onChange} value={value} ref={ref} disabled />
-                <Text type="danger">{errors.email && <p>{errors.email.message}</p>}</Text>
+                <Input
+                  className={styles.halfWidth}
+                  onChange={onChange}
+                  value={value}
+                  ref={ref}
+                  disabled
+                />
+                <Text type="danger">
+                  {isEditable && errors.email && <p>{errors.email.message}</p>}
+                </Text>
               </Form.Item>
             )}
           />
@@ -223,13 +230,15 @@ const ProfileGeneralInfo = ({ userId }) => {
             render={({ field: { onChange, value, ref } }) => (
               <Form.Item label="Phone Number">
                 <Input
-                  style={inputBoxStyle}
+                  className={styles.halfWidth}
                   onChange={onChange}
                   value={value}
                   ref={ref}
                   disabled={!isEditable}
                 />
-                <Text type="danger">{errors.phone && <p>{errors.phone.message}</p>}</Text>
+                <Text type="danger">
+                  {isEditable && errors.phone && <p>{errors.phone.message}</p>}
+                </Text>
               </Form.Item>
             )}
           />
@@ -240,11 +249,17 @@ const ProfileGeneralInfo = ({ userId }) => {
             render={({ field: { onChange, ref, value } }) => (
               <Form.Item label="Preferred Contact Method">
                 <Radio.Group onChange={onChange} ref={ref} value={value} disabled={!isEditable}>
-                  <Radio value="email">Email</Radio>
-                  <Radio value="phone">Phone</Radio>
+                  <Radio value="email" className={styles.giRadioOpt}>
+                    Email
+                  </Radio>
+                  <Radio value="phone" className={styles.giRadioOpt}>
+                    Phone
+                  </Radio>
                 </Radio.Group>
                 <Text type="danger">
-                  {errors.preferredContactMethod && <p>{errors.preferredContactMethod.message}</p>}
+                  {isEditable && errors.preferredContactMethod && (
+                    <p>{errors.preferredContactMethod.message}</p>
+                  )}
                 </Text>
               </Form.Item>
             )}
@@ -256,55 +271,55 @@ const ProfileGeneralInfo = ({ userId }) => {
             render={({ field: { onChange, value, ref } }) => (
               <Form.Item label="Street Address">
                 <Input
-                  style={inputBoxStyle}
+                  className={styles.halfWidth}
                   onChange={onChange}
                   value={value}
                   ref={ref}
                   disabled={!isEditable}
                 />
                 <Text type="danger">
-                  {errors.addressStreet && <p>{errors.addressStreet.message}</p>}
+                  {isEditable && errors.addressStreet && <p>{errors.addressStreet.message}</p>}
                 </Text>
               </Form.Item>
             )}
           />
 
           <Row>
-            <Col span={6}>
+            <Col span={7}>
               <Controller
                 control={control}
                 name="addressCity"
                 render={({ field: { onChange, value, ref } }) => (
                   <Form.Item label="City">
                     <Input
-                      style={inputBoxStyle}
+                      className={styles.giCityField}
                       onChange={onChange}
                       value={value}
                       ref={ref}
                       disabled={!isEditable}
                     />
                     <Text type="danger">
-                      {errors.addressCity && <p>{errors.addressCity.message}</p>}
+                      {isEditable && errors.addressCity && <p>{errors.addressCity.message}</p>}
                     </Text>
                   </Form.Item>
                 )}
               />
             </Col>
-            <Col span={3}>
+            <Col span={2}>
               <Controller
                 control={control}
                 name="addressState"
                 render={({ field: { onChange, value, ref } }) => (
                   <Form.Item label="State">
                     <Input
-                      style={inputBoxStyle}
+                      className={styles.giStateField}
                       onChange={onChange}
                       value={value}
                       ref={ref}
                       disabled={!isEditable}
                     />
                     <Text type="danger">
-                      {errors.addressState && <p>{errors.addressState.message}</p>}
+                      {isEditable && errors.addressState && <p>{errors.addressState.message}</p>}
                     </Text>
                   </Form.Item>
                 )}
@@ -318,7 +333,7 @@ const ProfileGeneralInfo = ({ userId }) => {
                   <Form.Item label="Zipcode">
                     <Input onChange={onChange} value={value} ref={ref} disabled={!isEditable} />
                     <Text type="danger">
-                      {errors.addressZip && <p>{errors.addressZip.message}</p>}
+                      {isEditable && errors.addressZip && <p>{errors.addressZip.message}</p>}
                     </Text>
                   </Form.Item>
                 )}
@@ -333,6 +348,8 @@ const ProfileGeneralInfo = ({ userId }) => {
 
 ProfileGeneralInfo.propTypes = {
   userId: PropTypes.string.isRequired,
+  volunteerData: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  setVolunteerData: PropTypes.func.isRequired,
 };
 
 export default ProfileGeneralInfo;

@@ -6,9 +6,9 @@ import WaiverPreviewCard from './WaiverPreviewCard';
 const WaiversGrid = ({ waivers }) => (
   <div>
     <Row gutter={[16, 18]}>
-      {waivers.map(({ name, link, uploadDate, waiverId }) => (
-        <Col className="gutter-row" span={8} key={waiverId}>
-          <WaiverPreviewCard name={name} link={link} uploadDate={uploadDate} />
+      {waivers.map(waiver => (
+        <Col className="gutter-row" span={8} key={waiver.waiverId}>
+          <WaiverPreviewCard {...waiver} />
         </Col>
       ))}
     </Row>
