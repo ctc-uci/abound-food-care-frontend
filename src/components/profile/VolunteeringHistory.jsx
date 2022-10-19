@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { FieldTimeOutlined, ScheduleOutlined } from '@ant-design/icons';
 import { ConfigProvider, Table, Button, Space, Typography } from 'antd';
 import { AFCBackend } from '../../util/utils';
@@ -7,8 +8,7 @@ import EditHours from '../volunteer-profile-history/EditHours';
 
 const { Title } = Typography;
 
-function VolunteeringHistory() {
-  const [userId, setUserId] = useState(2);
+const VolunteeringHistory = ({ userId }) => {
   const [hoursCount, setHoursCount] = useState(0);
   const [eventCount, setEventCount] = useState(0);
   const [unsubmittedData, setUnsubmittedData] = useState([]);
@@ -67,7 +67,6 @@ function VolunteeringHistory() {
   };
 
   useEffect(() => {
-    setUserId(2);
     getEventsCount();
     getHoursCount();
     setAllHoursData();
@@ -295,6 +294,10 @@ function VolunteeringHistory() {
       </div>
     </ConfigProvider>
   );
-}
+};
+
+VolunteeringHistory.propTypes = {
+  userId: PropTypes.string.isRequired,
+};
 
 export default VolunteeringHistory;

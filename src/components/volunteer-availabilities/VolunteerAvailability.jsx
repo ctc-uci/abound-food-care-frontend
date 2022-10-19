@@ -9,14 +9,30 @@ import styles from './VolunteerAvailability.module.css';
 const VolunteerAvailability = props => {
   const { handleViewDatabase } = props;
 
-  const showDatabase = () => {
-    handleViewDatabase();
-  };
-  const [totalVolunteers, setTotalVolunteers] = useState(-1);
+  // const showDatabase = () => {
+  //   handleViewDatabase();
+  // };
+  const [selectedTimeslot, setSelectedTimeslot] = useState({});
+  const [volunteers, setVolunteers] = useState([]);
   const [availableVolunteers, setAvailableVolunteers] = useState([]);
+  const [filteredVolunteers, setFilteredVolunteers] = useState([]);
   const [eventInterest, setEventInterest] = useState('All');
   const [driverOption, setDriverOption] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(async () => {
+    const { data } = await AFCBackend.get('/volunteers/');
+    const mappedVolunteers = data.map(({ userId, firstName, lastName, availabilities }) => ({
+      id: userId,
+      firstName,
+      lastName,
+      available: !!availabilities,
+    }));
+    setVolunteers(mappedVolunteers);
+    const availables = mappedVolunteers.filter(v => v.available);
+    setAvailableVolunteers(availables);
+    setFilteredVolunteers(availables);
+  }, []);
 
   const getVolunteers = async () => {
     try {
@@ -30,10 +46,10 @@ const VolunteerAvailability = props => {
       });
       setAvailableVolunteers(data);
 
-      // sets the total # volunteers only the first time
-      if (totalVolunteers === -1) {
-        setTotalVolunteers(data.length);
-      }
+      // // sets the total # volunteers only the first time
+      // if (availableVolunteers.length === 0) {
+      //   setTotalVolunteers(data.length);
+      // }
     } catch (err) {
       console.log(err);
     }
@@ -79,6 +95,23 @@ const VolunteerAvailability = props => {
     </Menu>
   );
 
+  useEffect(async () => {
+    const { day, time } = selectedTimeslot;
+    if (selectedTimeslot === {} || !day || !time) {
+      setFilteredVolunteers(availableVolunteers);
+      return;
+    }
+    const [start, end] = time;
+    const { data } = await AFCBackend.get(
+      `volunteers/available/day/${day}/start/${start}/end/${end}`,
+    );
+    const processedData = data.map(e => {
+      const { first_name: firstName, last_name: lastName, user_id: id } = e;
+      return { id, firstName, lastName };
+    });
+    setFilteredVolunteers(processedData);
+  }, [selectedTimeslot]);
+
   return (
     <div className="volunteer-availabilities">
       <div>
@@ -93,7 +126,7 @@ const VolunteerAvailability = props => {
               onChange={e => setSearchQuery(e.target.value)}
             />
             <div className="right-align">
-              <button type="button" onClick={showDatabase}>
+              <button type="button" onClick={handleViewDatabase}>
                 View Database
               </button>
               <button type="button">Export</button>
@@ -130,23 +163,21 @@ const VolunteerAvailability = props => {
           </div>
         </div>
         <HeatMap
+          setSelectedTimeslot={setSelectedTimeslot}
           eventInterest={eventInterest}
           driverOption={driverOption}
           searchQuery={searchQuery}
-          availableVolunteers={availableVolunteers}
         />
       </div>
       <div className="available-volunteers">
         <h2>
-          Volunteers ({availableVolunteers.length}/{totalVolunteers})
+          Volunteers ({filteredVolunteers.length}/{volunteers.length})
         </h2>
-        {availableVolunteers.map(v => {
-          return (
-            <p key={v.userId}>
-              {v.firstName} {v.lastName}
-            </p>
-          );
-        })}
+        {filteredVolunteers.map(({ id, firstName, lastName }) => (
+          <p key={id}>
+            {lastName}, {firstName}
+          </p>
+        ))}
       </div>
     </div>
   );

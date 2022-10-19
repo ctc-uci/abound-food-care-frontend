@@ -1,4 +1,4 @@
-@import '../../../common/global.css';
+@import '../../common/global.css';
 
 .events {
   margin: auto;
@@ -94,6 +94,11 @@
 
 .events-grid::-webkit-scrollbar {
   display: none;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
 }
 
 @media (max-width: 1050px) {

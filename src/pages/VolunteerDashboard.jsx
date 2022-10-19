@@ -28,11 +28,8 @@ const VolunteerDashboard = ({ cookies }) => {
       return (
         <>
           <Row className="dashboard-row" gutter={[32, 16]}>
-            <Col className="dashboard-col" span={18}>
+            <Col className="dashboard-col" span={24}>
               <EventGrid title="Upcoming Events" eventStatus="upcoming" />
-              {/* <AdminNotifications /> */}
-            </Col>
-            <Col className="dashboard-col" span={6}>
               <EventGrid title="Past Events" eventStatus="past" />
             </Col>
           </Row>

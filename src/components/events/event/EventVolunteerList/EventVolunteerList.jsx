@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Table, ConfigProvider } from 'antd';
+import { saveAs } from 'file-saver';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import { AFCBackend } from '../../../../util/utils';
@@ -29,15 +30,29 @@ const EventVolunteerList = ({ name, type, eventId, setViewVolunteers }) => {
     const eventWaivers = eventData[0].waivers;
     eventWaivers?.forEach(waiver => {
       if (waiver.userId) {
-        const matchingVolunteer = volunteerData.find(volunteer => {
-          return volunteer.userId === waiver.userId;
-        });
+        const matchingVolunteer =
+          volunteerData.find(volunteer => {
+            return volunteer.userId === waiver.userId;
+          }) ?? {};
         matchingVolunteer.waiver = waiver.link;
+        matchingVolunteer.waiverName = waiver.name;
       }
     });
-
     setVolunteers(volunteerData);
     setEmail(emailM);
+  };
+
+  const getAllWaivers = async volunteerData => {
+    const waiversZip = await AFCBackend.post(
+      '/waivers/download',
+      { volunteerData },
+      {
+        headers: { 'Content-Type': 'application/json' },
+        withCredentials: true,
+        responseType: 'blob',
+      },
+    );
+    await saveAs(waiversZip.data, `${name}-waivers.zip`);
   };
 
   useEffect(async () => {
@@ -112,17 +127,22 @@ const EventVolunteerList = ({ name, type, eventId, setViewVolunteers }) => {
               >
                 Email Volunteers
               </Button>
-              {/* TODO: add waiver download functionality */}
               <Button
                 type="primary"
                 disabled={volunteers.length === 0}
                 className={styles['download-waivers-button']}
+                onClick={() => getAllWaivers(volunteers)}
               >
                 Download All Waivers
               </Button>
             </div>
           </div>
-          <Table rowKey="email" dataSource={volunteers} columns={columns} loading={isLoading} />
+          <Table
+            rowKey={row => `${row.name} ${row.email}`}
+            dataSource={volunteers}
+            columns={columns}
+            loading={isLoading}
+          />
         </div>
       </div>
     </ConfigProvider>

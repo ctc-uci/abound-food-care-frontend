@@ -1,0 +1,22 @@
+.pagination-indicator {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  margin: 1% 0% 0% 0%;
+}
+
+.back-button,
+.forward-button {
+  margin: 0% 3% 0% 3%;
+}
+
+.middle-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.left-section {
+  float: left;
+}

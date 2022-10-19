@@ -1,18 +1,21 @@
 import { React, useState, useEffect } from 'react';
+import { instanceOf } from 'prop-types';
 import { Link } from 'react-router-dom';
-import { Input, Button, Radio, Row, Col, Card } from 'antd';
+import { Input, Button, Radio, Row, Col, Card, Pagination } from 'antd';
+import { withCookies, Cookies } from 'react-cookie';
 import { FilterOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { AFCBackend } from '../../../util/utils';
-import EventCard from '../event/EventCard/EventCard';
-import EventList from '../event/EventList/EventList';
-import AddEventTypeModal from '../CreateEvent/AddEventTypeModal';
-import useViewPort from '../../../common/useViewPort';
-import styles from './AdminEvents.module.css';
+import { AFCBackend } from '../../util/utils';
+import EventCard from '../../components/events/event/EventCard/EventCard';
+import EventList from '../../components/events/event/EventList/EventList';
+import AddEventTypeModal from '../../components/events/CreateEvent/AddEventTypeModal';
+import useViewPort from '../../common/useViewPort';
+import { cookieKeys } from '../../util/cookie_utils';
+import styles from './Events.module.css';
 import 'antd/dist/antd.less';
 
 // const { Title } = Typography;
 
-const AdminEvents = () => {
+const Events = ({ cookies }) => {
   const [eventTypeValue, setEventTypeValue] = useState('all');
   const [eventStatusValue, setEventStatusValue] = useState('all');
   const [loading, setLoading] = useState(true);
@@ -20,6 +23,10 @@ const AdminEvents = () => {
   const [allEvents, setAllEvents] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [showEventTypeModal, setShowEventTypeModal] = useState(false);
+  const [numEvents, setNumEvents] = useState(0);
+  const [displayedEvents, setDisplayedEvents] = useState([]);
+  const [pageSize, setPageSize] = useState(30);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const defaultEventTypes = [
     {
@@ -36,6 +43,7 @@ const AdminEvents = () => {
 
   const { width } = useViewPort();
   const breakpoint = 720;
+  // const PAGE_SIZE = 6;
 
   const eventStatusOptions = [
     { label: 'All', value: 'all' },
@@ -45,9 +53,16 @@ const AdminEvents = () => {
 
   const fetchAllEvents = async () => {
     try {
-      const { data: eventResponse } = await AFCBackend.get('/events');
+      const { data: eventResponse } = await AFCBackend.get('/events', {
+        params: {
+          status: eventStatusValue,
+          type: eventTypeValue,
+        },
+      });
+      setDisplayedEvents(eventResponse.slice(0, pageSize));
       setEventsData(eventResponse);
       setAllEvents(eventResponse);
+      setNumEvents(eventResponse.length);
     } catch (err) {
       console.error(err.message);
     }
@@ -59,14 +74,24 @@ const AdminEvents = () => {
     setLoading(false);
   }, []);
 
-  const onSearch = e => {
+  const onSearch = async e => {
     if (e.target.value === '') {
       setShowSearchResults(false);
       setEventsData(allEvents);
     } else {
       setShowSearchResults(true);
-      const searchSpecificEventData = eventsData.filter(event => event.name === e.target.value);
+      // const searchSpecificEventData = eventsData.filter(event => event.name === e.target.value);
+      const { data: searchSpecificEventData } = await AFCBackend.get('/events', {
+        params: {
+          status: eventStatusValue,
+          type: eventTypeValue,
+          searchInput: e.target.value,
+        },
+      });
       setEventsData(searchSpecificEventData);
+      setDisplayedEvents(searchSpecificEventData);
+      setNumEvents(searchSpecificEventData.length);
+      setCurrentPage(1);
     }
   };
 
@@ -80,52 +105,62 @@ const AdminEvents = () => {
     new Date(startDatetime) > new Date() ? 'upcoming' : 'past';
 
   const getEventsByStatus = (events, status) => {
-    let filteredEvents = events;
-    if (status === 'all') {
-      filteredEvents = events;
-    } else if (status === 'upcoming') {
-      filteredEvents = filteredEvents.filter(
-        event => determineStatus(event.startDatetime) === 'upcoming',
-      );
-    } else if (status === 'past') {
-      filteredEvents = filteredEvents.filter(
-        event => determineStatus(event.startDatetime) === 'past',
-      );
-    }
-    return filteredEvents;
+    const filteredEvents = {
+      all: events,
+      upcoming: events.filter(event => determineStatus(event.startDatetime) === 'upcoming'),
+      past: events.filter(event => determineStatus(event.startDatetime) === 'past'),
+    };
+    return filteredEvents[status];
   };
 
   const getEventsByTypeAndStatus = (type, status) => {
-    let filteredEvents = allEvents;
-    if (type === 'all') {
-      filteredEvents = allEvents;
-    } else if (type === 'distribution') {
-      filteredEvents = filteredEvents.filter(
-        event => event.eventType.toLowerCase() === 'distribution',
-      );
-    } else if (type === 'food') {
-      filteredEvents = filteredEvents.filter(
-        event => event.eventType.toLowerCase() === 'food running',
+    const filteredEvents = {
+      all: allEvents,
+      distribution: allEvents.filter(event => event.eventType.toLowerCase() === 'distribution'),
+      food: allEvents.filter(event => event.eventType.toLowerCase() === 'food running'),
+      other: allEvents.filter(
+        event =>
+          event.eventType.toLowerCase() !== 'distribution' &&
+          event.eventType.toLowerCase() !== 'food running',
+      ),
+    };
+    return getEventsByStatus(
+      ['all', 'distribution', 'food'].includes(type) ? filteredEvents[type] : filteredEvents.other,
+      status,
+    );
+  };
+
+  const onTypeChange = async e => {
+    setEventTypeValue(e.target.value);
+    const filteredEvents = await getEventsByTypeAndStatus(
+      e.target.value.toLowerCase(),
+      eventStatusValue,
+    );
+    setDisplayedEvents(filteredEvents.slice(0, pageSize));
+    setEventsData(filteredEvents);
+    setNumEvents(filteredEvents.length);
+    setCurrentPage(1);
+  };
+
+  const onStatusChange = async e => {
+    setEventStatusValue(e.target.value);
+    const filteredEvents = await getEventsByTypeAndStatus(eventTypeValue, e.target.value);
+    setDisplayedEvents(filteredEvents.slice(0, pageSize));
+    setEventsData(filteredEvents);
+    setNumEvents(filteredEvents.length);
+    setCurrentPage(1);
+  };
+
+  const onPageChange = (page, newPageSize) => {
+    setPageSize(newPageSize);
+    setCurrentPage(page);
+    if (eventsData.slice(newPageSize * (page - 1)).length >= newPageSize) {
+      setDisplayedEvents(
+        eventsData.slice(newPageSize * (page - 1), newPageSize * (page - 1) + newPageSize),
       );
     } else {
-      filteredEvents = filteredEvents.filter(
-        event =>
-          event.eventType !== 'Distribution' && event.eventType.toLowerCase() !== 'food running',
-      );
+      setDisplayedEvents(eventsData.slice(newPageSize * (page - 1)));
     }
-    return getEventsByStatus(filteredEvents, status);
-  };
-
-  const onTypeChange = e => {
-    setEventTypeValue(e.target.value);
-    const filteredEvents = getEventsByTypeAndStatus(e.target.value, eventStatusValue);
-    setEventsData(filteredEvents);
-  };
-
-  const onStatusChange = e => {
-    setEventStatusValue(e.target.value);
-    const filteredEvents = getEventsByTypeAndStatus(eventTypeValue, e.target.value);
-    setEventsData(filteredEvents);
   };
 
   const renderEventsGrid = events => {
@@ -150,7 +185,7 @@ const AdminEvents = () => {
   const renderMobileCreateNewEventButton = () => {
     return (
       <div>
-        <Link to="/events/create">
+        <Link to="/event/create">
           <Button
             className={styles['mobile-new-event-btn']}
             type="primary"
@@ -270,23 +305,35 @@ const AdminEvents = () => {
                 >
                   New Event Type
                 </Button> */}
-                <Link to="/events/create">
-                  <Button className={styles['new-event-btn']} type="primary">
-                    New Event
-                  </Button>
-                </Link>
-                <AddEventTypeModal
-                  addVisible={showEventTypeModal}
-                  setAddVisible={setShowEventTypeModal}
-                  eventsData={eventTypes}
-                  setEventsData={setEventTypes}
-                />
+                {cookies.get(cookieKeys.ROLE) === 'admin' && (
+                  <>
+                    <Link to="/events/create">
+                      <Button className={styles['new-event-btn']} type="primary">
+                        New Event
+                      </Button>
+                    </Link>
+                    <AddEventTypeModal
+                      addVisible={showEventTypeModal}
+                      setAddVisible={setShowEventTypeModal}
+                      eventsData={eventTypes}
+                      setEventsData={setEventTypes}
+                    />
+                  </>
+                )}
               </div>
             </Card>
             {eventsData.length > 0 ? (
               <div className={styles['events-grid']}>
                 {/* {width > breakpoint ? ( */}
-                <Row className={styles['event-card-row']}>{renderEventsGrid(eventsData)}</Row>
+                <Row className={styles['event-card-row']}>{renderEventsGrid(displayedEvents)}</Row>
+                <Pagination
+                  className={styles.pagination}
+                  current={currentPage}
+                  pageSize={pageSize}
+                  total={numEvents}
+                  onChange={onPageChange}
+                  pageSizeOptions={[10, 20, 30, 50]}
+                />
               </div>
             ) : (
               <Card className={styles.card}>
@@ -298,8 +345,11 @@ const AdminEvents = () => {
       </div>
     );
   };
-
   return width > breakpoint ? renderAdminEventsView() : renderMobileAdminEventsView();
 };
 
-export default AdminEvents;
+Events.propTypes = {
+  cookies: instanceOf(Cookies).isRequired,
+};
+
+export default withCookies(Events);

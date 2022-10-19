@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 const { Title } = Typography;
 
-const WaiverPreviewCard = ({ name, link, uploadDate }) => {
+const WaiverPreviewCard = ({ eventName, waiverName, link, imgSrc, description }) => {
   const { Meta } = Card;
   return (
     <div className="app">
@@ -16,22 +16,24 @@ const WaiverPreviewCard = ({ name, link, uploadDate }) => {
         }
         title={
           <Title level={4} ellipsis>
-            {name}
+            {eventName}
           </Title>
         }
-        style={{ width: 250 }}
-        cover={<img alt="" src={link} />}
+        style={{ width: '400px' }}
+        cover={<img alt="" src={imgSrc} />}
       >
-        <Meta title={name} description={uploadDate} />
+        <Meta title={waiverName} description={description} />
       </Card>
     </div>
   );
 };
 
 WaiverPreviewCard.propTypes = {
-  name: PropTypes.string.isRequired,
+  eventName: PropTypes.string.isRequired,
+  waiverName: PropTypes.string.isRequired,
   link: PropTypes.string.isRequired,
-  uploadDate: PropTypes.string.isRequired,
+  imgSrc: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
 };
 
 export default WaiverPreviewCard;

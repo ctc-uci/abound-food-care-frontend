@@ -1,0 +1,81 @@
+@import '../../common/global.css';
+
+.generalInfoContainer, .rolesSkillsContainer, .duiCrimHistoryContainer {
+  margin-top: 10px;
+}
+
+.btnsContainer {
+  float: right;
+  width: 150px;
+  margin-top: 2px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cancelBtn {
+  margin-right: 10px;
+}
+
+.editBtnInactive {
+  width: 100%;
+}
+
+.giRow {
+  width: 100%;
+}
+
+.giRadioOpt {
+  margin-right: 15px;
+}
+
+.firstNameCol {
+  margin-right: 75px;
+}
+
+.halfWidth {
+  width: 50%;
+}
+
+.giCityField {
+  width: 85%;
+}
+
+.giStateField {
+  width: 55%;
+}
+
+.rsLangOptionsContainer {
+  width: 800px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.rsLangOption {
+  flex: 1 1 25%;
+}
+
+.rsEventTagsContainer {
+  display: flex;
+}
+
+.rsEventTag {
+  margin-right: 20px;
+}
+
+.rsTalentsContainer {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.rsTalentCB {
+  flex: 1 1 50%;
+}
+
+.rsWlField {
+  margin-right: 10px;
+}
+
+.rsDistanceField {
+  width: 40%;
+  margin-right: 10px;
+}
