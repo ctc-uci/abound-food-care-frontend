@@ -13,6 +13,7 @@ import Profile from './pages/Profile/Profile';
 import Event from './pages/Event';
 import EventSignUp from './pages/EventSignUp';
 import Dashboard from './pages/Dashboard';
+import Hours from './pages/Hours';
 
 // Components
 import NavMenu from './components/NavMenu/NavMenu';
@@ -111,6 +112,17 @@ const App = () => {
                 element={
                   <ProtectedRoute
                     Component={Volunteers}
+                    redirectPath="/"
+                    roles={[AUTH_ROLES.ADMIN_ROLE]}
+                  />
+                }
+              />
+              <Route
+                path="/hours"
+                exact
+                element={
+                  <ProtectedRoute
+                    Component={Hours}
                     redirectPath="/"
                     roles={[AUTH_ROLES.ADMIN_ROLE]}
                   />
