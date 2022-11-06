@@ -1,0 +1,18 @@
+.search-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  align-items: center;
+  border-width: 1px;
+  border-style: solid;
+  color: #b9b9b9;
+  padding: 1em;
+}
+
+.filters {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  padding-top: 0.5em;
+}
