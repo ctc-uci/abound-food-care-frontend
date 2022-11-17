@@ -16,6 +16,7 @@
   justify-content: flex-start;
   padding-top: 0.5em;
 }
+<<<<<<< HEAD
 
 .approve-button {
   display: flex;
@@ -24,3 +25,5 @@
   flex-wrap: nowrap;
   align-items: center;
 }
+=======
+>>>>>>> aa3aae1db0f41711073cdd7b6a5143268876bce5
