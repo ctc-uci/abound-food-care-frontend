@@ -124,6 +124,30 @@ const Hours = () => {
   //   }, 6000);
   // };
 
+  const items = [
+    {
+      label: 'Submit and continue',
+      key: '1',
+    },
+  ];
+
+  const [loadings, setLoadings] = useState([]);
+
+  const enterLoading = index => {
+    setLoadings(state => {
+      const newLoadings = [...state];
+      newLoadings[index] = true;
+      return newLoadings;
+    });
+    setTimeout(() => {
+      setLoadings(state => {
+        const newLoadings = [...state];
+        newLoadings[index] = false;
+        return newLoadings;
+      });
+    }, 6000);
+  };
+
   const columns = [
     {
       title: 'User',
