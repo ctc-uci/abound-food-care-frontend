@@ -1,20 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, Input, Button, Typography, Space } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import { AFCBackend } from '../util/utils';
-import './Hours.css';
+import { AFCBackend } from '../../util/utils';
+import styles from './Hours.module.css';
 
 const { Title } = Typography;
 
 const Hours = () => {
   const [unapprovedVolunteersData, setUnapprovedVolunteersData] = useState([]);
   const [selectedHours, setSelectedHours] = useState([]);
+  const [error, setError] = useState('');
   const [search, setSearch] = useState('');
+  const [refresh, setRefresh] = useState(true);
 
   const approveHours = async (userId, eventId) => {
     try {
-      await AFCBackend.get(`/hours/approve/` + userId + '/' + eventId);
-      getUnapprovedVolunteers();
+      await AFCBackend.get(`/hours/approve/${userId}/${eventId}`);
+      setRefresh(true);
     } catch (e) {
       console.log(e.message);
     }
@@ -22,79 +24,65 @@ const Hours = () => {
 
   const approveMultipleHours = async selectedHoursList => {
     try {
-      for (let i = 0; i < selectedHoursList.length; i++) {
-        const userAndEventId = selectedHoursList[i].split(' ');
-        await AFCBackend.get(`/hours/approve/` + userAndEventId[0] + '/' + userAndEventId[1]);
-      }
-      getUnapprovedVolunteers();
+      await Promise.all(
+        selectedHoursList.map(async entry => {
+          const [userId, eventId] = entry.split(' ');
+          return AFCBackend.get(`/hours/approve/${userId}/${eventId}`);
+        }),
+      );
+      setRefresh(true);
     } catch (e) {
-      console.log(e.message);
+      setError(e.message);
     }
   };
 
   const declineHours = async (userId, eventId) => {
     try {
-      await AFCBackend.get(`/hours/decline/` + userId + '/' + eventId);
-      getUnapprovedVolunteers();
+      await AFCBackend.get(`/hours/decline/${userId}/${eventId}`);
+      setRefresh(true);
     } catch (e) {
-      console.log(e.message);
+      setError(e.message);
     }
   };
 
   const getUnapprovedVolunteers = async (searchQuery = '') => {
     try {
       const { data: unapprovedVolunteers } = await AFCBackend.get(
-        `/hours/unapproved/` + searchQuery,
+        `/hours/unapproved/${searchQuery}`,
       );
 
-      const unapprovedVolunteerHours = [];
+      const unapprovedVolunteerHours = await Promise.all(
+        unapprovedVolunteers.map(async v => {
+          const { userId } = v;
+          const { data: userData } = await AFCBackend.get(`/users/${userId}`);
 
-      for (let i = 0; i < unapprovedVolunteers.length; i++) {
-        const userId = unapprovedVolunteers[i]['userId'];
-        const { data: userData } = await AFCBackend.get(`/users/` + userId);
-
-        unapprovedVolunteerHours.push({
-          key: unapprovedVolunteers[i]['userId'] + ' ' + unapprovedVolunteers[i]['eventId'],
-          user: userData['firstName'] + ' ' + userData['lastName'],
-          organizations: userData['organization'],
-          event_name: unapprovedVolunteers[i]['event']['name'],
-          date: unapprovedVolunteers[i]['event']['startDatetime'].slice(0, 10),
-          start: unapprovedVolunteers[i]['event']['startDatetime'].slice(11, 16),
-          end: unapprovedVolunteers[i]['event']['endDatetime'].slice(11, 16),
-          approval: (
-            <Space>
-              <Button
-                type="secondary"
-                onClick={() =>
-                  declineHours(
-                    unapprovedVolunteers[i]['userId'],
-                    unapprovedVolunteers[i]['eventId'],
-                  )
-                }
-              >
-                {' '}
-                Decline{' '}
-              </Button>
-              <Button
-                type="primary"
-                onClick={() =>
-                  approveHours(
-                    unapprovedVolunteers[i]['userId'],
-                    unapprovedVolunteers[i]['eventId'],
-                  )
-                }
-              >
-                {' '}
-                Approve{' '}
-              </Button>
-            </Space>
-          ),
-        });
-      }
+          return {
+            key: `${v.userId} ${v.eventId}`,
+            user: `${userData.firstName} ${userData.lastName}`,
+            organizations: userData.organization,
+            event_name: v.event.name,
+            date: v.event.startDatetime.slice(0, 10),
+            start: v.event.startDatetime.slice(11, 16),
+            end: v.event.endDatetime.slice(11, 16),
+            approval: (
+              <Space>
+                <Button type="secondary" onClick={() => declineHours(v.userId, v.eventId)}>
+                  {' '}
+                  Decline{' '}
+                </Button>
+                <Button type="primary" onClick={() => approveHours(v.userId, v.eventId)}>
+                  {' '}
+                  Approve{' '}
+                </Button>
+              </Space>
+            ),
+          };
+        }),
+      );
 
       setUnapprovedVolunteersData(unapprovedVolunteerHours);
     } catch (e) {
-      console.log(e.message);
+      setError(e.message);
     }
   };
 
@@ -124,29 +112,29 @@ const Hours = () => {
   //   }, 6000);
   // };
 
-  const items = [
-    {
-      label: 'Submit and continue',
-      key: '1',
-    },
-  ];
+  // const items = [
+  //   {
+  //     label: 'Submit and continue',
+  //     key: '1',
+  //   },
+  // ];
 
-  const [loadings, setLoadings] = useState([]);
+  // const [loadings, setLoadings] = useState([]);
 
-  const enterLoading = index => {
-    setLoadings(state => {
-      const newLoadings = [...state];
-      newLoadings[index] = true;
-      return newLoadings;
-    });
-    setTimeout(() => {
-      setLoadings(state => {
-        const newLoadings = [...state];
-        newLoadings[index] = false;
-        return newLoadings;
-      });
-    }, 6000);
-  };
+  // const enterLoading = index => {
+  //   setLoadings(state => {
+  //     const newLoadings = [...state];
+  //     newLoadings[index] = true;
+  //     return newLoadings;
+  //   });
+  //   setTimeout(() => {
+  //     setLoadings(state => {
+  //       const newLoadings = [...state];
+  //       newLoadings[index] = false;
+  //       return newLoadings;
+  //     });
+  //   }, 6000);
+  // };
 
   const columns = [
     {
@@ -188,10 +176,7 @@ const Hours = () => {
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
-      const selectedRowsList = [];
-      for (let i = 0; i < selectedRows.length; i++) {
-        selectedRowsList.push(selectedRows[i]['key']);
-      }
+      const selectedRowsList = selectedRows.map(row => row.key);
       setSelectedHours(selectedRowsList);
     },
     getCheckboxProps: record => ({
@@ -200,10 +185,25 @@ const Hours = () => {
     }),
   };
 
-  const searchBar = () => {
-    return (
-      <div>
-        <div>
+  // useEffect(() => {
+  //   getUnapprovedVolunteers();
+  //   setSelectedHours([]);
+  // }, []);
+
+  useEffect(() => {
+    if (!refresh) {
+      return;
+    }
+    getUnapprovedVolunteers();
+    setSelectedHours([]);
+    setRefresh(false);
+  }, [refresh]);
+
+  return (
+    <div>
+      <Title>Review Volunteer Hour Logs</Title>
+      <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
+        <div className={styles['search-bar']}>
           <Input
             prefix={<SearchOutlined style={{ color: '#BFBFBF' }} />}
             size="large"
@@ -212,23 +212,7 @@ const Hours = () => {
             onChange={onChange}
             allowClear
           />
-        </div>
-      </div>
-    );
-  };
-
-  React.useEffect(() => {
-    getUnapprovedVolunteers();
-    setSelectedHours([]);
-  }, []);
-
-  return (
-    <div>
-      <Title>Review Volunteer Hour Logs</Title>
-      <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-        <div className="search-bar">
-          {searchBar()}
-          {/* <div className="filters">
+          {/* <div className={styles['filters']}>
             <Title level={3}>Sort by: &nbsp;</Title>
             <Dropdown.Button
               icon={<DownOutlined />}
@@ -242,7 +226,7 @@ const Hours = () => {
             </Dropdown.Button>
           </div> */}
         </div>
-        <div className="approve-button">
+        <div className={styles['approve-button']}>
           <Button
             type="primary"
             size="large"
@@ -261,6 +245,7 @@ const Hours = () => {
           dataSource={unapprovedVolunteersData}
         />
       </Space>
+      {error && error}
     </div>
   );
 };
