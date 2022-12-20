@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { Table, Input, Button, Typography, Space } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { AFCBackend } from '../../util/utils';
@@ -9,16 +10,16 @@ const { Title } = Typography;
 const Hours = () => {
   const [unapprovedVolunteersData, setUnapprovedVolunteersData] = useState([]);
   const [selectedHours, setSelectedHours] = useState([]);
-  const [error, setError] = useState('');
   const [search, setSearch] = useState('');
   const [refresh, setRefresh] = useState(true);
 
-  const approveHours = async (userId, eventId) => {
+  const approveHours = async (userId, eventId, userName, eventName) => {
     try {
       await AFCBackend.get(`/hours/approve/${userId}/${eventId}`);
+      toast.success(`Successfully approved ${userName}'s log for ${eventName}`);
       setRefresh(true);
     } catch (e) {
-      console.log(e.message);
+      toast.error(e.message);
     }
   };
 
@@ -30,18 +31,22 @@ const Hours = () => {
           return AFCBackend.get(`/hours/approve/${userId}/${eventId}`);
         }),
       );
+      toast.success(
+        `Approved ${selectedHoursList.length} log${selectedHoursList.length > 1 ? 's' : ''}!`,
+      );
       setRefresh(true);
     } catch (e) {
-      setError(e.message);
+      toast.error(e.message);
     }
   };
 
-  const declineHours = async (userId, eventId) => {
+  const declineHours = async (userId, eventId, userName, eventName) => {
     try {
       await AFCBackend.get(`/hours/decline/${userId}/${eventId}`);
+      toast.success(`Successfully declined ${userName}'s log for ${eventName}`);
       setRefresh(true);
     } catch (e) {
-      setError(e.message);
+      toast.error(e.message);
     }
   };
 
@@ -66,11 +71,21 @@ const Hours = () => {
             end: v.event.endDatetime.slice(11, 16),
             approval: (
               <Space>
-                <Button type="secondary" onClick={() => declineHours(v.userId, v.eventId)}>
+                <Button
+                  type="secondary"
+                  onClick={() =>
+                    declineHours(v.userId, v.eventId, userData.firstName, v.event.name)
+                  }
+                >
                   {' '}
                   Decline{' '}
                 </Button>
-                <Button type="primary" onClick={() => approveHours(v.userId, v.eventId)}>
+                <Button
+                  type="primary"
+                  onClick={() =>
+                    approveHours(v.userId, v.eventId, userData.firstName, v.event.name)
+                  }
+                >
                   {' '}
                   Approve{' '}
                 </Button>
@@ -82,59 +97,13 @@ const Hours = () => {
 
       setUnapprovedVolunteersData(unapprovedVolunteerHours);
     } catch (e) {
-      setError(e.message);
+      toast.error(e.message);
     }
   };
 
   const onChange = e => {
     setSearch(e.target.value);
   };
-
-  // const items = [
-  //   {
-  //     label: 'Submit and continue',
-  //     key: '1',
-  //   },
-  // ];
-
-  // const enterLoading = index => {
-  //   setLoadings(state => {
-  //     const newLoadings = [...state];
-  //     newLoadings[index] = true;
-  //     return newLoadings;
-  //   });
-  //   setTimeout(() => {
-  //     setLoadings(state => {
-  //       const newLoadings = [...state];
-  //       newLoadings[index] = false;
-  //       return newLoadings;
-  //     });
-  //   }, 6000);
-  // };
-
-  // const items = [
-  //   {
-  //     label: 'Submit and continue',
-  //     key: '1',
-  //   },
-  // ];
-
-  // const [loadings, setLoadings] = useState([]);
-
-  // const enterLoading = index => {
-  //   setLoadings(state => {
-  //     const newLoadings = [...state];
-  //     newLoadings[index] = true;
-  //     return newLoadings;
-  //   });
-  //   setTimeout(() => {
-  //     setLoadings(state => {
-  //       const newLoadings = [...state];
-  //       newLoadings[index] = false;
-  //       return newLoadings;
-  //     });
-  //   }, 6000);
-  // };
 
   const columns = [
     {
@@ -185,11 +154,6 @@ const Hours = () => {
     }),
   };
 
-  // useEffect(() => {
-  //   getUnapprovedVolunteers();
-  //   setSelectedHours([]);
-  // }, []);
-
   useEffect(() => {
     if (!refresh) {
       return;
@@ -199,16 +163,23 @@ const Hours = () => {
     setRefresh(false);
   }, [refresh]);
 
+  useEffect(() => {
+    if (!search) {
+      getUnapprovedVolunteers();
+    }
+    getUnapprovedVolunteers(search);
+  }, [search]);
+
   return (
     <div>
-      <Title>Review Volunteer Hour Logs</Title>
+      <Title className={styles['review-volunteer-logs-title']}>Review Volunteer Hour Logs</Title>
       <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
         <div className={styles['search-bar']}>
           <Input
             prefix={<SearchOutlined style={{ color: '#BFBFBF' }} />}
             size="large"
             placeholder="Search by name, email, role..."
-            onPressEnter={() => getUnapprovedVolunteers(search)}
+            // onPressEnter={() => getUnapprovedVolunteers(search)}
             onChange={onChange}
             allowClear
           />
@@ -236,16 +207,17 @@ const Hours = () => {
             Approve Selected
           </Button>
         </div>
-        <Table
-          rowSelection={{
-            type: 'checkbox',
-            ...rowSelection,
-          }}
-          columns={columns}
-          dataSource={unapprovedVolunteersData}
-        />
+        <div className={styles['table-container']}>
+          <Table
+            rowSelection={{
+              type: 'checkbox',
+              ...rowSelection,
+            }}
+            columns={columns}
+            dataSource={unapprovedVolunteersData}
+          />
+        </div>
       </Space>
-      {error && error}
     </div>
   );
 };

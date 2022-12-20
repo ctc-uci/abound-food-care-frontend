@@ -1,13 +1,20 @@
+@import '../../common/global.css';
+
+.review-volunteer-logs-title {
+  font-family: Avenir;
+  font-weight: 900;
+  padding: 15px 5px 10px 5px;
+}
+
 .search-bar {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   flex-wrap: nowrap;
   align-items: center;
-  border-width: 1px;
-  border-style: solid;
-  color: #b9b9b9;
-  padding: 1em;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 10px 10px 2px 2px;
+  padding: 1.5em;
 }
 
 .filters {
@@ -23,4 +30,9 @@
   justify-content: flex-end;
   flex-wrap: nowrap;
   align-items: center;
+  margin-right: 20px;
+}
+
+.table-container {
+  padding: 0 20px;
 }

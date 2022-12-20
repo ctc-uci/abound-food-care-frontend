@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
+import { Toaster } from 'react-hot-toast';
 import { Layout } from 'antd';
 import './common/global.css';
 
@@ -29,6 +30,7 @@ const App = () => {
   const breakpoint = 720;
   return (
     <CookiesProvider>
+      <Toaster position="top-center" reverseOrder={false} />
       <Layout>
         <Router>
           {/* TODO: implement mobile navbar here */}
