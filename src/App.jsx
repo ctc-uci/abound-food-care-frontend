@@ -128,7 +128,7 @@ const App = () => {
                 }
               />
               <Route
-                path="/volunteeringHistory"
+                path="/volunteering-history"
                 exact
                 element={
                   <ProtectedRoute

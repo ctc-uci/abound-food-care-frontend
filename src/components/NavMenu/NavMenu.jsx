@@ -58,10 +58,10 @@ const NavMenu = ({ cookies }) => {
             </Menu.Item>
             <Menu.Item
               className={styles['menu-item']}
-              key="/volunteeringHistory"
+              key="/volunteering-history"
               icon={<TableOutlined />}
             >
-              <Link to="/volunteeringHistory" className={styles.link}>
+              <Link to="/volunteering-history" className={styles.link}>
                 Volunteering History
               </Link>
             </Menu.Item>
