@@ -20,21 +20,16 @@ const DashboardHeader = ({ userId, isAdmin }) => {
 
     if (isAdmin) {
       // admin statistics
-      const totalEvents = await AFCBackend.get('/events/total', {
-        params: {
-          status: '',
-          type: 'all',
-        },
-      });
-      const totalVolunteers = await AFCBackend.get('/volunteers/total');
-      setFirstStatistic(totalEvents.data.count);
-      setSecondStatistic(totalVolunteers.data.count);
+      const totalEvents = await AFCBackend.get('/events');
+      setFirstStatistic(totalEvents.data.length);
+      const totalVolunteers = await AFCBackend.get('/volunteers');
+      setSecondStatistic(totalVolunteers.data.length);
     } else {
       // volunteer statistics
-      const eventsVolunteered = await AFCBackend.get(`/volunteers/${userId}`);
-      const totalHours = await AFCBackend.get(`/hours/user/${userId}/total`);
-      setFirstStatistic(eventsVolunteered.data.length);
-      setSecondStatistic(totalHours.data.count);
+      const eventsVolunteered = await AFCBackend.get(`/volunteers/${userId}/total-events`);
+      setFirstStatistic(eventsVolunteered.data);
+      const totalHours = await AFCBackend.get(`/hours/${userId}`);
+      setSecondStatistic(totalHours.data.reduce((sum, entry) => sum + entry.numHours, 0));
     }
   }, []);
 
