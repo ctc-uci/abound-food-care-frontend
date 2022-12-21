@@ -123,9 +123,13 @@ const Hours = () => {
 
           return {
             key: `${v.userId} ${v.eventId}`,
-            user: `${userData.firstName} ${userData.lastName}`,
+            user: (
+              <span className={styles['dg-emphasis']}>
+                {userData.firstName} {userData.lastName}
+              </span>
+            ),
             organizations: userData.organization,
-            event_name: v.event.name,
+            event_name: <span className={styles['dg-emphasis']}>{v.event.name}</span>,
             date: v.event.startDatetime.slice(0, 10),
             start: v.event.startDatetime.slice(11, 16),
             end: v.event.endDatetime.slice(11, 16),
@@ -151,6 +155,11 @@ const Hours = () => {
                 </Button>
               </Space>
             ),
+            sort: {
+              eventName: v.event.name,
+              volunteerName: `${userData.firstName} ${userData.lastName}`,
+              mostRecent: v.event.startDatetime,
+            },
           };
         }),
       );
@@ -241,7 +250,19 @@ const Hours = () => {
       getUnapprovedVolunteers();
     }
     getUnapprovedVolunteers(search);
-  }, [search, sortOption]);
+  }, [search]);
+
+  useEffect(() => {
+    if (!unapprovedVolunteersData) {
+      return;
+    }
+    const sortFns = {
+      'Event Name': (a, b) => a.sort.eventName.localeCompare(b.sort.eventName),
+      'Volunteer Name': (a, b) => a.sort.volunteerName.localeCompare(b.sort.volunteerName),
+      'Most Recent': (a, b) => -a.sort.mostRecent.localeCompare(b.sort.mostRecent),
+    };
+    setUnapprovedVolunteersData(unapprovedVolunteersData.sort(sortFns[sortOption]));
+  }, [sortOption]);
 
   return (
     <div className={styles['hours-container']}>
@@ -316,7 +337,7 @@ const Hours = () => {
               ...rowSelection,
             }}
             columns={columns}
-            dataSource={unapprovedVolunteersData}
+            dataSource={[...unapprovedVolunteersData]}
           />
         </div>
       </Space>

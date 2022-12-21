@@ -87,3 +87,8 @@
 .table-container {
   padding: 0 20px;
 }
+
+.dg-emphasis {
+  color: var(--eden);
+  font-weight: 600;
+}
