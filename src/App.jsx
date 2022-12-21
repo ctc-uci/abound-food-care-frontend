@@ -9,7 +9,7 @@ import './common/global.css';
 import Login from './pages/Login';
 import Events from './pages/Events/Events';
 import CreateEvent from './pages/CreateEvent';
-import Volunteers from './pages/Volunteers';
+import Volunteers from './pages/Volunteers/Volunteers';
 import Profile from './pages/Profile/Profile';
 import Event from './pages/Event';
 import EventSignUp from './pages/EventSignUp';

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { Table, Input, Button, Typography, Space } from 'antd';
+// import { Table, Input, Button, Typography, Space, Dropdown } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
+// import { SearchOutlined, DownOutlined } from '@ant-design/icons';
 import { AFCBackend } from '../../util/utils';
 import styles from './Hours.module.css';
 
@@ -32,7 +34,28 @@ const Hours = () => {
         }),
       );
       toast.success(
-        `Approved ${selectedHoursList.length} log${selectedHoursList.length > 1 ? 's' : ''}!`,
+        `Successfully approved ${selectedHoursList.length} log${
+          selectedHoursList.length !== 1 ? 's' : ''
+        }`,
+      );
+      setRefresh(true);
+    } catch (e) {
+      toast.error(e.message);
+    }
+  };
+
+  const approveAllHours = async () => {
+    try {
+      await Promise.all(
+        unapprovedVolunteersData.map(async ({ key }) => {
+          const [userId, eventId] = key.split(' ');
+          return AFCBackend.get(`/hours/approve/${userId}/${eventId}`);
+        }),
+      );
+      toast.success(
+        `Successfully approved ${unapprovedVolunteersData.length} log${
+          unapprovedVolunteersData.length !== 1 ? 's' : ''
+        }`,
       );
       setRefresh(true);
     } catch (e) {
@@ -44,6 +67,44 @@ const Hours = () => {
     try {
       await AFCBackend.get(`/hours/decline/${userId}/${eventId}`);
       toast.success(`Successfully declined ${userName}'s log for ${eventName}`);
+      setRefresh(true);
+    } catch (e) {
+      toast.error(e.message);
+    }
+  };
+
+  const declineMultipleHours = async selectedHoursList => {
+    try {
+      await Promise.all(
+        selectedHoursList.map(async entry => {
+          const [userId, eventId] = entry.split(' ');
+          return AFCBackend.get(`/hours/decline/${userId}/${eventId}`);
+        }),
+      );
+      toast.success(
+        `Successfully declined ${selectedHoursList.length} log${
+          selectedHoursList.length !== 1 ? 's' : ''
+        }`,
+      );
+      setRefresh(true);
+    } catch (e) {
+      toast.error(e.message);
+    }
+  };
+
+  const declineAllHours = async () => {
+    try {
+      await Promise.all(
+        unapprovedVolunteersData.map(async ({ key }) => {
+          const [userId, eventId] = key.split(' ');
+          return AFCBackend.get(`/hours/decline/${userId}/${eventId}`);
+        }),
+      );
+      toast.success(
+        `Successfully declined ${unapprovedVolunteersData.length} log${
+          unapprovedVolunteersData.length !== 1 ? 's' : ''
+        }`,
+      );
       setRefresh(true);
     } catch (e) {
       toast.error(e.message);
@@ -144,9 +205,8 @@ const Hours = () => {
   ];
 
   const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      const selectedRowsList = selectedRows.map(row => row.key);
-      setSelectedHours(selectedRowsList);
+    onChange: selectedRowKeys => {
+      setSelectedHours(selectedRowKeys);
     },
     getCheckboxProps: record => ({
       disabled: record.name === 'Disabled User',
@@ -171,7 +231,7 @@ const Hours = () => {
   }, [search]);
 
   return (
-    <div>
+    <div className={styles['hours-container']}>
       <Title className={styles['review-volunteer-logs-title']}>Review Volunteer Hour Logs</Title>
       <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
         <div className={styles['search-bar']}>
@@ -183,29 +243,63 @@ const Hours = () => {
             onChange={onChange}
             allowClear
           />
-          {/* <div className={styles['filters']}>
+          {/* <div className={styles.filters}>
             <Title level={3}>Sort by: &nbsp;</Title>
             <Dropdown.Button
               icon={<DownOutlined />}
-              loading={loadings[1]}
-              menu={{
-                items,
-              }}
-              onClick={() => enterLoading(1)}
+              // loading={loadings[1]}
+              // menu={{
+              //   items,
+              // }}
+              // onClick={() => enterLoading(1)}
             >
               Date (most recent first)
             </Dropdown.Button>
           </div> */}
         </div>
-        <div className={styles['approve-button']}>
-          <Button
-            type="primary"
-            size="large"
-            disabled={selectedHours.length === 0}
-            onClick={() => approveMultipleHours(selectedHours)}
-          >
-            Approve Selected
-          </Button>
+        <div className={styles['table-header']}>
+          <div className={styles['search-table-title']}>Search Table</div>
+          <div className={styles['approve-action-buttons']}>
+            {selectedHours.length === 0 ? (
+              <>
+                <Button
+                  className={styles['decline-button']}
+                  type="secondary"
+                  size="large"
+                  onClick={declineAllHours}
+                >
+                  Decline All
+                </Button>
+                <Button
+                  className={styles['approve-button']}
+                  type="primary"
+                  size="large"
+                  onClick={approveAllHours}
+                >
+                  Approve All
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  className={styles['decline-button']}
+                  type="secondary"
+                  size="large"
+                  onClick={() => declineMultipleHours(selectedHours)}
+                >
+                  Decline Selected
+                </Button>
+                <Button
+                  className={styles['approve-button']}
+                  type="primary"
+                  size="large"
+                  onClick={() => approveMultipleHours(selectedHours)}
+                >
+                  Approve Selected
+                </Button>
+              </>
+            )}
+          </div>
         </div>
         <div className={styles['table-container']}>
           <Table

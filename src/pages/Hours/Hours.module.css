@@ -1,9 +1,14 @@
 @import '../../common/global.css';
 
+.hours-container {
+  margin-left: 15px;
+  margin-top: 5px;
+}
+
 .review-volunteer-logs-title {
   font-family: Avenir;
   font-weight: 900;
-  padding: 15px 5px 10px 5px;
+  padding: 0 5px 5px 0;
 }
 
 .search-bar {
@@ -22,15 +27,35 @@
   flex-direction: row;
   justify-content: flex-start;
   padding-top: 0.5em;
+  padding-left: 5em;
+  padding-right: 1em;
 }
 
-.approve-button {
+.table-header {
+  margin-top: 15px;
+  margin-bottom: 70px;
+}
+
+.search-table-title {
+  float: left;
+  font-family: Avenir;
+  font-weight: 600;
+  font-size: 20px;
+  margin: 7.5px 0 0 32.5px;
+}
+
+.approve-action-buttons {
+  float: right;
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
   flex-wrap: nowrap;
   align-items: center;
   margin-right: 20px;
+}
+
+.approve-button, .decline-button {
+  margin-right: 15px;
 }
 
 .table-container {
