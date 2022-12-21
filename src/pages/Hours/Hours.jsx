@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { Table, Input, Button, Typography, Space } from 'antd';
-// import { Table, Input, Button, Typography, Space, Dropdown } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
-// import { SearchOutlined, DownOutlined } from '@ant-design/icons';
+import { Table, Input, Button, Typography, Space, Dropdown, Menu } from 'antd';
+import { SearchOutlined, DownOutlined } from '@ant-design/icons';
 import { AFCBackend } from '../../util/utils';
 import styles from './Hours.module.css';
 
@@ -13,6 +11,7 @@ const Hours = () => {
   const [unapprovedVolunteersData, setUnapprovedVolunteersData] = useState([]);
   const [selectedHours, setSelectedHours] = useState([]);
   const [search, setSearch] = useState('');
+  const [sortOption, setSortOption] = useState('Event Name');
   const [refresh, setRefresh] = useState(true);
 
   const approveHours = async (userId, eventId, userName, eventName) => {
@@ -214,6 +213,20 @@ const Hours = () => {
     }),
   };
 
+  const sortByMenu = (
+    <Menu className={styles.menu}>
+      <Menu.Item key="ename" onClick={() => setSortOption('Event Name')}>
+        Event Name
+      </Menu.Item>
+      <Menu.Item key="vname" onClick={() => setSortOption('Volunteer Name')}>
+        Volunteer Name
+      </Menu.Item>
+      <Menu.Item key="time" onClick={() => setSortOption('Most Recent')}>
+        Most Recent
+      </Menu.Item>
+    </Menu>
+  );
+
   useEffect(() => {
     if (!refresh) {
       return;
@@ -228,7 +241,7 @@ const Hours = () => {
       getUnapprovedVolunteers();
     }
     getUnapprovedVolunteers(search);
-  }, [search]);
+  }, [search, sortOption]);
 
   return (
     <div className={styles['hours-container']}>
@@ -238,24 +251,19 @@ const Hours = () => {
           <Input
             prefix={<SearchOutlined style={{ color: '#BFBFBF' }} />}
             size="large"
-            placeholder="Search by name, email, role..."
-            // onPressEnter={() => getUnapprovedVolunteers(search)}
+            placeholder="Search by name, organization, event..."
             onChange={onChange}
             allowClear
           />
-          {/* <div className={styles.filters}>
-            <Title level={3}>Sort by: &nbsp;</Title>
-            <Dropdown.Button
-              icon={<DownOutlined />}
-              // loading={loadings[1]}
-              // menu={{
-              //   items,
-              // }}
-              // onClick={() => enterLoading(1)}
-            >
-              Date (most recent first)
-            </Dropdown.Button>
-          </div> */}
+          <div className={styles.filters}>
+            <div className={styles['sort-by-text']}>Sort by:</div>
+            <Dropdown overlay={sortByMenu}>
+              <Button className={styles['dropdown-button']}>
+                {sortOption}
+                <DownOutlined />
+              </Button>
+            </Dropdown>
+          </div>
         </div>
         <div className={styles['table-header']}>
           <div className={styles['search-table-title']}>Search Table</div>
