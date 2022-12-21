@@ -37,23 +37,23 @@ const DashboardHeader = ({ userId, isAdmin }) => {
     isAdmin ? (
       <Row gutter={[16, 16]}>
         <Col className={styles['statistics-col']}>
-          <p>Total Events</p>
-          <h3>{firstStatistic}</h3>
+          <p className={styles.stathead}>Total Events</p>
+          <h3 className={styles.stat}>{firstStatistic}</h3>
         </Col>
         <Col className={styles['statistics-col']}>
-          <p>Total Volunteers</p>
-          <h3>{secondStatistic}</h3>
+          <p className={styles.stathead}>Total Volunteers</p>
+          <h3 className={styles.stat}>{secondStatistic}</h3>
         </Col>
       </Row>
     ) : (
       <Row gutter={[16, 16]}>
         <Col className={styles['statistics-col']}>
-          <p>Events Volunteered</p>
-          <h3>{firstStatistic}</h3>
+          <p className={styles.stathead}>Events Volunteered</p>
+          <h3 className={styles.stat}>{firstStatistic}</h3>
         </Col>
         <Col className={styles['statistics-col']}>
-          <p>Total Hours</p>
-          <h3>{secondStatistic}</h3>
+          <p className={styles.stathead}>Total Hours</p>
+          <h3 className={styles.stat}>{secondStatistic}</h3>
         </Col>
       </Row>
     );
