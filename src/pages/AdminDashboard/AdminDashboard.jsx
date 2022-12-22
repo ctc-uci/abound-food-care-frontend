@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col } from 'antd';
 import { instanceOf } from 'prop-types';
-import DashboardHeader from '../components/admin-dashboard-components/DashboardHeader/DashboardHeader';
-import EventGrid from '../components/admin-dashboard-components/EventGrid/EventGrid';
-import EventList from '../components/events/EventList/EventList';
-import useViewPort from '../common/useViewPort';
-import { AFCBackend } from '../util/utils';
-import { cookieKeys, Cookies, withCookies } from '../util/cookie_utils';
+import DashboardHeader from '../../components/admin-dashboard-components/DashboardHeader/DashboardHeader';
+import EventGrid from '../../components/admin-dashboard-components/EventGrid/EventGrid';
+import EventList from '../../components/events/EventList/EventList';
+import useViewPort from '../../common/useViewPort';
+import { AFCBackend } from '../../util/utils';
+import { cookieKeys, Cookies, withCookies } from '../../util/cookie_utils';
+import styles from './AdminDashboard.module.css';
 
 const AdminDashboard = ({ cookies }) => {
   const { width } = useViewPort();
@@ -35,9 +36,10 @@ const AdminDashboard = ({ cookies }) => {
       <DashboardHeader isAdmin userId={userId} />
       {width > breakpoint ? (
         <>
-          <Row className="dashboard-row" gutter={[32, 16]}>
-            <Col className="dashboard-col" span={24}>
+          <Row gutter={[32, 16]}>
+            <Col span={28}>
               <EventGrid title="Upcoming Events" eventStatus="upcoming" />
+              <div className={styles.spacer} />
               <EventGrid title="Past Events" eventStatus="past" />
             </Col>
           </Row>
@@ -46,6 +48,7 @@ const AdminDashboard = ({ cookies }) => {
         <>
           <div>
             <EventList title="Upcoming Events" events={upcomingEvents} showViewAll />
+            <div className={styles.spacer} />
             <EventList title="Past Events" events={pastEvents} showViewAll />
           </div>
         </>

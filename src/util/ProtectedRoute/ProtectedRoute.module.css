@@ -1,0 +1,7 @@
+@import '../../common/global.css';
+
+.loading {
+  font-family: Avenir;
+  font-size: 20px;
+  font-weight: 600;
+}

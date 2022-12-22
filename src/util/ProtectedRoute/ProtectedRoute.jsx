@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { PropTypes, instanceOf } from 'prop-types';
-import { withCookies, cookieKeys, Cookies, clearCookies } from './cookie_utils';
-import { AFCBackend, refreshToken } from './auth_utils';
+import { withCookies, cookieKeys, Cookies, clearCookies } from '../cookie_utils';
+import { AFCBackend, refreshToken } from '../auth_utils';
+import styles from './ProtectedRoute.module.css';
 
 const userIsAuthenticated = async (roles, cookies) => {
   try {
@@ -36,7 +37,7 @@ const ProtectedRoute = ({ Component, redirectPath, roles, cookies }) => {
     setIsLoading(false);
   }, []);
   if (isLoading) {
-    return <h1>LOADING...</h1>;
+    return <h1 className={styles.loading}>Loading...</h1>;
   }
   if (isAuthenticated) {
     return <Component />;

@@ -22,11 +22,15 @@ const EventGrid = ({ title, eventStatus }) => {
     );
   };
 
-  const allEventsLink = () => <a href="/events">View all events</a>;
+  const allEventsLink = () => (
+    <a href="/events" className={styles.dg}>
+      View all events
+    </a>
+  );
 
   return (
     <div className={styles['events-container']}>
-      <Card title={title} extra={allEventsLink()}>
+      <Card title={title} extra={allEventsLink()} className={styles['event-grid']}>
         {events.map((event, index) => (
           // eslint-disable-next-line react/no-array-index-key
           <Card.Grid key={index} className={styles[`${eventStatus}-event`]}>

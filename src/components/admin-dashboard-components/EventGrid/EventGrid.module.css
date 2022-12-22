@@ -10,6 +10,16 @@
   height: 165px;
 }
 
+.event-grid {
+  box-shadow: 0px 4px 10px rgb(0 0 0 / 7%);
+}
+
+.dg {
+  color: var(--eden);
+  font-family: Avenir;
+  font-size: 14px;
+}
+
 .event p {
   margin-bottom: 0;
   font-size: 16px;

@@ -23,7 +23,7 @@ import ResetPassword from './components/ForgotPassword/ResetPassword';
 // Utils
 import useViewPort from './common/useViewPort';
 import AUTH_ROLES from './util/auth_config';
-import ProtectedRoute from './util/ProtectedRoute';
+import ProtectedRoute from './util/ProtectedRoute/ProtectedRoute';
 
 const App = () => {
   const { width } = useViewPort();
