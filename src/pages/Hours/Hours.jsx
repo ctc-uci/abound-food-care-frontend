@@ -270,6 +270,9 @@ const Hours = () => {
   }, [refresh]);
 
   useEffect(() => {
+    if (refresh) {
+      return;
+    }
     if (!search) {
       getUnapprovedVolunteers();
     }
@@ -277,7 +280,7 @@ const Hours = () => {
   }, [search]);
 
   useEffect(() => {
-    if (!unapprovedVolunteersData) {
+    if (!unapprovedVolunteersData || refresh) {
       return;
     }
     setUnapprovedVolunteersData([
