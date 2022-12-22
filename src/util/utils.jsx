@@ -37,6 +37,8 @@ const getHourDiff = (timestamp1, timestamp2) => {
   return diff % 1 === 0 ? diff : diff.toFixed(2);
 };
 
+const localeSort = (a, b) => a.localeCompare(b);
+
 const languageOptions = [
   'english',
   'spanish',
@@ -120,6 +122,7 @@ export {
   getMonthString,
   getTimeInPST,
   getHourDiff,
+  localeSort,
   languageOptions,
   buildLanguagesArray,
   dayOfWeek,

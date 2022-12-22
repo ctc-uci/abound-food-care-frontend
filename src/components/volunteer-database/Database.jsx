@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Input, Button, Row, Col, Dropdown, Menu, Divider, Table } from 'antd';
-import { SearchOutlined, FilterFilled, DownOutlined } from '@ant-design/icons';
+import toast from 'react-hot-toast';
+import { Input, Button, Row, Col, Dropdown, Menu, Table } from 'antd';
+import { SearchOutlined, PlusOutlined, FilterFilled, DownOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
-import { AFCBackend } from '../../util/utils';
+import { AFCBackend, localeSort } from '../../util/utils';
 import ViewAdminCodes from './ViewAdminCodes/ViewAdminCodes';
 import styles from './Database.module.css';
 
-function Database({ handleHideDatabase }) {
+const Database = ({ handleHideDatabase }) => {
   const [volunteerData, setVolunteerData] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
@@ -26,9 +27,29 @@ function Database({ handleHideDatabase }) {
           searchQuery,
         },
       });
-      setVolunteerData(volunteerResponse);
+      setVolunteerData(
+        volunteerResponse.map(v => ({
+          ...v,
+          firstNameCell: (
+            <a className={styles.dgEmphasis} href={`/profile/${v.userId}`}>
+              {v.firstName}
+            </a>
+          ),
+          lastNameCell: (
+            <a className={styles.dgEmphasis} href={`/profile/${v.userId}`}>
+              {v.lastName}
+            </a>
+          ),
+          emailLink: (
+            <a className={styles.dgEmphasis} href={`mailto:${v.email}`}>
+              {v.email}
+            </a>
+          ),
+          role: `${v.role.slice(0, 1).toUpperCase()}${v.role.slice(1)}`,
+        })),
+      );
     } catch (e) {
-      console.log(e);
+      toast.error(`Unable to fetch volunteer data.`);
     }
   };
 
@@ -40,63 +61,57 @@ function Database({ handleHideDatabase }) {
   const columns = [
     {
       title: 'First Name',
-      dataIndex: 'firstName',
+      dataIndex: 'firstNameCell',
       key: 'firstName',
-      render: text => (
-        <a className={styles.eden} href="/volunteers">
-          {text}
-        </a>
-      ),
+      sorter: { compare: (a, b) => localeSort(a.firstName, b.firstName) },
     },
     {
       title: 'Last Name',
-      dataIndex: 'lastName',
+      dataIndex: 'lastNameCell',
       key: 'lastName',
+      sorter: { compare: (a, b) => localeSort(a.lastName, b.lastName) },
     },
     {
       title: 'Role',
       dataIndex: 'role',
       key: 'role',
+      sorter: { compare: (a, b) => localeSort(a.role, b.role) },
     },
     {
       title: 'Email',
-      dataIndex: 'email',
+      dataIndex: 'emailLink',
       key: 'email',
+      sorter: { compare: (a, b) => localeSort(a.email, b.email) },
     },
     {
       title: 'Phone',
       dataIndex: 'phone',
       key: 'phone',
+      sorter: { compare: (a, b) => localeSort(a.phone, b.phone) },
     },
     {
       title: 'City',
       dataIndex: 'addressCity',
       key: 'city',
+      sorter: { compare: (a, b) => localeSort(a.addressCity, b.addressCity) },
     },
     {
       title: 'State',
       dataIndex: 'addressState',
       key: 'state',
+      sorter: { compare: (a, b) => localeSort(a.addressState, b.addressState) },
     },
   ];
 
   const eventInterestMenu = (
     <Menu className={styles.menu}>
-      <Menu.Item key="all" className={styles.menu} onClick={() => setEventInterest('All')}>
+      <Menu.Item key="all" onClick={() => setEventInterest('All')}>
         All
       </Menu.Item>
-      <Menu.Item
-        key="distribution"
-        className={styles.menu}
-        onClick={() => setEventInterest('Distributions')}
-      >
+      <Menu.Item key="distribution" onClick={() => setEventInterest('Distributions')}>
         Distributions
       </Menu.Item>
-      <Menu.Item
-        key="food"
-        className={styles.menu}
-        onClick={() => setEventInterest('Food Running')}
-      >
+      <Menu.Item key="food" onClick={() => setEventInterest('Food Running')}>
         Food Running
       </Menu.Item>
     </Menu>
@@ -104,13 +119,13 @@ function Database({ handleHideDatabase }) {
 
   const isDriverMenu = (
     <Menu className={styles.menu}>
-      <Menu.Item key="1" className={styles.menu} onClick={() => setDriverOption('All')}>
+      <Menu.Item key="1" onClick={() => setDriverOption('All')}>
         All
       </Menu.Item>
-      <Menu.Item key="2" className={styles.menu} onClick={() => setDriverOption('Can Drive')}>
+      <Menu.Item key="2" onClick={() => setDriverOption('Can Drive')}>
         Can Drive
       </Menu.Item>
-      <Menu.Item key="3" className={styles.menu} onClick={() => setDriverOption('Cannot Drive')}>
+      <Menu.Item key="3" onClick={() => setDriverOption('Cannot Drive')}>
         Cannot Drive
       </Menu.Item>
     </Menu>
@@ -118,43 +133,30 @@ function Database({ handleHideDatabase }) {
 
   const ageMenu = (
     <Menu className={styles.menu}>
-      <Menu.Item key="all" className={styles.menu} onClick={() => setAgeOption('All')}>
+      <Menu.Item key="all" onClick={() => setAgeOption('All')}>
         All
       </Menu.Item>
-      <Menu.Item key="adult" className={styles.menu} onClick={() => setAgeOption('Adult')}>
+      <Menu.Item key="adult" onClick={() => setAgeOption('Adult')}>
         Adult (18+)
       </Menu.Item>
-      <Menu.Item key="minor" className={styles.menu} onClick={() => setAgeOption('Minor')}>
+      <Menu.Item key="minor" onClick={() => setAgeOption('Minor')}>
         Minor (&lt;18)
       </Menu.Item>
     </Menu>
   );
 
-  const filterIcon = () => {
-    if (window.innerWidth > 1250) {
-      return (
-        <Col span={1}>
-          <FilterFilled className={styles.filterFilledMedium} />
-        </Col>
-      );
-    }
-    return <></>;
-  };
-
-  const iconGap = () => {
-    if (window.innerWidth > 1250) {
-      return <Col span={1} />;
-    }
-    return <></>;
-  };
-
   return (
     <>
-      <div className={styles['database-tab']}>
-        <div className={styles['database-header']}>
+      <h1 className={styles.volunteerDBTitle}>Volunteer Database</h1>
+      <div>
+        <div className={styles.dbContainer}>
           <Row className={styles.filterRow} align="middle">
-            {filterIcon()}
-            <Col className={styles.filterSearch}>
+            {window.innerWidth > 1250 && (
+              <Col span={1}>
+                <FilterFilled className={styles.filterFilledMedium} />
+              </Col>
+            )}
+            <Col span={10} className={styles.filterSearch}>
               <Input
                 size="large"
                 placeholder="Search by name, email, role..."
@@ -162,17 +164,26 @@ function Database({ handleHideDatabase }) {
                 prefix={<SearchOutlined className={styles.filterSearchOutlined} />}
               />
             </Col>
-            <Col span={3} />
-            <Col span={6} className={styles['button-group']}>
-              <Button onClick={handleHideDatabase}>View Heatmap</Button>
-              <Button>Export</Button>
+            <Col span={13} className={styles['button-group']}>
+              <Button className={styles.dbButton} onClick={handleHideDatabase}>
+                View Heatmap
+              </Button>
+              <Button className={styles.dbButton}>Export</Button>
+              <Button
+                className={styles.dbButton}
+                icon={<PlusOutlined className={styles.addAdminsPlus} />}
+                type="primary"
+                onClick={() => setIsOpen(true)}
+              >
+                <span className={styles.addAdmins}>Add Administrators</span>
+              </Button>
             </Col>
           </Row>
           <Row className={styles.filterRow} align="middle">
-            {iconGap()}
+            {window.innerWidth > 1250 && <Col span={1} />}
             <Col span={4}>
               <div className={styles['dropdown-box']}>
-                <p className={styles['dropdown-label']}>Event Types Interested In</p>
+                <p className={styles['dropdown-label']}>Event Type Interests</p>
                 <Dropdown overlay={eventInterestMenu}>
                   <Button className={styles['dropdown-button']}>
                     <div className={styles['dropdown-button-text']}>
@@ -213,11 +224,10 @@ function Database({ handleHideDatabase }) {
             </Col>
           </Row>
         </div>
-        <Divider className={styles.divider} />
-        <p className={styles['table-label']}>Search Table</p>
-
-        <div className={styles.table}>
+        <div className={styles.tableContainer}>
+          <p className={styles['table-label']}>Search Table</p>
           <Table
+            className={styles.table}
             columns={columns}
             dataSource={volunteerData}
             loading={isLoading}
@@ -225,18 +235,11 @@ function Database({ handleHideDatabase }) {
             rowClassName={styles['table-row']}
           />
         </div>
-        <Button
-          type="primary"
-          className={styles['view-admin-codes-button']}
-          onClick={() => setIsOpen(true)}
-        >
-          View Admin Codes
-        </Button>
       </div>
       <ViewAdminCodes isOpen={isOpen} setIsOpen={setIsOpen} />
     </>
   );
-}
+};
 
 Database.propTypes = {
   handleHideDatabase: PropTypes.func.isRequired,

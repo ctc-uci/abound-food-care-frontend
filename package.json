@@ -2,8 +2,6 @@
   "name": "abound-food-care-frontend",
   "version": "0.1.0",
   "dependencies": {
-    "@angular/common": "^6.0.0",
-    "@angular/core": "^6.0.0",
     "@ant-design/icons": "^4.7.0",
     "@babel/core": "^7.0.0",
     "@hookform/resolvers": "^2.8.8",
@@ -12,18 +10,8 @@
     "@testing-library/user-event": "^12.1.10",
     "antd": "^4.18.7",
     "apexcharts": "^3.33.1",
-    "aws-sdk": "^2.1194.0",
-    "axios": "^0.26.0",
-    "eslint": "^7.2.0",
-    "eslint-config-airbnb": "18.2.1",
-    "eslint-config-airbnb-base": "14.2.1",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-only-warn": "^1.0.3",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-react": "^7.21.5",
-    "eslint-plugin-react-hooks": "^4.0.0",
+    "aws-sdk": "^2.1280.0",
+    "axios": "^1.1.3",
     "file-saver": "^2.0.5",
     "firebase": "^9.9.2",
     "fuse.js": "^6.6.2",
@@ -36,12 +24,8 @@
     "react-dom": "^17.0.2",
     "react-hook-form": "^7.30.0",
     "react-hot-toast": "^2.4.0",
-    "react-router": "^6.0.2",
     "react-router-dom": "^6.0.2",
-    "react-scripts": "4.0.3",
-    "styled-components": "^5.3.3",
-    "testing-library": "0.0.2",
-    "web-vitals": "^1.0.1",
+    "react-scripts": "5.0.1",
     "webpack": "4.44.2",
     "yup": "^0.32.11"
   },
@@ -89,11 +73,25 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/dom": "^7.21.4",
+    "@babel/plugin-syntax-flow": "^7.14.5",
+    "@babel/plugin-transform-react-jsx": "^7.14.9",
+    "csstype": "^3.0.10",
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb": "18.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-only-warn": "^1.0.3",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.26.2",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "husky": "^7.0.0",
-    "prettier": "^2.4.1"
+    "prettier": "^2.4.1",
+    "react-is": "^16.8.0",
+    "typescript": "^2.8.0"
   },
   "resolutions": {
-    "styled-components": "^5",
-    "react-error-overlay": "6.0.9"
+    "react-error-overlay": "6.0.11"
   }
 }
