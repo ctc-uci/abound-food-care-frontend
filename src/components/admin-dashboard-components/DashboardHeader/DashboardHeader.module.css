@@ -45,13 +45,19 @@ h2 {
   color: rgba(0, 0, 0, 0.45);
 }
 
-h3 {
-  font-family: 'Avenir Next LT Pro';
+.stathead {
+  font-family: Avenir;
+  margin-bottom: 5px;
+}
+
+.stat {
+  font-family: Avenir;
   font-style: normal;
-  font-weight: 800;
-  font-size: 20px;
-  line-height: 27px;
-  text-align: center;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 20px;
+  margin-top: 8px;
+  text-align: right;
   letter-spacing: -0.02em;
   color: #000000;
 }
@@ -60,6 +66,8 @@ h3 {
   font-size: 16px;
   justify-content: right;
   text-align: right;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 .statistics-col p {

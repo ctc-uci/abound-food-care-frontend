@@ -12,6 +12,7 @@ const AdminDashboard = ({ cookies }) => {
   const { width } = useViewPort();
   const breakpoint = 720;
 
+  const [userId, setUserId] = useState(cookies.get(cookieKeys.USER_ID));
   const [pastEvents, setPastEvents] = useState([]);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
 
@@ -22,9 +23,16 @@ const AdminDashboard = ({ cookies }) => {
     setPastEvents(pEvents.data);
   }, []);
 
+  useEffect(() => {
+    if (userId) {
+      return;
+    }
+    setUserId(cookies.get(cookieKeys.USER_ID));
+  }, [userId]);
+
   return (
     <div style={{ padding: '16px' }}>
-      <DashboardHeader isAdmin userId={cookies.get(cookieKeys.USER_ID)} />
+      <DashboardHeader isAdmin userId={userId} />
       {width > breakpoint ? (
         <>
           <Row className="dashboard-row" gutter={[32, 16]}>

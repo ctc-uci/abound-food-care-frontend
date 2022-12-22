@@ -1,0 +1,94 @@
+@import '../../common/global.css';
+
+.hours-container {
+  margin-left: 15px;
+  margin-top: 5px;
+}
+
+.review-volunteer-logs-title {
+  font-family: Avenir;
+  font-weight: 900;
+  padding: 0 5px 5px 0;
+}
+
+.search-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 10px 10px 2px 2px;
+  padding: 1.5em;
+  margin-right: 1.5em;
+}
+
+.filters {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  padding-left: 3.5em;
+  padding-right: 1.5em;
+}
+
+.sort-by-text {
+  width: 90px;
+  text-align: center;
+  font-family: Avenir;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 2.5em;
+}
+
+.dropdown-button {
+  height: 2.5em;
+  border-radius: 2px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-family: Avenir;
+  font-size: 16px;
+  margin-top: 1px;
+}
+
+.menu {
+  font-family: Inter;
+  font-size: 16px;
+  color: black;
+}
+
+.table-header {
+  margin-top: 15px;
+  margin-bottom: 70px;
+}
+
+.search-table-title {
+  float: left;
+  font-family: Avenir;
+  font-weight: 600;
+  font-size: 20px;
+  margin: 7.5px 0 0 32.5px;
+}
+
+.approve-action-buttons {
+  float: right;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  flex-wrap: nowrap;
+  align-items: center;
+  margin-right: 7em;
+}
+
+.approve-button, .decline-button {
+  margin-right: 15px;
+}
+
+.table-container {
+  padding: 0 20px;
+}
+
+.dg-emphasis {
+  color: var(--eden);
+  font-weight: 600;
+}

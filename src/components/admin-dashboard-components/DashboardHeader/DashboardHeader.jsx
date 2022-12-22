@@ -20,21 +20,16 @@ const DashboardHeader = ({ userId, isAdmin }) => {
 
     if (isAdmin) {
       // admin statistics
-      const totalEvents = await AFCBackend.get('/events/total', {
-        params: {
-          status: '',
-          type: 'all',
-        },
-      });
-      const totalVolunteers = await AFCBackend.get('/volunteers/total');
-      setFirstStatistic(totalEvents.data.count);
-      setSecondStatistic(totalVolunteers.data.count);
+      const totalEvents = await AFCBackend.get('/events');
+      setFirstStatistic(totalEvents.data.length);
+      const totalVolunteers = await AFCBackend.get('/volunteers');
+      setSecondStatistic(totalVolunteers.data.length);
     } else {
       // volunteer statistics
-      const eventsVolunteered = await AFCBackend.get(`/volunteers/${userId}`);
-      const totalHours = await AFCBackend.get(`/hours/user/${userId}/total`);
-      setFirstStatistic(eventsVolunteered.data.length);
-      setSecondStatistic(totalHours.data.count);
+      const eventsVolunteered = await AFCBackend.get(`/volunteers/${userId}/total-events`);
+      setFirstStatistic(eventsVolunteered.data);
+      const totalHours = await AFCBackend.get(`/hours/${userId}`);
+      setSecondStatistic(totalHours.data.reduce((sum, entry) => sum + entry.numHours, 0));
     }
   }, []);
 
@@ -42,23 +37,23 @@ const DashboardHeader = ({ userId, isAdmin }) => {
     isAdmin ? (
       <Row gutter={[16, 16]}>
         <Col className={styles['statistics-col']}>
-          <p>Total Events</p>
-          <h3>{firstStatistic}</h3>
+          <p className={styles.stathead}>Total Events</p>
+          <h3 className={styles.stat}>{firstStatistic}</h3>
         </Col>
         <Col className={styles['statistics-col']}>
-          <p>Total Volunteers</p>
-          <h3>{secondStatistic}</h3>
+          <p className={styles.stathead}>Total Volunteers</p>
+          <h3 className={styles.stat}>{secondStatistic}</h3>
         </Col>
       </Row>
     ) : (
       <Row gutter={[16, 16]}>
         <Col className={styles['statistics-col']}>
-          <p>Events Volunteered</p>
-          <h3>{firstStatistic}</h3>
+          <p className={styles.stathead}>Events Volunteered</p>
+          <h3 className={styles.stat}>{firstStatistic}</h3>
         </Col>
         <Col className={styles['statistics-col']}>
-          <p>Total Hours</p>
-          <h3>{secondStatistic}</h3>
+          <p className={styles.stathead}>Total Hours</p>
+          <h3 className={styles.stat}>{secondStatistic}</h3>
         </Col>
       </Row>
     );

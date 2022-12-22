@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
+import { Toaster } from 'react-hot-toast';
 import { Layout } from 'antd';
 import './common/global.css';
 
@@ -8,11 +9,12 @@ import './common/global.css';
 import Login from './pages/Login';
 import Events from './pages/Events/Events';
 import CreateEvent from './pages/CreateEvent';
-import Volunteers from './pages/Volunteers';
+import Volunteers from './pages/Volunteers/Volunteers';
 import Profile from './pages/Profile/Profile';
 import Event from './pages/Event';
 import EventSignUp from './pages/EventSignUp';
 import Dashboard from './pages/Dashboard';
+import Hours from './pages/Hours/Hours';
 
 // Components
 import NavMenu from './components/NavMenu/NavMenu';
@@ -28,6 +30,7 @@ const App = () => {
   const breakpoint = 720;
   return (
     <CookiesProvider>
+      <Toaster position="top-center" reverseOrder={false} />
       <Layout>
         <Router>
           {/* TODO: implement mobile navbar here */}
@@ -111,6 +114,17 @@ const App = () => {
                 element={
                   <ProtectedRoute
                     Component={Volunteers}
+                    redirectPath="/"
+                    roles={[AUTH_ROLES.ADMIN_ROLE]}
+                  />
+                }
+              />
+              <Route
+                path="/hours"
+                exact
+                element={
+                  <ProtectedRoute
+                    Component={Hours}
                     redirectPath="/"
                     roles={[AUTH_ROLES.ADMIN_ROLE]}
                   />

@@ -1,5 +1,5 @@
 /* eslint-disable react/require-default-props */
-import React, { useState, createElement } from 'react';
+import React, { useState, useEffect, createElement } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, Layout, Button } from 'antd';
 import { instanceOf } from 'prop-types';
@@ -26,14 +26,21 @@ const renderPaths = ['/auth', '/reset-password'];
 const NavMenu = ({ cookies }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [menuTitle, setMenuTitle] = useState('Abound Food Care');
+  const [role, setRole] = useState(cookies.get(cookieKeys.ROLE));
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   const handleToggle = () => {
     setCollapsed(!collapsed);
     setMenuTitle(collapsed ? 'Abound Food Care' : '');
   };
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    if (role) {
+      return;
+    }
+    setRole(cookies.get(cookieKeys.ROLE));
+  }, [role]);
 
   return (
     <>
@@ -56,7 +63,7 @@ const NavMenu = ({ cookies }) => {
                 Events
               </Link>
             </Menu.Item>
-            {cookies.get(cookieKeys.ROLE) === AUTH_ROLES.ADMIN_ROLE && (
+            {role === AUTH_ROLES.ADMIN_ROLE && (
               <>
                 <Menu.Item
                   className={styles['menu-item']}

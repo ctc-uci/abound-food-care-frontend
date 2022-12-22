@@ -14,6 +14,7 @@ const VolunteerDashboard = ({ cookies }) => {
 
   const [pastEvents, setPastEvents] = useState([]);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [userId, setUserId] = useState(cookies.get(cookieKeys.USER_ID));
 
   useEffect(async () => {
     const uEvents = await AFCBackend.get('/events/upcoming');
@@ -21,6 +22,13 @@ const VolunteerDashboard = ({ cookies }) => {
     const pEvents = await AFCBackend.get('/events/past');
     setPastEvents(pEvents.data);
   }, []);
+
+  useEffect(() => {
+    if (userId) {
+      return;
+    }
+    setUserId(cookies.get(cookieKeys.USER_ID));
+  }, [userId]);
 
   const renderDashboard = () => {
     // render desktop version
@@ -47,7 +55,7 @@ const VolunteerDashboard = ({ cookies }) => {
 
   return (
     <div className="dashboard-container">
-      <DashboardHeader userId={cookies.get(cookieKeys.USER_ID)} isAdmin={false} />
+      <DashboardHeader userId={userId} isAdmin={false} />
       {renderDashboard()}
     </div>
   );
