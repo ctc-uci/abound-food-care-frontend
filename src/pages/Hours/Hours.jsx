@@ -7,11 +7,20 @@ import styles from './Hours.module.css';
 
 const { Title } = Typography;
 
+const sortFns = {
+  'Event Name (A - Z)': (a, b) => a.sort.eventName.localeCompare(b.sort.eventName),
+  'Event Name (Z - A)': (a, b) => -a.sort.eventName.localeCompare(b.sort.eventName),
+  'Volunteer Name (A - Z)': (a, b) => a.sort.volunteerName.localeCompare(b.sort.volunteerName),
+  'Volunteer Name (Z - A)': (a, b) => -a.sort.volunteerName.localeCompare(b.sort.volunteerName),
+  'Most Recent': (a, b) => -a.sort.mostRecent.localeCompare(b.sort.mostRecent),
+  Oldest: (a, b) => a.sort.mostRecent.localeCompare(b.sort.mostRecent),
+};
+
 const Hours = () => {
   const [unapprovedVolunteersData, setUnapprovedVolunteersData] = useState([]);
   const [selectedHours, setSelectedHours] = useState([]);
   const [search, setSearch] = useState('');
-  const [sortOption, setSortOption] = useState('Event Name (A - Z)');
+  const [sortOption, setSortOption] = useState('Most Recent');
   const [refresh, setRefresh] = useState(true);
 
   const approveHours = async (userId, eventId, userName, eventName) => {
@@ -168,7 +177,9 @@ const Hours = () => {
         }),
       );
 
-      setUnapprovedVolunteersData(unapprovedVolunteerHours);
+      setUnapprovedVolunteersData(
+        unapprovedVolunteerHours.sort(sortFns[sortOption] ?? sortFns['Most Recent']),
+      );
     } catch (e) {
       toast.error(e.message);
     }
@@ -228,6 +239,12 @@ const Hours = () => {
 
   const sortByMenu = (
     <Menu className={styles.menu}>
+      <Menu.Item key="time+" onClick={() => setSortOption('Most Recent')}>
+        Most Recent
+      </Menu.Item>
+      <Menu.Item key="time-" onClick={() => setSortOption('Oldest')}>
+        Oldest
+      </Menu.Item>
       <Menu.Item key="ename+" onClick={() => setSortOption('Event Name (A - Z)')}>
         Event Name (A - Z)
       </Menu.Item>
@@ -239,12 +256,6 @@ const Hours = () => {
       </Menu.Item>
       <Menu.Item key="vname-" onClick={() => setSortOption('Volunteer Name (Z - A)')}>
         Volunteer Name (Z - A)
-      </Menu.Item>
-      <Menu.Item key="time+" onClick={() => setSortOption('Most Recent')}>
-        Most Recent
-      </Menu.Item>
-      <Menu.Item key="time-" onClick={() => setSortOption('Oldest')}>
-        Oldest
       </Menu.Item>
     </Menu>
   );
@@ -269,16 +280,8 @@ const Hours = () => {
     if (!unapprovedVolunteersData) {
       return;
     }
-    const sortFns = {
-      'Event Name (A - Z)': (a, b) => a.sort.eventName.localeCompare(b.sort.eventName),
-      'Event Name (Z - A)': (a, b) => -a.sort.eventName.localeCompare(b.sort.eventName),
-      'Volunteer Name (A - Z)': (a, b) => a.sort.volunteerName.localeCompare(b.sort.volunteerName),
-      'Volunteer Name (Z - A)': (a, b) => -a.sort.volunteerName.localeCompare(b.sort.volunteerName),
-      'Most Recent': (a, b) => -a.sort.mostRecent.localeCompare(b.sort.mostRecent),
-      Oldest: (a, b) => a.sort.mostRecent.localeCompare(b.sort.mostRecent),
-    };
     setUnapprovedVolunteersData([
-      ...unapprovedVolunteersData.sort(sortFns[sortOption] ?? sortFns['Event Name (A - Z)']),
+      ...unapprovedVolunteersData.sort(sortFns[sortOption] ?? sortFns['Most Recent']),
     ]);
   }, [sortOption]);
 
