@@ -236,7 +236,7 @@ const EventsGeneralInfo = () => {
               />
             </Space>
             <Space>
-              <Controller
+              {/* <Controller
                 control={control}
                 name="isMinor"
                 // eslint-disable-next-line no-unused-vars
@@ -251,7 +251,7 @@ const EventsGeneralInfo = () => {
                     </Tag.CheckableTag>
                   </Form.Item>
                 )}
-              />
+              /> */}
               <Controller
                 control={control}
                 name="serveSafeKnowledge"
@@ -511,7 +511,7 @@ const EventsGeneralInfo = () => {
                       </Form.Item>
                     )}
                   />
-                  <Controller
+                  {/* <Controller
                     control={control}
                     name="isMinor"
                     render={({ field: { onChange, value, ref } }) => (
@@ -519,7 +519,7 @@ const EventsGeneralInfo = () => {
                         <Checkbox onChange={onChange} ref={ref} checked={value} />
                       </Form.Item>
                     )}
-                  />
+                  /> */}
                 </Col>
                 <br />
                 <Col span={8}>
