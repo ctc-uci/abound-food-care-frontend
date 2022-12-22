@@ -11,7 +11,7 @@ const Hours = () => {
   const [unapprovedVolunteersData, setUnapprovedVolunteersData] = useState([]);
   const [selectedHours, setSelectedHours] = useState([]);
   const [search, setSearch] = useState('');
-  const [sortOption, setSortOption] = useState('Event Name');
+  const [sortOption, setSortOption] = useState('Event Name (A - Z)');
   const [refresh, setRefresh] = useState(true);
 
   const approveHours = async (userId, eventId, userName, eventName) => {
@@ -124,12 +124,16 @@ const Hours = () => {
           return {
             key: `${v.userId} ${v.eventId}`,
             user: (
-              <span className={styles['dg-emphasis']}>
+              <a className={styles['dg-emphasis']} href={`/profile/${userData.userId}`}>
                 {userData.firstName} {userData.lastName}
-              </span>
+              </a>
             ),
             organizations: userData.organization,
-            event_name: <span className={styles['dg-emphasis']}>{v.event.name}</span>,
+            event_name: (
+              <a className={styles['dg-emphasis']} href={`/event/view/${v.event.eventId}`}>
+                {v.event.name}
+              </a>
+            ),
             date: v.event.startDatetime.slice(0, 10),
             start: v.event.startDatetime.slice(11, 16),
             end: v.event.endDatetime.slice(11, 16),
@@ -224,14 +228,23 @@ const Hours = () => {
 
   const sortByMenu = (
     <Menu className={styles.menu}>
-      <Menu.Item key="ename" onClick={() => setSortOption('Event Name')}>
-        Event Name
+      <Menu.Item key="ename+" onClick={() => setSortOption('Event Name (A - Z)')}>
+        Event Name (A - Z)
       </Menu.Item>
-      <Menu.Item key="vname" onClick={() => setSortOption('Volunteer Name')}>
-        Volunteer Name
+      <Menu.Item key="ename-" onClick={() => setSortOption('Event Name (Z - A)')}>
+        Event Name (Z - A)
       </Menu.Item>
-      <Menu.Item key="time" onClick={() => setSortOption('Most Recent')}>
+      <Menu.Item key="vname+" onClick={() => setSortOption('Volunteer Name (A - Z)')}>
+        Volunteer Name (A - Z)
+      </Menu.Item>
+      <Menu.Item key="vname-" onClick={() => setSortOption('Volunteer Name (Z - A)')}>
+        Volunteer Name (Z - A)
+      </Menu.Item>
+      <Menu.Item key="time+" onClick={() => setSortOption('Most Recent')}>
         Most Recent
+      </Menu.Item>
+      <Menu.Item key="time-" onClick={() => setSortOption('Oldest')}>
+        Oldest
       </Menu.Item>
     </Menu>
   );
@@ -257,11 +270,16 @@ const Hours = () => {
       return;
     }
     const sortFns = {
-      'Event Name': (a, b) => a.sort.eventName.localeCompare(b.sort.eventName),
-      'Volunteer Name': (a, b) => a.sort.volunteerName.localeCompare(b.sort.volunteerName),
+      'Event Name (A - Z)': (a, b) => a.sort.eventName.localeCompare(b.sort.eventName),
+      'Event Name (Z - A)': (a, b) => -a.sort.eventName.localeCompare(b.sort.eventName),
+      'Volunteer Name (A - Z)': (a, b) => a.sort.volunteerName.localeCompare(b.sort.volunteerName),
+      'Volunteer Name (Z - A)': (a, b) => -a.sort.volunteerName.localeCompare(b.sort.volunteerName),
       'Most Recent': (a, b) => -a.sort.mostRecent.localeCompare(b.sort.mostRecent),
+      Oldest: (a, b) => a.sort.mostRecent.localeCompare(b.sort.mostRecent),
     };
-    setUnapprovedVolunteersData(unapprovedVolunteersData.sort(sortFns[sortOption]));
+    setUnapprovedVolunteersData([
+      ...unapprovedVolunteersData.sort(sortFns[sortOption] ?? sortFns['Event Name (A - Z)']),
+    ]);
   }, [sortOption]);
 
   return (
@@ -337,7 +355,7 @@ const Hours = () => {
               ...rowSelection,
             }}
             columns={columns}
-            dataSource={[...unapprovedVolunteersData]}
+            dataSource={unapprovedVolunteersData}
           />
         </div>
       </Space>
