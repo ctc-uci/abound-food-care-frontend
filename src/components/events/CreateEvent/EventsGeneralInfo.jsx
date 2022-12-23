@@ -456,13 +456,13 @@ const EventsGeneralInfo = () => {
                 >
                   {eventTypeMenu}
                 </Select>
-                <Button
+                {/* <Button
                   type="link"
                   onClick={handleClickNewEventType}
                   className={styles.newEventTypeBtn}
                 >
                   New Event Type
-                </Button>
+                </Button> */}
                 <div>
                   {eventTypeModal && (
                     <EventTypeModal

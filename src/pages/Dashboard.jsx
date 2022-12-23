@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { instanceOf } from 'prop-types';
 import AdminDashboard from './AdminDashboard/AdminDashboard';
-import VolunteerDashboard from './VolunteerDashboard';
+import VolunteerDashboard from './VolunteerDashboard/VolunteerDashboard';
 import { withCookies, cookieKeys, Cookies } from '../util/cookie_utils';
 import AUTH_ROLES from '../util/auth_config';
 

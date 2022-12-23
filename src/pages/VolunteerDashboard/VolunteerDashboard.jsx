@@ -1,12 +1,13 @@
 import { instanceOf } from 'prop-types';
 import { Row, Col } from 'antd';
 import React, { useState, useEffect } from 'react';
-import DashboardHeader from '../components/admin-dashboard-components/DashboardHeader/DashboardHeader';
-import EventGrid from '../components/admin-dashboard-components/EventGrid/EventGrid';
-import EventList from '../components/events/EventList/EventList';
-import useViewPort from '../common/useViewPort';
-import { AFCBackend } from '../util/utils';
-import { Cookies, withCookies, cookieKeys } from '../util/cookie_utils';
+import DashboardHeader from '../../components/admin-dashboard-components/DashboardHeader/DashboardHeader';
+import EventGrid from '../../components/admin-dashboard-components/EventGrid/EventGrid';
+import EventList from '../../components/events/EventList/EventList';
+import useViewPort from '../../common/useViewPort';
+import { AFCBackend } from '../../util/utils';
+import { Cookies, withCookies, cookieKeys } from '../../util/cookie_utils';
+import styles from './VolunteerDashboard.module.css';
 
 const VolunteerDashboard = ({ cookies }) => {
   const { width } = useViewPort();
@@ -35,9 +36,10 @@ const VolunteerDashboard = ({ cookies }) => {
     if (width > breakpoint) {
       return (
         <>
-          <Row className="dashboard-row" gutter={[32, 16]}>
-            <Col className="dashboard-col" span={24}>
+          <Row gutter={[32, 16]}>
+            <Col span={28}>
               <EventGrid title="Upcoming Events" eventStatus="upcoming" />
+              <div className={styles.spacer} />
               <EventGrid title="Past Events" eventStatus="past" />
             </Col>
           </Row>
@@ -48,6 +50,7 @@ const VolunteerDashboard = ({ cookies }) => {
     return (
       <div>
         <EventList title="Upcoming Events" events={upcomingEvents} showViewAll />
+        <div className={styles.spacer} />
         <EventList title="Past Events" events={pastEvents} showViewAll />
       </div>
     );

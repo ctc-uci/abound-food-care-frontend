@@ -35,23 +35,19 @@ const AdminDashboard = ({ cookies }) => {
     <div style={{ padding: '16px' }}>
       <DashboardHeader isAdmin userId={userId} />
       {width > breakpoint ? (
-        <>
-          <Row gutter={[32, 16]}>
-            <Col span={28}>
-              <EventGrid title="Upcoming Events" eventStatus="upcoming" />
-              <div className={styles.spacer} />
-              <EventGrid title="Past Events" eventStatus="past" />
-            </Col>
-          </Row>
-        </>
-      ) : (
-        <>
-          <div>
-            <EventList title="Upcoming Events" events={upcomingEvents} showViewAll />
+        <Row gutter={[32, 16]}>
+          <Col span={28}>
+            <EventGrid title="Upcoming Events" eventStatus="upcoming" />
             <div className={styles.spacer} />
-            <EventList title="Past Events" events={pastEvents} showViewAll />
-          </div>
-        </>
+            <EventGrid title="Past Events" eventStatus="past" />
+          </Col>
+        </Row>
+      ) : (
+        <div>
+          <EventList title="Upcoming Events" events={upcomingEvents} showViewAll />
+          <div className={styles.spacer} />
+          <EventList title="Past Events" events={pastEvents} showViewAll />
+        </div>
       )}
     </div>
   );

@@ -1,4 +1,5 @@
 import { React, useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { instanceOf } from 'prop-types';
 import { Link } from 'react-router-dom';
 import { Input, Button, Radio, Row, Col, Card, Pagination } from 'antd';
@@ -7,13 +8,11 @@ import { FilterOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons'
 import { AFCBackend } from '../../util/utils';
 import EventCard from '../../components/events/event/EventCard/EventCard';
 import EventList from '../../components/events/event/EventList/EventList';
-import AddEventTypeModal from '../../components/events/CreateEvent/AddEventTypeModal';
+// import AddEventTypeModal from '../../components/events/CreateEvent/AddEventTypeModal';
 import useViewPort from '../../common/useViewPort';
 import { cookieKeys } from '../../util/cookie_utils';
 import styles from './Events.module.css';
 import 'antd/dist/antd.less';
-
-// const { Title } = Typography;
 
 const Events = ({ cookies }) => {
   const [eventTypeValue, setEventTypeValue] = useState('all');
@@ -22,24 +21,25 @@ const Events = ({ cookies }) => {
   const [eventsData, setEventsData] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
-  const [showEventTypeModal, setShowEventTypeModal] = useState(false);
+  // const [showEventTypeModal, setShowEventTypeModal] = useState(false);
   const [numEvents, setNumEvents] = useState(0);
   const [displayedEvents, setDisplayedEvents] = useState([]);
-  const [pageSize, setPageSize] = useState(30);
+  const [pageSize, setPageSize] = useState(20);
   const [currentPage, setCurrentPage] = useState(1);
+  const [role, setRole] = useState(cookies.get(cookieKeys.ROLE));
 
-  const defaultEventTypes = [
-    {
-      name: 'Distribution',
-      description:
-        'Events where volunteers assist in distributing food - duties may include loading cars, taking data, packaging produce & meal, and traffic.',
-    },
-    {
-      name: 'Food Running',
-      description: 'Events where volunteers transport food safely from donor to recipient.',
-    },
-  ];
-  const [eventTypes, setEventTypes] = useState(defaultEventTypes);
+  // const defaultEventTypes = [
+  //   {
+  //     name: 'Distribution',
+  //     description:
+  //       'Events where volunteers assist in distributing food - duties may include loading cars, taking data, packaging produce & meal, and traffic.',
+  //   },
+  //   {
+  //     name: 'Food Running',
+  //     description: 'Events where volunteers transport food safely from donor to recipient.',
+  //   },
+  // ];
+  // const [eventTypes, setEventTypes] = useState(defaultEventTypes);
 
   const { width } = useViewPort();
   const breakpoint = 720;
@@ -64,7 +64,7 @@ const Events = ({ cookies }) => {
       setAllEvents(eventResponse);
       setNumEvents(eventResponse.length);
     } catch (err) {
-      console.error(err.message);
+      toast.error('Error fetching event data');
     }
   };
 
@@ -73,6 +73,13 @@ const Events = ({ cookies }) => {
     fetchAllEvents();
     setLoading(false);
   }, []);
+
+  useEffect(() => {
+    if (role) {
+      return;
+    }
+    setRole(cookies.get(cookieKeys.ROLE));
+  }, [role]);
 
   const onSearch = async e => {
     if (e.target.value === '') {
@@ -92,12 +99,6 @@ const Events = ({ cookies }) => {
       setDisplayedEvents(searchSpecificEventData);
       setNumEvents(searchSpecificEventData.length);
       setCurrentPage(1);
-    }
-  };
-
-  const onChange = e => {
-    if (e.target.value === '') {
-      onSearch(e);
     }
   };
 
@@ -193,7 +194,7 @@ const Events = ({ cookies }) => {
             size="large"
             block
           >
-            Create New Event
+            New Event
           </Button>
         </Link>
       </div>
@@ -208,8 +209,7 @@ const Events = ({ cookies }) => {
       className={styles['mobile-search-bar']}
       size="large"
       placeholder="Search by event name, date, ..."
-      onPressEnter={onSearch}
-      onChange={onChange}
+      onChange={onSearch}
       suffix={filterButton}
       allowClear
     />
@@ -245,57 +245,74 @@ const Events = ({ cookies }) => {
         {loading && <div>Loading...</div>}
         {!loading && (
           <>
-            <Card className={styles.card}>
-              {/* <Title level={1} className={styles.title}>
-                Events
-              </Title> */}
-              <div className={styles.title}>Events</div>
+            <Card className={styles.titleSearchCard}>
+              <div>
+                <div className={styles.title}>Events</div>
+                <div className={styles.newEventBtnContainer}>
+                  {role === 'admin' && (
+                    <Link to="/event/create">
+                      <Button
+                        icon={<PlusOutlined className={styles.addEventPlus} />}
+                        className={styles['new-event-btn']}
+                        type="primary"
+                      >
+                        New Event
+                      </Button>
+                    </Link>
+                  )}
+                </div>
+              </div>
               <Input
                 prefix={<SearchOutlined style={{ color: '#BFBFBF' }} />}
                 className={styles['search-bar']}
                 size="large"
-                placeholder="Search events by name"
-                onPressEnter={onSearch}
-                onChange={onChange}
+                placeholder="Search for an event"
+                onChange={onSearch}
                 allowClear
               />
             </Card>
-            <Card className={styles['filter-card']}>
-              <div className={styles.filters}>
-                <span>
-                  Event Type:
-                  <Radio.Group
-                    className={styles['event-type-radio']}
-                    style={{ margin: '0px 20px 0px 10px' }}
-                    defaultValue="all"
-                    onChange={onTypeChange}
-                    value={eventTypeValue}
-                    optionType="button"
-                    buttonStyle="solid"
-                  >
-                    <Radio.Button value="all">All</Radio.Button>
-                    {/* TODO Add functionality to map types to buttons instead of hardcoding */}
-                    <Radio.Button className={styles['distribution-radio-btn']} value="distribution">
-                      Distributions
-                    </Radio.Button>
-                    <Radio.Button className={styles['food-radio-btn']} value="food">
-                      Food Running
-                    </Radio.Button>
-                    <Radio.Button value="other">Other</Radio.Button>
-                  </Radio.Group>
-                </span>
-                <span>
-                  Event Status:
-                  <Radio.Group
-                    className={styles['status-type-radio']}
-                    style={{ margin: '0px 10px' }}
-                    options={eventStatusOptions}
-                    onChange={onStatusChange}
-                    value={eventStatusValue}
-                    optionType="button"
-                    buttonStyle="solid"
-                  />
-                </span>
+            <Card className={styles.filterCard}>
+              <div className={styles.filterCardInner}>
+                <div className={styles.filterGroup}>
+                  <div className={styles.filterFlex}>
+                    <div className={styles.filterGroupLabel}>Event Type:</div>
+                    <Radio.Group
+                      className={styles['event-type-radio']}
+                      style={{ margin: '0px 20px 0px 10px' }}
+                      defaultValue="all"
+                      onChange={onTypeChange}
+                      value={eventTypeValue}
+                      optionType="button"
+                      buttonStyle="solid"
+                    >
+                      <Radio.Button value="all">All</Radio.Button>
+                      <Radio.Button
+                        className={styles['distribution-radio-btn']}
+                        value="distribution"
+                      >
+                        Distributions
+                      </Radio.Button>
+                      <Radio.Button className={styles['food-radio-btn']} value="food">
+                        Food Running
+                      </Radio.Button>
+                      <Radio.Button value="other">Other</Radio.Button>
+                    </Radio.Group>
+                  </div>
+                </div>
+                <div className={styles.filterGroup}>
+                  <div className={styles.filterFlex}>
+                    <div className={styles.filterGroupLabel}>Event Status:</div>
+                    <Radio.Group
+                      className={styles['status-type-radio']}
+                      style={{ margin: '0px 10px' }}
+                      options={eventStatusOptions}
+                      onChange={onStatusChange}
+                      value={eventStatusValue}
+                      optionType="button"
+                      buttonStyle="solid"
+                    />
+                  </div>
+                </div>
                 {/* <Button
                   className={styles['new-event-type-btn']}
                   type="default"
@@ -305,21 +322,12 @@ const Events = ({ cookies }) => {
                 >
                   New Event Type
                 </Button> */}
-                {cookies.get(cookieKeys.ROLE) === 'admin' && (
-                  <>
-                    <Link to="/events/create">
-                      <Button className={styles['new-event-btn']} type="primary">
-                        New Event
-                      </Button>
-                    </Link>
-                    <AddEventTypeModal
-                      addVisible={showEventTypeModal}
-                      setAddVisible={setShowEventTypeModal}
-                      eventsData={eventTypes}
-                      setEventsData={setEventTypes}
-                    />
-                  </>
-                )}
+                {/* <AddEventTypeModal
+                  addVisible={showEventTypeModal}
+                  setAddVisible={setShowEventTypeModal}
+                  eventsData={eventTypes}
+                  setEventsData={setEventTypes}
+                /> */}
               </div>
             </Card>
             {eventsData.length > 0 ? (
@@ -336,8 +344,8 @@ const Events = ({ cookies }) => {
                 />
               </div>
             ) : (
-              <Card className={styles.card}>
-                There are no events. Select <b>Create an Event</b> to make one!
+              <Card className={styles.noEventsCard}>
+                There are no events. Select New Event to make one!
               </Card>
             )}
           </>
