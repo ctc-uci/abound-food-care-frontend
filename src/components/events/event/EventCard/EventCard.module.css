@@ -1,22 +1,43 @@
 @import '../../../../common/global.css';
 
+.loading {
+  font-family: Avenir;
+  font-size: 20px;
+  font-weight: 600;
+}
+
 .event-card {
-  margin: 0 7.5px 20px 7.5px !important;
-  border-color: #bfbfbf;
+  margin: 15px !important;
+  border: 1px solid #efefef;
   border-radius: 5px;
-  box-shadow: 0px 4px 4px #d3d3d3;
+  box-shadow: 0px 4px 8px rgb(0, 0, 0, 0.1) !important;
+}
+
+.event-card:hover {
+  box-shadow: 1px 10px 12px rgb(0, 0, 0, 0.2) !important;
+}
+
+.eventCardInner {
+  padding: 0 7px;
 }
 
 .event-date-time {
-  font-family: 'Inter';
-  font-weight: lighter;
-  font-size: 18px;
-  height: 5vh;
+  font-family: Avenir;
+  font-size: 16px;
+}
+
+.eventDate {
+  margin-top: 5px;
+  margin-bottom: 0;
+}
+
+.eventTime {
+  margin: 0;
 }
 
 .num-volunteers {
-  font-family: 'Inter';
-  font-size: 18px;
-  color: #bfbfbf;
-  height: 1vh;
+  font-family: Avenir;
+  font-size: 16px;
+  margin: 5px 0;
+  color: #aaaaaa;
 }

@@ -43,7 +43,6 @@ const Events = ({ cookies }) => {
 
   const { width } = useViewPort();
   const breakpoint = 720;
-  // const PAGE_SIZE = 6;
 
   const eventStatusOptions = [
     { label: 'All', value: 'all' },
@@ -164,6 +163,8 @@ const Events = ({ cookies }) => {
     }
   };
 
+  const filterButton = <FilterOutlined style={{ color: '#115740' }} />;
+
   const renderEventsGrid = events => {
     const rows = events.map(event => (
       <Col key={event.eventId} span={8}>
@@ -200,8 +201,6 @@ const Events = ({ cookies }) => {
       </div>
     );
   };
-
-  const filterButton = <FilterOutlined style={{ color: '#115740' }} />;
 
   const renderMobileSearchBar = () => (
     <Input
@@ -292,7 +291,11 @@ const Events = ({ cookies }) => {
                       >
                         Distributions
                       </Radio.Button>
-                      <Radio.Button className={styles['food-radio-btn']} value="food">
+                      <Radio.Button
+                        className={styles['food-radio-btn']}
+                        style={{ borderColor: '#eaaa00', color: '#eaaa00' }}
+                        value="food"
+                      >
                         Food Running
                       </Radio.Button>
                       <Radio.Button value="other">Other</Radio.Button>
@@ -332,7 +335,6 @@ const Events = ({ cookies }) => {
             </Card>
             {eventsData.length > 0 ? (
               <div className={styles['events-grid']}>
-                {/* {width > breakpoint ? ( */}
                 <Row className={styles['event-card-row']}>{renderEventsGrid(displayedEvents)}</Row>
                 <Pagination
                   className={styles.pagination}
@@ -344,9 +346,16 @@ const Events = ({ cookies }) => {
                 />
               </div>
             ) : (
-              <Card className={styles.noEventsCard}>
-                There are no events. Select New Event to make one!
-              </Card>
+              <div className={styles.noEventsContainer}>
+                <Card className={styles.noEventsCard}>
+                  There are no events. Select{' '}
+                  <Link to="/event/create">
+                    <PlusOutlined className={styles.noEventsPlus} />
+                    <span className={styles.noEventsBold}>New Event</span>
+                  </Link>{' '}
+                  to make one!
+                </Card>
+              </div>
             )}
           </>
         )}

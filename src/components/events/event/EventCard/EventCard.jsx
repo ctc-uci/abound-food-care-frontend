@@ -1,5 +1,6 @@
 import { React, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { Card } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
@@ -18,37 +19,32 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
     month: 'long',
   })} ${eventStartDateObj.getDate()}, ${eventStartDateObj.getFullYear()}`;
   const eventStarttime = `${
-    eventStartDateObj.getHours() > 9
-      ? eventStartDateObj.getHours()
-      : `0${eventStartDateObj.getHours()}`
+    eventStartDateObj.getHours() === 0 ? 12 : eventStartDateObj.getHours() % 12
   }:${
     eventStartDateObj.getMinutes() > 9
       ? eventStartDateObj.getMinutes()
-      : `${eventStartDateObj.getMinutes()}0`
-  }`;
+      : `0${eventStartDateObj.getMinutes()}`
+  } ${eventStartDateObj.getHours() > 11 ? 'AM' : 'PM'}`;
   const eventEndtime = `${
-    eventEndDateObj.getHours() > 9 ? eventEndDateObj.getHours() : `0${eventEndDateObj.getHours()}`
+    eventEndDateObj.getHours() === 0 ? 12 : eventEndDateObj.getHours() % 12
   }:${
     eventEndDateObj.getMinutes() > 9
       ? eventEndDateObj.getMinutes()
-      : `${eventEndDateObj.getMinutes()}0`
-  }`;
+      : `0${eventEndDateObj.getMinutes()}`
+  } ${eventEndDateObj.getHours() > 11 ? 'AM' : 'PM'}`;
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = async () => {
+    try {
       setLoading(true);
-      try {
-        const { data: volunteerResponse } = await AFCBackend.get(`/volunteers/events/${id}`);
-        if (volunteerResponse.status === 200 && volunteerResponse.length > 0) {
-          setNumVolunteers(volunteerResponse.userIds.length);
-        }
-      } catch (err) {
-        console.error(err.message);
+      const { data: volunteerResponse } = await AFCBackend.get(`/volunteers/events/${id}`);
+      if (volunteerResponse.status === 200 && volunteerResponse.length > 0) {
+        setNumVolunteers(volunteerResponse.userIds.length);
       }
       setLoading(false);
-    };
-    fetchData();
-  }, []);
+    } catch (err) {
+      toast.error(`Error fetching data for event ${name}`);
+    }
+  };
 
   const getEditLink = () => {
     return (
@@ -58,87 +54,47 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
     );
   };
 
-  return (
-    <div>
-      {loading && <div>Loading Event Data...</div>}
-      {!loading && (
-        <>
-          {type === 'Distribution' && (
-            <Card
-              className={styles['event-card']}
-              title={name}
-              bordered
-              hoverable
-              headStyle={{
-                backgroundColor: '#009A44',
-                color: 'white',
-                fontSize: '18px',
-                fontWeight: 'bold',
-              }}
-              actions={[getEditLink()]}
-            >
-              <p className={styles['event-date-time']}>
-                {eventDate}
-                <br />
-                {eventStarttime} - {eventEndtime}
-              </p>
-              <p className={styles['num-volunteers']}>
-                {numVolunteers}/{volunteerCapacity} Volunteers Signed Up
-              </p>
-            </Card>
-          )}
-          {type === 'Food Running' && (
-            <Card
-              className={styles['event-card']}
-              title={name}
-              bordered
-              hoverable
-              headStyle={{
-                backgroundColor: '#FFA500',
-                color: 'white',
-                fontSize: '18px',
-                fontWeight: 'bold',
-              }}
-              actions={[getEditLink()]}
-            >
-              <p className={styles['event-date-time']}>
-                {eventDate}
-                <br />
-                {eventStarttime} - {eventEndtime}
-              </p>
-              <p className={styles['num-volunteers']}>
-                {numVolunteers}/{volunteerCapacity} Volunteers Signed Up
-              </p>
-            </Card>
-          )}
-          {type !== 'Distribution' && type !== 'Food Running' && (
-            <Card
-              className={styles['event-card']}
-              title={name}
-              bordered
-              hoverable
-              headStyle={{
-                backgroundColor: '#808080',
-                color: 'white',
-                fontSize: '18px',
-                fontWeight: 'bold',
-              }}
-              actions={[getEditLink()]}
-            >
-              <p className={styles['event-date-time']}>
-                {eventDate}
-                <br />
-                {eventStarttime} - {eventEndtime}
-              </p>
-              <p className={styles['num-volunteers']}>
-                {numVolunteers}/{volunteerCapacity} Volunteers Signed Up
-              </p>
-            </Card>
-          )}
-        </>
-      )}
-    </div>
-  );
+  const mapCardType = () => {
+    const backgroundColors = {
+      Distribution: '#009A44',
+      'Food Running': '#FFA500',
+      Other: '#808080',
+    };
+    return (
+      <Card
+        className={styles['event-card']}
+        title={name}
+        bordered
+        hoverable
+        headStyle={{
+          backgroundColor: backgroundColors[type] ?? backgroundColors.Other,
+          color: 'white',
+          fontSize: '16px',
+          fontWeight: 'bold',
+          lineHeight: '1.2',
+        }}
+        actions={[getEditLink()]}
+      >
+        <div className={styles.eventCardInner}>
+          <p className={styles['event-date-time']}>
+            <p className={styles.eventDate}>{eventDate}</p>
+            <p className={styles.eventTime}>
+              {eventStarttime} - {eventEndtime}
+            </p>
+          </p>
+          <p className={styles['num-volunteers']}>
+            {numVolunteers}/{volunteerCapacity} Volunteer{volunteerCapacity === 1 ? '' : 's'}
+          </p>
+        </div>
+      </Card>
+    );
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  return !loading && mapCardType();
 };
 
 EventCard.propTypes = {

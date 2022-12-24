@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Table, Input, Button, Typography, Space, Dropdown, Menu } from 'antd';
 import { SearchOutlined, DownOutlined } from '@ant-design/icons';
@@ -133,15 +134,15 @@ const Hours = () => {
           return {
             key: `${v.userId} ${v.eventId}`,
             user: (
-              <a className={styles['dg-emphasis']} href={`/profile/${userData.userId}`}>
+              <Link className={styles['dg-emphasis']} to={`/profile/${userData.userId}`}>
                 {userData.firstName} {userData.lastName}
-              </a>
+              </Link>
             ),
             organizations: userData.organization,
             event_name: (
-              <a className={styles['dg-emphasis']} href={`/event/view/${v.event.eventId}`}>
+              <Link className={styles['dg-emphasis']} to={`/event/view/${v.event.eventId}`}>
                 {v.event.name}
-              </a>
+              </Link>
             ),
             date: v.event.startDatetime.slice(0, 10),
             start: v.event.startDatetime.slice(11, 16),

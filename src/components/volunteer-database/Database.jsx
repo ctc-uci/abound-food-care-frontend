@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Input, Button, Row, Col, Dropdown, Menu, Table } from 'antd';
 import { SearchOutlined, PlusOutlined, FilterFilled, DownOutlined } from '@ant-design/icons';
@@ -31,14 +32,14 @@ const Database = ({ handleHideDatabase }) => {
         volunteerResponse.map(v => ({
           ...v,
           firstNameCell: (
-            <a className={styles.dgEmphasis} href={`/profile/${v.userId}`}>
+            <Link className={styles.dgEmphasis} to={`/profile/${v.userId}`}>
               {v.firstName}
-            </a>
+            </Link>
           ),
           lastNameCell: (
-            <a className={styles.dgEmphasis} href={`/profile/${v.userId}`}>
+            <Link className={styles.dgEmphasis} to={`/profile/${v.userId}`}>
               {v.lastName}
-            </a>
+            </Link>
           ),
           emailLink: (
             <a className={styles.dgEmphasis} href={`mailto:${v.email}`}>

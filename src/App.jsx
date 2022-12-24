@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
 import { Toaster } from 'react-hot-toast';
-import { Layout } from 'antd';
+import { ConfigProvider, Layout } from 'antd';
 import './common/global.css';
 
 // Pages
@@ -28,6 +28,11 @@ import ProtectedRoute from './util/ProtectedRoute/ProtectedRoute';
 const App = () => {
   const { width } = useViewPort();
   const breakpoint = 720;
+  ConfigProvider.config({
+    theme: {
+      primaryColor: '#115740',
+    },
+  });
   return (
     <CookiesProvider>
       <Toaster position="top-center" reverseOrder={false} />

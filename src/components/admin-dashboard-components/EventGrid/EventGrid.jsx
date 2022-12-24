@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Card } from 'antd';
 import { PropTypes } from 'prop-types';
 import { AFCBackend, getHourDiff, getMonthString, getTimeInPST } from '../../../util/utils';
@@ -23,9 +24,9 @@ const EventGrid = ({ title, eventStatus }) => {
   };
 
   const allEventsLink = () => (
-    <a href="/events" className={styles.dg}>
+    <Link to="/events" className={styles.dg}>
       View all events
-    </a>
+    </Link>
   );
 
   return (
@@ -35,9 +36,9 @@ const EventGrid = ({ title, eventStatus }) => {
           // eslint-disable-next-line react/no-array-index-key
           <Card.Grid key={index} className={styles[`${eventStatus}-event`]}>
             <div>
-              <a className={styles['event-name']} href={`/event/view/${event.eventId}`}>
+              <Link className={styles['event-name']} to={`/event/view/${event.eventId}`}>
                 {event.name}
-              </a>
+              </Link>
               <p className={styles['event-start-date']}>
                 {' '}
                 {getMonthString(event.startDatetime)} {new Date(event.startDatetime).getDate()},{' '}
