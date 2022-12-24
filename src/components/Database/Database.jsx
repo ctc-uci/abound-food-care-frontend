@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import PropTypes from 'prop-types';
 import { Input, Button, Row, Col, Dropdown, Menu, Table } from 'antd';
 import { SearchOutlined, PlusOutlined, FilterFilled, DownOutlined } from '@ant-design/icons';
-import PropTypes from 'prop-types';
+import ViewAdminCodes from '../ViewAdminCodes/ViewAdminCodes';
 import { AFCBackend, localeSort } from '../../util/utils';
-import ViewAdminCodes from './ViewAdminCodes/ViewAdminCodes';
 import styles from './Database.module.css';
 
 const Database = ({ handleHideDatabase }) => {

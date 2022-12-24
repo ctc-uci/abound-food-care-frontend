@@ -1,5 +1,4 @@
 import { React, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Card } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
@@ -46,14 +45,6 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
     }
   };
 
-  const getEditLink = () => {
-    return (
-      <Link to={`/event/view/${id}`}>
-        <EditOutlined key="edit" />
-      </Link>
-    );
-  };
-
   const mapCardType = () => {
     const backgroundColors = {
       Distribution: '#009A44',
@@ -73,15 +64,15 @@ const EventCard = ({ id, name, type, startDateTime, endDateTime, volunteerCapaci
           fontWeight: 'bold',
           lineHeight: '1.2',
         }}
-        actions={[getEditLink()]}
+        actions={[<EditOutlined key="edit" />]}
       >
         <div className={styles.eventCardInner}>
-          <p className={styles['event-date-time']}>
+          <span className={styles['event-date-time']}>
             <p className={styles.eventDate}>{eventDate}</p>
             <p className={styles.eventTime}>
               {eventStarttime} - {eventEndtime}
             </p>
-          </p>
+          </span>
           <p className={styles['num-volunteers']}>
             {numVolunteers}/{volunteerCapacity} Volunteer{volunteerCapacity === 1 ? '' : 's'}
           </p>

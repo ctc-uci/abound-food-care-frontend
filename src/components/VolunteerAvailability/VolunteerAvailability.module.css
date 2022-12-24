@@ -1,0 +1,130 @@
+@import '../../common/global.css';
+
+.volunteerAvContainer {
+  margin: 0;
+}
+
+.volunteerAvTitle {
+  margin-left: 14px;
+  margin-bottom: 5px;
+  font-family: Avenir;
+  font-size: 36px;
+  font-weight: 1000;
+}
+
+.volunteerAvLeft {
+  float: left;
+  width: 77.5%;
+}
+
+.volunteerAvFiltersContainer {
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 2px;
+  padding: 20px 20px 25px 20px;
+  margin: 5px 40px 10px 0;
+}
+
+.filterRow {
+  margin-left: 8px;
+  margin-bottom: 10px;
+}
+
+.filterFilledMedium {
+  font-size: 28px;
+}
+
+.filterSearchBar {
+  margin-left: 10px;
+}
+
+.filterSearchOutlined {
+  font-size: 18px;
+  color: #bfbfbf;
+  margin-top: -1px;
+  margin-right: 5px;
+}
+
+.buttonGroup {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  padding-right: 2%;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.dbButton {
+  padding: 6px 12px;
+  height: 36px;
+  margin: 6px;
+}
+
+.dropdownBox {
+  display: flex;
+  flex-direction: column;
+  width: 15vw;
+  margin-top: 15px;
+  margin-left: 10px;
+}
+
+.dropdownLabel {
+  font-family: Avenir;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 20px;
+  padding-left: 1px;
+  margin-bottom: 7px;
+  color: #515767;
+}
+
+.dropdownButton {
+  padding: 15px 12px 15px 10px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-family: Avenir;
+  font-size: 16px;
+}
+
+.dropdownButtonText {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  font-family: Avenir;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.volunteerAvRight {
+  float: right;
+  width: min(22.5%, 300px);
+}
+
+.volunteerAvRightHeaderContainer {
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 15px;
+}
+
+.volunteerAvRightHeader {
+  font-family: Avenir;
+  font-weight: 1000;
+  font-size: 18px;
+  margin-top: 10px;
+  margin-left: 25px;
+}
+
+.volunteerAvRightName {
+  font-family: Avenir;
+  font-size: 14px;
+  margin-top: 0;
+  margin-left: 25px;
+  margin-bottom: 3px;
+  color: black;
+}
+
+.volunteerAvRightName:hover {
+  color: var(--eden);
+}

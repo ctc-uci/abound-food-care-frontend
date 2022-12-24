@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import Database from '../../components/volunteer-database/Database';
-import './Volunteers.css';
-import VolunteerAvailability from '../../components/volunteer-availabilities/VolunteerAvailability';
+import Database from '../components/Database/Database';
+import VolunteerAvailability from '../components/VolunteerAvailability/VolunteerAvailability';
 
 const Volunteers = () => {
   const [viewDatabase, setViewDatabase] = useState(false);

@@ -62,23 +62,23 @@ const DashboardHeader = ({ userId, isAdmin }) => {
     isAdmin ? (
       <div className={styles['total-events-volunteers-container']}>
         <div className={styles['total-container']}>
-          <h2>Total Events</h2>
-          <h3> {firstStatistic} </h3>
+          <h2 className={styles.subhead}>Total Events</h2>
+          <h3 className={styles.stat}> {firstStatistic} </h3>
         </div>
         <div className={styles['total-container']}>
-          <h2>Total Volunteers</h2>
-          <h3> {secondStatistic} </h3>
+          <h2 className={styles.subhead}>Total Volunteers</h2>
+          <h3 className={styles.stat}> {secondStatistic} </h3>
         </div>
       </div>
     ) : (
       <div className={styles['total-events-volunteers-container']}>
         <div className={styles['total-container']}>
-          <h2>Events Volunteered</h2>
-          <h3> {firstStatistic} </h3>
+          <h2 className={styles.subhead}>Events Volunteered</h2>
+          <h3 className={styles.stat}> {firstStatistic} </h3>
         </div>
         <div className={styles['total-container']}>
-          <h2>Total Hours</h2>
-          <h3> {secondStatistic} </h3>
+          <h2 className={styles.subhead}>Total Hours</h2>
+          <h3 className={styles.stat}> {secondStatistic} </h3>
         </div>
       </div>
     );
@@ -97,7 +97,7 @@ const DashboardHeader = ({ userId, isAdmin }) => {
         </>
       ) : (
         <>
-          <h1>{`Good morning, ${user.firstName} ${user.lastName}`}</h1>
+          <h1 className={styles.gm}>{`Good morning, ${user.firstName} ${user.lastName}`}</h1>
           {renderHeaderMobile()}
         </>
       )}
@@ -106,7 +106,7 @@ const DashboardHeader = ({ userId, isAdmin }) => {
 };
 
 DashboardHeader.propTypes = {
-  userId: PropTypes.number.isRequired,
+  userId: PropTypes.string.isRequired,
   isAdmin: PropTypes.bool.isRequired,
 };
 

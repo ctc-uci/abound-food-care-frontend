@@ -303,7 +303,7 @@ const Hours = () => {
           />
           <div className={styles.filters}>
             <div className={styles['sort-by-text']}>Sort by:</div>
-            <Dropdown overlay={sortByMenu}>
+            <Dropdown menu={sortByMenu}>
               <Button className={styles['dropdown-button']}>
                 {sortOption}
                 <DownOutlined />

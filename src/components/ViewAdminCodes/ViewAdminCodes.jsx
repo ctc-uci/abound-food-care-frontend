@@ -2,7 +2,7 @@ import { React, useState, useEffect } from 'react';
 import { PropTypes } from 'prop-types';
 import { Modal, Button, Typography } from 'antd';
 
-import { AFCBackend } from '../../../util/utils';
+import { AFCBackend } from '../../util/utils';
 
 import styles from './ViewAdminCodes.module.css';
 

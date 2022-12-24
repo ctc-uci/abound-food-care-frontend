@@ -28,21 +28,25 @@
   align-content: center;
 }
 
-h1 {
+.gm {
   font-size: 16px;
-  font-family: 'Avenir Next LT Pro';
+  font-family: Avenir;
   font-weight: 400;
   letter-spacing: -0.02em;
 }
 
-h2 {
-  font-family: 'Avenir Next LT Pro';
-  font-style: normal;
+.subhead {
+  font-family: Avenir;
   font-weight: 400;
   font-size: 14px;
   text-align: center;
   letter-spacing: -0.02em;
   color: rgba(0, 0, 0, 0.45);
+  margin-top: 10px;
+}
+
+.stat {
+  margin-bottom: 15px;
 }
 
 .stathead {
