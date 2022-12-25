@@ -20,17 +20,18 @@
 .volunteerAvFiltersContainer {
   border: 1px solid rgba(0, 0, 0, 0.05);
   border-radius: 2px;
-  padding: 20px 20px 25px 20px;
+  padding: 20px 20px 25px 15px;
   margin: 5px 40px 10px 0;
 }
 
 .filterRow {
   margin-left: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 7px;
 }
 
 .filterFilledMedium {
   font-size: 28px;
+  margin-left: -3px;
 }
 
 .filterSearchBar {
@@ -72,8 +73,8 @@
   font-size: 16px;
   font-weight: 800;
   line-height: 20px;
-  padding-left: 1px;
-  margin-bottom: 7px;
+  padding-left: 2px;
+  margin-bottom: 5px;
   color: #515767;
 }
 

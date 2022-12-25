@@ -131,8 +131,10 @@
 }
 
 .filterSearchOutlined {
-  font-size: 22px;
+  font-size: 18px;
   color: #bfbfbf;
+  margin-top: -1px;
+  margin-right: 5px;
 }
 
 .generate-admin-code-button,
