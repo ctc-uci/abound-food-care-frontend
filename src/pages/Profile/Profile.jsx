@@ -21,19 +21,19 @@ const Profile = ({ cookies }) => {
   const { userId } = useParams();
   const navigate = useNavigate();
 
+  const [currentUserId, setCurrentUserId] = useState(cookies.get(cookieKeys.USER_ID));
   const [user, setUser] = useState(null);
+  const [role, setRole] = useState(cookies.get(cookieKeys.ROLE));
   const [waivers, setWaivers] = useState([]);
 
   useEffect(async () => {
-    const currentUserId = cookies.get(cookieKeys.USER_ID);
-    const role = cookies.get(cookieKeys.ROLE);
+    setCurrentUserId(cookies.get(cookieKeys.USER_ID));
     if (!userId || (role === AUTH_ROLES.VOLUNTEER_ROLE && userId !== currentUserId)) {
       navigate(`/profile/${currentUserId}`);
     }
     const { data: volunteerData } = await AFCBackend.get(`/users/${userId}`);
     setUser(volunteerData);
     const { data: waiversData } = await AFCBackend.get(`/waivers/user/${userId}`);
-    // TODO Replace waivers with actual set of waivers
     setWaivers(
       waiversData.length
         ? waiversData.map(waiver => {
@@ -53,11 +53,23 @@ const Profile = ({ cookies }) => {
     );
   }, [userId]);
 
-  ConfigProvider.config({
-    theme: {
-      primaryColor: '#115740',
-    },
-  });
+  useEffect(() => {
+    if (role) {
+      return;
+    }
+    setRole(cookies.get(cookieKeys.ROLE));
+  }, [role]);
+
+  useEffect(() => {
+    if (currentUserId) {
+      return;
+    }
+    if (cookies.get(cookieKeys.USER_ID)) {
+      setCurrentUserId(cookies.get(cookieKeys.USER_ID));
+    } else {
+      navigate('/profile');
+    }
+  }, [currentUserId]);
 
   return (
     <ConfigProvider>
