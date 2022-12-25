@@ -8,7 +8,7 @@ import './common/global.css';
 // Pages
 import Login from './pages/Login';
 import Events from './pages/Events/Events';
-import CreateEvent from './pages/CreateEvent';
+import CreateEvent from './pages/CreateEvent/CreateEvent';
 import Volunteers from './pages/Volunteers';
 import Profile from './pages/Profile/Profile';
 import Event from './pages/Event';

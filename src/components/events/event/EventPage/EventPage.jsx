@@ -10,7 +10,7 @@ import { Button, Divider, Tag, Space } from 'antd';
 import moment from 'moment';
 import { instanceOf } from 'prop-types';
 import { withCookies, Cookies, cookieKeys } from '../../../../util/cookie_utils';
-import { AFCBackend } from '../../../../util/utils';
+import { AFCBackend, eventRequirementsMap } from '../../../../util/utils';
 import PostEvent from '../PostEvent/PostEvent';
 import EventVolunteerList from '../EventVolunteerList/EventVolunteerList';
 import EventPageImage from '../../../../assets/img/event-page-banner.png';
@@ -112,17 +112,6 @@ const EventPage = ({ cookies }) => {
         <p className={styles.sectionText}>{eventData.notes}</p>
       </div>
     );
-
-  const requirementsMap = {
-    drive: 'Can Drive',
-    adult: 'Adult (Age 18+)',
-    minor: 'Minor (Age <18)',
-    'first aid': 'First Aid Training',
-    'serve safe': 'Serve Safe Knowledge',
-    transportation: 'Transportation Experience',
-    warehouse: 'Moving/Warehouse Experience',
-    'food service': 'Food Service Industry Knowledge',
-  };
 
   if (isAddingPost) {
     return (
@@ -302,7 +291,7 @@ const EventPage = ({ cookies }) => {
                           // eslint-disable-next-line react/no-array-index-key
                           key={i}
                         >
-                          {requirementsMap[e]}
+                          {eventRequirementsMap[e]}
                         </Tag>
                       );
                     })}

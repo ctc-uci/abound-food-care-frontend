@@ -53,6 +53,28 @@ const languageOptions = [
 
 const buildLanguagesArray = values => languageOptions.filter(lang => values[lang]);
 
+const eventRequirements = [
+  'canDrive',
+  'isAdult',
+  'isMinor',
+  'firstAidTraining',
+  'serveSafeKnowledge',
+  'transportationExperience',
+  'movingWarehouseExperience',
+  'foodServiceIndustryKnowledge',
+];
+
+const eventRequirementsMap = {
+  canDrive: 'Can Drive',
+  isAdult: 'Adult (Age 18+)',
+  isMinor: 'Minor (Age <18)',
+  firstAidTraining: 'First Aid Training',
+  serveSafeKnowledge: 'Serve Safe Knowledge',
+  transportationExperience: 'Transportation Experience',
+  movingWarehouseExperience: 'Moving/Warehouse Experience',
+  foodServiceIndustryKnowledge: 'Food Service Industry Knowledge',
+};
+
 const dayOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 const timeOfDay = ['9:00', '10:00', '11:00', '12:00', '1:00', '2:00', '3:00', '4:00', '5:00'];
@@ -125,6 +147,8 @@ export {
   localeSort,
   languageOptions,
   buildLanguagesArray,
+  eventRequirements,
+  eventRequirementsMap,
   dayOfWeek,
   timeOfDay,
   stateAbbrs,

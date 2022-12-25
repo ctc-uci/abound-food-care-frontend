@@ -1,0 +1,33 @@
+@import '../../common/global.css';
+
+.progressContainer {
+  width: 80%;
+  margin-left: 10%;
+  margin-top: 10px;
+  margin-bottom: 40px;
+}
+
+.progressLeft {
+  width: 50%;
+  float: left;
+  text-align: center;
+  font-family: Inter;
+  font-size: 16px;
+}
+
+.progressRight {
+  width: 50%;
+  float: right;
+  text-align: center;
+  font-family: Inter;
+  font-size: 16px;
+}
+
+.progressLink {
+
+}
+
+.progressLink:hover {
+  cursor: pointer;
+  color: var(--green);
+}

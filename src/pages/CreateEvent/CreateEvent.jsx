@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Form, Button } from 'antd';
+import { Form, Button, Progress } from 'antd';
 import moment from 'moment';
-import uploadWaiver from '../components/events/utils';
-import EventsGeneralInfo from '../components/events/CreateEvent/EventsGeneralInfo';
-import EventsAdditionalInfo from '../components/events/CreateEvent/EventsAdditionalInfo';
-import { AFCBackend } from '../util/utils';
+
+import uploadWaiver from '../../components/events/utils';
+import EventsGeneralInfo from '../../components/events/CreateEvent/EventsGeneralInfo';
+import EventsAdditionalInfo from '../../components/events/CreateEvent/EventsAdditionalInfo';
+import { AFCBackend, zipRegExp, eventRequirements } from '../../util/utils';
+
+import styles from './CreateEvent.module.css';
 
 const CreateEvent = () => {
-  const [formStep, setFormStep] = useState(0);
   const { id } = useParams();
-  const [isEdit] = useState(id);
-
   const navigate = useNavigate();
-
-  const zipRegExp = /(^\d{5}$)|(^\d{5}-\d{4}$)/;
+  const [formStep, setFormStep] = useState(0);
 
   const schema = yup.object({
     eventName: yup.string().required(),
@@ -78,25 +78,10 @@ const CreateEvent = () => {
     delayError: 750,
   });
 
-  function setRequirements(value) {
-    if (value === 'drive') {
-      methods.setValue('canDrive', true);
-    } else if (value === 'adult') {
-      methods.setValue('isAdult', true);
-    } else if (value === 'minor') {
-      methods.setValue('isMinor', true);
-    } else if (value === 'first aid') {
-      methods.setValue('firstAidTraining', true);
-    } else if (value === 'serve safe') {
-      methods.setValue('serveSafeKnowledge', true);
-    } else if (value === 'transportation') {
-      methods.setValue('transportationExperience', true);
-    } else if (value === 'warehouse') {
-      methods.setValue('movingWarehouseExperience', true);
-    } else if (value === 'food service') {
-      methods.setValue('foodServiceIndustryKnowledge', true);
-    }
-  }
+  const incrementFormStep = () => setFormStep(cur => cur + 1);
+  const decrementFormStep = () => setFormStep(cur => cur - 1);
+  const setRequirements = value => methods.setValue(value, true);
+  const buildRequirementsArray = values => eventRequirements.filter(req => values[req]);
 
   const getEventData = async () => {
     try {
@@ -122,52 +107,8 @@ const CreateEvent = () => {
         eventData.requirements.forEach(r => setRequirements(r));
       }
     } catch (e) {
-      console.log(e.message);
+      toast.error(`Error fetching event data: ${e.message}`);
     }
-  };
-
-  useEffect(() => {
-    // Load data if editing an event
-    if (isEdit) {
-      getEventData();
-    }
-  }, [isEdit]);
-
-  const incrementFormStep = () => {
-    setFormStep(cur => cur + 1);
-  };
-
-  const decrementFormStep = () => {
-    setFormStep(cur => cur - 1);
-  };
-
-  const buildRequirementsArray = values => {
-    const requirements = [];
-    if (values.canDrive) {
-      requirements.push('drive');
-    }
-    if (values.isAdult) {
-      requirements.push('adult');
-    }
-    if (values.isMinor) {
-      requirements.push('minor');
-    }
-    if (values.firstAidTraining) {
-      requirements.push('first aid');
-    }
-    if (values.serveSafeKnowledge) {
-      requirements.push('serve safe');
-    }
-    if (values.transportationExperience) {
-      requirements.push('transportation');
-    }
-    if (values.movingWarehouseExperience) {
-      requirements.push('warehouse');
-    }
-    if (values.foodServiceIndustryKnowledge) {
-      requirements.push('food service');
-    }
-    return requirements;
   };
 
   const onSubmit = async values => {
@@ -205,23 +146,47 @@ const CreateEvent = () => {
         waivers,
       };
       // Check if this is editing or creating a new event
-      if (isEdit) {
+      if (id) {
         await AFCBackend.put(`/events/${id}`, payload);
         navigate(`/event/view/${id}`);
       } else {
-        const { data: newEventResponse } = await AFCBackend.post('/events/', payload);
-        const { eventId } = newEventResponse;
-        navigate(`/event/view/${eventId}`);
+        const { data } = await AFCBackend.post('/events/', payload);
+        navigate(`/event/view/${data.eventId}`);
       }
     } catch (e) {
-      console.log(e.message);
+      toast.error(`Error submitting event info: ${e.message}`);
     }
   };
 
   const onError = (errors, e) => console.log(errors, e);
 
+  useEffect(() => {
+    // Load data if editing an event
+    if (!id) {
+      return;
+    }
+    getEventData();
+  }, [id]);
+
   return (
-    <div>
+    <>
+      <div className={styles.progressContainer}>
+        <Progress percent={formStep * 50 + 50} showInfo={false} status="active" />
+        <div>
+          <div className={styles.progressLeft}>
+            {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
+            <p className={styles.progressLink} onClick={() => setFormStep(0)}>
+              General Information
+            </p>
+          </div>
+          <div className={styles.progressRight}>
+            {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
+            <p className={styles.progressLink} onClick={() => setFormStep(1)}>
+              Additional Information
+            </p>
+          </div>
+        </div>
+      </div>
       <FormProvider {...methods}>
         <Form onFinish={methods.handleSubmit(onSubmit, onError)}>
           {formStep >= 0 && (
@@ -229,20 +194,12 @@ const CreateEvent = () => {
               <EventsGeneralInfo />
               <div>
                 <Link to="/events">
-                  <Button
-                    style={{
-                      borderColor: '#D9D9D9',
-                    }}
-                  >
-                    Cancel
-                  </Button>
+                  <Button>Cancel</Button>
                 </Link>
                 <Button
                   onClick={incrementFormStep}
+                  type="primary"
                   style={{
-                    background: '#115740',
-                    color: 'white',
-                    borderColor: '#115740',
                     float: 'right',
                   }}
                 >
@@ -253,7 +210,7 @@ const CreateEvent = () => {
           )}
           {formStep >= 1 && (
             <section hidden={formStep !== 1}>
-              <EventsAdditionalInfo isEdit={!!isEdit} />
+              <EventsAdditionalInfo isEdit={id !== null} />
               <div>
                 <Button
                   style={{
@@ -272,14 +229,14 @@ const CreateEvent = () => {
                   }}
                   htmlType="submit"
                 >
-                  {isEdit ? 'Update Event' : 'Publish Event'}
+                  {id !== null ? 'Update Event' : 'Publish Event'}
                 </Button>
               </div>
             </section>
           )}
         </Form>
       </FormProvider>
-    </div>
+    </>
   );
 };
 
