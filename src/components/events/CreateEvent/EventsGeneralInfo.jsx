@@ -6,7 +6,6 @@ import {
   Input,
   InputNumber,
   Select,
-  Button,
   TimePicker,
   Checkbox,
   Row,
@@ -49,8 +48,6 @@ const EventsGeneralInfo = () => {
 
   const [eventTypeModal, setEventTypeModal] = useState(false);
   const [eventsData, setEventsData] = useState(defaultEventTypes);
-
-  const handleClickNewEventType = () => setEventTypeModal(true);
   const eventTypeMenu = eventsData.map(event => <Option key={event.name}>{event.name}</Option>);
 
   return (
@@ -163,11 +160,6 @@ const EventsGeneralInfo = () => {
                       setEventsData={setEventsData}
                     />
                   )}
-                </div>
-                <div>
-                  <Button className={styles.btn1} type="link" onClick={handleClickNewEventType}>
-                    + New Event Type
-                  </Button>
                 </div>
                 <Text type="danger">{errors.eventType && <p>{errors.eventType.message}</p>}</Text>
               </Form.Item>
@@ -467,6 +459,24 @@ const EventsGeneralInfo = () => {
             <Col span={4}>
               <div className={styles.fieldName}>Event Type:</div>
             </Col>
+            <Col span={3}>
+              <Controller
+                control={control}
+                name="eventType"
+                render={({ field: { onChange, value, ref } }) => (
+                  <>
+                    <Select
+                      placeholder="Type"
+                      className={styles.selectEventTypeMenu}
+                      {...{ onChange, value, ref }}
+                    >
+                      {eventTypeMenu}
+                    </Select>
+                  </>
+                )}
+              />
+              <Text type="danger">{errors.eventType && <p>{errors.eventType.message}</p>}</Text>
+            </Col>
           </Row>
           <Row gutter={[16, 16]} className={styles.fieldRow}>
             <Col span={4}>
@@ -494,61 +504,7 @@ const EventsGeneralInfo = () => {
             <Col span={4}>
               <div className={styles.fieldName}>Requirements (optional):</div>
             </Col>
-          </Row>
-          <Row gutter={[16, 16]} className={styles.fieldRow}>
-            <Col span={4}>
-              <div className={styles.fieldName}>Location:</div>
-            </Col>
-          </Row>
-          <Controller
-            control={control}
-            name="eventType"
-            render={({ field: { onChange, value, ref } }) => (
-              <Form.Item label="Event Type">
-                <Select
-                  placeholder="Type"
-                  className={styles.selectEventTypeMenu}
-                  onChange={onChange}
-                  value={value}
-                  ref={ref}
-                >
-                  {eventTypeMenu}
-                </Select>
-                {/* <Button
-                  type="link"
-                  onClick={handleClickNewEventType}
-                  className={styles.newEventTypeBtn}
-                >
-                  New Event Type
-                </Button> */}
-                <div>
-                  {eventTypeModal && (
-                    <EventTypeModal
-                      visible={eventTypeModal}
-                      setVisible={setEventTypeModal}
-                      eventsData={eventsData}
-                      setEventsData={setEventsData}
-                    />
-                  )}
-                </div>
-                <Text type="danger">{errors.eventType && <p>{errors.eventType.message}</p>}</Text>
-              </Form.Item>
-            )}
-          />
-          <Controller
-            control={control}
-            name="volunteerCapacity"
-            render={({ field: { onChange, value, ref } }) => (
-              <Form.Item label="Num Volunteers">
-                <Input style={{ width: '200px' }} onChange={onChange} value={value} ref={ref} />
-                <Text type="danger">
-                  {errors.volunteerCapacity && <p>{errors.volunteerCapacity.message}</p>}
-                </Text>
-              </Form.Item>
-            )}
-          />
-          <section>
-            <Form.Item label="Requirements (optional)">
+            <Col span={14}>
               <Row>
                 <Col span={8}>
                   <Controller
@@ -631,12 +587,13 @@ const EventsGeneralInfo = () => {
                   />
                 </Col>
               </Row>
-            </Form.Item>
-          </section>
-          <section>
-            <Form.Item label="Location">
-              <br />
-              <br />
+            </Col>
+          </Row>
+          <Row gutter={[16, 16]} className={styles.fieldRow}>
+            <Col span={4}>
+              <div className={styles.fieldName}>Location:</div>
+            </Col>
+            <Col span={14}>
               <Controller
                 control={control}
                 name="addressStreet"
@@ -695,8 +652,8 @@ const EventsGeneralInfo = () => {
                   </Form.Item>
                 )}
               />
-            </Form.Item>
-          </section>
+            </Col>
+          </Row>
         </>
       )}
     </div>

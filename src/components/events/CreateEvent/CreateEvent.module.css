@@ -26,16 +26,16 @@
   margin-left: 5px;
 }
 
-.description {
+/* .description {
   line-height: 120%;
-}
+} */
 
-.btn1 {
+/* .btn1 {
   float: right;
   display: flex;
   justify-content: flex-end;
   color: var(--apple);
-}
+} */
 
 .uploadBtn {
   background: rgba(108, 194, 74, 0.25);
@@ -43,14 +43,10 @@
   border: rgba(17, 87, 64, 0.25);
 }
 
-.grayBorder {
-  border: 1px solid gray;
-}
-
 .selectEventTypeMenu {
-  width: 100px;
+  width: 100%;
 }
 
-.newEventTypeBtn {
+/* .newEventTypeBtn {
   color: var(--apple);
-}
+} */
