@@ -1,8 +1,29 @@
 @import '../../../common/global.css';
 
-h2 {
+.generalInformationTitle,
+.addlInformationTitle {
+  font-family: Avenir;
+  font-weight: 1000;
+  font-size: 30px;
+  margin-left: 20px;
+  margin-bottom: 25px;
+}
+
+.fieldRow {
+  margin-bottom: 20px;
+}
+
+.fieldName {
+  font-family: Avenir;
   font-size: 16px;
-  font-weight: normal;
+  font-weight: 500;
+  margin-top: 3px;
+  margin-right: 3px;
+  text-align: right;
+}
+
+.timePicker {
+  margin-left: 5px;
 }
 
 .description {

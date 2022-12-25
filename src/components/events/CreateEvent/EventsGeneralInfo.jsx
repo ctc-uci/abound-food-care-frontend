@@ -4,6 +4,7 @@ import {
   Form,
   DatePicker,
   Input,
+  InputNumber,
   Select,
   Button,
   TimePicker,
@@ -19,7 +20,7 @@ import EventTypeModal from './EventTypeModal';
 import styles from './CreateEvent.module.css';
 
 const { Option } = Select;
-const { Text, Title } = Typography;
+const { Text } = Typography;
 
 const EventsGeneralInfo = () => {
   const { width } = useViewPort();
@@ -39,22 +40,22 @@ const EventsGeneralInfo = () => {
       name: 'Food Running',
       description: 'Events where volunteers transport food safely from donor to recipient.',
     },
+    {
+      name: 'Other',
+      description:
+        'Miscellaneous events that cannot be classified as Distribution or Food Running.',
+    },
   ];
 
   const [eventTypeModal, setEventTypeModal] = useState(false);
   const [eventsData, setEventsData] = useState(defaultEventTypes);
 
-  const handleClickNewEventType = () => {
-    setEventTypeModal(true);
-  };
-
-  const eventTypeMenu = eventsData.map(event => {
-    return <Option key={event.name}>{event.name}</Option>;
-  });
+  const handleClickNewEventType = () => setEventTypeModal(true);
+  const eventTypeMenu = eventsData.map(event => <Option key={event.name}>{event.name}</Option>);
 
   return (
     <div>
-      <Title level={2}>General Information</Title>
+      <h1 className={styles.generalInformationTitle}>General Information</h1>
       {width < breakpoint ? (
         <>
           <Controller
@@ -379,69 +380,126 @@ const EventsGeneralInfo = () => {
         </>
       ) : (
         <>
-          <Controller
-            control={control}
-            name="eventName"
-            render={({ field: { onChange, value, ref } }) => (
-              <Form.Item label="Event Name">
-                <Input
-                  placeholder="Ex. Food Running Event"
-                  ref={ref}
-                  value={value}
-                  onChange={onChange}
-                />
-                <Text type="danger">{errors.eventName && <p>{errors.eventName.message}</p>}</Text>
-              </Form.Item>
-            )}
-          />
-          <Controller
-            control={control}
-            name="eventStartDate"
-            render={({ field: { onChange, value, ref } }) => (
-              <Form.Item label="Start Date">
-                <DatePicker placeholder="Select date" onChange={onChange} value={value} ref={ref} />
-                <Text type="danger">
-                  {errors.eventStartDate && <p>{errors.eventStartDate.message}</p>}
-                </Text>
-              </Form.Item>
-            )}
-          />
-          <Controller
-            control={control}
-            name="eventStartTime"
-            render={({ field: { onChange, value, ref } }) => (
-              <Form.Item label="Start Time">
-                <TimePicker placeholder="Select time" onChange={onChange} value={value} ref={ref} />
-                <Text type="danger">
-                  {errors.eventStartTime && <p>{errors.eventStartTime.message}</p>}
-                </Text>
-              </Form.Item>
-            )}
-          />
-          <Controller
-            control={control}
-            name="eventEndDate"
-            render={({ field: { onChange, value, ref } }) => (
-              <Form.Item label="End Date">
-                <DatePicker placeholder="Select date" onChange={onChange} value={value} ref={ref} />
-                <Text type="danger">
-                  {errors.eventEndDate && <p>{errors.eventEndDate.message}</p>}
-                </Text>
-              </Form.Item>
-            )}
-          />
-          <Controller
-            control={control}
-            name="eventEndTime"
-            render={({ field: { onChange, value, ref } }) => (
-              <Form.Item label="End Time">
-                <TimePicker placeholder="Select time" onChange={onChange} value={value} ref={ref} />
-                <Text type="danger">
-                  {errors.eventEndTime && <p>{errors.eventEndTime.message}</p>}
-                </Text>
-              </Form.Item>
-            )}
-          />
+          <Row gutter={[16, 16]} className={styles.fieldRow}>
+            <Col span={4}>
+              <div className={styles.fieldName}>Event Name:</div>
+            </Col>
+            <Col span={8}>
+              <Controller
+                control={control}
+                name="eventName"
+                render={({ field: { onChange, value, ref } }) => (
+                  <>
+                    <Input
+                      placeholder="Ex. Food Running Event"
+                      className={styles.fieldInput}
+                      {...{ ref, value, onChange }}
+                    />
+                  </>
+                )}
+              />
+              <Text type="danger">{errors.eventName && <p>{errors.eventName.message}</p>}</Text>
+            </Col>
+          </Row>
+          <Row gutter={[16, 16]} className={styles.fieldRow}>
+            <Col span={4}>
+              <div className={styles.fieldName}>Start Date/Time:</div>
+            </Col>
+            <Col span={18}>
+              <Controller
+                control={control}
+                name="eventStartDate"
+                render={({ field: { onChange, value, ref } }) => (
+                  <DatePicker placeholder="Select start date" {...{ onChange, value, ref }} />
+                )}
+              />
+              <Controller
+                control={control}
+                name="eventStartTime"
+                render={({ field: { onChange, value, ref } }) => (
+                  <TimePicker
+                    className={styles.timePicker}
+                    format="HH:mm a"
+                    placeholder="Select start time"
+                    use12Hours
+                    {...{ onChange, value, ref }}
+                  />
+                )}
+              />
+              <Text type="danger">
+                {errors.eventStartDate && <p>{errors.eventStartDate.message}</p>}
+                {errors.eventStartTime && <p>{errors.eventStartTime.message}</p>}
+              </Text>
+            </Col>
+          </Row>
+          <Row gutter={[16, 16]} className={styles.fieldRow}>
+            <Col span={4}>
+              <div className={styles.fieldName}>End Date/Time:</div>
+            </Col>
+            <Col span={18}>
+              <Controller
+                control={control}
+                name="eventEndDate"
+                render={({ field: { onChange, value, ref } }) => (
+                  <DatePicker placeholder="Select end date" {...{ onChange, value, ref }} />
+                )}
+              />
+              <Controller
+                control={control}
+                name="eventEndTime"
+                render={({ field: { onChange, value, ref } }) => (
+                  <TimePicker
+                    className={styles.timePicker}
+                    format="HH:mm a"
+                    placeholder="Select end time"
+                    use12Hours
+                    {...{ onChange, value, ref }}
+                  />
+                )}
+              />
+              <Text type="danger">
+                {errors.eventEndDate && <p>{errors.eventEndDate.message}</p>}
+                {errors.eventEndTime && <p>{errors.eventEndTime.message}</p>}
+              </Text>
+            </Col>
+          </Row>
+          <Row gutter={[16, 16]} className={styles.fieldRow}>
+            <Col span={4}>
+              <div className={styles.fieldName}>Event Type:</div>
+            </Col>
+          </Row>
+          <Row gutter={[16, 16]} className={styles.fieldRow}>
+            <Col span={4}>
+              <div className={styles.fieldName}># of Volunteers:</div>
+            </Col>
+            <Col span={8}>
+              <Controller
+                control={control}
+                name="volunteerCapacity"
+                render={({ field: { onChange, value, ref } }) => (
+                  <InputNumber
+                    className={styles.fieldInput}
+                    min={0}
+                    size="medium"
+                    {...{ ref, value, onChange }}
+                  />
+                )}
+              />
+              <Text type="danger">
+                {errors.volunteerCapacity && <p>{errors.volunteerCapacity.message}</p>}
+              </Text>
+            </Col>
+          </Row>
+          <Row gutter={[16, 16]} className={styles.fieldRow}>
+            <Col span={4}>
+              <div className={styles.fieldName}>Requirements (optional):</div>
+            </Col>
+          </Row>
+          <Row gutter={[16, 16]} className={styles.fieldRow}>
+            <Col span={4}>
+              <div className={styles.fieldName}>Location:</div>
+            </Col>
+          </Row>
           <Controller
             control={control}
             name="eventType"

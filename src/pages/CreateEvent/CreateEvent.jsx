@@ -187,55 +187,48 @@ const CreateEvent = () => {
           </div>
         </div>
       </div>
-      <FormProvider {...methods}>
-        <Form onFinish={methods.handleSubmit(onSubmit, onError)}>
-          {formStep >= 0 && (
-            <section hidden={formStep !== 0}>
-              <EventsGeneralInfo />
-              <div>
-                <Link to="/events">
-                  <Button>Cancel</Button>
-                </Link>
-                <Button
-                  onClick={incrementFormStep}
-                  type="primary"
-                  style={{
-                    float: 'right',
-                  }}
-                >
-                  Next
-                </Button>
-              </div>
-            </section>
-          )}
-          {formStep >= 1 && (
-            <section hidden={formStep !== 1}>
-              <EventsAdditionalInfo isEdit={id !== null} />
-              <div>
-                <Button
-                  style={{
-                    borderColor: '#D9D9D9',
-                  }}
-                  onClick={decrementFormStep}
-                >
-                  Previous
-                </Button>
-                <Button
-                  style={{
-                    background: '#115740',
-                    color: 'white',
-                    borderColor: '#115740',
-                    float: 'right',
-                  }}
-                  htmlType="submit"
-                >
-                  {id !== null ? 'Update Event' : 'Publish Event'}
-                </Button>
-              </div>
-            </section>
-          )}
-        </Form>
-      </FormProvider>
+      <div className={styles.formContainer}>
+        <FormProvider {...methods}>
+          <Form onFinish={methods.handleSubmit(onSubmit, onError)}>
+            {formStep === 0 && (
+              <section hidden={formStep !== 0}>
+                <EventsGeneralInfo />
+                <div>
+                  <Link to="/events">
+                    <Button>Cancel</Button>
+                  </Link>
+                  <Button
+                    onClick={incrementFormStep}
+                    type="primary"
+                    style={{
+                      float: 'right',
+                    }}
+                  >
+                    Next
+                  </Button>
+                </div>
+              </section>
+            )}
+            {formStep === 1 && (
+              <section hidden={formStep !== 1}>
+                <EventsAdditionalInfo isEdit={id && true} />
+                <div>
+                  <Button onClick={decrementFormStep}>Previous</Button>
+                  <Button
+                    type="primary"
+                    style={{
+                      float: 'right',
+                    }}
+                    htmlType="submit"
+                  >
+                    {id ? 'Update Event' : 'Publish Event'}
+                  </Button>
+                </div>
+              </section>
+            )}
+          </Form>
+        </FormProvider>
+      </div>
     </>
   );
 };
