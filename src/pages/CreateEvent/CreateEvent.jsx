@@ -158,7 +158,7 @@ const CreateEvent = () => {
     }
   };
 
-  const onError = (errors, e) => console.log(errors, e);
+  const onError = (errors, e) => toast.error(errors, e);
 
   useEffect(() => {
     // Load data if editing an event

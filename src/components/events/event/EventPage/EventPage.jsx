@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   CalendarOutlined,
@@ -19,6 +20,7 @@ import AUTH_ROLES from '../../../../util/auth_config';
 
 const EventPage = ({ cookies }) => {
   const [eventData, setEventData] = useState([]);
+  const [userId, setUserId] = useState(cookies.get(cookieKeys.USER_ID));
   const [numAttendees, setNumAttendees] = useState(0);
   const [loading, setLoading] = useState(false);
   const [isAddingPost, setIsAddingPost] = useState(false);
@@ -39,12 +41,12 @@ const EventPage = ({ cookies }) => {
       }
 
       // get handout waiver for volunteers to download
-      const waivers = eventResponse[0].waivers?.filter(({ userId }) => userId === null);
+      const waivers = eventResponse[0].waivers?.filter(({ userId: id }) => id === null);
       if (waivers) {
         setHandoutWaiver(waivers[0]);
       }
     } catch (e) {
-      console.log(e.message);
+      toast.error(`Error fetching event data: ${e.message}`);
     }
   };
 
@@ -58,20 +60,27 @@ const EventPage = ({ cookies }) => {
         setNumAttendees(0);
       }
     } catch (e) {
-      console.log(e.message);
+      toast.error(`Error fetching event attendees: ${e.message}`);
     }
   };
 
   useEffect(async () => {
     try {
-      const { data } = await AFCBackend.get(`/volunteers/${cookies.get(cookieKeys.USER_ID)}`);
+      const { data } = await AFCBackend.get(`/volunteers/${userId}`);
       if (data[0] && data[0].eventIds.includes(parseInt(eventId, 10))) {
         setSignedUp(true);
       }
     } catch (e) {
-      console.log(e.message);
+      toast.error(`Error fetching event signup status: ${e.message}`);
     }
   }, []);
+
+  useEffect(() => {
+    if (userId) {
+      return;
+    }
+    setUserId(cookies.get(cookieKeys.USER_ID));
+  }, [userId]);
 
   useEffect(() => {
     setLoading(true);
@@ -79,13 +88,6 @@ const EventPage = ({ cookies }) => {
     getNumAttendees();
     setLoading(false);
   }, [isAddingPost]);
-
-  /*
-  useEffect(() => {
-    //get post event
-    //AFCBackend.get(`/postevents/${eventId}`)
-  }, [isAddingPost]);
-  */
 
   const parseDate = () => {
     const startDateObj = new Date(Date.parse(eventData.startDatetime));
@@ -142,7 +144,6 @@ const EventPage = ({ cookies }) => {
     if (!signedUp) {
       return;
     }
-    const userId = cookies.get(cookieKeys.USER_ID);
     await AFCBackend.delete(`/volunteers/${userId}/${eventId}`);
     await AFCBackend.delete(`/waivers/${userId}/${eventId}`);
     setSignedUp(false);
@@ -166,11 +167,13 @@ const EventPage = ({ cookies }) => {
             <div className={styles.eventInfoContainer}>
               <p className={styles.header}>Event Information</p>
               <div className={styles.centerContainer}>
-                <AimOutlined style={{ fontSize: '16px' }} />
-                <p className={styles.infoParagraph}>
-                  {eventData.addressStreet} {eventData.addressCity}, {eventData.addressState}{' '}
-                  {eventData.addressZip}
-                </p>
+                <AimOutlined className={styles.addrIcon} />
+                <div>
+                  <p className={styles.infoParagraph}>{eventData.addressStreet}</p>
+                  <p className={styles.infoParagraph}>
+                    {eventData.addressCity}, {eventData.addressState} {eventData.addressZip}
+                  </p>
+                </div>
               </div>
               <div className={styles.centerContainer}>
                 <CalendarOutlined style={{ fontSize: '16px' }} />
@@ -196,7 +199,7 @@ const EventPage = ({ cookies }) => {
                   </Button>
                 </a>
               ) : (
-                <p>Waiver not available</p>
+                <p className={styles.notAvailable}>Waiver not available</p>
               )}
             </div>
           </div>
@@ -252,18 +255,6 @@ const EventPage = ({ cookies }) => {
                     <p className={styles.buttonText}>Unregister</p>
                   </Button>
                 ))}
-              {/* Thank you note to be implemented if time */}
-              {/* <Button
-                style={{
-                  width: '9em',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                type="primary"
-              >
-                <p style={{ padding: 0, margin: 0, fontSize: '14px' }}>Send Thank You</p>
-              </Button> */}
             </div>
             {eventData.requirements && (
               <div
@@ -301,7 +292,6 @@ const EventPage = ({ cookies }) => {
             )}
           </div>
         </div>
-        {/* <pre>{JSON.stringify((Date.parse(eventData.startDatetime)) > new Date(), null, 2)}</pre> */}
       </>
     )
   );

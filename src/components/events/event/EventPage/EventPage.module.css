@@ -1,7 +1,6 @@
 @import '../../../../common/global.css';
 
 .eventPageContainer {
-  width: 82vw;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -9,16 +8,14 @@
 
 .eventPageLeftContainer {
   width: 46%;
-  height: 50em;
   display: flex;
   flex-direction: column;
   margin-left: 2%;
-  margin-top: 0.75rem;
+  margin-top: 0.75em;
 }
 
 .eventPageLeftSection {
   background-color: white;
-  height: 2.5rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -27,21 +24,18 @@
 .eventInfoContainer {
   position: relative;
   background-color: white;
-  margin-top: 4rem;
-  height: 7rem;
+  margin-top: 30px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin-bottom: 18px;
 }
 
 .topRightContainer {
   width: 25%;
   min-width: 265px;
-  height: 50em;
   display: flex;
   flex-direction: column;
-  margin-right: 0.5%;
+  margin-right: 10px;
   margin-top: 1.5em;
 }
 
@@ -55,15 +49,13 @@
 
 .waiversContainer {
   background-color: white;
-  margin-top: 2.5em;
-  height: 6rem;
+  margin-top: 50px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
 .waiversButton {
-  width: 13em;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -91,7 +83,6 @@
   background-color: transparent;
   border: none;
   padding: 0;
-  margin: 09;
   font-size: 13px;
   cursor: pointer;
   color: var(--eden);
@@ -103,10 +94,16 @@
   align-items: center;
 }
 
+.addrIcon {
+  font-size: 16px;
+  margin-top: -32px;
+}
+
 .infoParagraph {
   margin: 6px 12px;
   font-size: 16px;
 }
+
 
 .headerImage {
   width: 100%;
@@ -154,7 +151,7 @@
 .sectionText {
   padding: 0;
   color: black;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 28px;
 }
 
@@ -173,4 +170,10 @@
   padding: 0;
   margin: 0;
   font-size: 14px;
+}
+
+.notAvailable {
+  font-family: Inter;
+  font-size: 16px;
+  margin-top: 2px;
 }
