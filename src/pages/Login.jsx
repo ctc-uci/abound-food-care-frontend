@@ -113,11 +113,10 @@ const Login = ({ cookies }) => {
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <Card
               style={{
-                width: 400,
+                width: 500,
                 display: 'inline-block',
                 flexDirection: 'left',
                 border: 'none',
-
                 boxShadow: 'none',
               }}
             >
@@ -153,7 +152,9 @@ const Login = ({ cookies }) => {
                       >
                         <Input
                           placeholder="Email"
-                          prefix={<MailOutlined style={{ color: '#009A44' }} />}
+                          prefix={
+                            <MailOutlined style={{ color: '#009A44', paddingRight: '13px' }} />
+                          }
                           onChange={e => setLoginEmail(e.target.value)}
                           value={loginEmail}
                         />
@@ -167,8 +168,11 @@ const Login = ({ cookies }) => {
                       >
                         <Input.Password
                           placeholder="Password"
-                          prefix={<LockOutlined style={{ color: '#009A44' }} />}
+                          prefix={
+                            <LockOutlined style={{ color: '#009A44', paddingRight: '13px' }} />
+                          }
                           onChange={e => setLoginPassword(e.target.value)}
+                          onPressEnter={logIn}
                           value={loginPassword}
                         />
                       </Form.Item>
@@ -340,11 +344,19 @@ const Login = ({ cookies }) => {
                       >
                         <Checkbox>
                           I agree to the&nbsp;
-                          <a className="TOS" href="*" style={{ color: '#009A44' }}>
-                            Terms of Service
+                          <a
+                            className="TOS"
+                            href="https://www.aboundfoodcare.org/terms-and-conditions/"
+                            style={{ color: '#009A44' }}
+                          >
+                            Terms and Conditions
                           </a>
                           &nbsp;and&nbsp;
-                          <a className="privacyPolicy" href="*" style={{ color: '#009A44' }}>
+                          <a
+                            className="privacyPolicy"
+                            href="https://www.aboundfoodcare.org/privacy-policy/"
+                            style={{ color: '#009A44' }}
+                          >
                             Privacy Policy
                           </a>
                         </Checkbox>

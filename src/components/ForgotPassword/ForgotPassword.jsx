@@ -1,13 +1,12 @@
-import { React, useState } from 'react';
+import { React, useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import PropTypes from 'prop-types';
-import { Modal, Input, Typography } from 'antd';
+import { Modal, Input } from 'antd';
 import { sendPasswordReset } from '../../util/auth_utils';
-
-const { Text } = Typography;
+import styles from './ForgotPassword.module.css';
 
 const ForgotPassword = ({ isOpen, setIsOpen }) => {
   const [email, setEmail] = useState('');
-  const [emailError, setEmailError] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async e => {
@@ -15,18 +14,25 @@ const ForgotPassword = ({ isOpen, setIsOpen }) => {
     setLoading(true);
     try {
       await sendPasswordReset(email);
-      setEmailError(false);
-      setTimeout(() => {
-        setEmail('');
-        setEmailError(null);
-        setIsOpen(false);
-        setLoading(false);
-      }, 1000);
+      toast.success(
+        `Email sent to ${email}!\nIf there is an account associated, you will receive a link shortly.`,
+        { duration: 6000 },
+      );
     } catch (err) {
-      setEmailError(true);
-      setLoading(false);
+      if (err.message.includes('auth/user-not-found')) {
+        toast.success(
+          `Email sent to ${email}!\nIf there is an account associated, you will receive a link shortly.`,
+          { duration: 6000 },
+        );
+      } else {
+        toast.error(`Failed to send email: ${err.message}`);
+      }
     }
+    setIsOpen(false);
+    setLoading(false);
   };
+
+  useEffect(() => setEmail(''), [isOpen]);
 
   return (
     <Modal
@@ -36,13 +42,15 @@ const ForgotPassword = ({ isOpen, setIsOpen }) => {
       onOk={onSubmit}
       onCancel={() => setIsOpen(false)}
     >
+      <p className={styles.desc}>
+        Enter the email address associated with your account to receive a password reset link:
+      </p>
       <Input
         placeholder="sample@email.com"
         value={email}
         onChange={e => setEmail(e.target.value)}
+        onPressEnter={onSubmit}
       />
-      {emailError === true && <Text type="danger"> Email failed to send, please try again. </Text>}
-      {emailError === false && <Text type="success"> Email sent! </Text>}
     </Modal>
   );
 };
