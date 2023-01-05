@@ -1,23 +1,23 @@
 @import '../../common/global.css';
 
-.next-button {
-  background-color: var(--eden) !important;
-  color: white !important;
-  border-color: var(--eden);
+.wrapper {
+  padding: 1% 3% 1% 1%;
+  margin-left: 1.5%;
+  margin-right: 1.5%;
+}
+
+.steps {
+  padding: 15px 7% 20px 9%;
+}
+
+
+.nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 
 .previous-button {
   border-color: #d9d9d9;
-}
-
-.nav-buttons {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-}
-
-.login-signup-button {
-  border-color: #d9d9d9;
-  position: absolute !important;
-  bottom: 10px;
 }

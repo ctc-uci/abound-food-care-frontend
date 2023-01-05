@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { instanceOf } from 'prop-types';
 import { Card, Divider, Form, Input, Button, Checkbox, Radio } from 'antd';
 import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
@@ -67,31 +68,35 @@ const Login = ({ cookies }) => {
   };
 
   const signUp = async () => {
-    const vals = await signupForm.validateFields();
-    if (vals.role === AUTH_ROLES.ADMIN_ROLE) {
-      const { data } = await AFCBackend.get(`/adminCode/code/${vals.code}`);
-      if (!data.length) {
-        setAdminCodeStatus('error');
-        setAdminCodeError('Invalid Admin Code');
+    try {
+      const vals = await signupForm.validateFields();
+      if (vals.role === AUTH_ROLES.ADMIN_ROLE) {
+        const { data } = await AFCBackend.get(`/adminCode/code/${vals.code}`);
+        if (!data.length) {
+          setAdminCodeStatus('error');
+          setAdminCodeError('Invalid Admin Code');
+          return;
+        }
+      }
+
+      const emailInUse = await isEmailInUse(vals.email);
+      if (!emailInUse) {
+        setEmailStatus('error');
+        setEmailError('Email already in use');
         return;
       }
+
+      setEmailStatus(undefined);
+      setEmailError(undefined);
+
+      setAdminCodeStatus(undefined);
+      setAdminCodeError(undefined);
+
+      setValues(vals);
+      setPageState('createPage');
+    } catch (e) {
+      toast.error(e?.errorFields[0].errors[0]);
     }
-
-    const emailInUse = await isEmailInUse(vals.email);
-    if (!emailInUse) {
-      setEmailStatus('error');
-      setEmailError('Email already in use');
-      return;
-    }
-
-    setEmailStatus(undefined);
-    setEmailError(undefined);
-
-    setAdminCodeStatus(undefined);
-    setAdminCodeError(undefined);
-
-    setValues(vals);
-    setPageState('createPage');
   };
 
   return (

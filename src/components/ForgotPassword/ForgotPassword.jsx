@@ -56,7 +56,7 @@ const ForgotPassword = ({ isOpen, setIsOpen }) => {
 };
 
 ForgotPassword.propTypes = {
-  isOpen: PropTypes.string.isRequired,
+  isOpen: PropTypes.bool.isRequired,
   setIsOpen: PropTypes.func.isRequired,
 };
 

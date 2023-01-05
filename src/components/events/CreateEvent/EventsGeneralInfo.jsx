@@ -402,7 +402,11 @@ const EventsGeneralInfo = () => {
                 control={control}
                 name="eventStartDate"
                 render={({ field: { onChange, value, ref } }) => (
-                  <DatePicker placeholder="Select start date" {...{ onChange, value, ref }} />
+                  <DatePicker
+                    format="MM/DD/YYYY"
+                    placeholder="Select start date"
+                    {...{ onChange, value, ref }}
+                  />
                 )}
               />
               <Controller
@@ -433,7 +437,11 @@ const EventsGeneralInfo = () => {
                 control={control}
                 name="eventEndDate"
                 render={({ field: { onChange, value, ref } }) => (
-                  <DatePicker placeholder="Select end date" {...{ onChange, value, ref }} />
+                  <DatePicker
+                    format="MM/DD/YYYY"
+                    placeholder="Select end date"
+                    {...{ onChange, value, ref }}
+                  />
                 )}
               />
               <Controller

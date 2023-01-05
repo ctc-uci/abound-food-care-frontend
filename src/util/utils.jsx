@@ -39,6 +39,9 @@ const getHourDiff = (timestamp1, timestamp2) => {
 
 const localeSort = (a, b) => a.localeCompare(b);
 
+const nullOrErrorMessage = (fieldName, msg) =>
+  msg.includes('but the final value was: `null`') ? `${fieldName} is a required field` : msg;
+
 const languageOptions = [
   'english',
   'spanish',
@@ -145,6 +148,7 @@ export {
   getTimeInPST,
   getHourDiff,
   localeSort,
+  nullOrErrorMessage,
   languageOptions,
   buildLanguagesArray,
   eventRequirements,

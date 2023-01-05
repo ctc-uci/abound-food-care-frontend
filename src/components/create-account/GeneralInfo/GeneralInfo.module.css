@@ -1,35 +1,65 @@
-.wrapper {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+@import '../../../common/global.css';
+
+.required {
+  color: red;
+  font-size: 16px;
+  margin-top: 8px;
+  margin-right: 8px;
 }
 
-.header {
-  font-family: 'Inter', sans-serif;
+.heading {
+  font-family: Avenir;
   font-size: 34px;
   font-weight: 600;
   line-height: 34px;
   letter-spacing: -0.02em;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  text-align: center;
 }
 
 .instructions {
-  font-family: 'Inter', sans-serif;
+  font-family: Avenir;
   font-size: 16px;
-  font-weight: 400;
-  line-height: 19px;
+  line-height: 20px;
   letter-spacing: -0.02em;
+  margin-bottom: 40px;
+  text-align: center;
 }
 
-.radioGroup {
-  display: flex;
-  flex-direction: row;
+.fieldRow {
+  margin-bottom: 16px;
 }
 
-Input {
-  width: 699px;
+.fieldName {
+  font-family: Avenir;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 3px;
+  margin-right: 3px;
+  text-align: right;
 }
 
-.controller {
+.fieldInput {
+  margin-bottom: 8px;
+}
+
+.radioInput {
+  margin-top: 4px;
+  margin-bottom: 5px;
+}
+
+.errText {
+  color: red;
+  font-family: Avenir;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: -4px;
+  margin-left: 3px;
+  margin-bottom: 4px;
+}
+
+.select {
   width: 100%;
+  margin-bottom: 8px;
 }

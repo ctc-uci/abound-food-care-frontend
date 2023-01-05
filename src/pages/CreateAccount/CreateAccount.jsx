@@ -1,14 +1,22 @@
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 import PropTypes from 'prop-types';
-import { Form, Button, Steps, Typography } from 'antd';
+import { Card, Form, Button, Steps, Typography } from 'antd';
 import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import GeneralInfo from '../../components/create-account/GeneralInfo/GeneralInfo';
-import DuiAndCrimHis from '../../components/create-account/DuiAndCrimHis/DuiAndCrimHis';
 import RolesAndSkills from '../../components/create-account/RolesAndSkills/RolesAndSkills';
-import { AFCBackend, buildLanguagesArray, phoneRegExp, zipRegExp } from '../../util/utils';
+import AdditionalInfo from '../../components/create-account/AdditionalInfo/AdditionalInfo';
+import AvailabilityChart from '../../components/AvailabilityChart/AvailabilityChart';
 
+import {
+  AFCBackend,
+  buildLanguagesArray,
+  phoneRegExp,
+  zipRegExp,
+  stateAbbrs,
+} from '../../util/utils';
 import {
   AUTH_ROLES,
   registerWithEmailAndPassword,
@@ -17,17 +25,15 @@ import {
 } from '../../util/auth_utils';
 
 import styles from './CreateAccount.module.css';
-import AvailabilityChart from '../../components/AvailabilityChart/AvailabilityChart';
 
 const { Text } = Typography;
-
 const { Step } = Steps;
 
 const PAGE_NAME = {
-  GENERAL_INFO: 'GeneralInfo',
+  GENERAL_INFO: 'General',
   AVAILABILITY: 'Availability',
-  ROLES_AND_SKILLS: 'RolesAndSkills',
-  ADDITIONAL_INFO: 'AdditionalInfo',
+  ROLES_AND_SKILLS: 'Roles & Skills',
+  ADDITIONAL_INFO: 'Additional Info',
 };
 
 const CreateAccount = ({ setPageState, firstName, lastName, email, password, role, code }) => {
@@ -39,9 +45,7 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
 
   const navigate = useNavigate();
 
-  const onFormLayoutChange = ({ size }) => {
-    setComponentSize(size);
-  };
+  const onFormLayoutChange = ({ size }) => setComponentSize(size);
 
   const schema = yup.object({
     firstName: yup.string().required('First name is a required field'),
@@ -52,48 +56,66 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
         passwordRegex,
         'Password must have at least 8 characters, with at least 1 lowercase letter, 1 uppercase letter, and 1 symbol',
       ),
-    role: yup.string().required(),
-    organization: yup.string().required(),
+    role: yup.string().required('Role is a required field'),
+    organization: yup.string().required('Organization is a required field'),
     birthdate: yup
       .date()
       .required()
       .nullable()
-      .typeError('Birthdate is required')
-      .max(new Date(), `You couldn't possibly be born after today if you're signing up now!`),
-    email: yup.string().email('Must be a valid email'),
+      .typeError('Birthdate is a required field')
+      .max(new Date(), `Birthdate must be before today`),
+    email: yup.string().email('Invalid email').required('Email is a required field'),
     phone: yup
       .string()
-      .matches(phoneRegExp, 'Phone number is not valid')
-      .required('Phone number is a required field'),
-    preferredContactMethod: yup.string().required(),
+      .required('Phone number is a required field')
+      .matches(phoneRegExp, 'Phone number is not valid'),
+    preferredContactMethod: yup.string().required('Preferred contact method is a required field'),
     addressStreet: yup.string().required('Street address is a required field'),
     addressZip: yup
       .string()
+      .required('Zipcode is a required field')
       .matches(zipRegExp, 'Zipcode is not valid')
-      .required('Zipcode is required')
       .test('len', 'Zipcode must contain only 5 digits', val => val.length === 5),
     addressCity: yup.string().required('City is a required field'),
     addressState: yup
       .string()
-      .test('len', 'Must be a 2-letter state code', val => val.length === 2)
-      .required('State is a required field'),
-    weightLiftingAbility: yup.number().integer().required(),
-    criminalHistory: yup.bool().required(),
+      .required('State is a required field')
+      .test('len', 'State must be a valid 2-letter state code', val =>
+        stateAbbrs.includes(val.toUpperCase()),
+      ),
+    weightLiftingAbility: yup.number().integer().required('Liftable weight is a required field'),
+    criminalHistory: yup.bool().required('Criminal history is a required field'),
     criminalHistoryDetails: yup.string().nullable(true),
-    duiHistory: yup.bool().required(),
+    duiHistory: yup.bool().required('DUI history is a required field'),
     duiHistoryDetails: yup.string().nullable(true),
-    completedChowmatchTraining: yup.bool().required(),
-    foodRunsInterest: yup.bool().required(),
-    distributionInterest: yup.bool().required(),
-    canDrive: yup.bool().required(),
-    willingToDrive: yup.bool().required(),
+    completedChowmatchTraining: yup
+      .bool()
+      .required('You must indicate whether you have completed Chowmatch training'),
+    foodRunsInterest: yup
+      .bool()
+      .required('You must indicate whether you are interested in food running events'),
+    distributionInterest: yup
+      .bool()
+      .required('You must indicate whether you are interested in distribution events'),
+    canDrive: yup.bool().required('Driving ability is a required field'),
+    willingToDrive: yup.bool().required('You must indicate whether you are willing to drive'),
     vehicleType: yup.string(),
     distance: yup.number().integer().nullable(true),
-    firstAidTraining: yup.bool().required(),
-    serveSafeKnowledge: yup.bool().required(),
-    transportationExperience: yup.bool().required(),
-    movingWarehouseExperience: yup.bool().required(),
-    foodServiceIndustryKnowledge: yup.bool().required(),
+    firstAidTraining: yup
+      .bool()
+      .required('You must indicate whether you have completed first aid training'),
+    serveSafeKnowledge: yup
+      .bool()
+      .required('You must indicate whether you have completed ServeSafe training'),
+    transportationExperience: yup
+      .bool()
+      .required('You must indicate whether you have transportation experience'),
+    movingWarehouseExperience: yup
+      .bool()
+      .required('You must indicate whether you have moving or warehouse experience'),
+    foodServiceIndustryKnowledge: yup
+      .bool()
+      .required('You must indicate whether you have food industry knowledge'),
     languages: yup.array().of(yup.string()),
     additionalInformation: yup.string().nullable(true),
   });
@@ -202,33 +224,60 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
   };
 
   const onSubmit = async values => {
-    const result = await methods.trigger([
-      'duiHistory',
-      'criminalHistory',
-      'completedChowmatchTraining',
-    ]);
-    if (!result) {
-      return;
+    try {
+      const result = await methods.trigger([
+        'duiHistory',
+        'criminalHistory',
+        'completedChowmatchTraining',
+      ]);
+      if (!result) {
+        return;
+      }
+      const languages = buildLanguagesArray(values);
+      const { uid } = await registerWithEmailAndPassword(values.email, values.password, role);
+
+      const payload = {
+        ...values,
+        userId: uid,
+        role,
+        languages,
+        availabilities: availability,
+      };
+      await AFCBackend.post('/users/', payload);
+
+      await AFCBackend.delete(`/adminCode/${code}`);
+
+      navigate('/');
+    } catch (e) {
+      toast.error(`Error submitting registration: ${e.message}`);
     }
-    const languages = buildLanguagesArray(values);
-    const { uid } = await registerWithEmailAndPassword(values.email, values.password, role);
-
-    const payload = {
-      ...values,
-      userId: uid,
-      role,
-      languages,
-      availabilities: availability,
-    };
-    await AFCBackend.post('/users/', payload);
-
-    await AFCBackend.delete(`/adminCode/${code}`);
-
-    navigate('/');
   };
 
+  const NavButtons = () => (
+    <div className={styles['nav-buttons']}>
+      <Button
+        className={styles['previous-button']}
+        onClick={
+          formStep === PAGE_NAME.GENERAL_INFO ? () => setPageState('login') : decrementFormStep
+        }
+      >
+        {formStep === PAGE_NAME.GENERAL_INFO ? 'Cancel' : 'Back'}
+      </Button>
+      <Button
+        type="primary"
+        onClick={
+          formStep === PAGE_NAME.ADDITIONAL_INFO
+            ? () => onSubmit(methods.getValues())
+            : incrementFormStep
+        }
+      >
+        {formStep === PAGE_NAME.ADDITIONAL_INFO ? 'Finish' : 'Next'}
+      </Button>
+    </div>
+  );
+
   return (
-    <div className={styles.wrapper}>
+    <Card className={styles.wrapper}>
       <FormProvider {...methods}>
         <Form
           labelWrap
@@ -238,13 +287,13 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
           onValuesChange={onFormLayoutChange}
           onFinish={methods.handleSubmit(onSubmit)}
         >
-          <Steps progressDot current={progressNum}>
-            <Step key={PAGE_NAME.GENERAL_INFO} title="General" />
-            {role === AUTH_ROLES.VOLUNTEER_ROLE && (
-              <Step key={PAGE_NAME.AVAILABILITY} title="Availability" />
+          <Steps progressDot current={progressNum} className={styles.steps}>
+            {Object.values(PAGE_NAME).map(
+              pgName =>
+                (pgName !== PAGE_NAME.AVAILABILITY || role === AUTH_ROLES.VOLUNTEER_ROLE) && (
+                  <Step key={pgName} title={<span className={styles.stepTitle}>{pgName}</span>} />
+                ),
             )}
-            <Step key={PAGE_NAME.ROLES_AND_SKILLS} title="Roles &amp; Skills" />
-            <Step key={PAGE_NAME.ADDITIONAL_INFO} title="Additional Info" />
           </Steps>
           <section hidden={formStep !== PAGE_NAME.GENERAL_INFO}>
             <GeneralInfo
@@ -253,14 +302,7 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
               email={email}
               password={password}
             />
-            <div className={styles['nav-buttons']}>
-              <Button className={styles['previous-button']} onClick={() => setPageState('login')}>
-                Back
-              </Button>
-              <Button className={styles['next-button']} onClick={incrementFormStep}>
-                Next
-              </Button>
-            </div>
+            <NavButtons />
           </section>
           <section hidden={formStep !== PAGE_NAME.AVAILABILITY}>
             <AvailabilityChart
@@ -270,54 +312,34 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
               days={7}
             />
             <Text type="danger">{missingAvailabilityErrorMessage}</Text>
-            <div className={styles['nav-buttons']}>
-              <Button className={styles['previous-button']} onClick={decrementFormStep}>
-                Previous
-              </Button>
-              <Button className={styles['next-button']} onClick={incrementFormStep}>
-                Next
-              </Button>
-            </div>
+            <NavButtons />
           </section>
           <section hidden={formStep !== PAGE_NAME.ROLES_AND_SKILLS}>
             <RolesAndSkills />
-            <div className={styles['nav-buttons']}>
-              <Button className={styles['previous-button']} onClick={decrementFormStep}>
-                Previous
-              </Button>
-              <Button className={styles['next-button']} onClick={incrementFormStep}>
-                Next
-              </Button>
-            </div>
+            <NavButtons />
           </section>
           <section hidden={formStep !== PAGE_NAME.ADDITIONAL_INFO}>
-            <DuiAndCrimHis />
-            <div className={styles['nav-buttons']}>
-              <Button className={styles['previous-button']} onClick={decrementFormStep}>
-                Previous
-              </Button>
-              <Button
-                className={styles['next-button']}
-                onClick={() => onSubmit(methods.getValues())}
-              >
-                Finish
-              </Button>
-            </div>
+            <AdditionalInfo />
+            <NavButtons />
           </section>
         </Form>
       </FormProvider>
-    </div>
+    </Card>
   );
 };
 
 CreateAccount.propTypes = {
-  setPageState: PropTypes.string.isRequired,
+  setPageState: PropTypes.func.isRequired,
   firstName: PropTypes.string.isRequired,
   lastName: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
   password: PropTypes.string.isRequired,
   role: PropTypes.string.isRequired,
-  code: PropTypes.string.isRequired,
+  code: PropTypes.string,
+};
+
+CreateAccount.defaultProps = {
+  code: null,
 };
 
 export default CreateAccount;
