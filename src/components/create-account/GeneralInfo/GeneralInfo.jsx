@@ -164,7 +164,7 @@ const GeneralInfo = ({ firstName, lastName, email, password }) => {
         <Col span={3}>
           <div className={styles.fieldName}>
             <RequiredStar />
-            Phone Number:
+            Phone #:
           </div>
         </Col>
         <Col span={4}>
