@@ -163,7 +163,7 @@ const ProfileGeneralInfo = ({ userId, volunteerData, setVolunteerData }) => {
                 control={control}
                 name="lastName"
                 render={({ field: { onChange, value, ref } }) => (
-                  <Form.Item label="Last Name">
+                  <Form.Item label="Last Name" required>
                     <Input disabled={!isEditable} {...{ onChange, value, ref }} />
                     <Text type="danger">
                       {isEditable && errors.lastName && <p>{errors.lastName.message}</p>}
@@ -178,7 +178,7 @@ const ProfileGeneralInfo = ({ userId, volunteerData, setVolunteerData }) => {
             control={control}
             name="organization"
             render={({ field: { onChange, value, ref } }) => (
-              <Form.Item label="Organization">
+              <Form.Item label="Organization" required>
                 <Input
                   className={styles.halfWidth}
                   disabled={!isEditable}
@@ -195,7 +195,7 @@ const ProfileGeneralInfo = ({ userId, volunteerData, setVolunteerData }) => {
             control={control}
             name="birthdate"
             render={({ field: { onChange, value, ref } }) => (
-              <Form.Item label="Birthday">
+              <Form.Item label="Birthday" required>
                 <DatePicker
                   className={styles.halfWidth}
                   format="MM/DD/YYYY"
@@ -214,7 +214,7 @@ const ProfileGeneralInfo = ({ userId, volunteerData, setVolunteerData }) => {
             control={control}
             name="email"
             render={({ field: { onChange, value, ref } }) => (
-              <Form.Item label="Email">
+              <Form.Item label="Email" required>
                 <Input className={styles.halfWidth} disabled {...{ onChange, value, ref }} />
                 <Text type="danger">
                   {isEditable && errors.email && <p>{errors.email.message}</p>}
@@ -227,7 +227,7 @@ const ProfileGeneralInfo = ({ userId, volunteerData, setVolunteerData }) => {
             control={control}
             name="phone"
             render={({ field: { onChange, value, ref } }) => (
-              <Form.Item label="Phone Number">
+              <Form.Item label="Phone Number" required>
                 <Input
                   className={styles.halfWidth}
                   disabled={!isEditable}
@@ -244,7 +244,7 @@ const ProfileGeneralInfo = ({ userId, volunteerData, setVolunteerData }) => {
             control={control}
             name="preferredContactMethod"
             render={({ field: { onChange, ref, value } }) => (
-              <Form.Item label="Preferred Contact Method">
+              <Form.Item label="Preferred Contact Method" required>
                 <Radio.Group disabled={!isEditable} {...{ onChange, value, ref }}>
                   <Radio value="email" className={styles.giRadioOpt}>
                     Email
@@ -266,7 +266,7 @@ const ProfileGeneralInfo = ({ userId, volunteerData, setVolunteerData }) => {
             control={control}
             name="addressStreet"
             render={({ field: { onChange, value, ref } }) => (
-              <Form.Item label="Street Address">
+              <Form.Item label="Street Address" required>
                 <Input
                   className={styles.halfWidth}
                   disabled={!isEditable}
@@ -285,7 +285,7 @@ const ProfileGeneralInfo = ({ userId, volunteerData, setVolunteerData }) => {
                 control={control}
                 name="addressCity"
                 render={({ field: { onChange, value, ref } }) => (
-                  <Form.Item label="City">
+                  <Form.Item label="City" required>
                     <Input
                       className={styles.giCityField}
                       disabled={!isEditable}
@@ -303,7 +303,7 @@ const ProfileGeneralInfo = ({ userId, volunteerData, setVolunteerData }) => {
                 control={control}
                 name="addressState"
                 render={({ field: { onChange, value, ref } }) => (
-                  <Form.Item label="State">
+                  <Form.Item label="State" required>
                     <Select
                       className={styles.giStateField}
                       disabled={!isEditable}
@@ -325,7 +325,7 @@ const ProfileGeneralInfo = ({ userId, volunteerData, setVolunteerData }) => {
                 control={control}
                 name="addressZip"
                 render={({ field: { onChange, value, ref } }) => (
-                  <Form.Item label="Zipcode">
+                  <Form.Item label="Zipcode" required>
                     <Input disabled={!isEditable} {...{ onChange, value, ref }} />
                     <Text type="danger">
                       {isEditable && errors.addressZip && <p>{errors.addressZip.message}</p>}
