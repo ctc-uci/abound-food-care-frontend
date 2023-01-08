@@ -4,7 +4,7 @@ import { instanceOf } from 'prop-types';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import ProfileGeneralInfo from '../../components/profile/ProfileGeneralInfo';
-import ProfileDUICrimHistory from '../../components/profile/ProfileDUICrimHistory';
+import ProfileAdditionalInfo from '../../components/profile/ProfileAdditionalInfo';
 import ProfileRolesSkills from '../../components/profile/ProfileRolesSkills';
 import ProfileAvailability from '../../components/profile/ProfileAvailability';
 import WaiversGrid from '../../components/waivers/WaiversGrid';
@@ -28,7 +28,11 @@ const Profile = ({ cookies }) => {
 
   useEffect(async () => {
     setCurrentUserId(cookies.get(cookieKeys.USER_ID));
-    if (!userId || (role === AUTH_ROLES.VOLUNTEER_ROLE && userId !== currentUserId)) {
+    if (
+      !userId ||
+      userId === 'undefined' ||
+      (role === AUTH_ROLES.VOLUNTEER_ROLE && userId !== currentUserId)
+    ) {
       navigate(`/profile/${currentUserId}`);
     }
     const { data: volunteerData } = await AFCBackend.get(`/users/${userId}`);
@@ -89,8 +93,8 @@ const Profile = ({ cookies }) => {
           <TabPane tab="Roles & Skills" key="3">
             <ProfileRolesSkills userId={userId} volunteerData={user} setVolunteerData={setUser} />
           </TabPane>
-          <TabPane tab="DUI/Criminal History" key="4">
-            <ProfileDUICrimHistory
+          <TabPane tab="Additional Info" key="4">
+            <ProfileAdditionalInfo
               userId={userId}
               volunteerData={user}
               setVolunteerData={setUser}

@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { useForm, Controller } from 'react-hook-form';
-import { Input, Radio, Form, Select, Checkbox, Row, Tag, Typography, Button } from 'antd';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { InputNumber, Radio, Form, Select, Checkbox, Row, Tag, Typography, Button } from 'antd';
 import PropTypes from 'prop-types';
-import { AFCBackend, languageOptions, buildLanguagesArray } from '../../util/utils';
+import {
+  AFCBackend,
+  languageOptions,
+  buildLanguagesArray,
+  userProfileTriggers,
+} from '../../util/utils';
 
 import styles from './ProfileComponents.module.css';
 
@@ -11,83 +19,71 @@ const { Text } = Typography;
 const { CheckableTag } = Tag;
 
 const ProfileRolesAndSkills = ({ userId, volunteerData, setVolunteerData }) => {
-  const [componentSize, setComponentSize] = useState('default');
   const [isEditable, setIsEditable] = useState(false);
-  const {
-    control,
-    handleSubmit,
-    setValue,
-    getValues,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      role: volunteerData.role,
-      foodRunning: volunteerData.foodRunsInterest,
-      distribution: volunteerData.distributionInterest,
-      firstAidTraining: volunteerData.firstAidTraining,
-      serveSafeKnowledge: volunteerData.serveSafeKnowledge,
-      transportationExperience: volunteerData.transportationExperience,
-      movingWarehouseExperience: volunteerData.movingWarehouseExperience,
-      foodServiceIndustryKnowledge: volunteerData.foodServiceIndustryKnowledge,
-      weightLiftingAbility: volunteerData.weightLiftingAbility,
-      completedChowmatch: volunteerData.completedChowmatchTraining,
-      canDrive: volunteerData.canDrive,
-      willingToDrive: volunteerData.willingToDrive,
-      vehicleType: volunteerData.vehicleType,
-      distance: volunteerData.distance,
-    },
+  const [componentSize, setComponentSize] = useState('default');
+
+  const schema = yup.object({
+    role: yup
+      .string()
+      .test(v => ['volunteer', 'admin'].includes(v))
+      .required('Role is required'),
+    foodRunsInterest: yup
+      .bool()
+      .required('Must indicate whether user is interested in food running events'),
+    distributionInterest: yup
+      .bool()
+      .required('Must indicate whether user is interested in distribution events'),
+    firstAidTraining: yup
+      .bool()
+      .required('Must indicate whether user has completed first aid training'),
+    serveSafeKnowledge: yup
+      .bool()
+      .required('Must indicate whether user has completed ServeSafe training'),
+    transportationExperience: yup
+      .bool()
+      .required('Must indicate whether user has transportation experience'),
+    movingWarehouseExperience: yup
+      .bool()
+      .required('Must indicate whether user has moving or warehouse experience'),
+    foodServiceIndustryKnowledge: yup
+      .bool()
+      .required('Must indicate whether user has food industry knowledge'),
+    languages: yup.array().of(yup.string()),
+    canDrive: yup.bool().required('Driving ability is a required field'),
+    willingToDrive: yup.bool().required('Must indicate whether user is willing to drive'),
+    vehicleType: yup.string(),
+    distance: yup.number().integer().nullable(true),
   });
 
-  const onFormLayoutChange = ({ size }) => {
-    setComponentSize(size);
-  };
+  const {
+    clearErrors,
+    control,
+    handleSubmit,
+    getValues,
+    setValue,
+    trigger,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(schema), mode: 'onChange', delayError: 750 });
 
-  const inputBoxStyle = {
-    width: '30%',
-  };
+  const onFormLayoutChange = ({ size }) => setComponentSize(size);
 
-  const setLanguages = languages => {
+  const setLanguages = languages =>
     languageOptions.forEach(lang => {
       setValue(lang, languages?.includes(lang));
     });
-  };
 
-  const getDriverData = () => {
+  const getVolunteerData = () => {
+    clearErrors();
     [
       'role',
-      'foodRunning',
-      'distribution',
+      'foodRunsInterest',
+      'distributionInterest',
       'firstAidTraining',
       'serveSafeKnowledge',
       'transportationExperience',
       'movingWarehouseExperience',
       'foodServiceIndustryKnowledge',
       'weightLiftingAbility',
-      'completedChowmatchTraining',
-      'canDrive',
-      'willingToDrive',
-      'vehicleType',
-      'distance',
-    ].forEach(field => setValue(field, volunteerData[field]));
-  };
-
-  const handleEdit = () => {
-    setIsEditable(!isEditable);
-  };
-
-  const handleCancel = () => {
-    setIsEditable(false);
-    [
-      'role',
-      'foodRunning',
-      'distribution',
-      'firstAidTraining',
-      'serveSafeKnowledge',
-      'transportationExperience',
-      'movingWarehouseExperience',
-      'foodServiceIndustryKnowledge',
-      'weightLiftingAbility',
-      'completedChowmatchTraining',
       'canDrive',
       'willingToDrive',
       'vehicleType',
@@ -96,42 +92,43 @@ const ProfileRolesAndSkills = ({ userId, volunteerData, setVolunteerData }) => {
     setLanguages(volunteerData.languages);
   };
 
-  const saveVolunteerData = async values => {
-    // const values = getValues();
-    const languages = buildLanguagesArray(values);
-    try {
-      const payload = {
-        role: values.role,
-        foodRunsInterest: values.foodRunning,
-        distributionInterest: values.distribution,
-        firstAidTraining: values.firstAidTraining,
-        serveSafeKnowledge: values.serveSafeKnowledge,
-        transportationExperience: values.transportationExperience,
-        movingWarehouseExperience: values.movingWarehouseExperience,
-        foodServiceIndustryKnowledge: values.foodServiceIndustryKnowledge,
-        languages,
-        weightLiftingAbility: values.weightLiftingAbility,
-        completedChowmatchTraining: values.completedChowmatchTraining,
-        canDrive: values.canDrive,
-        willingToDrive: values.willingToDrive,
-        vehicleType: values.vehicleType,
-        distance: values.distance,
-      };
-      const updatedUser = await AFCBackend.put(`/users/roles-skills/${userId}`, payload);
-      setVolunteerData(updatedUser.data);
-    } catch (e) {
-      console.log(e.message);
+  const handleCancel = () => {
+    getVolunteerData();
+    setIsEditable(false);
+  };
+
+  const handleEdit = async values => {
+    if (isEditable) {
+      try {
+        const result = await trigger([...userProfileTriggers.rolesAndSkills, 'role']);
+        if (result) {
+          const payload = { ...values, languages: buildLanguagesArray(values) };
+          const updatedUser = await AFCBackend.put(`/users/roles-skills/${userId}`, payload);
+          setVolunteerData({ ...updatedUser.data });
+          toast.success('Successfully saved user information!');
+          setIsEditable(!isEditable);
+        }
+      } catch (e) {
+        toast.error(`Error saving form: ${e.response?.data ?? e.message}`);
+        getVolunteerData();
+      }
+    } else {
+      setIsEditable(!isEditable);
+      getVolunteerData();
     }
   };
 
   useEffect(() => {
-    getDriverData();
-  }, []);
+    if (!volunteerData) {
+      return;
+    }
+    getVolunteerData();
+  }, [volunteerData]);
 
   return (
     <div className={styles.rolesSkillsContainer}>
       <Form
-        onFinish={handleSubmit(saveVolunteerData)}
+        onFinish={handleSubmit(handleEdit)}
         layout="vertical"
         size={componentSize}
         onValuesChange={onFormLayoutChange}
@@ -144,8 +141,7 @@ const ProfileRolesAndSkills = ({ userId, volunteerData, setVolunteerData }) => {
           )}
           <Button
             className={`${styles.editSaveBtn} ${!isEditable && styles.editBtnInactive}`}
-            htmlType="submit"
-            onClick={handleEdit}
+            onClick={() => handleEdit(getValues())}
           >
             {isEditable ? 'Save' : 'Edit'}
           </Button>
@@ -157,12 +153,10 @@ const ProfileRolesAndSkills = ({ userId, volunteerData, setVolunteerData }) => {
           render={({ field: { onChange, value, ref } }) => (
             <Form.Item label="Account Type">
               <Select
-                onChange={onChange}
-                value={value}
-                ref={ref}
-                style={inputBoxStyle}
+                className={styles.rsSelect}
                 placeholder="Please select an account type"
                 disabled={!isEditable}
+                {...{ onChange, value, ref }}
               >
                 <Option value="volunteer">Volunteer</Option>
                 <Option value="admin">Admin</Option>
@@ -174,7 +168,7 @@ const ProfileRolesAndSkills = ({ userId, volunteerData, setVolunteerData }) => {
           <Form.Item label="Events Interested In" className={styles.rsEventTagsContainer}>
             <Controller
               control={control}
-              name="foodRunning"
+              name="foodRunsInterest"
               render={({ field: { onChange, value } }) => (
                 <Form.Item>
                   {isEditable && (
@@ -193,14 +187,16 @@ const ProfileRolesAndSkills = ({ userId, volunteerData, setVolunteerData }) => {
                     </Tag>
                   )}
                   <Text type="danger">
-                    {isEditable && errors.foodRunning && <p>{errors.foodRunning.message}</p>}
+                    {isEditable && errors.foodRunsInterest && (
+                      <p>{errors.foodRunsInterest.message}</p>
+                    )}
                   </Text>
                 </Form.Item>
               )}
             />
             <Controller
               control={control}
-              name="distribution"
+              name="distributionInterest"
               render={({ field: { onChange, value } }) => (
                 <Form.Item>
                   {isEditable && (
@@ -227,8 +223,91 @@ const ProfileRolesAndSkills = ({ userId, volunteerData, setVolunteerData }) => {
           </Form.Item>
         </section>
         <section>
-          <Form.Item label="Special Talents/Skills">
+          <Form.Item label="Skills & Experience">
             <section className={styles.rsTalentsContainer}>
+              <Controller
+                control={control}
+                name="transportationExperience"
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item>
+                    <Checkbox
+                      className={styles.rsTalentCB}
+                      checked={value}
+                      disabled={!isEditable}
+                      {...{ onChange, ref }}
+                    >
+                      Transportation
+                    </Checkbox>
+                    <Text type="danger">
+                      {isEditable && errors.transportationExperience && (
+                        <p>{errors.transportationExperience.message}</p>
+                      )}
+                    </Text>
+                  </Form.Item>
+                )}
+              />
+              <Controller
+                control={control}
+                name="movingWarehouseExperience"
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item>
+                    <Checkbox
+                      className={styles.rsTalentCB}
+                      checked={value}
+                      disabled={!isEditable}
+                      {...{ onChange, ref }}
+                    >
+                      Moving/Warehouse
+                    </Checkbox>
+                    <Text type="danger">
+                      {isEditable && errors.movingWarehouseExperience && (
+                        <p>{errors.movingWarehouseExperience.message}</p>
+                      )}
+                    </Text>
+                  </Form.Item>
+                )}
+              />
+              <Controller
+                control={control}
+                name="serveSafeKnowledge"
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item>
+                    <Checkbox
+                      className={styles.rsTalentCB}
+                      disabled={!isEditable}
+                      {...{ onChange, ref, value }}
+                    >
+                      Serve Safe Knowledge
+                    </Checkbox>
+                    <Text type="danger">
+                      {isEditable && errors.serveSafeKnowledge && (
+                        <p>{errors.serveSafeKnowledge.message}</p>
+                      )}
+                    </Text>
+                  </Form.Item>
+                )}
+              />
+              <Controller
+                control={control}
+                name="foodServiceIndustryKnowledge"
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item>
+                    <Checkbox
+                      className={styles.rsTalentCB}
+                      checked={value}
+                      disabled={!isEditable}
+                      {...{ onChange, ref }}
+                    >
+                      Food Service Industry Knowledge
+                    </Checkbox>
+                    <Text type="danger">
+                      {isEditable && errors.foodServiceIndustryKnowledge && (
+                        <p>{errors.foodServiceIndustryKnowledge.message}</p>
+                      )}
+                    </Text>
+                  </Form.Item>
+                )}
+              />
               <Controller
                 control={control}
                 name="firstAidTraining"
@@ -251,94 +330,6 @@ const ProfileRolesAndSkills = ({ userId, volunteerData, setVolunteerData }) => {
                   </Form.Item>
                 )}
               />
-              <Controller
-                control={control}
-                name="serveSafeKnowledge"
-                render={({ field: { onChange, value, ref } }) => (
-                  <Form.Item>
-                    <Checkbox
-                      className={styles.rsTalentCB}
-                      onChange={onChange}
-                      ref={ref}
-                      checked={value}
-                      disabled={!isEditable}
-                    >
-                      Serve Safe Knowledge
-                    </Checkbox>
-                    <Text type="danger">
-                      {isEditable && errors.serveSafeKnowledge && (
-                        <p>{errors.serveSafeKnowledge.message}</p>
-                      )}
-                    </Text>
-                  </Form.Item>
-                )}
-              />
-              <Controller
-                control={control}
-                name="transportationExperience"
-                render={({ field: { onChange, value, ref } }) => (
-                  <Form.Item>
-                    <Checkbox
-                      className={styles.rsTalentCB}
-                      onChange={onChange}
-                      ref={ref}
-                      checked={value}
-                      disabled={!isEditable}
-                    >
-                      Transportation Experience
-                    </Checkbox>
-                    <Text type="danger">
-                      {isEditable && errors.transportationExperience && (
-                        <p>{errors.transportationExperience.message}</p>
-                      )}
-                    </Text>
-                  </Form.Item>
-                )}
-              />
-              <Controller
-                control={control}
-                name="movingWarehouseExperience"
-                render={({ field: { onChange, value, ref } }) => (
-                  <Form.Item>
-                    <Checkbox
-                      className={styles.rsTalentCB}
-                      onChange={onChange}
-                      ref={ref}
-                      checked={value}
-                      disabled={!isEditable}
-                    >
-                      Moving/Warehouse Experience
-                    </Checkbox>
-                    <Text type="danger">
-                      {isEditable && errors.movingWarehouseExperience && (
-                        <p>{errors.movingWarehouseExperience.message}</p>
-                      )}
-                    </Text>
-                  </Form.Item>
-                )}
-              />
-              <Controller
-                control={control}
-                name="foodServiceIndustryKnowledge"
-                render={({ field: { onChange, value, ref } }) => (
-                  <Form.Item>
-                    <Checkbox
-                      className={styles.rsTalentCB}
-                      onChange={onChange}
-                      ref={ref}
-                      checked={value}
-                      disabled={!isEditable}
-                    >
-                      Food Service Industry Knowledge
-                    </Checkbox>
-                    <Text type="danger">
-                      {isEditable && errors.foodServiceIndustryKnowledge && (
-                        <p>{errors.foodServiceIndustryKnowledge.message}</p>
-                      )}
-                    </Text>
-                  </Form.Item>
-                )}
-              />
             </section>
           </Form.Item>
         </section>
@@ -353,12 +344,7 @@ const ProfileRolesAndSkills = ({ userId, volunteerData, setVolunteerData }) => {
                     key={lang}
                     render={({ field: { onChange, value, ref } }) => (
                       <Form.Item className={styles.rsLangOption}>
-                        <Checkbox
-                          onChange={onChange}
-                          ref={ref}
-                          checked={value}
-                          disabled={!isEditable}
-                        >
+                        <Checkbox disabled={!isEditable} {...{ onChange, value, ref }}>
                           {lang[0].toUpperCase() + lang.substring(1)}
                         </Checkbox>
                       </Form.Item>
@@ -375,13 +361,11 @@ const ProfileRolesAndSkills = ({ userId, volunteerData, setVolunteerData }) => {
             name="weightLiftingAbility"
             render={({ field: { onChange, value, ref } }) => (
               <Form.Item label="Weightlifting Ability">
-                <Input
-                  onChange={onChange}
+                <InputNumber
+                  min={0}
                   className={styles.rsWlField}
-                  value={value}
-                  ref={ref}
-                  style={inputBoxStyle}
                   disabled={!isEditable}
+                  {...{ onChange, value, ref }}
                 />
                 <span className="ant-form-text"> pounds</span>
                 <Text type="danger">
@@ -396,29 +380,10 @@ const ProfileRolesAndSkills = ({ userId, volunteerData, setVolunteerData }) => {
         <Row>
           <Controller
             control={control}
-            name="completedChowmatch"
-            render={({ field: { onChange, ref, value } }) => (
-              <Form.Item label="Have you completed the food match training on Chowmatch?">
-                <Radio.Group onChange={onChange} ref={ref} value={value} disabled={!isEditable}>
-                  <Radio value>Yes</Radio>
-                  <Radio value={false}>No</Radio>
-                </Radio.Group>
-                <Text type="danger">
-                  {isEditable && errors.completedChowmatch && (
-                    <p>{errors.completedChowmatch.message}</p>
-                  )}
-                </Text>
-              </Form.Item>
-            )}
-          />
-        </Row>
-        <Row>
-          <Controller
-            control={control}
             name="canDrive"
             render={({ field: { onChange, ref, value } }) => (
               <Form.Item label="Able to Drive">
-                <Radio.Group onChange={onChange} ref={ref} value={value} disabled={!isEditable}>
+                <Radio.Group disabled={!isEditable} {...{ onChange, value, ref }}>
                   <Radio value>Yes</Radio>
                   <Radio value={false}>No</Radio>
                 </Radio.Group>
@@ -433,7 +398,7 @@ const ProfileRolesAndSkills = ({ userId, volunteerData, setVolunteerData }) => {
             name="willingToDrive"
             render={({ field: { onChange, ref, value } }) => (
               <Form.Item label="Prefers to Drive">
-                <Radio.Group onChange={onChange} ref={ref} value={value} disabled={!isEditable}>
+                <Radio.Group disabled={!isEditable} {...{ onChange, value, ref }}>
                   <Radio value>Yes</Radio>
                   <Radio value={false}>No</Radio>
                 </Radio.Group>
@@ -451,19 +416,19 @@ const ProfileRolesAndSkills = ({ userId, volunteerData, setVolunteerData }) => {
             render={({ field: { onChange, value, ref } }) => (
               <Form.Item label="Type of Vehicle">
                 <Select
-                  placeholder="Please select a vehicle type..."
-                  onChange={onChange}
-                  value={value}
-                  ref={ref}
+                  placeholder="Please select"
                   disabled={!isEditable}
+                  {...{ onChange, value, ref }}
                 >
-                  <Option value="Large Vehicle (Van, Truck, SUV)">
-                    Large Vehicle (Van, Truck, SUV)
-                  </Option>
-                  <Option value="Mid-Size Vehicle">Mid-Size Vehicle</Option>
-                  <Option value="Small Vehicle (Compact, Sedan)">
-                    Small Vehicle (Compact, Sedan)
-                  </Option>
+                  {[
+                    'Large vehicle (Van, Truck, SUV)',
+                    'Mid-Size Vehicle',
+                    'Small Vehicle (Compact, Sedan)',
+                  ].map(vType => (
+                    <Select.Option key={vType} value={vType}>
+                      {vType}
+                    </Select.Option>
+                  ))}
                 </Select>
                 <Text type="danger">
                   {isEditable && errors.vehicleType && <p>{errors.vehicleType.message}</p>}
@@ -478,13 +443,11 @@ const ProfileRolesAndSkills = ({ userId, volunteerData, setVolunteerData }) => {
             name="distance"
             render={({ field: { onChange, value, ref } }) => (
               <Form.Item label="Distance Comfortable Driving">
-                <Input
+                <InputNumber
                   className={styles.rsDistanceField}
-                  placeholder="Ex. 0, 10, 15, 20"
-                  value={value}
-                  onChange={onChange}
-                  ref={ref}
+                  min={0}
                   disabled={!isEditable}
+                  {...{ onChange, value, ref }}
                 />
                 <span className="ant-form-text"> miles</span>
                 <Text type="danger">

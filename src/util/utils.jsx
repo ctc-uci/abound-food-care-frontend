@@ -139,6 +139,25 @@ const stateAbbrs = [
   'WY',
 ];
 
+const userProfileTriggers = {
+  general: [
+    'firstName',
+    'lastName',
+    'organization',
+    'birthdate',
+    'email',
+    'phone',
+    'preferredContactMethod',
+    'addressStreet',
+    'addressCity',
+    'addressState',
+    'addressZip',
+  ],
+  password: ['password'],
+  rolesAndSkills: ['weightLiftingAbility', 'canDrive', 'willingToDrive'],
+  additionalInfo: ['duiHistory', 'criminalHistory', 'completedChowmatchTraining'],
+};
+
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
@@ -158,6 +177,7 @@ export {
   dayOfWeek,
   timeOfDay,
   stateAbbrs,
+  userProfileTriggers,
   phoneRegExp,
   zipRegExp,
 };

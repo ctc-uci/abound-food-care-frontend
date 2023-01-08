@@ -41,7 +41,7 @@
 }
 
 .giStateField {
-  width: 55%;
+  width: 70% !important;
 }
 
 .rsLangOptionsContainer {
@@ -78,4 +78,16 @@
 .rsDistanceField {
   width: 40%;
   margin-right: 10px;
+}
+
+.rsSelect {
+  width: 30% !important;
+}
+
+.rsInput {
+  width: 30%;
+}
+
+.aiInput {
+  width: 75%;
 }

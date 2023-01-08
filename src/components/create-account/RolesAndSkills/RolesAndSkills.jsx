@@ -167,7 +167,7 @@ const RolesAndSkills = () => {
           />
           <p className={styles.errText}>
             {errors.weightLiftingAbility &&
-              nullOrErrorMessage('Weightlifting Ability', errors.weightLiftingAbility.message)}
+              nullOrErrorMessage('Weightlifting ability', errors.weightLiftingAbility.message)}
           </p>
         </Col>
       </Row>

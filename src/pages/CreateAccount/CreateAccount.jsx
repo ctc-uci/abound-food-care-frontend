@@ -16,6 +16,7 @@ import {
   phoneRegExp,
   zipRegExp,
   stateAbbrs,
+  userProfileTriggers,
 } from '../../util/utils';
 import {
   AUTH_ROLES,
@@ -162,22 +163,9 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
 
   const incrementFormStep = async () => {
     const triggers = {
-      [PAGE_NAME.GENERAL_INFO]: [
-        'firstName',
-        'lastName',
-        'password',
-        'organization',
-        'birthdate',
-        'email',
-        'phone',
-        'preferredContactMethod',
-        'addressStreet',
-        'addressCity',
-        'addressState',
-        'addressZip',
-      ],
+      [PAGE_NAME.GENERAL_INFO]: [...userProfileTriggers.general, 'password'],
       [PAGE_NAME.AVAILABILITY]: [],
-      [PAGE_NAME.ROLES_AND_SKILLS]: ['weightLiftingAbility', 'canDrive', 'willingToDrive'],
+      [PAGE_NAME.ROLES_AND_SKILLS]: userProfileTriggers.rolesAndSkills,
     };
     const nextStepsVolunteer = {
       [PAGE_NAME.GENERAL_INFO]: PAGE_NAME.AVAILABILITY,
@@ -225,11 +213,7 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
 
   const onSubmit = async values => {
     try {
-      const result = await methods.trigger([
-        'duiHistory',
-        'criminalHistory',
-        'completedChowmatchTraining',
-      ]);
+      const result = await methods.trigger(userProfileTriggers.additionalInfo);
       if (!result) {
         return;
       }
@@ -245,7 +229,9 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
       };
       await AFCBackend.post('/users/', payload);
 
-      await AFCBackend.delete(`/adminCode/${code}`);
+      if (code) {
+        await AFCBackend.delete(`/adminCode/${code}`);
+      }
 
       navigate('/');
     } catch (e) {

@@ -20,55 +20,7 @@ const AdditionalInfo = () => {
         <Col span={10}>
           <div className={styles.fieldName}>
             <RequiredStar />
-            Do you have a DUI (Driving Under Influence) History?
-          </div>
-        </Col>
-        <Col span={8}>
-          <Controller
-            control={control}
-            name="duiHistory"
-            render={({ field: { onChange, value, ref } }) => (
-              <>
-                <Radio.Group className={styles.radioInput} {...{ ref, value, onChange }}>
-                  <Radio value="true">Yes</Radio>
-                  <Radio value="false">No</Radio>
-                </Radio.Group>
-              </>
-            )}
-          />
-          <p className={styles.errText}>
-            {errors.duiHistory && nullOrErrorMessage('DUI History', errors.duiHistory.message)}
-          </p>
-        </Col>
-      </Row>
-      <Row gutter={[16, 16]} className={styles.fieldRow}>
-        <Col span={10}>
-          <div className={styles.fieldName}>If yes, please elaborate:</div>
-        </Col>
-        <Col span={10}>
-          <Controller
-            control={control}
-            name="duiHistoryDetails"
-            render={({ field: { onChange, value, ref } }) => (
-              <>
-                <Input.TextArea
-                  rows={2}
-                  className={styles.fieldInput}
-                  {...{ ref, value, onChange }}
-                />
-              </>
-            )}
-          />
-          <p className={styles.errText}>
-            {errors.duiHistoryDetails && errors.duiHistoryDetails.message}
-          </p>
-        </Col>
-      </Row>
-      <Row gutter={[16, 16]} className={styles.fieldRow}>
-        <Col span={10}>
-          <div className={styles.fieldName}>
-            <RequiredStar />
-            Do you have a criminal history?
+            Have you ever been convicted of violation of any law?
           </div>
         </Col>
         <Col span={8}>
@@ -92,7 +44,9 @@ const AdditionalInfo = () => {
       </Row>
       <Row gutter={[16, 16]} className={styles.fieldRow}>
         <Col span={10}>
-          <div className={styles.fieldName}>If yes, please elaborate:</div>
+          <div className={styles.fieldName}>
+            If you replied YES to the previous question, please specify your most recent violation.
+          </div>
         </Col>
         <Col span={10}>
           <Controller
@@ -117,7 +71,57 @@ const AdditionalInfo = () => {
         <Col span={10}>
           <div className={styles.fieldName}>
             <RequiredStar />
-            Completed Chowmatch Training?
+            Do you have a DUI (Driving Under Influence) history?
+          </div>
+        </Col>
+        <Col span={8}>
+          <Controller
+            control={control}
+            name="duiHistory"
+            render={({ field: { onChange, value, ref } }) => (
+              <>
+                <Radio.Group className={styles.radioInput} {...{ ref, value, onChange }}>
+                  <Radio value="true">Yes</Radio>
+                  <Radio value="false">No</Radio>
+                </Radio.Group>
+              </>
+            )}
+          />
+          <p className={styles.errText}>
+            {errors.duiHistory && nullOrErrorMessage('DUI History', errors.duiHistory.message)}
+          </p>
+        </Col>
+      </Row>
+      <Row gutter={[16, 16]} className={styles.fieldRow}>
+        <Col span={10}>
+          <div className={styles.fieldName}>
+            If you replied YES to the previous question, please specify your most recent violation.
+          </div>
+        </Col>
+        <Col span={10}>
+          <Controller
+            control={control}
+            name="duiHistoryDetails"
+            render={({ field: { onChange, value, ref } }) => (
+              <>
+                <Input.TextArea
+                  rows={2}
+                  className={styles.fieldInput}
+                  {...{ ref, value, onChange }}
+                />
+              </>
+            )}
+          />
+          <p className={styles.errText}>
+            {errors.duiHistoryDetails && errors.duiHistoryDetails.message}
+          </p>
+        </Col>
+      </Row>
+      <Row gutter={[16, 16]} className={styles.fieldRow}>
+        <Col span={10}>
+          <div className={styles.fieldName}>
+            <RequiredStar />
+            Have you completed Chowmatch Training?
           </div>
         </Col>
         <Col span={8}>
@@ -136,7 +140,7 @@ const AdditionalInfo = () => {
           <p className={styles.errText}>
             {errors.completedChowmatchTraining &&
               nullOrErrorMessage(
-                'Chowmatch Training Completion',
+                'Indicating whether you have completed Chowmatch training',
                 errors.completedChowmatchTraining.message,
               )}
           </p>
@@ -144,7 +148,9 @@ const AdditionalInfo = () => {
       </Row>
       <Row gutter={[16, 16]} className={styles.fieldRow}>
         <Col span={10}>
-          <div className={styles.fieldName}>Additional Information (optional):</div>
+          <div className={styles.fieldName}>
+            Please write down any additional information you would like us to know.
+          </div>
         </Col>
         <Col span={10}>
           <Controller

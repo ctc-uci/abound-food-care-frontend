@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { useForm, Controller } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Radio, Form, Input, Button, Typography } from 'antd';
 import PropTypes from 'prop-types';
-import { AFCBackend } from '../../util/utils';
+import { AFCBackend, userProfileTriggers } from '../../util/utils';
 
 import styles from './ProfileComponents.module.css';
 
 const { Text } = Typography;
 
-const ProfileDUIAndCrimHistory = ({ userId, volunteerData, setVolunteerData }) => {
+const ProfileAdditionalInfo = ({ userId, volunteerData, setVolunteerData }) => {
   const [componentSize, setComponentSize] = useState('default');
   const [isEditable, setIsEditable] = useState(false);
 
@@ -18,60 +19,63 @@ const ProfileDUIAndCrimHistory = ({ userId, volunteerData, setVolunteerData }) =
     setComponentSize(size);
   };
 
-  const inputBoxStyle = {
-    width: '75%',
-  };
-
   const schema = yup.object({
-    criminalHistory: yup.bool().required(),
+    criminalHistory: yup.bool().required('Criminal history is a required field'),
     criminalHistoryDetails: yup.string().nullable(true),
-    duiHistory: yup.bool().required(),
+    completedChowmatchTraining: yup
+      .bool()
+      .required('You must indicate whether you have completed Chowmatch training'),
+    duiHistory: yup.bool().required('DUI history is a required field'),
     duiHistoryDetails: yup.string().nullable(true),
     additionalInformation: yup.string().nullable(true),
   });
 
   const {
+    clearErrors,
     control,
     handleSubmit,
+    getValues,
     setValue,
+    trigger,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema), mode: 'onChange', delayError: 750 });
 
   const getVolunteerData = () => {
-    setValue('duiHistory', volunteerData.duiHistory);
-    setValue('duiHistoryDetails', volunteerData.duiHistoryDetails);
-    setValue('criminalHistory', volunteerData.criminalHistory);
-    setValue('criminalHistoryDetails', volunteerData.criminalHistoryDetails);
-    setValue('additionalInfo', volunteerData.additionalInformation);
+    clearErrors();
+    [
+      'duiHistory',
+      'duiHistoryDetails',
+      'criminalHistory',
+      'criminalHistoryDetails',
+      'completedChowmatchTraining',
+      'additionalInformation',
+    ].forEach(attr => setValue(attr, volunteerData[attr]));
   };
 
-  const handleEdit = () => {
-    setIsEditable(!isEditable);
+  const handleEdit = async values => {
+    if (isEditable) {
+      try {
+        const result = await trigger(userProfileTriggers.additionalInfo);
+        if (result) {
+          const payload = { ...values };
+          const updatedUser = await AFCBackend.put(`/users/additional-info/${userId}`, payload);
+          setVolunteerData({ ...updatedUser.data });
+          toast.success('Successfully saved user information!');
+          setIsEditable(!isEditable);
+        }
+      } catch (e) {
+        toast.error(`Error saving form: ${e.response?.data ?? e.message}`);
+        getVolunteerData();
+      }
+    } else {
+      setIsEditable(!isEditable);
+      getVolunteerData();
+    }
   };
 
   const handleCancel = () => {
+    getVolunteerData();
     setIsEditable(false);
-    setValue('duiHistory', volunteerData.duiHistory);
-    setValue('duiHistoryDetails', volunteerData.duiHistoryDetails);
-    setValue('criminalHistory', volunteerData.criminalHistory);
-    setValue('criminalHistoryDetails', volunteerData.criminalHistoryDetails);
-    setValue('additionalInfo', volunteerData.additionalInformation);
-  };
-
-  const saveVolunteerData = async values => {
-    try {
-      const payload = {
-        duiHistory: values.duiHistory,
-        duiHistoryDetails: values.duiHistoryDetails,
-        criminalHistory: values.criminalHistory,
-        criminalHistoryDetails: values.criminalHistoryDetails,
-        additionalInformation: values.additionalInfo,
-      };
-      const updatedUser = await AFCBackend.put(`/users/dui-criminal/${userId}`, payload);
-      setVolunteerData(updatedUser.data);
-    } catch (e) {
-      console.log(e.message);
-    }
   };
 
   useEffect(() => {
@@ -81,7 +85,7 @@ const ProfileDUIAndCrimHistory = ({ userId, volunteerData, setVolunteerData }) =
   return (
     <div className={styles.duiCrimHistoryContainer}>
       <Form
-        onFinish={handleSubmit(saveVolunteerData)}
+        onFinish={handleSubmit(handleEdit)}
         layout="vertical"
         labelCol={{ span: 20 }}
         wrapperCol={{ span: 20 }}
@@ -96,8 +100,7 @@ const ProfileDUIAndCrimHistory = ({ userId, volunteerData, setVolunteerData }) =
           )}
           <Button
             className={`${styles.editSaveBtn} ${!isEditable && styles.editBtnInactive}`}
-            htmlType="submit"
-            onClick={handleEdit}
+            onClick={() => handleEdit(getValues())}
           >
             {isEditable ? 'Save' : 'Edit'}
           </Button>
@@ -106,8 +109,8 @@ const ProfileDUIAndCrimHistory = ({ userId, volunteerData, setVolunteerData }) =
           control={control}
           name="criminalHistory"
           render={({ field: { onChange, ref, value } }) => (
-            <Form.Item label="Have you ever been convicted of violation of any law?">
-              <Radio.Group onChange={onChange} ref={ref} value={value} disabled={!isEditable}>
+            <Form.Item label="Have you ever been convicted of violation of any law?" required>
+              <Radio.Group disabled={!isEditable} {...{ onChange, value, ref }}>
                 <Radio value>Yes</Radio>
                 <Radio value={false}>No</Radio>
               </Radio.Group>
@@ -123,11 +126,9 @@ const ProfileDUIAndCrimHistory = ({ userId, volunteerData, setVolunteerData }) =
           render={({ field: { onChange, value, ref } }) => (
             <Form.Item label="If you replied YES to the previous question, please specify your most recent violation.">
               <Input.TextArea
-                onChange={onChange}
-                value={value}
-                ref={ref}
                 disabled={!isEditable}
-                style={inputBoxStyle}
+                className={styles.aiInput}
+                {...{ onChange, value, ref }}
               />
               <Text type="danger">
                 {errors.criminalHistoryDetails && <p>{errors.criminalHistoryDetails.message}</p>}
@@ -139,8 +140,8 @@ const ProfileDUIAndCrimHistory = ({ userId, volunteerData, setVolunteerData }) =
           control={control}
           name="duiHistory"
           render={({ field: { onChange, ref, value } }) => (
-            <Form.Item label="Do you have any DUI (Driving Under Influence) history?">
-              <Radio.Group onChange={onChange} ref={ref} value={value} disabled={!isEditable}>
+            <Form.Item label="Do you have a DUI (Driving Under Influence) history?" required>
+              <Radio.Group disabled={!isEditable} {...{ onChange, value, ref }}>
                 <Radio value>Yes</Radio>
                 <Radio value={false}>No</Radio>
               </Radio.Group>
@@ -154,11 +155,9 @@ const ProfileDUIAndCrimHistory = ({ userId, volunteerData, setVolunteerData }) =
           render={({ field: { onChange, value, ref } }) => (
             <Form.Item label="If you replied YES to the previous question, please specify your most recent DUI violation.">
               <Input.TextArea
-                onChange={onChange}
-                value={value}
-                ref={ref}
                 disabled={!isEditable}
-                style={inputBoxStyle}
+                className={styles.aiInput}
+                {...{ onChange, value, ref }}
               />
               <Text type="danger">
                 {errors.duiHistoryDetails && <p>{errors.duiHistoryDetails.message}</p>}
@@ -168,15 +167,30 @@ const ProfileDUIAndCrimHistory = ({ userId, volunteerData, setVolunteerData }) =
         />
         <Controller
           control={control}
-          name="additionalInfo"
+          name="completedChowmatchTraining"
+          render={({ field: { onChange, ref, value } }) => (
+            <Form.Item label="Have you completed Chowmatch training?" required>
+              <Radio.Group disabled={!isEditable} {...{ onChange, value, ref }}>
+                <Radio value>Yes</Radio>
+                <Radio value={false}>No</Radio>
+              </Radio.Group>
+              <Text type="danger">
+                {errors.completedChowmatchTraining && (
+                  <p>{errors.completedChowmatchTraining.message}</p>
+                )}
+              </Text>
+            </Form.Item>
+          )}
+        />
+        <Controller
+          control={control}
+          name="additionalInformation"
           render={({ field: { onChange, value, ref } }) => (
             <Form.Item label="Please write down any additional information you would like us to know.">
               <Input.TextArea
-                onChange={onChange}
-                value={value}
-                ref={ref}
                 disabled={!isEditable}
-                style={inputBoxStyle}
+                className={styles.aiInput}
+                {...{ onChange, value, ref }}
               />
               <Text type="danger">
                 {errors.additionalInfo && <p>{errors.additionalInfo.message}</p>}
@@ -189,10 +203,10 @@ const ProfileDUIAndCrimHistory = ({ userId, volunteerData, setVolunteerData }) =
   );
 };
 
-ProfileDUIAndCrimHistory.propTypes = {
+ProfileAdditionalInfo.propTypes = {
   userId: PropTypes.string.isRequired,
   volunteerData: PropTypes.oneOfType([PropTypes.object]).isRequired,
   setVolunteerData: PropTypes.func.isRequired,
 };
 
-export default ProfileDUIAndCrimHistory;
+export default ProfileAdditionalInfo;
