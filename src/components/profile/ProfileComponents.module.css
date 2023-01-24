@@ -69,6 +69,7 @@
 
 .rsTalentCB {
   flex: 1 1 50%;
+  margin-right: 20px;
 }
 
 .rsWlField {
@@ -78,6 +79,10 @@
 .rsDistanceField {
   width: 40%;
   margin-right: 10px;
+}
+
+.rsDriveField {
+  margin-right: 20px;
 }
 
 .rsSelect {

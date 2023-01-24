@@ -3,22 +3,23 @@ import toast from 'react-hot-toast';
 import { useForm, Controller } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { InputNumber, Radio, Form, Select, Checkbox, Row, Tag, Typography, Button } from 'antd';
-import PropTypes from 'prop-types';
+import { InputNumber, Radio, Form, Select, Checkbox, Row, Typography, Button } from 'antd';
+import PropTypes, { instanceOf } from 'prop-types';
 import {
   AFCBackend,
   languageOptions,
   buildLanguagesArray,
   userProfileTriggers,
 } from '../../util/utils';
+import { Cookies, withCookies, cookieKeys } from '../../util/cookie_utils';
+import { AUTH_ROLES } from '../../util/auth_utils';
 
 import styles from './ProfileComponents.module.css';
 
 const { Option } = Select;
 const { Text } = Typography;
-const { CheckableTag } = Tag;
 
-const ProfileRolesAndSkills = ({ userId, volunteerData, setVolunteerData }) => {
+const ProfileRolesAndSkills = ({ cookies, userId, volunteerData, setVolunteerData }) => {
   const [isEditable, setIsEditable] = useState(false);
   const [componentSize, setComponentSize] = useState('default');
 
@@ -146,80 +147,69 @@ const ProfileRolesAndSkills = ({ userId, volunteerData, setVolunteerData }) => {
             {isEditable ? 'Save' : 'Edit'}
           </Button>
         </div>
-        {/* TODO This field only shows based on cookies admin role */}
-        <Controller
-          control={control}
-          name="role"
-          render={({ field: { onChange, value, ref } }) => (
-            <Form.Item label="Account Type">
-              <Select
-                className={styles.rsSelect}
-                placeholder="Please select an account type"
-                disabled={!isEditable}
-                {...{ onChange, value, ref }}
-              >
-                <Option value="volunteer">Volunteer</Option>
-                <Option value="admin">Admin</Option>
-              </Select>
-            </Form.Item>
-          )}
-        />
+        {cookies.get(cookieKeys.ROLE) === AUTH_ROLES.ADMIN_ROLE && (
+          <Controller
+            control={control}
+            name="role"
+            render={({ field: { onChange, value, ref } }) => (
+              <Form.Item label="Account Type" required>
+                <Select
+                  className={styles.rsSelect}
+                  placeholder="Please select an account type"
+                  disabled={!isEditable}
+                  {...{ onChange, value, ref }}
+                >
+                  <Option value="volunteer">Volunteer</Option>
+                  <Option value="admin">Admin</Option>
+                </Select>
+              </Form.Item>
+            )}
+          />
+        )}
         <section>
-          <Form.Item label="Events Interested In" className={styles.rsEventTagsContainer}>
-            <Controller
-              control={control}
-              name="foodRunsInterest"
-              render={({ field: { onChange, value } }) => (
-                <Form.Item>
-                  {isEditable && (
-                    <CheckableTag onChange={onChange} checked={value}>
-                      Food Running
-                    </CheckableTag>
-                  )}
-                  {!isEditable && getValues('foodRunning') && (
-                    <Tag
-                      onChange={onChange}
+          <Form.Item label="Events Interested In" required>
+            <section className={styles.rsEventTagsContainer}>
+              <Controller
+                control={control}
+                name="foodRunsInterest"
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item>
+                    <Checkbox
+                      className={styles.rsTalentCB}
                       checked={value}
-                      color="#115740"
-                      className={styles.rsEventTag}
+                      disabled={!isEditable}
+                      {...{ onChange, ref }}
                     >
                       Food Running
-                    </Tag>
-                  )}
-                  <Text type="danger">
-                    {isEditable && errors.foodRunsInterest && (
-                      <p>{errors.foodRunsInterest.message}</p>
-                    )}
-                  </Text>
-                </Form.Item>
-              )}
-            />
-            <Controller
-              control={control}
-              name="distributionInterest"
-              render={({ field: { onChange, value } }) => (
-                <Form.Item>
-                  {isEditable && (
-                    <CheckableTag onChange={onChange} checked={value}>
-                      Distribution
-                    </CheckableTag>
-                  )}
-                  {!isEditable && getValues('distribution') && (
-                    <Tag
-                      onChange={onChange}
+                    </Checkbox>
+                    <Text type="danger">
+                      {isEditable && errors.foodRunsInterest && (
+                        <p>{errors.foodRunsInterest.message}</p>
+                      )}
+                    </Text>
+                  </Form.Item>
+                )}
+              />
+              <Controller
+                control={control}
+                name="distributionInterest"
+                render={({ field: { onChange, value, ref } }) => (
+                  <Form.Item>
+                    <Checkbox
+                      className={styles.rsTalentCB}
                       checked={value}
-                      color="#115740"
-                      className={styles.rsEventTag}
+                      disabled={!isEditable}
+                      {...{ onChange, ref }}
                     >
                       Distribution
-                    </Tag>
-                  )}
-                  <Text type="danger">
-                    {isEditable && errors.distribution && <p>{errors.distribution.message}</p>}
-                  </Text>
-                </Form.Item>
-              )}
-            />
+                    </Checkbox>
+                    <Text type="danger">
+                      {isEditable && errors.distribution && <p>{errors.distribution.message}</p>}
+                    </Text>
+                  </Form.Item>
+                )}
+              />
+            </section>
           </Form.Item>
         </section>
         <section>
@@ -360,7 +350,7 @@ const ProfileRolesAndSkills = ({ userId, volunteerData, setVolunteerData }) => {
             control={control}
             name="weightLiftingAbility"
             render={({ field: { onChange, value, ref } }) => (
-              <Form.Item label="Weightlifting Ability">
+              <Form.Item label="Weightlifting Ability" required>
                 <InputNumber
                   min={0}
                   className={styles.rsWlField}
@@ -382,7 +372,7 @@ const ProfileRolesAndSkills = ({ userId, volunteerData, setVolunteerData }) => {
             control={control}
             name="canDrive"
             render={({ field: { onChange, ref, value } }) => (
-              <Form.Item label="Able to Drive">
+              <Form.Item label="Able to Drive" required className={styles.rsDriveField}>
                 <Radio.Group disabled={!isEditable} {...{ onChange, value, ref }}>
                   <Radio value>Yes</Radio>
                   <Radio value={false}>No</Radio>
@@ -397,7 +387,7 @@ const ProfileRolesAndSkills = ({ userId, volunteerData, setVolunteerData }) => {
             control={control}
             name="willingToDrive"
             render={({ field: { onChange, ref, value } }) => (
-              <Form.Item label="Prefers to Drive">
+              <Form.Item label="Prefers to Drive" required>
                 <Radio.Group disabled={!isEditable} {...{ onChange, value, ref }}>
                   <Radio value>Yes</Radio>
                   <Radio value={false}>No</Radio>
@@ -466,6 +456,7 @@ ProfileRolesAndSkills.propTypes = {
   userId: PropTypes.string.isRequired,
   volunteerData: PropTypes.oneOfType([PropTypes.object]).isRequired,
   setVolunteerData: PropTypes.func.isRequired,
+  cookies: instanceOf(Cookies).isRequired,
 };
 
-export default ProfileRolesAndSkills;
+export default withCookies(ProfileRolesAndSkills);
