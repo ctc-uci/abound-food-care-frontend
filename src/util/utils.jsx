@@ -84,6 +84,35 @@ const dayOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Frid
 
 const timeOfDay = ['9:00', '10:00', '11:00', '12:00', '1:00', '2:00', '3:00', '4:00', '5:00'];
 
+// Converts { startTime, endTime, dayOfWeek } to JS Date
+const convertSlotsToDates = slots =>
+  slots.map(s => {
+    const [hours, mins] = s.startTime.split('+')[0].split(':').slice(0, 2);
+    const date = new Date();
+    return new Date(
+      new Date(
+        date.setDate(date.getDate() - date.getDay() + dayOfWeek.indexOf(s.dayOfWeek)),
+      ).setHours(hours, mins - date.getTimezoneOffset(), 0),
+    );
+  });
+
+// Converts JS Date to { startTime, endTime, dayOfWeek }
+const convertDatesToSlots = dates =>
+  dates.map(d => {
+    const date = new Date(d.setMinutes(d.getMinutes() + d.getTimezoneOffset()));
+    return {
+      endTime: `${date.getMinutes() === 30 ? (date.getHours() + 1) % 24 : date.getHours()}:${
+        date.getMinutes() === 30 ? '00' : '30'
+      }:00${date.getTimezoneOffset() < 0 ? '+' : '-'}${Math.abs(
+        Math.floor(date.getTimezoneOffset() / 60),
+      )}`,
+      startTime: `${date.getHours()}:${date.getMinutes() === 0 ? '00' : date.getMinutes()}:00${
+        date.getTimezoneOffset() < 0 ? '+' : '-'
+      }${Math.abs(Math.floor(date.getTimezoneOffset() / 60))}`,
+      dayOfWeek: dayOfWeek[date.getDay()],
+    };
+  });
+
 const stateAbbrs = [
   'AK',
   'AL',
@@ -176,6 +205,8 @@ export {
   eventRequirementsMap,
   dayOfWeek,
   timeOfDay,
+  convertSlotsToDates,
+  convertDatesToSlots,
   stateAbbrs,
   userProfileTriggers,
   phoneRegExp,

@@ -7,8 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { Form, Button, Typography } from 'antd';
 import { startOfWeek } from 'date-fns';
-import { AFCBackend, dayOfWeek } from '../../util/utils';
-// import AvailabilityChart from '../AvailabilityChart/AvailabilityChart';
+import { AFCBackend, convertSlotsToDates, convertDatesToSlots } from '../../util/utils';
 
 import styles from './ProfileComponents.module.css';
 
@@ -34,34 +33,10 @@ const ProfileAvailability = ({ userId }) => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema), mode: 'onChange', delayError: 750 });
 
-  const convertSlotsToDates = slots =>
-    slots.map(s => {
-      const [hours, mins] = s.startTime.split('+')[0].split(':').slice(0, 2);
-      const date = new Date();
-      return new Date(
-        new Date(
-          date.setDate(date.getDate() - date.getDay() + dayOfWeek.indexOf(s.dayOfWeek)),
-        ).setHours(hours, mins - date.getTimezoneOffset(), 0),
-      );
-    });
-
-  const convertDatesToSlots = dates =>
-    dates.map(d => ({
-      endTime: `${d.getMinutes() === 30 ? (d.getHours() + 1) % 24 : d.getHours()}:${
-        d.getMinutes() === 30 ? '00' : '30'
-      }:00${d.getTimezoneOffset() < 0 ? '+' : '-'}${Math.abs(
-        Math.floor(d.getTimezoneOffset() / 60),
-      )}`,
-      startTime: `${d.getHours()}:${d.getMinutes() === 0 ? '00' : d.getMinutes()}:00`,
-      dayOfWeek: dayOfWeek[d.getDay()],
-    }));
-
   const getVolunteerData = async () => {
     try {
       clearErrors();
       const { data: res } = await AFCBackend.get(`/availability/${userId}`);
-      console.log(res.availabilities);
-      console.log(convertDatesToSlots(convertSlotsToDates(res.availabilities)));
       setAvailabilityData(convertSlotsToDates(res.availabilities));
     } catch (e) {
       toast.error(`Error getting volunteer data: ${e.message}`);
@@ -73,12 +48,11 @@ const ProfileAvailability = ({ userId }) => {
       try {
         const result = await trigger(['availabilities']);
         if (result) {
-          console.log(values);
-          // const payload = { ...values };
-          // const updatedUser = await AFCBackend.put(`/users/additional-info/${userId}`, payload);
-          // setVolunteerData({ ...updatedUser.data });
+          const payload = { availabilities: convertDatesToSlots(values.availabilities) };
+          await AFCBackend.put(`/availability/${userId}`, payload);
           toast.success('Successfully saved user availability!');
           setIsEditable(!isEditable);
+          getVolunteerData();
         }
       } catch (e) {
         toast.error(`Error saving form: ${e.response?.data ?? e.message}`);
@@ -90,6 +64,8 @@ const ProfileAvailability = ({ userId }) => {
     }
   };
 
+  const editWithoutEditable = () => toast('To edit availability, click the Edit button.');
+
   const handleCancel = () => {
     getVolunteerData();
     setIsEditable(false);
@@ -97,7 +73,7 @@ const ProfileAvailability = ({ userId }) => {
 
   useEffect(async () => {
     getVolunteerData();
-  }, []);
+  }, [userId]);
 
   useEffect(() => setValue('availabilities', availabilityData), [availabilityData]);
 
@@ -124,35 +100,45 @@ const ProfileAvailability = ({ userId }) => {
             {isEditable ? 'Save' : 'Edit'}
           </Button>
         </div>
-        {availabilityData && (
-          <ScheduleSelector
-            selection={availabilityData}
-            selectionScheme="square"
-            startDate={startOfWeek(new Date())}
-            numDays={7}
-            minTime={0}
-            maxTime={24}
-            hourlyChunks={2}
-            timeFormat="h:mm A"
-            dateFormat="ddd"
-            columnGap="4px"
-            rowGap="2px"
-            // renderDateCell={(time, selected, refSetter) => (
-            //   <div
-            //     className="grid-cell"
-            //     style={{ backgroundColor: `${selected ? '#799CA8' : '#F2FBFC'}` }}
-            //     ref={refSetter}
-            //     role="button"
-            //     tabIndex="0"
-            //   >
-            //     {' '}
-            //   </div>
-            // )}
-          />
-        )}
-        <Text type="danger">
-          {isEditable && errors.availabilities && <p>{errors.availabilities.message}</p>}
-        </Text>
+        <div className={styles.avChartContainer}>
+          <p className={styles.avDescriptor}>
+            <span className={styles.avGreen}>* Dark green cell</span> indicates availability on
+            chart.
+          </p>
+          {availabilityData && (
+            <ScheduleSelector
+              selection={availabilityData}
+              selectionScheme="square"
+              // {...(isEditable && { onChange: newDates => setAvailabilityData(newDates) })}
+              onChange={
+                isEditable ? newDates => setAvailabilityData(newDates) : editWithoutEditable
+              }
+              startDate={startOfWeek(new Date())}
+              numDays={7}
+              minTime={0}
+              maxTime={24}
+              hourlyChunks={2}
+              timeFormat="h:mm A"
+              dateFormat="ddd"
+              columnGap="4px"
+              rowGap="2px"
+              renderDateCell={(time, selected, refSetter) => (
+                <div
+                  className={styles.avGridCell}
+                  style={{ backgroundColor: `${selected ? '#115740' : '#F6FCFC'}` }}
+                  ref={refSetter}
+                  role="button"
+                  tabIndex="0"
+                >
+                  {' '}
+                </div>
+              )}
+            />
+          )}
+          <Text type="danger">
+            {isEditable && errors.availabilities && <p>{errors.availabilities.message}</p>}
+          </Text>
+        </div>
       </Form>
     </div>
   );

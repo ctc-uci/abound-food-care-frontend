@@ -44,6 +44,28 @@
   width: 70% !important;
 }
 
+.avChartContainer {
+  width: 80%;
+}
+
+.avDescriptor {
+  font-family: Inter;
+  font-size: 16px;
+  font-style: italic;
+  margin-top: 5px;
+}
+
+.avGreen {
+  color: var(--eden);
+  font-weight: 800;
+}
+
+.avGridCell {
+  border: 0.1px solid rgba(121, 156, 168, 0.2);
+  width: 100%;
+  height: 20px;
+}
+
 .rsLangOptionsContainer {
   width: 800px;
   display: flex;
