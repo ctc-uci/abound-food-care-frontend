@@ -1,6 +1,6 @@
 @import '../../common/global.css';
 
-.generalInfoContainer, .rolesSkillsContainer, .duiCrimHistoryContainer {
+.generalInfoContainer, .availContainer, .rolesSkillsContainer, .duiCrimHistoryContainer {
   margin-top: 10px;
 }
 

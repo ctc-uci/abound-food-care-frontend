@@ -84,21 +84,26 @@ const Profile = ({ cookies }) => {
         </h1>
         <Tabs defaultActiveKey="1" size="large">
           <TabPane tab="General Information" key="1">
-            <ProfileGeneralInfo userId={userId} volunteerData={user} setVolunteerData={setUser} />
+            {user && (
+              <ProfileGeneralInfo userId={userId} volunteerData={user} setVolunteerData={setUser} />
+            )}
           </TabPane>
           <TabPane tab="Availability" key="2">
-            {/* TODO: make availability editable */}
-            <ProfileAvailability userId={userId} availability={user?.availabilities} />
+            {user && <ProfileAvailability userId={userId} availability={user?.availabilities} />}
           </TabPane>
           <TabPane tab="Roles & Skills" key="3">
-            <ProfileRolesSkills userId={userId} volunteerData={user} setVolunteerData={setUser} />
+            {user && (
+              <ProfileRolesSkills userId={userId} volunteerData={user} setVolunteerData={setUser} />
+            )}
           </TabPane>
           <TabPane tab="Additional Info" key="4">
-            <ProfileAdditionalInfo
-              userId={userId}
-              volunteerData={user}
-              setVolunteerData={setUser}
-            />
+            {user && (
+              <ProfileAdditionalInfo
+                userId={userId}
+                volunteerData={user}
+                setVolunteerData={setUser}
+              />
+            )}
           </TabPane>
           <TabPane tab="Training & Forms" key="5">
             {waivers.length ? (

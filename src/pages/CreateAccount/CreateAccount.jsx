@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import PropTypes from 'prop-types';
 import { Card, Form, Button, Steps, Typography } from 'antd';
@@ -43,6 +43,8 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
   const [availability, setAvailability] = useState([]);
   const [missingAvailabilityErrorMessage, setMissingAvailabilityErrorMessage] = useState('');
   const [componentSize, setComponentSize] = useState('default');
+
+  useEffect(() => console.log(availability), [availability]);
 
   const navigate = useNavigate();
 

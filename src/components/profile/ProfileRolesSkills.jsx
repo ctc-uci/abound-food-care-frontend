@@ -264,8 +264,9 @@ const ProfileRolesAndSkills = ({ cookies, userId, volunteerData, setVolunteerDat
                   <Form.Item>
                     <Checkbox
                       className={styles.rsTalentCB}
+                      checked={value}
                       disabled={!isEditable}
-                      {...{ onChange, ref, value }}
+                      {...{ onChange, ref }}
                     >
                       Serve Safe Knowledge
                     </Checkbox>
@@ -305,10 +306,9 @@ const ProfileRolesAndSkills = ({ cookies, userId, volunteerData, setVolunteerDat
                   <Form.Item>
                     <Checkbox
                       className={styles.rsTalentCB}
-                      onChange={onChange}
-                      ref={ref}
                       checked={value}
                       disabled={!isEditable}
+                      {...{ onChange, ref }}
                     >
                       First Aid Training
                     </Checkbox>
@@ -334,7 +334,7 @@ const ProfileRolesAndSkills = ({ cookies, userId, volunteerData, setVolunteerDat
                     key={lang}
                     render={({ field: { onChange, value, ref } }) => (
                       <Form.Item className={styles.rsLangOption}>
-                        <Checkbox disabled={!isEditable} {...{ onChange, value, ref }}>
+                        <Checkbox disabled={!isEditable} checked={value} {...{ onChange, ref }}>
                           {lang[0].toUpperCase() + lang.substring(1)}
                         </Checkbox>
                       </Form.Item>
