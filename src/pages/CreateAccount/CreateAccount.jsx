@@ -17,6 +17,7 @@ import {
   zipRegExp,
   stateAbbrs,
   userProfileTriggers,
+  convertDatesToSlots,
 } from '../../util/utils';
 import {
   AUTH_ROLES,
@@ -40,11 +41,12 @@ const PAGE_NAME = {
 const CreateAccount = ({ setPageState, firstName, lastName, email, password, role, code }) => {
   const [formStep, setFormStep] = useState(PAGE_NAME.GENERAL_INFO);
   const [progressNum, setProgressNum] = useState(0);
+  // Dates
   const [availability, setAvailability] = useState([]);
+  // Slots
+  const [availabilities, setAvailabilities] = useState([]);
   const [missingAvailabilityErrorMessage, setMissingAvailabilityErrorMessage] = useState('');
   const [componentSize, setComponentSize] = useState('default');
-
-  useEffect(() => console.log(availability), [availability]);
 
   const navigate = useNavigate();
 
@@ -180,8 +182,13 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
     };
 
     if (formStep === PAGE_NAME.AVAILABILITY && availability.length === 0) {
-      setMissingAvailabilityErrorMessage('Please select at least one availability slot.');
-      return;
+      if (availability.length === 0) {
+        setMissingAvailabilityErrorMessage('Please select at least one availability slot.');
+        toast.error('Please select at least one availability slot.');
+        return;
+      }
+      setAvailabilities(convertDatesToSlots(availability));
+      setMissingAvailabilityErrorMessage('');
     }
     const result = await methods.trigger(triggers[formStep]);
     if (result) {
@@ -227,7 +234,7 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
         userId: uid,
         role,
         languages,
-        availabilities: availability,
+        availabilities,
       };
       await AFCBackend.post('/users/', payload);
 
