@@ -83,7 +83,7 @@ const ViewAdminCodes = ({ isOpen, setIsOpen }) => {
 };
 
 ViewAdminCodes.propTypes = {
-  isOpen: PropTypes.string.isRequired,
+  isOpen: PropTypes.bool.isRequired,
   setIsOpen: PropTypes.func.isRequired,
 };
 
