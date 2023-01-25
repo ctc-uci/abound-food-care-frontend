@@ -64,7 +64,10 @@ const ProfileAvailability = ({ userId }) => {
     }
   };
 
-  const editWithoutEditable = () => toast('To edit availability, click the Edit button.');
+  const editWithoutEditable = () => {
+    toast.dismiss();
+    toast('To edit availability, click the Edit button.');
+  };
 
   const handleCancel = () => {
     getVolunteerData();
