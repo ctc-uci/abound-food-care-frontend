@@ -64,10 +64,10 @@ const ProfileAvailability = ({ userId }) => {
     }
   };
 
-  const editWithoutEditable = () => {
-    toast.dismiss();
-    toast('To edit availability, click the Edit button.');
-  };
+  // const editWithoutEditable = () => {
+  //   toast.dismiss();
+  //   toast('To edit availability, click the Edit button.');
+  // };
 
   const handleCancel = () => {
     getVolunteerData();
@@ -112,10 +112,10 @@ const ProfileAvailability = ({ userId }) => {
             <ScheduleSelector
               selection={availabilityData}
               selectionScheme="square"
-              // {...(isEditable && { onChange: newDates => setAvailabilityData(newDates) })}
-              onChange={
-                isEditable ? newDates => setAvailabilityData(newDates) : editWithoutEditable
-              }
+              {...(isEditable && { onChange: newDates => setAvailabilityData(newDates) })}
+              // onChange={
+              //   isEditable ? newDates => setAvailabilityData(newDates) : () => editWithoutEditable()
+              // }
               startDate={startOfWeek(new Date())}
               numDays={7}
               minTime={0}
