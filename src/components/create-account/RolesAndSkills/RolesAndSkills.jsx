@@ -29,7 +29,7 @@ const RolesAndSkills = () => {
             name="foodRunning"
             render={({ field: { onChange, value, ref } }) => (
               <>
-                <Checkbox className={styles.checkbox} {...{ ref, value, onChange }}>
+                <Checkbox checked={value} className={styles.checkbox} {...{ ref, onChange }}>
                   Food Running
                 </Checkbox>
               </>
@@ -40,7 +40,7 @@ const RolesAndSkills = () => {
             name="distribution"
             render={({ field: { onChange, value, ref } }) => (
               <>
-                <Checkbox className={styles.checkbox} {...{ ref, value, onChange }}>
+                <Checkbox checked={value} className={styles.checkbox} {...{ ref, onChange }}>
                   Distribution
                 </Checkbox>
               </>
@@ -63,7 +63,7 @@ const RolesAndSkills = () => {
               name="transportationExperience"
               render={({ field: { onChange, value, ref } }) => (
                 <>
-                  <Checkbox className={styles.longCheckbox} {...{ ref, value, onChange }}>
+                  <Checkbox checked={value} className={styles.longCheckbox} {...{ ref, onChange }}>
                     Transportation
                   </Checkbox>
                 </>
@@ -74,7 +74,7 @@ const RolesAndSkills = () => {
               name="movingWarehouseExperience"
               render={({ field: { onChange, value, ref } }) => (
                 <>
-                  <Checkbox className={styles.longCheckbox} {...{ ref, value, onChange }}>
+                  <Checkbox checked={value} className={styles.longCheckbox} {...{ ref, onChange }}>
                     Moving/Warehouse
                   </Checkbox>
                 </>
@@ -85,7 +85,7 @@ const RolesAndSkills = () => {
               name="serveSafeKnowledge"
               render={({ field: { onChange, value, ref } }) => (
                 <>
-                  <Checkbox className={styles.longCheckbox} {...{ ref, value, onChange }}>
+                  <Checkbox checked={value} className={styles.longCheckbox} {...{ ref, onChange }}>
                     Serve Safe Knowledge
                   </Checkbox>
                 </>
@@ -96,7 +96,7 @@ const RolesAndSkills = () => {
               name="foodServiceIndustryKnowledge"
               render={({ field: { onChange, value, ref } }) => (
                 <>
-                  <Checkbox className={styles.longCheckbox} {...{ ref, value, onChange }}>
+                  <Checkbox checked={value} className={styles.longCheckbox} {...{ ref, onChange }}>
                     Food Service Industry Knowledge
                   </Checkbox>
                 </>
@@ -107,7 +107,7 @@ const RolesAndSkills = () => {
               name="firstAidTraining"
               render={({ field: { onChange, value, ref } }) => (
                 <>
-                  <Checkbox className={styles.longCheckbox} {...{ ref, value, onChange }}>
+                  <Checkbox checked={value} className={styles.longCheckbox} {...{ ref, onChange }}>
                     First Aid Training
                   </Checkbox>
                 </>
@@ -130,8 +130,9 @@ const RolesAndSkills = () => {
                 render={({ field: { onChange, value, ref } }) => (
                   <>
                     <Checkbox
+                      checked={value}
                       className={`${styles.langCheckbox} ${styles.checkbox}`}
-                      {...{ ref, value, onChange }}
+                      {...{ ref, onChange }}
                     >
                       {lang.charAt(0).toUpperCase() + lang.substring(1)}
                     </Checkbox>
