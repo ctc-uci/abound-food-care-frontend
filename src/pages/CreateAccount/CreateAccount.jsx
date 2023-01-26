@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import PropTypes from 'prop-types';
 import { Card, Form, Button, Steps, Typography } from 'antd';
@@ -6,9 +6,10 @@ import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import GeneralInfo from '../../components/create-account/GeneralInfo/GeneralInfo';
+import Availability from '../../components/create-account/Availability/Availability';
 import RolesAndSkills from '../../components/create-account/RolesAndSkills/RolesAndSkills';
 import AdditionalInfo from '../../components/create-account/AdditionalInfo/AdditionalInfo';
-import AvailabilityChart from '../../components/AvailabilityChart/AvailabilityChart';
+// import AvailabilityChart from '../../components/AvailabilityChart/AvailabilityChart';
 
 import {
   AFCBackend,
@@ -166,6 +167,7 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
   });
 
   const incrementFormStep = async () => {
+    console.log('called');
     const triggers = {
       [PAGE_NAME.GENERAL_INFO]: [...userProfileTriggers.general, 'password'],
       [PAGE_NAME.AVAILABILITY]: [],
@@ -180,8 +182,7 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
       [PAGE_NAME.GENERAL_INFO]: PAGE_NAME.ROLES_AND_SKILLS,
       [PAGE_NAME.ROLES_AND_SKILLS]: PAGE_NAME.ADDITIONAL_INFO,
     };
-
-    if (formStep === PAGE_NAME.AVAILABILITY && availability.length === 0) {
+    if (formStep === PAGE_NAME.AVAILABILITY) {
       if (availability.length === 0) {
         setMissingAvailabilityErrorMessage('Please select at least one availability slot.');
         toast.error('Please select at least one availability slot.');
@@ -291,21 +292,11 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
             )}
           </Steps>
           <section hidden={formStep !== PAGE_NAME.GENERAL_INFO}>
-            <GeneralInfo
-              firstName={firstName}
-              lastName={lastName}
-              email={email}
-              password={password}
-            />
+            <GeneralInfo {...{ firstName, lastName, email, password }} />
             <NavButtons />
           </section>
           <section hidden={formStep !== PAGE_NAME.AVAILABILITY}>
-            <AvailabilityChart
-              availability={availability}
-              setAvailability={setAvailability}
-              title="Weekly Availability"
-              days={7}
-            />
+            {/* <Availability {...{ availability, setAvailability }} /> */}
             <Text type="danger">{missingAvailabilityErrorMessage}</Text>
             <NavButtons />
           </section>
