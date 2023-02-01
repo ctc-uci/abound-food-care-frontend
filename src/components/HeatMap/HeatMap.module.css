@@ -1,5 +1,9 @@
 @import '../../common/global.css';
 
+.avHeatmapContainer {
+  margin: 15px 50px 20px 10px;
+}
+
 .avGridCell {
   border: 0.1px solid rgba(121, 156, 168, 0.2);
   width: 100%;

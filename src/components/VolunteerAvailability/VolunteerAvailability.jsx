@@ -171,10 +171,13 @@ const VolunteerAvailability = props => {
               </div>
             </div>
             <HeatMap
-              setSelectedTimeslot={setSelectedTimeslot}
-              eventInterest={eventInterest}
-              driverOption={driverOption}
-              searchQuery={searchQuery}
+              {...{
+                selectedTimeslot,
+                setSelectedTimeslot,
+                eventInterest,
+                driverOption,
+                searchQuery,
+              }}
             />
           </div>
           <div className={styles.volunteerAvRight}>
@@ -186,7 +189,7 @@ const VolunteerAvailability = props => {
             {/* TODO Add pagination for > 30 available volunteers */}
             {/* TODO Move export button here */}
             {filteredVolunteers.slice(0, 30).map(({ id, firstName, lastName }) => (
-              <Link to={`/profile/${id}`} key={id}>
+              <Link to={`/profile/${id}`} key={`${id}_link`}>
                 <p className={styles.volunteerAvRightName}>
                   {lastName}, {firstName}
                 </p>
