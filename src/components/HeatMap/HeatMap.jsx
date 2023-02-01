@@ -77,6 +77,7 @@ const HeatMap = ({
   };
 
   useEffect(async () => {
+    // TODO FIX WITH FILTERS
     const { data } = await AFCBackend.get('/volunteers/available');
     setAvData(data);
   }, [eventInterest, driverOption, searchQuery]);

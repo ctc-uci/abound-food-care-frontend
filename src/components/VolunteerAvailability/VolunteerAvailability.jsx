@@ -188,6 +188,7 @@ const VolunteerAvailability = props => {
             </div>
             {/* TODO Add pagination for > 30 available volunteers */}
             {/* TODO Move export button here */}
+            {/* TODO Add icons for can drive, event types, etc. */}
             {filteredVolunteers.slice(0, 30).map(({ id, firstName, lastName }) => (
               <Link to={`/profile/${id}`} key={`${id}_link`}>
                 <p className={styles.volunteerAvRightName}>
@@ -198,7 +199,7 @@ const VolunteerAvailability = props => {
           </div>
         </div>
       </div>
-      <ViewAdminCodes isOpen={isOpen} setIsOpen={setIsOpen} />
+      <ViewAdminCodes {...{ isOpen, setIsOpen }} />
     </>
   );
 };
