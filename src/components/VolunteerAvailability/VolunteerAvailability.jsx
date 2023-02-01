@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import PropTypes from 'prop-types';
 import { Menu, Dropdown, Button, Input, Row, Col } from 'antd';
 import { DownOutlined, FilterFilled, SearchOutlined, PlusOutlined } from '@ant-design/icons';
-import HeatMap from './HeatMap';
+import HeatMap from '../HeatMap/HeatMap';
 import ViewAdminCodes from '../ViewAdminCodes/ViewAdminCodes';
 import { AFCBackend } from '../../util/utils';
 import styles from './VolunteerAvailability.module.css';
@@ -124,7 +124,7 @@ const VolunteerAvailability = props => {
                   </Col>
                   <Col span={11} className={styles.buttonGroup}>
                     <Button className={styles.dbButton} onClick={handleViewDatabase}>
-                      View Heatmap
+                      View Database
                     </Button>
                     <Button
                       className={styles.dbButton}

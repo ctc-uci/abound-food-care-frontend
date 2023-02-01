@@ -1,0 +1,12 @@
+@import '../../common/global.css';
+
+.avGridCell {
+  border: 0.1px solid rgba(121, 156, 168, 0.2);
+  width: 100%;
+  height: 18px;
+  cursor: pointer;
+}
+
+.avGridCell:hover {
+  border: 2px solid var(--orange);
+}
