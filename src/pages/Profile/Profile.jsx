@@ -89,7 +89,7 @@ const Profile = ({ cookies }) => {
             )}
           </TabPane>
           <TabPane tab="Availability" key="2">
-            {user && <ProfileAvailability userId={userId} availability={user?.availabilities} />}
+            {user && <ProfileAvailability {...{ userId }} />}
           </TabPane>
           <TabPane tab="Roles & Skills" key="3">
             {user && (

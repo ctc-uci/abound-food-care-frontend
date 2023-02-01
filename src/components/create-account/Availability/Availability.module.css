@@ -1,0 +1,58 @@
+
+@import '../../../common/global.css';
+
+.heading {
+  font-family: Avenir;
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 34px;
+  letter-spacing: -0.02em;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.instructions {
+  font-family: Avenir;
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: -0.02em;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.avContainer {
+  width: 85%;
+  margin-left: 7.25%;
+  margin-bottom: 15px;
+}
+
+.avDescriptor {
+  font-family: Inter;
+  font-size: 16px;
+  font-style: italic;
+  margin-top: 5px;
+}
+
+.avGreen {
+  color: var(--eden);
+  font-weight: 800;
+}
+
+.avGridCell {
+  border: 0.1px solid rgba(121, 156, 168, 0.2);
+  width: 100%;
+  height: 18px;
+}
+
+.navButtons {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  z-index: 5;
+}
+
+.previousButton {
+  border-color: #d9d9d9;
+}

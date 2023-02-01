@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import PropTypes from 'prop-types';
-import { Card, Form, Button, Steps, Typography } from 'antd';
+import { Card, Form, Button, Steps } from 'antd';
 import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -9,7 +9,6 @@ import GeneralInfo from '../../components/create-account/GeneralInfo/GeneralInfo
 import Availability from '../../components/create-account/Availability/Availability';
 import RolesAndSkills from '../../components/create-account/RolesAndSkills/RolesAndSkills';
 import AdditionalInfo from '../../components/create-account/AdditionalInfo/AdditionalInfo';
-// import AvailabilityChart from '../../components/AvailabilityChart/AvailabilityChart';
 
 import {
   AFCBackend,
@@ -18,7 +17,7 @@ import {
   zipRegExp,
   stateAbbrs,
   userProfileTriggers,
-  convertDatesToSlots,
+  convertSlotsToDates,
 } from '../../util/utils';
 import {
   AUTH_ROLES,
@@ -29,7 +28,6 @@ import {
 
 import styles from './CreateAccount.module.css';
 
-const { Text } = Typography;
 const { Step } = Steps;
 
 const PAGE_NAME = {
@@ -42,11 +40,8 @@ const PAGE_NAME = {
 const CreateAccount = ({ setPageState, firstName, lastName, email, password, role, code }) => {
   const [formStep, setFormStep] = useState(PAGE_NAME.GENERAL_INFO);
   const [progressNum, setProgressNum] = useState(0);
-  // Dates
-  const [availability, setAvailability] = useState([]);
   // Slots
-  const [availabilities, setAvailabilities] = useState([]);
-  const [missingAvailabilityErrorMessage, setMissingAvailabilityErrorMessage] = useState('');
+  const [availability, setAvailability] = useState([]);
   const [componentSize, setComponentSize] = useState('default');
 
   const navigate = useNavigate();
@@ -167,7 +162,6 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
   });
 
   const incrementFormStep = async () => {
-    console.log('called');
     const triggers = {
       [PAGE_NAME.GENERAL_INFO]: [...userProfileTriggers.general, 'password'],
       [PAGE_NAME.AVAILABILITY]: [],
@@ -182,15 +176,6 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
       [PAGE_NAME.GENERAL_INFO]: PAGE_NAME.ROLES_AND_SKILLS,
       [PAGE_NAME.ROLES_AND_SKILLS]: PAGE_NAME.ADDITIONAL_INFO,
     };
-    if (formStep === PAGE_NAME.AVAILABILITY) {
-      if (availability.length === 0) {
-        setMissingAvailabilityErrorMessage('Please select at least one availability slot.');
-        toast.error('Please select at least one availability slot.');
-        return;
-      }
-      setAvailabilities(convertDatesToSlots(availability));
-      setMissingAvailabilityErrorMessage('');
-    }
     const result = await methods.trigger(triggers[formStep]);
     if (result) {
       if (role === AUTH_ROLES.VOLUNTEER_ROLE) {
@@ -235,7 +220,7 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
         userId: uid,
         role,
         languages,
-        availabilities,
+        availabilities: availability,
       };
       await AFCBackend.post('/users/', payload);
 
@@ -296,9 +281,14 @@ const CreateAccount = ({ setPageState, firstName, lastName, email, password, rol
             <NavButtons />
           </section>
           <section hidden={formStep !== PAGE_NAME.AVAILABILITY}>
-            {/* <Availability {...{ availability, setAvailability }} /> */}
-            <Text type="danger">{missingAvailabilityErrorMessage}</Text>
-            <NavButtons />
+            {formStep === PAGE_NAME.AVAILABILITY && (
+              <Availability
+                {...{ setAvailability, incrementFormStep, decrementFormStep }}
+                {...(availability.length > 0 && {
+                  availability: convertSlotsToDates(availability),
+                })}
+              />
+            )}
           </section>
           <section hidden={formStep !== PAGE_NAME.ROLES_AND_SKILLS}>
             <RolesAndSkills />

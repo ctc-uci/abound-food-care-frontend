@@ -186,8 +186,8 @@ const RolesAndSkills = () => {
             render={({ field: { onChange, value, ref } }) => (
               <>
                 <Radio.Group className={styles.radioInput} {...{ ref, value, onChange }}>
-                  <Radio value="true">Yes</Radio>
-                  <Radio value="false">No</Radio>
+                  <Radio value>Yes</Radio>
+                  <Radio value={false}>No</Radio>
                 </Radio.Group>
               </>
             )}
@@ -211,10 +211,10 @@ const RolesAndSkills = () => {
             render={({ field: { onChange, value, ref } }) => (
               <>
                 <Radio.Group className={styles.radioInput} {...{ ref, value, onChange }}>
-                  <Radio value="true" onClick={() => setWillDrive(true)}>
+                  <Radio value onClick={() => setWillDrive(true)}>
                     Yes
                   </Radio>
-                  <Radio value="false" onClick={() => setWillDrive(false)}>
+                  <Radio value={false} onClick={() => setWillDrive(false)}>
                     No
                   </Radio>
                 </Radio.Group>
