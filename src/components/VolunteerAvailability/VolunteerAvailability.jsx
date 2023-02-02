@@ -13,7 +13,6 @@ const VolunteerAvailability = props => {
   const { handleViewDatabase } = props;
 
   const [selectedTimeslot, setSelectedTimeslot] = useState({});
-  const [volunteers, setVolunteers] = useState([]);
   const [availableVolunteers, setAvailableVolunteers] = useState([]);
   const [filteredVolunteers, setFilteredVolunteers] = useState([]);
   const [eventInterest, setEventInterest] = useState('All');
@@ -31,7 +30,16 @@ const VolunteerAvailability = props => {
           searchQuery,
         },
       });
-      setAvailableVolunteers(data);
+      setAvailableVolunteers(
+        data
+          .map(({ userId, firstName, lastName, availabilities }) => ({
+            id: userId,
+            firstName,
+            lastName,
+            available: !!availabilities,
+          }))
+          .filter(v => v.available),
+      );
     } catch (err) {
       toast.error(`Error fetching volunteer data: ${err.message}`);
     }
@@ -67,14 +75,14 @@ const VolunteerAvailability = props => {
 
   useEffect(async () => {
     const { data } = await AFCBackend.get('/volunteers/');
-    const mappedVolunteers = data.map(({ userId, firstName, lastName, availabilities }) => ({
-      id: userId,
-      firstName,
-      lastName,
-      available: !!availabilities,
-    }));
-    setVolunteers(mappedVolunteers);
-    const availables = mappedVolunteers.filter(v => v.available);
+    const availables = data
+      .map(({ userId, firstName, lastName, availabilities }) => ({
+        id: userId,
+        firstName,
+        lastName,
+        available: !!availabilities,
+      }))
+      .filter(v => v.available);
     setAvailableVolunteers(availables);
     setFilteredVolunteers(availables);
   }, []);
@@ -183,7 +191,7 @@ const VolunteerAvailability = props => {
           <div className={styles.volunteerAvRight}>
             <div className={styles.volunteerAvRightHeaderContainer}>
               <h2 className={styles.volunteerAvRightHeader}>
-                Volunteers ({filteredVolunteers.length}/{volunteers.length})
+                Volunteers ({filteredVolunteers.length}/{availableVolunteers.length})
               </h2>
             </div>
             {/* TODO Add pagination for > 30 available volunteers */}
