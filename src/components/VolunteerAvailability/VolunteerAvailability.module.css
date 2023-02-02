@@ -14,7 +14,7 @@
 
 .volunteerAvLeft {
   float: left;
-  width: 77.5%;
+  width: 75%;
 }
 
 .volunteerAvFiltersContainer {
@@ -101,7 +101,8 @@
 
 .volunteerAvRight {
   float: right;
-  width: min(22.5%, 300px);
+  width: calc(25% - 25px);
+  margin-right: 25px;
 }
 
 .volunteerAvRightHeaderContainer {
