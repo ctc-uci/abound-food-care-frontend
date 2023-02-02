@@ -29,6 +29,19 @@ const NavMenu = ({ cookies }) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
+  const pickSelectedItem = path => {
+    if (path === '/') {
+      return ['/'];
+    }
+    // eslint-disable-next-line consistent-return
+    ['event', 'volunteer', 'hour', 'profile', 'logout'].forEach(page => {
+      if (path.includes(page)) {
+        return [page];
+      }
+    });
+    return [];
+  };
+
   const handleToggle = () => {
     setCollapsed(!collapsed);
     setMenuTitle(collapsed ? 'Abound Food Care' : '');
@@ -44,41 +57,41 @@ const NavMenu = ({ cookies }) => {
               {menuTitle}
             </div>
           </Link>
-          <Menu defaultSelectedKeys={[pathname]} mode="inline" className={styles.menu}>
+          <Menu
+            defaultSelectedKeys={pickSelectedItem(pathname)}
+            mode="inline"
+            className={styles.menu}
+          >
             <Menu.Item className={styles['menu-item']} key="/" icon={<DashboardOutlined />}>
               <Link to="/" className={styles.link}>
                 Dashboard
               </Link>
             </Menu.Item>
-            <Menu.Item className={styles['menu-item']} key="/events" icon={<FormOutlined />}>
+            <Menu.Item className={styles['menu-item']} key="event" icon={<FormOutlined />}>
               <Link to="/events" className={styles.link}>
                 Events
               </Link>
             </Menu.Item>
             {cookies.get(cookieKeys.ROLE) === AUTH_ROLES.ADMIN_ROLE && (
               <>
-                <Menu.Item
-                  className={styles['menu-item']}
-                  key="/volunteers"
-                  icon={<TableOutlined />}
-                >
+                <Menu.Item className={styles['menu-item']} key="volunteer" icon={<TableOutlined />}>
                   <Link to="/volunteers" className={styles.link}>
                     Volunteers
                   </Link>
                 </Menu.Item>
-                <Menu.Item className={styles['menu-item']} key="/hours" icon={<ProfileOutlined />}>
+                <Menu.Item className={styles['menu-item']} key="hour" icon={<ProfileOutlined />}>
                   <Link to="/hours" className={styles.link}>
                     Hours Log
                   </Link>
                 </Menu.Item>
               </>
             )}
-            <Menu.Item className={styles['menu-item']} key="/profile" icon={<UserOutlined />}>
+            <Menu.Item className={styles['menu-item']} key="profile" icon={<UserOutlined />}>
               <Link to={`/profile/${cookies.get(cookieKeys.USER_ID)}`} className={styles.link}>
                 Profile
               </Link>
             </Menu.Item>
-            <Menu.Item className={styles['menu-item']} key="/logout" icon={<LogoutOutlined />}>
+            <Menu.Item className={styles['menu-item']} key="logout" icon={<LogoutOutlined />}>
               <Link
                 to="/auth"
                 className={styles.link}
