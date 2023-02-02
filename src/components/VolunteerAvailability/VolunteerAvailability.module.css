@@ -146,3 +146,26 @@
   margin-left: 2px;
   margin-right: 2px;
 }
+
+.volunteerAvRightFooterContainer {
+  border-top: 1px solid #f0f0f0;
+  margin-top: 10px;
+  padding-top: 15px;
+}
+
+.volunteerAvRightQual {
+  font-family: Avenir;
+  font-style: italic;
+  font-size: 12px;
+  margin-top: 0px;
+  margin-left: 25px;
+}
+
+.volunteerAvLink {
+  color: var(--eden);
+  cursor: pointer;
+}
+
+.volunteerAvLink:hover {
+  text-decoration: underline;
+}

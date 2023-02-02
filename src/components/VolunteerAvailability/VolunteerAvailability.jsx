@@ -264,7 +264,6 @@ const VolunteerAvailability = props => {
             </div>
             {/* TODO Add pagination for > 30 available volunteers */}
             {/* TODO Move export button here */}
-            {/* TODO Add icons for can drive, event types, etc. */}
             {filteredVolunteers
               .slice(0, 30)
               .map(({ id, firstName, lastName, birthdate, willingToDrive }) => (
@@ -276,6 +275,21 @@ const VolunteerAvailability = props => {
                   </p>
                 </Link>
               ))}
+            <div className={styles.volunteerAvRightFooterContainer}>
+              <h3 className={styles.volunteerAvRightQual}>
+                * Some volunteers do not appear here because they have not marked their
+                availability. You can view all registered volunteers in the{' '}
+                {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
+                <span
+                  onClick={handleViewDatabase}
+                  role="link"
+                  tabIndex={0}
+                  className={styles.volunteerAvLink}
+                >
+                  Volunteer Database.
+                </span>
+              </h3>
+            </div>
           </div>
         </div>
       </div>
