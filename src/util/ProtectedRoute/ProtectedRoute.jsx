@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { PropTypes, instanceOf } from 'prop-types';
 import { withCookies, cookieKeys, Cookies, clearCookies } from '../cookie_utils';
 import { AFCBackend, refreshToken } from '../auth_utils';
@@ -28,6 +28,7 @@ const userIsAuthenticated = async (roles, cookies) => {
  * @returns The relevant path to redirect the user to depending on authentication state.
  */
 const ProtectedRoute = ({ Component, redirectPath, roles, cookies }) => {
+  const { pathname } = useLocation();
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -35,7 +36,7 @@ const ProtectedRoute = ({ Component, redirectPath, roles, cookies }) => {
     const authenticated = await userIsAuthenticated(roles, cookies);
     setIsAuthenticated(authenticated);
     setIsLoading(false);
-  }, []);
+  }, [pathname]);
   if (isLoading) {
     return <h1 className={styles.loading}>Loading...</h1>;
   }
