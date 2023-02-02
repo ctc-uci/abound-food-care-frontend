@@ -47,8 +47,51 @@ const VolunteerAvailability = props => {
             willingToDrive,
             available: !!availabilities,
           }))
-          .filter(v => v.available),
+          .filter(v => v.available)
+          .sort((a, b) =>
+            `${a.lastName} ${a.firstName}`.localeCompare(`${b.lastName} ${b.firstName}`),
+          ),
       );
+    } catch (err) {
+      toast.error(`Error fetching volunteer data: ${err.message}`);
+    }
+  };
+
+  const getFilteredVolunteers = async (ts, refresh) => {
+    try {
+      const { day, time } = ts;
+      if (ts === {} || !day || !time) {
+        if (refresh) {
+          await getVolunteers();
+        } else {
+          setFilteredVolunteers(availableVolunteers);
+        }
+        return;
+      }
+      const [start, end] = time;
+      const { data } = await AFCBackend.get(
+        `volunteers/available/day/${day}/start/${start}/end/${end}`,
+        {
+          params: {
+            driverOption,
+            ageOption: 'All',
+            eventInterest,
+            searchQuery,
+          },
+        },
+      );
+      const processedData = data
+        .map(e => ({
+          id: e.userId,
+          firstName: e.firstName,
+          lastName: e.lastName,
+          birthdate: new Date(e.birthdate),
+          willingToDrive: e.willingToDrive,
+        }))
+        .sort((a, b) =>
+          `${a.lastName} ${a.firstName}`.localeCompare(`${b.lastName} ${b.firstName}`),
+        );
+      setFilteredVolunteers(processedData);
     } catch (err) {
       toast.error(`Error fetching volunteer data: ${err.message}`);
     }
@@ -93,33 +136,19 @@ const VolunteerAvailability = props => {
         willingToDrive,
         available: !!availabilities,
       }))
-      .filter(v => v.available);
+      .filter(v => v.available)
+      .sort((a, b) => `${a.lastName} ${a.firstName}`.localeCompare(`${b.lastName} ${b.firstName}`));
     setAvailableVolunteers(availables);
     setFilteredVolunteers(availables);
   }, []);
 
-  useEffect(() => {
+  useEffect(async () => {
     getVolunteers();
+    getFilteredVolunteers(selectedTimeslot, true);
   }, [eventInterest, driverOption, searchQuery]);
 
   useEffect(async () => {
-    const { day, time } = selectedTimeslot;
-    if (selectedTimeslot === {} || !day || !time) {
-      setFilteredVolunteers(availableVolunteers);
-      return;
-    }
-    const [start, end] = time;
-    const { data } = await AFCBackend.get(
-      `volunteers/available/day/${day}/start/${start}/end/${end}`,
-    );
-    const processedData = data.map(e => ({
-      id: e.userId,
-      firstName: e.firstName,
-      lastName: e.lastName,
-      birthdate: new Date(e.birthdate),
-      willingToDrive: e.willingToDrive,
-    }));
-    setFilteredVolunteers(processedData);
+    getFilteredVolunteers(selectedTimeslot, false);
   }, [selectedTimeslot]);
 
   return (
