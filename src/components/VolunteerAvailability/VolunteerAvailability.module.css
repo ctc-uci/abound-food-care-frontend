@@ -117,15 +117,31 @@
   margin-left: 25px;
 }
 
+.volunteerAvRightLegend {
+  font-family: Avenir;
+  font-size: 12px;
+  margin-top: 0px;
+  margin-left: 25px;
+}
+
 .volunteerAvRightName {
   font-family: Avenir;
   font-size: 14px;
+  line-height: 20px;
   margin-top: 0;
   margin-left: 25px;
   margin-bottom: 3px;
+  padding-top: 2px;
   color: black;
 }
 
 .volunteerAvRightName:hover {
   color: var(--eden);
+}
+
+.volRowIcon {
+  font-size: 16px;
+  margin-top: 2px;
+  margin-left: 2px;
+  margin-right: 2px;
 }

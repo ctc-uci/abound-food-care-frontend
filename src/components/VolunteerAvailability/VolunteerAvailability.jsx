@@ -3,10 +3,17 @@ import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import PropTypes from 'prop-types';
 import { Menu, Dropdown, Button, Input, Row, Col } from 'antd';
-import { DownOutlined, FilterFilled, SearchOutlined, PlusOutlined } from '@ant-design/icons';
+import {
+  CarOutlined,
+  DownOutlined,
+  FilterFilled,
+  IdcardOutlined,
+  SearchOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
 import HeatMap from '../HeatMap/HeatMap';
 import ViewAdminCodes from '../ViewAdminCodes/ViewAdminCodes';
-import { AFCBackend } from '../../util/utils';
+import { AFCBackend, isAdult } from '../../util/utils';
 import styles from './VolunteerAvailability.module.css';
 
 const VolunteerAvailability = props => {
@@ -32,10 +39,12 @@ const VolunteerAvailability = props => {
       });
       setAvailableVolunteers(
         data
-          .map(({ userId, firstName, lastName, availabilities }) => ({
+          .map(({ userId, firstName, lastName, birthdate, willingToDrive, availabilities }) => ({
             id: userId,
             firstName,
             lastName,
+            birthdate: new Date(birthdate),
+            willingToDrive,
             available: !!availabilities,
           }))
           .filter(v => v.available),
@@ -76,10 +85,12 @@ const VolunteerAvailability = props => {
   useEffect(async () => {
     const { data } = await AFCBackend.get('/volunteers/');
     const availables = data
-      .map(({ userId, firstName, lastName, availabilities }) => ({
+      .map(({ userId, firstName, lastName, birthdate, willingToDrive, availabilities }) => ({
         id: userId,
         firstName,
         lastName,
+        birthdate: new Date(birthdate),
+        willingToDrive,
         available: !!availabilities,
       }))
       .filter(v => v.available);
@@ -105,6 +116,8 @@ const VolunteerAvailability = props => {
       id: e.userId,
       firstName: e.firstName,
       lastName: e.lastName,
+      birthdate: new Date(e.birthdate),
+      willingToDrive: e.willingToDrive,
     }));
     setFilteredVolunteers(processedData);
   }, [selectedTimeslot]);
@@ -193,17 +206,29 @@ const VolunteerAvailability = props => {
               <h2 className={styles.volunteerAvRightHeader}>
                 Volunteers ({filteredVolunteers.length}/{availableVolunteers.length})
               </h2>
+              <h3 className={styles.volunteerAvRightLegend}>
+                <div>
+                  <IdcardOutlined className={styles.volRowIcon} /> = 18+
+                </div>
+                <div>
+                  <CarOutlined className={styles.volRowIcon} /> = Driver
+                </div>
+              </h3>
             </div>
             {/* TODO Add pagination for > 30 available volunteers */}
             {/* TODO Move export button here */}
             {/* TODO Add icons for can drive, event types, etc. */}
-            {filteredVolunteers.slice(0, 30).map(({ id, firstName, lastName }) => (
-              <Link to={`/profile/${id}`} key={`${id}_link`}>
-                <p className={styles.volunteerAvRightName}>
-                  {lastName}, {firstName}
-                </p>
-              </Link>
-            ))}
+            {filteredVolunteers
+              .slice(0, 30)
+              .map(({ id, firstName, lastName, birthdate, willingToDrive }) => (
+                <Link to={`/profile/${id}`} key={`${id}_link`}>
+                  <p className={styles.volunteerAvRightName}>
+                    {lastName}, {firstName}{' '}
+                    {isAdult(birthdate) && <IdcardOutlined className={styles.volRowIcon} />}{' '}
+                    {willingToDrive && <CarOutlined className={styles.volRowIcon} />}
+                  </p>
+                </Link>
+              ))}
           </div>
         </div>
       </div>

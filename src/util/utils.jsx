@@ -168,6 +168,8 @@ const stateAbbrs = [
   'WY',
 ];
 
+const isAdult = date => date >= new Date(new Date().setFullYear(new Date().getFullYear() - 18));
+
 const userProfileTriggers = {
   general: [
     'firstName',
@@ -208,6 +210,7 @@ export {
   convertSlotsToDates,
   convertDatesToSlots,
   stateAbbrs,
+  isAdult,
   userProfileTriggers,
   phoneRegExp,
   zipRegExp,
