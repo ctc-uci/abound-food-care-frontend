@@ -26,7 +26,6 @@ const Events = ({ cookies }) => {
   const [displayedEvents, setDisplayedEvents] = useState([]);
   const [pageSize, setPageSize] = useState(20);
   const [currentPage, setCurrentPage] = useState(1);
-  const [role, setRole] = useState(cookies.get(cookieKeys.ROLE));
 
   // const defaultEventTypes = [
   //   {
@@ -72,13 +71,6 @@ const Events = ({ cookies }) => {
     fetchAllEvents();
     setLoading(false);
   }, []);
-
-  useEffect(() => {
-    if (role) {
-      return;
-    }
-    setRole(cookies.get(cookieKeys.ROLE));
-  }, [role]);
 
   const onSearch = async e => {
     if (e.target.value === '') {
@@ -248,7 +240,7 @@ const Events = ({ cookies }) => {
               <div>
                 <div className={styles.title}>Events</div>
                 <div className={styles.newEventBtnContainer}>
-                  {role === 'admin' && (
+                  {cookies.get(cookieKeys.ROLE) === 'admin' && (
                     <Link to="/event/create">
                       <Button
                         icon={<PlusOutlined className={styles.addEventPlus} />}

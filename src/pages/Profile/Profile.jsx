@@ -23,7 +23,6 @@ const Profile = ({ cookies }) => {
 
   const [currentUserId, setCurrentUserId] = useState(cookies.get(cookieKeys.USER_ID));
   const [user, setUser] = useState(null);
-  const [role, setRole] = useState(cookies.get(cookieKeys.ROLE));
   const [waivers, setWaivers] = useState([]);
 
   useEffect(async () => {
@@ -31,7 +30,7 @@ const Profile = ({ cookies }) => {
     if (
       !userId ||
       userId === 'undefined' ||
-      (role === AUTH_ROLES.VOLUNTEER_ROLE && userId !== currentUserId)
+      (cookies.get(cookieKeys.ROLE) === AUTH_ROLES.VOLUNTEER_ROLE && userId !== currentUserId)
     ) {
       navigate(`/profile/${currentUserId}`);
     }
@@ -56,13 +55,6 @@ const Profile = ({ cookies }) => {
         : [],
     );
   }, [userId]);
-
-  useEffect(() => {
-    if (role) {
-      return;
-    }
-    setRole(cookies.get(cookieKeys.ROLE));
-  }, [role]);
 
   useEffect(() => {
     if (currentUserId) {
