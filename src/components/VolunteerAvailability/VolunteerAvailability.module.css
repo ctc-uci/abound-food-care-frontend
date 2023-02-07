@@ -153,6 +153,12 @@
   padding-top: 15px;
 }
 
+.volunteerAvPagination {
+  margin-left: 18px;
+  margin-top: 2px;
+  margin-bottom: 15px;
+}
+
 .volunteerAvRightQual {
   font-family: Avenir;
   font-style: italic;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import PropTypes from 'prop-types';
-import { Menu, Dropdown, Button, Input, Row, Col } from 'antd';
+import { Menu, Dropdown, Button, Input, Row, Col, Pagination } from 'antd';
 import {
   CarOutlined,
   DownOutlined,
@@ -16,6 +16,8 @@ import ViewAdminCodes from '../ViewAdminCodes/ViewAdminCodes';
 import { AFCBackend, isAdult } from '../../util/utils';
 import styles from './VolunteerAvailability.module.css';
 
+const PAGE_SIZE = 30;
+
 const VolunteerAvailability = props => {
   const { handleViewDatabase } = props;
 
@@ -25,6 +27,7 @@ const VolunteerAvailability = props => {
   const [eventInterest, setEventInterest] = useState('All');
   const [driverOption, setDriverOption] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [page, setPage] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
 
   const getVolunteers = async () => {
@@ -265,7 +268,7 @@ const VolunteerAvailability = props => {
             {/* TODO Add pagination for > 30 available volunteers */}
             {/* TODO Move export button here */}
             {filteredVolunteers
-              .slice(0, 30)
+              .slice(PAGE_SIZE * page - PAGE_SIZE, PAGE_SIZE * page)
               .map(({ id, firstName, lastName, birthdate, willingToDrive }) => (
                 <Link to={`/profile/${id}`} key={`${id}_link`}>
                   <p className={styles.volunteerAvRightName}>
@@ -276,6 +279,21 @@ const VolunteerAvailability = props => {
                 </Link>
               ))}
             <div className={styles.volunteerAvRightFooterContainer}>
+              <div
+                className={filteredVolunteers.length > PAGE_SIZE && styles.volunteerAvPagination}
+              >
+                <Pagination
+                  hideOnSinglePage
+                  defaultPageSize={PAGE_SIZE}
+                  showSizeChanger={false}
+                  defaultCurrent={1}
+                  responsive
+                  size="small"
+                  simple
+                  total={filteredVolunteers.length}
+                  onChange={pg => setPage(pg)}
+                />
+              </div>
               <h3 className={styles.volunteerAvRightQual}>
                 * Some volunteers do not appear here because they have not marked their
                 availability. You can view all registered volunteers in the{' '}
