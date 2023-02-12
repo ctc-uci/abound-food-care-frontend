@@ -15,6 +15,7 @@ import Event from './pages/Event';
 import EventSignUp from './pages/EventSignUp';
 import Dashboard from './pages/Dashboard';
 import Hours from './pages/Hours/Hours';
+import VolunteeringHistory from './pages/VolunteeringHistory';
 
 // Components
 import NavMenu from './components/NavMenu/NavMenu';
@@ -99,7 +100,6 @@ const App = () => {
                   />
                 }
               />
-
               <Route
                 path="/event/register/:eventId"
                 exact
@@ -121,6 +121,17 @@ const App = () => {
                     Component={Volunteers}
                     redirectPath="/"
                     roles={[AUTH_ROLES.ADMIN_ROLE]}
+                  />
+                }
+              />
+              <Route
+                path="/history"
+                exact
+                element={
+                  <ProtectedRoute
+                    Component={VolunteeringHistory}
+                    redirectPath="/"
+                    roles={[AUTH_ROLES.ADMIN_ROLE, AUTH_ROLES.VOLUNTEER_ROLE]}
                   />
                 }
               />
