@@ -1,0 +1,50 @@
+@import '../../common/global.css';
+
+.vhContainer {
+  margin: auto;
+  width: calc(100% - 32px);
+  border-width: 1px;
+  border-radius: 10px;
+  background-color: white;
+}
+
+.vhCard {
+  margin-top: 7px;
+  margin-left: 5px;
+  margin-right: 5px;
+  padding: 5px 12px;
+  box-shadow: 0px 2px 8px rgb(0 0 0 / 6%) !important;
+}
+
+.vhHeading {
+  font-size: 32px;
+  font-family: Inter;
+  font-weight: 600;
+  margin: 7px 0;
+}
+
+.vhStatCol {
+  min-width: 300px;
+}
+
+.center {
+  width: 90%;
+  margin-left: 5%;
+  text-align: center;
+}
+
+.vhStatIcon {
+  margin: auto;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  font-size: 120px;
+  color: var(--eden);
+}
+
+.vhStatLine {
+  font-size: 24px;
+  font-family: Inter;
+  font-weight: 600;
+  color: var(--eden);
+  text-align: center;
+}

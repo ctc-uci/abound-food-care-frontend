@@ -1,0 +1,12 @@
+@import '../../common/global.css';
+
+.submit-button {
+  background-color: var(--eden);
+  color: white;
+}
+
+.eventLink {
+  color: var(--eden);
+  font-family: Inter;
+  font-weight: 600;
+}

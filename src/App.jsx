@@ -15,7 +15,7 @@ import Event from './pages/Event';
 import EventSignUp from './pages/EventSignUp';
 import Dashboard from './pages/Dashboard';
 import Hours from './pages/Hours/Hours';
-import VolunteeringHistory from './pages/VolunteeringHistory';
+import VolunteeringHistory from './pages/VolunteeringHistory/VolunteeringHistory';
 
 // Components
 import NavMenu from './components/NavMenu/NavMenu';

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'; // cant commit without forcing past eslint or not importing usestate since its unfinished
+import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import PropTypes from 'prop-types';
 import { Table, Button } from 'antd';
 import { AFCBackend } from '../../util/utils';
 import { auth, getCurrentUser } from '../../util/auth_utils';
-import EditEvents from './edit-events/EditEvents';
+import EditEvents from './EditEvents/EditEvents';
 
 import styles from './VolunteerLog.module.css';
 
@@ -12,12 +14,11 @@ const VolunteerLog = ({ submitted, refreshHours, setRefreshHours }) => {
   const [userId, setUserId] = useState();
   const [editEventModalIsOpen, setEditEventModalIsOpen] = useState(false);
   const [recordToEdit, setRecordToEdit] = useState({});
-  // const [unsubmittedData, setUnsubmittedData] = useState([]);
-  // const [editIndex, setEditIndex] = useState(0); based on eventpage
-  // const editEvent = async () => {
-  //   //  create popup, then send that info to post request
-  //   <EditEvents/>;
-  // };
+
+  const getStatus = (approved, declined) => {
+    // eslint-disable-next-line no-nested-ternary
+    return approved ? 'Approved' : declined ? 'Declined' : 'Pending';
+  };
 
   const padTo2Digits = num => {
     return num.toString().padStart(2, '0');
@@ -39,6 +40,11 @@ const VolunteerLog = ({ submitted, refreshHours, setRefreshHours }) => {
     });
     const formattedData = res.map(data => ({
       ...data,
+      eventLink: (
+        <Link to={`/event/view/${data.eventId}`} className={styles.eventLink}>
+          {data.name}
+        </Link>
+      ),
       startDatetimeFormatted: new Date(data.startDatetime).toLocaleTimeString([], {
         hour: '2-digit',
         minute: '2-digit',
@@ -48,19 +54,22 @@ const VolunteerLog = ({ submitted, refreshHours, setRefreshHours }) => {
         minute: '2-digit',
       }),
       date: formatDate(new Date(data.startDatetime)),
+      status: getStatus(data.approved, data.declined),
     }));
     setHours(formattedData);
   };
+
   const submitEvent = async eventId => {
     await AFCBackend.post(`/volunteers/${userId}/${eventId}/submit`);
+    toast.success('Successfully submitted hours!');
     setRefreshHours(!refreshHours);
   };
 
   const columns = [
     {
       title: 'Event Name',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'eventLink',
+      key: 'eventLink',
     },
     {
       title: 'Date',
@@ -73,7 +82,7 @@ const VolunteerLog = ({ submitted, refreshHours, setRefreshHours }) => {
       key: 'startDatetimeFormatted',
     },
     {
-      title: 'Time out',
+      title: 'Time Out',
       dataIndex: 'endDatetimeFormatted',
       key: 'endDatetimeFormatted',
     },
@@ -114,6 +123,11 @@ const VolunteerLog = ({ submitted, refreshHours, setRefreshHours }) => {
         title: 'Hours',
         dataIndex: 'numHours',
         key: 'numHours',
+      },
+      {
+        title: 'Status',
+        dataIndex: 'status',
+        key: 'status',
       },
     ],
   };
