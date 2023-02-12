@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { CSVLink } from 'react-csv';
 import PropTypes from 'prop-types';
 import { Menu, Dropdown, Button, Input, Row, Col, Pagination } from 'antd';
 import {
   CarOutlined,
   DownOutlined,
+  DownloadOutlined,
   FilterFilled,
   IdcardOutlined,
   SearchOutlined,
@@ -30,6 +32,43 @@ const VolunteerAvailability = props => {
   const [page, setPage] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
 
+  const csvConfig = {
+    data: filteredVolunteers.map(v => {
+      return {
+        'First Name': v.firstName,
+        'Last Name': v.lastName,
+        Organization: v.organization,
+        Email: v.email,
+        Phone: `${v.phone}\t`,
+        'Street Address': v.addressStreet,
+        City: v.addressCity,
+        State: v.addressState,
+        'ZIP Code': v.addressZip,
+        Birthdate: `${
+          v.birthdate.getMonth() + 1
+        }/${v.birthdate.getDate()}/${v.birthdate.getFullYear()}`,
+        'Lifting Capacity (lb)': v.weightLiftingAbility,
+        'Can/Will Drive': v.canDrive && v.willingToDrive ? 'yes' : 'no',
+      };
+    }),
+    headers: [
+      'First Name',
+      'Last Name',
+      'Organization',
+      'Email',
+      'Phone',
+      'Street Address',
+      'City',
+      'State',
+      'ZIP Code',
+      'Birthdate',
+      'Lifting Capacity (lb)',
+      'Can/Will Drive',
+    ],
+    filename: 'AFC-Volunteers.csv',
+    onClick: () => toast.success('Exported volunteer data to CSV!'),
+  };
+
   const getVolunteers = async () => {
     try {
       const { data } = await AFCBackend.get(`/volunteers`, {
@@ -42,13 +81,22 @@ const VolunteerAvailability = props => {
       });
       setAvailableVolunteers(
         data
-          .map(({ userId, firstName, lastName, birthdate, willingToDrive, availabilities }) => ({
-            id: userId,
-            firstName,
-            lastName,
-            birthdate: new Date(birthdate),
-            willingToDrive,
-            available: !!availabilities,
+          .map(v => ({
+            id: v.userId,
+            firstName: v.firstName,
+            lastName: v.lastName,
+            organization: v.organization,
+            birthdate: new Date(v.birthdate),
+            email: v.email,
+            phone: v.phone,
+            addressStreet: v.addressStreet,
+            addressCity: v.addressCity,
+            addressState: v.addressState,
+            addressZip: v.addressZip,
+            weightLiftingAbility: v.weightLiftingAbility,
+            canDrive: v.canDrive,
+            willingToDrive: v.willingToDrive,
+            available: !!v.availabilities,
           }))
           .filter(v => v.available)
           .sort((a, b) =>
@@ -74,13 +122,22 @@ const VolunteerAvailability = props => {
         });
         setFilteredVolunteers(
           data
-            .map(({ userId, firstName, lastName, birthdate, willingToDrive, availabilities }) => ({
-              id: userId,
-              firstName,
-              lastName,
-              birthdate: new Date(birthdate),
-              willingToDrive,
-              available: !!availabilities,
+            .map(v => ({
+              id: v.userId,
+              firstName: v.firstName,
+              lastName: v.lastName,
+              organization: v.organization,
+              birthdate: new Date(v.birthdate),
+              email: v.email,
+              phone: v.phone,
+              addressStreet: v.addressStreet,
+              addressCity: v.addressCity,
+              addressState: v.addressState,
+              addressZip: v.addressZip,
+              weightLiftingAbility: v.weightLiftingAbility,
+              canDrive: v.canDrive,
+              willingToDrive: v.willingToDrive,
+              available: !!v.availabilities ?? false,
             }))
             .filter(v => v.available)
             .sort((a, b) =>
@@ -102,12 +159,22 @@ const VolunteerAvailability = props => {
         },
       );
       const processedData = data
-        .map(e => ({
-          id: e.userId,
-          firstName: e.firstName,
-          lastName: e.lastName,
-          birthdate: new Date(e.birthdate),
-          willingToDrive: e.willingToDrive,
+        .map(v => ({
+          id: v.userId,
+          firstName: v.firstName,
+          lastName: v.lastName,
+          organization: v.organization,
+          birthdate: new Date(v.birthdate),
+          email: v.email,
+          phone: v.phone,
+          addressStreet: v.addressStreet,
+          addressCity: v.addressCity,
+          addressState: v.addressState,
+          addressZip: v.addressZip,
+          weightLiftingAbility: v.weightLiftingAbility,
+          canDrive: v.canDrive,
+          willingToDrive: v.willingToDrive,
+          available: !!v.availabilities ?? false,
         }))
         .sort((a, b) =>
           `${a.lastName} ${a.firstName}`.localeCompare(`${b.lastName} ${b.firstName}`),
@@ -149,13 +216,22 @@ const VolunteerAvailability = props => {
   useEffect(async () => {
     const { data } = await AFCBackend.get('/volunteers/');
     const availables = data
-      .map(({ userId, firstName, lastName, birthdate, willingToDrive, availabilities }) => ({
-        id: userId,
-        firstName,
-        lastName,
-        birthdate: new Date(birthdate),
-        willingToDrive,
-        available: !!availabilities,
+      .map(v => ({
+        id: v.userId,
+        firstName: v.firstName,
+        lastName: v.lastName,
+        organization: v.organization,
+        birthdate: new Date(v.birthdate),
+        email: v.email,
+        phone: v.phone,
+        addressStreet: v.addressStreet,
+        addressCity: v.addressCity,
+        addressState: v.addressState,
+        addressZip: v.addressZip,
+        weightLiftingAbility: v.weightLiftingAbility,
+        canDrive: v.canDrive,
+        willingToDrive: v.willingToDrive,
+        available: !!v.availabilities,
       }))
       .filter(v => v.available)
       .sort((a, b) => `${a.lastName} ${a.firstName}`.localeCompare(`${b.lastName} ${b.firstName}`));
@@ -265,8 +341,6 @@ const VolunteerAvailability = props => {
                 </div>
               </h3>
             </div>
-            {/* TODO Add pagination for > 30 available volunteers */}
-            {/* TODO Move export button here */}
             {filteredVolunteers
               .slice(PAGE_SIZE * page - PAGE_SIZE, PAGE_SIZE * page)
               .map(({ id, firstName, lastName, birthdate, willingToDrive }) => (
@@ -294,6 +368,11 @@ const VolunteerAvailability = props => {
                   onChange={pg => setPage(pg)}
                 />
               </div>
+              <CSVLink {...csvConfig}>
+                <Button className={styles.volunteerExpButton} icon={<DownloadOutlined />}>
+                  Export Volunteers
+                </Button>
+              </CSVLink>
               <h3 className={styles.volunteerAvRightQual}>
                 * Some volunteers do not appear here because they have not marked their
                 availability. You can view all registered volunteers in the{' '}

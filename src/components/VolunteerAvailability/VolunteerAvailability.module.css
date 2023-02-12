@@ -167,6 +167,11 @@
   margin-left: 25px;
 }
 
+.volunteerExpButton {
+  margin-left: 24px;
+  margin-bottom: 12px;
+}
+
 .volunteerAvLink {
   color: var(--eden);
   cursor: pointer;

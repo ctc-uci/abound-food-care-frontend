@@ -4,8 +4,10 @@ import toast from 'react-hot-toast';
 import PropTypes from 'prop-types';
 import { Input, Button, Row, Col, Dropdown, Menu, Table } from 'antd';
 import { SearchOutlined, PlusOutlined, FilterFilled, DownOutlined } from '@ant-design/icons';
-import ViewAdminCodes from '../ViewAdminCodes/ViewAdminCodes';
+import { CSVLink } from 'react-csv';
+
 import { AFCBackend, localeSort } from '../../util/utils';
+import ViewAdminCodes from '../ViewAdminCodes/ViewAdminCodes';
 import styles from './Database.module.css';
 
 const Database = ({ handleHideDatabase }) => {
@@ -17,6 +19,42 @@ const Database = ({ handleHideDatabase }) => {
   const [ageOption, setAgeOption] = useState('All');
   const [eventInterest, setEventInterest] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+
+  const csvConfig = {
+    data: volunteerData.map(v => {
+      const bd = new Date(v.birthdate);
+      return {
+        'First Name': v.firstName,
+        'Last Name': v.lastName,
+        Organization: v.organization,
+        Email: v.email,
+        Phone: `${v.phone}\t`,
+        'Street Address': v.addressStreet,
+        City: v.addressCity,
+        State: v.addressState,
+        'ZIP Code': v.addressZip,
+        Birthdate: `${bd.getMonth() + 1}/${bd.getDate()}/${bd.getFullYear()}`,
+        'Lifting Capacity (lb)': v.weightLiftingAbility,
+        'Can/Will Drive': v.canDrive && v.willingToDrive ? 'yes' : 'no',
+      };
+    }),
+    headers: [
+      'First Name',
+      'Last Name',
+      'Organization',
+      'Email',
+      'Phone',
+      'Street Address',
+      'City',
+      'State',
+      'ZIP Code',
+      'Birthdate',
+      'Lifting Capacity (lb)',
+      'Can/Will Drive',
+    ],
+    filename: 'AFC-Volunteers.csv',
+    onClick: () => toast.success('Exported volunteer data to CSV!'),
+  };
 
   const getVolunteers = async () => {
     try {
@@ -169,7 +207,9 @@ const Database = ({ handleHideDatabase }) => {
               <Button className={styles.dbButton} onClick={handleHideDatabase}>
                 View Heatmap
               </Button>
-              <Button className={styles.dbButton}>Export</Button>
+              <CSVLink {...csvConfig}>
+                <Button className={styles.dbButton}>Export</Button>
+              </CSVLink>
               <Button
                 className={styles.dbButton}
                 icon={<PlusOutlined className={styles.addAdminsPlus} />}
