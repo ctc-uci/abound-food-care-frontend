@@ -1,3 +1,5 @@
+@import '../../../common/global.css';
+
 .event-list {
   margin-top: 1.5em;
 }
@@ -8,6 +10,13 @@
   font-size: 20px;
   font-weight: 850;
   font-family: 'Avenir';
+  margin-bottom: 0;
+}
+
+.event {
+  border-radius: 10px;
+  margin: 8px 0;
+  box-shadow: 0 0px 5px rgba(0, 0, 0, 0.1);
 }
 
 .event-list-card {
@@ -22,6 +31,7 @@
   align-items: center;
   margin-left: 0.5em;
   margin-right: 0.5em;
+  margin-bottom: 5px;
 }
 
 .event-date .date {
@@ -71,6 +81,8 @@
   justify-content: space-between;
 }
 
-#view-all-link {
-  padding-top: 0.5em;
+.view-all-link {
+  padding-top: 0.25em;
+  padding-right: 8px;
+  font-size: 16px;
 }

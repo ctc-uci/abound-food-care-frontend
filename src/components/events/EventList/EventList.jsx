@@ -1,48 +1,43 @@
-import './EventList.css';
-import { Card } from 'antd';
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { PropTypes } from 'prop-types';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
+import { Card } from 'antd';
+import { PropTypes } from 'prop-types';
 import { getTimeInPST } from '../../../util/utils';
 
-const EventList = ({ title, events, showViewAll }) => {
-  const renderViewAllLink = () => {
-    return (
-      <Link id="view-all-link" to="/events">
-        View All
-      </Link>
-    );
-  };
+import styles from './EventList.module.css';
 
-  return (
-    <div className="event-list">
-      <div className="list-header">
-        <h1 className="list-title">{title}</h1>
-        {showViewAll && renderViewAllLink()}
-      </div>
-      {events.map(event => {
-        const startDate = new Date(event.startDatetime);
-        return (
-          <Card key={event.eventId}>
-            <div className="event-list-card">
-              <div className="event-date">
-                <p className="month"> {moment(startDate).format('MMM')}</p>
-                <p className="date">{new Date(event.startDatetime).getDate()}</p>
-              </div>
-              <div className="right-section">
-                <p className="event-name">{event.name}</p>
-                <p className="event-time">
-                  {getTimeInPST(event.startDatetime)}-{getTimeInPST(event.endDatetime)} (PST)
-                </p>
-              </div>
-            </div>
-          </Card>
-        );
-      })}
+const EventList = ({ title, events, showViewAll }) => (
+  <div className={styles['event-list']}>
+    <div className={styles['list-header']}>
+      <h1 className={styles['list-title']}>{title}</h1>
+      {showViewAll && (
+        <Link className={styles['view-all-link']} to="/events">
+          View All
+        </Link>
+      )}
     </div>
-  );
-};
+    {events.map(event => {
+      const startDate = new Date(event.startDatetime);
+      return (
+        <Card key={event.eventId} className={styles.event}>
+          <div className={styles['event-list-card']}>
+            <div className={styles['event-date']}>
+              <p className={styles.month}> {moment(startDate).format('MMM')}</p>
+              <p className={styles.date}>{new Date(event.startDatetime).getDate()}</p>
+            </div>
+            <div className={styles['right-section']}>
+              <p className={styles['event-name']}>{event.name}</p>
+              <p className={styles['event-time']}>
+                {getTimeInPST(event.startDatetime)}-{getTimeInPST(event.endDatetime)} (PST)
+              </p>
+            </div>
+          </div>
+        </Card>
+      );
+    })}
+  </div>
+);
 
 EventList.propTypes = {
   title: PropTypes.string,
