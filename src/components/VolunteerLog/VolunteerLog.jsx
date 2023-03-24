@@ -151,7 +151,11 @@ const VolunteerLog = ({ submitted, refreshHours, setRefreshHours }) => {
         refreshHours={refreshHours}
         setRefreshHours={setRefreshHours}
       />
-      <Table dataSource={hours} columns={columns.concat(additionalColumns[submitted])} />
+      <Table
+        dataSource={hours}
+        columns={columns.concat(additionalColumns[submitted])}
+        rowKey="name"
+      />
     </>
   );
 };

@@ -21,11 +21,13 @@ const EditEvents = ({ isOpen, setIsOpen, record, userId, refreshHours, setRefres
 
   const handleOk = async values => {
     setConfirmLoading(true);
-    await AFCBackend.put(`/volunteers/${userId}/${record.eventId}/`, {
-      startDatetime: values.startDatetime,
-      endDatetime: values.endDatetime,
-    });
-    setRefreshHours(!refreshHours);
+    if (userId !== '') {
+      await AFCBackend.put(`/volunteers/${userId}/${record.eventId}/`, {
+        startDatetime: values.startDatetime,
+        endDatetime: values.endDatetime,
+      });
+      setRefreshHours(!refreshHours);
+    }
     setConfirmLoading(false);
     setIsOpen(false);
   };
@@ -79,10 +81,14 @@ const EditEvents = ({ isOpen, setIsOpen, record, userId, refreshHours, setRefres
   );
 };
 
+EditEvents.defaultProps = {
+  userId: '',
+};
+
 EditEvents.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   setIsOpen: PropTypes.func.isRequired,
-  userId: PropTypes.string.isRequired,
+  userId: PropTypes.string,
   record: PropTypes.shape({
     date: PropTypes.string.isRequired,
     endDatetime: PropTypes.string.isRequired,

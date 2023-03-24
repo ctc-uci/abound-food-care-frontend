@@ -354,7 +354,9 @@ const VolunteerAvailability = props => {
               ))}
             <div className={styles.volunteerAvRightFooterContainer}>
               <div
-                className={filteredVolunteers.length > PAGE_SIZE && styles.volunteerAvPagination}
+                {...(filteredVolunteers.length > PAGE_SIZE && {
+                  className: styles.volunteerAvPagination,
+                })}
               >
                 <Pagination
                   hideOnSinglePage
