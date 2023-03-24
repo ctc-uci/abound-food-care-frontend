@@ -1,5 +1,4 @@
 import { instanceOf } from 'prop-types';
-import { Row, Col } from 'antd';
 import React, { useState, useEffect } from 'react';
 import DashboardHeader from '../../components/admin-dashboard-components/DashboardHeader/DashboardHeader';
 import EventGrid from '../../components/admin-dashboard-components/EventGrid/EventGrid';
@@ -36,23 +35,19 @@ const VolunteerDashboard = ({ cookies }) => {
     if (width > breakpoint) {
       return (
         <>
-          <Row gutter={[32, 16]}>
-            <Col span={28}>
-              <EventGrid title="Upcoming Events" eventStatus="upcoming" />
-              <div className={styles.spacer} />
-              <EventGrid title="Past Events" eventStatus="past" />
-            </Col>
-          </Row>
+          <EventGrid title="Upcoming Events" eventStatus="upcoming" />
+          <div className={styles.spacer} />
+          <EventGrid title="Past Events" eventStatus="past" />
         </>
       );
     }
     // render mobile version
     return (
-      <div>
+      <>
         <EventList title="Upcoming Events" events={upcomingEvents} showViewAll />
         <div className={styles.spacer} />
         <EventList title="Past Events" events={pastEvents} showViewAll />
-      </div>
+      </>
     );
   };
 

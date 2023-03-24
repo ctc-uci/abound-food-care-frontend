@@ -29,9 +29,9 @@
 }
 
 .gm {
-  font-size: 16px;
+  font-size: 20px;
   font-family: Avenir;
-  font-weight: 400;
+  font-weight: 800;
   letter-spacing: -0.02em;
 }
 
@@ -52,13 +52,15 @@
 .stathead {
   font-family: Avenir;
   margin-bottom: 5px;
+  line-height: 19.2px;
+  color: rgba(0, 0, 0, 0.45);
+  margin-bottom: 0.5vh;
 }
 
 .stat {
   font-family: Avenir;
-  font-style: normal;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 32px;
   line-height: 20px;
   margin-top: 8px;
   text-align: right;
@@ -74,12 +76,19 @@
   margin-right: 5px;
 }
 
-.statistics-col p {
-  line-height: 19.2px;
-  color: rgba(0, 0, 0, 0.45);
-  margin-bottom: 0.5vh;
-}
+@media screen and (max-width: 720px) {
+  .total-container {
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+  }
 
-.statistics-col h3 {
-  font-size: 34px;
+  .subhead {
+    color: var(--eden);
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 0;
+  }
+
+  .stat {
+    font-size: 18px;
+  }
 }

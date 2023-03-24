@@ -1,5 +1,9 @@
 @import '../../../common/global.css';
 
+.event-container {
+  width: 100vh;
+}
+
 /* 3 events in each row */
 .past-event,
 .upcoming-event {
