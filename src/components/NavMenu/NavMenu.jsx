@@ -72,11 +72,13 @@ const NavMenu = ({ cookies }) => {
                 Events
               </Link>
             </Menu.Item>
-            <Menu.Item className={styles['menu-item']} key="/history" icon={<TableOutlined />}>
-              <Link to="/history" className={styles.link}>
-                Volunteering History
-              </Link>
-            </Menu.Item>
+            {cookies.get(cookieKeys.ROLE) === AUTH_ROLES.VOLUNTEER_ROLE && (
+              <Menu.Item className={styles['menu-item']} key="/history" icon={<TableOutlined />}>
+                <Link to="/history" className={styles.link}>
+                  Volunteering History
+                </Link>
+              </Menu.Item>
+            )}
             {cookies.get(cookieKeys.ROLE) === AUTH_ROLES.ADMIN_ROLE && (
               <>
                 <Menu.Item className={styles['menu-item']} key="volunteer" icon={<TableOutlined />}>

@@ -56,7 +56,7 @@ const VolunteerLog = ({ submitted, refreshHours, setRefreshHours }) => {
       date: formatDate(new Date(data.startDatetime)),
       status: getStatus(data.approved, data.declined),
     }));
-    setHours(formattedData);
+    setHours(formattedData.sort((a, b) => b.date.localeCompare(a.date)));
   };
 
   const submitEvent = async eventId => {

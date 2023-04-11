@@ -1,18 +1,21 @@
 import { React, useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { Button, Form, Tabs } from 'antd';
+import toast from 'react-hot-toast';
 import { instanceOf } from 'prop-types';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
+import { Button, Form, Tabs } from 'antd';
+import styled from 'styled-components';
+
 import uploadWaiver from '../components/events/utils';
-import { Cookies, cookieKeys, withCookies } from '../util/cookie_utils';
-import { AFCBackend, phoneRegExp, zipRegExp } from '../util/utils';
 import VolunteerGeneralInfo from '../components/event-sign-up/VolunteerGeneralInfo';
 import RolesAndSkills from '../components/event-sign-up/RolesAndSkills';
 import UploadForms from '../components/event-sign-up/UploadForms';
-import AvailabilityChart from '../components/AvailabilityChart/AvailabilityChart';
+import Availability from '../components/create-account/Availability/Availability';
+
+import { Cookies, cookieKeys, withCookies } from '../util/cookie_utils';
+import { AFCBackend, phoneRegExp, zipRegExp, convertSlotsToDates } from '../util/utils';
 
 /**
  * TODOS
@@ -64,7 +67,6 @@ const EventSignUp = ({ cookies }) => {
   const [showWaivers, setShowWaivers] = useState(false);
   const [defaultValues, setDefaultValues] = useState(undefined);
   const [availability, setAvailability] = useState(undefined);
-  const [dayOfWeekIdx, setDayOfWeekIdx] = useState(undefined);
 
   const schema = yup.object({
     firstName: yup.string(),
@@ -120,9 +122,6 @@ const EventSignUp = ({ cookies }) => {
   useEffect(async () => {
     const userId = cookies.get(cookieKeys.USER_ID);
 
-    const { data: eventData } = await AFCBackend.get(`/events/${eventId}`);
-    setDayOfWeekIdx(new Date(eventData[0].startDatetime).getDay());
-
     const { data: availabilityData } = await AFCBackend.get(`/availability/${userId}`);
     const formatAvailability = availabilityData.availabilities.map(a => {
       return {
@@ -132,13 +131,14 @@ const EventSignUp = ({ cookies }) => {
       };
     });
 
-    setAvailability(formatAvailability);
+    setAvailability(convertSlotsToDates(formatAvailability));
 
     const { data } = await AFCBackend.get(`/volunteers/${userId}`);
     const eventIdNum = parseInt(eventId, 10);
     const eventIds = data[0]?.eventIds;
 
     if (eventIds?.includes(eventIdNum)) {
+      toast.error('You are already signed up for this event');
       navigate(`/event/view/${eventId}`);
     }
 
@@ -231,15 +231,19 @@ const EventSignUp = ({ cookies }) => {
 
     // sign up user for event
     await AFCBackend.post(`/volunteers/${userId}/${eventId}`);
+    const {
+      data: [{ name }],
+    } = await AFCBackend.get(`/events/${eventId}`);
 
     // redirect back to event view page
     navigate(`/event/view/${eventId}`);
+    toast.success(`Successfully signed up for ${name}!`);
   };
 
   return (
     <Container>
       <SignUpHeader>
-        <HeaderText>Sign Up</HeaderText>
+        <HeaderText>Confirm your information</HeaderText>
         <ButtonRow>
           <Button style={{ marginRight: '3vw' }} onClick={() => navigate(`/event/view/${eventId}`)}>
             Cancel
@@ -263,16 +267,7 @@ const EventSignUp = ({ cookies }) => {
               </Card>
             </TabPane>
             <TabPane tab="Availability" key="2">
-              <Card>
-                {availability && (
-                  <AvailabilityChart
-                    availability={availability}
-                    setAvailability={setAvailability}
-                    days={1}
-                    currDayOfWeek={dayOfWeekIdx}
-                  />
-                )}
-              </Card>
+              {availability && <Availability directModify {...{ availability, setAvailability }} />}
             </TabPane>
             <TabPane tab="Roles & Skills" key="3">
               <Card>

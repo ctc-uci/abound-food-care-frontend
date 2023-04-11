@@ -33,7 +33,7 @@ const ViewAdminCodes = ({ isOpen, setIsOpen }) => {
       await AFCBackend.post('/adminCode/');
     } catch (err) {
       if (codes.length >= 5) {
-        setError('Reached maximum number of codes');
+        setError('You can only have up to 5 total active codes at a time.');
       } else {
         setError(err.message);
       }
@@ -56,27 +56,34 @@ const ViewAdminCodes = ({ isOpen, setIsOpen }) => {
         </Button>
       }
     >
-      {codes.length > 0 ? (
-        codes.map(data => {
-          return (
-            <div key={data.code} className={styles['admin-code-container']}>
-              <p>{data.code}</p>
-              <Button
-                type="danger"
-                className={styles['delete-button']}
-                onClick={() => onDelete(data.code)}
-              >
-                Delete
-              </Button>
-            </div>
-          );
-        })
-      ) : (
-        <Text type="danger">
-          You have not generated any codes yet for admin signups, select <b>Generate Admin Code</b>{' '}
-          to do so
-        </Text>
-      )}
+      <>
+        <p className={styles.noCodesWarning}>
+          To invite a user as an admin, select{' '}
+          <span className={styles.noCodesBold}>Generate Admin Code</span> and give them the
+          resulting code to use.
+        </p>
+        <p className={styles.noCodesWarning}>
+          There will be an <span className={styles.noCodesBold}>Admin Code</span> field during
+          registration where they can enter this code to become an administrator.
+        </p>
+      </>
+      <div className={styles.codes}>
+        {codes.length > 0 &&
+          codes
+            .sort((a, b) => a.code.localeCompare(b.code))
+            .map(data => (
+              <div key={data.code} className={styles['admin-code-container']}>
+                <p className={styles.code}>{data.code}</p>
+                <Button
+                  type="danger"
+                  className={styles['delete-button']}
+                  onClick={() => onDelete(data.code)}
+                >
+                  Delete
+                </Button>
+              </div>
+            ))}
+      </div>
       {error && <Text type="danger">{error}</Text>}
     </Modal>
   );

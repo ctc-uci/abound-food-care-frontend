@@ -10,7 +10,13 @@ import styles from './Availability.module.css';
 
 const { Text } = Typography;
 
-const Availability = ({ availability, setAvailability, incrementFormStep, decrementFormStep }) => {
+const Availability = ({
+  availability,
+  setAvailability,
+  incrementFormStep,
+  decrementFormStep,
+  directModify,
+}) => {
   const [av, setAv] = useState([]);
   const [error, setError] = useState('');
 
@@ -55,7 +61,12 @@ const Availability = ({ availability, setAvailability, incrementFormStep, decrem
         <ScheduleSelector
           selection={av}
           selectionScheme="square"
-          onChange={newDates => setAv(newDates)}
+          onChange={newDates => {
+            setAv(newDates);
+            if (directModify) {
+              setAvailability(convertDatesToSlots(newDates));
+            }
+          }}
           startDate={startOfWeek(new Date())}
           numDays={7}
           minTime={0}
@@ -80,12 +91,16 @@ const Availability = ({ availability, setAvailability, incrementFormStep, decrem
       </div>
       <Text type="danger">{error}</Text>
       <div className={styles.navButtons}>
-        <Button className={styles.previousButton} onClick={onBack}>
-          Back
-        </Button>
-        <Button type="primary" onClick={onNext}>
-          Next
-        </Button>
+        {decrementFormStep && (
+          <Button className={styles.previousButton} onClick={onBack}>
+            Back
+          </Button>
+        )}
+        {incrementFormStep && (
+          <Button type="primary" onClick={onNext}>
+            Next
+          </Button>
+        )}
       </div>
     </>
   );
@@ -94,8 +109,15 @@ const Availability = ({ availability, setAvailability, incrementFormStep, decrem
 Availability.propTypes = {
   availability: PropTypes.arrayOf(PropTypes.instanceOf(Date)).isRequired,
   setAvailability: PropTypes.func.isRequired,
-  incrementFormStep: PropTypes.func.isRequired,
-  decrementFormStep: PropTypes.func.isRequired,
+  incrementFormStep: PropTypes.func,
+  decrementFormStep: PropTypes.func,
+  directModify: PropTypes.bool,
+};
+
+Availability.defaultProps = {
+  incrementFormStep: null,
+  decrementFormStep: null,
+  directModify: false,
 };
 
 export default Availability;

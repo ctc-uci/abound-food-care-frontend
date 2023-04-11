@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Modal, Form, DatePicker, TimePicker } from 'antd';
+import toast from 'react-hot-toast';
+import { Modal, Form, DatePicker } from 'antd';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -8,6 +9,8 @@ import weekday from 'dayjs/plugin/weekday';
 import localeData from 'dayjs/plugin/localeData';
 
 import { AFCBackend } from '../../../util/utils';
+
+import styles from './EditEvents.module.css';
 
 const EditEvents = ({ isOpen, setIsOpen, record, userId, refreshHours, setRefreshHours }) => {
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -22,12 +25,13 @@ const EditEvents = ({ isOpen, setIsOpen, record, userId, refreshHours, setRefres
   const handleOk = async values => {
     setConfirmLoading(true);
     if (userId !== '') {
-      await AFCBackend.put(`/volunteers/${userId}/${record.eventId}/`, {
+      await AFCBackend.put(`/volunteers/${userId}/${record.eventId}`, {
         startDatetime: values.startDatetime,
         endDatetime: values.endDatetime,
       });
       setRefreshHours(!refreshHours);
     }
+    toast.success(`Edited hours for ${record.name}!`);
     setConfirmLoading(false);
     setIsOpen(false);
   };
@@ -49,32 +53,24 @@ const EditEvents = ({ isOpen, setIsOpen, record, userId, refreshHours, setRefres
       <Form
         form={form}
         initialValues={{
-          Date: dayjs(record.startDatetime).tz(timeZone),
           startDatetime: dayjs(record.startDatetime).tz(timeZone),
           endDatetime: dayjs(record.endDatetime).tz(timeZone),
         }}
         onFinish={handleOk}
       >
+        <p className={styles.fieldHeading}>Time In</p>
         <Form.Item
-          label="Date"
-          name="Date"
-          rules={[{ required: true, message: 'Please input an event name!' }]}
-        >
-          <DatePicker />
-        </Form.Item>
-        <Form.Item
-          label="Time In"
           name="startDatetime"
           rules={[{ required: true, message: 'Please input a valid time!' }]}
         >
-          <TimePicker format="HH:mm" />
+          <DatePicker showTime={{ format: 'hh:mm a' }} format="MM/DD/YYYY @ hh:mm a" />
         </Form.Item>
+        <p className={styles.fieldHeading}>Time Out</p>
         <Form.Item
-          label="Time Out"
           name="endDatetime"
           rules={[{ required: true, message: 'Please input a valid time!' }]}
         >
-          <TimePicker format="HH:mm" />
+          <DatePicker showTime={{ format: 'hh:mm a' }} format="MM/DD/YYYY @ hh:mm a" />
         </Form.Item>
       </Form>
     </Modal>

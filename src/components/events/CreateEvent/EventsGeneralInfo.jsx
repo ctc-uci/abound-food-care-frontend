@@ -415,7 +415,7 @@ const EventsGeneralInfo = () => {
                 render={({ field: { onChange, value, ref } }) => (
                   <TimePicker
                     className={styles.timePicker}
-                    format="HH:mm a"
+                    format="hh:mm a"
                     placeholder="Select start time"
                     use12Hours
                     {...{ onChange, value, ref }}
@@ -450,7 +450,7 @@ const EventsGeneralInfo = () => {
                 render={({ field: { onChange, value, ref } }) => (
                   <TimePicker
                     className={styles.timePicker}
-                    format="HH:mm a"
+                    format="hh:mm a"
                     placeholder="Select end time"
                     use12Hours
                     {...{ onChange, value, ref }}

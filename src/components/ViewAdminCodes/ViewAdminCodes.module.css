@@ -8,3 +8,20 @@
 .generate-admin-code-button {
   background-color: var(--eden) !important;
 }
+
+.noCodesWarning {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.noCodesBold {
+  font-weight: 600;
+}
+
+.codes {
+  margin-top: 20px;
+}
+
+.code {
+  font-weight: 700;
+}

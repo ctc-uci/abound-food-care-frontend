@@ -148,6 +148,8 @@ const EventPage = ({ cookies }) => {
     await AFCBackend.delete(`/waivers/${userId}/${eventId}`);
     setSignedUp(false);
     setNumAttendees(e => e - 1);
+    toast.dismiss();
+    toast.success(`Successfully removed signup from ${eventData?.name}!`);
   };
 
   return (
@@ -209,13 +211,11 @@ const EventPage = ({ cookies }) => {
                 <p className={styles.volunteers}>
                   {numAttendees || 0}/{eventData.volunteerCapacity} Signed Up
                 </p>
-                <button
-                  type="button"
-                  className={styles.viewVolunteers}
-                  onClick={() => setViewVolunteers(true)}
-                >
-                  View Volunteers
-                </button>
+                {cookies.get(cookieKeys.ROLE) === AUTH_ROLES.ADMIN_ROLE && (
+                  <Button className={styles.viewVolunteers} onClick={() => setViewVolunteers(true)}>
+                    View Volunteers
+                  </Button>
+                )}
               </div>
               {cookies.get(cookieKeys.ROLE) === AUTH_ROLES.ADMIN_ROLE &&
                 (Date.parse(eventData.startDatetime) < new Date() ? (

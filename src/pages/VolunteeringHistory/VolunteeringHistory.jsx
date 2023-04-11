@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Row, Col } from 'antd';
 import { ClockCircleOutlined, ScheduleOutlined } from '@ant-design/icons';
+
+import { instanceOf } from 'prop-types';
+import { withCookies, Cookies } from 'react-cookie';
+import { cookieKeys } from '../../util/cookie_utils';
 import { AFCBackend } from '../../util/utils';
-import { getCurrentUser, auth } from '../../util/auth_utils';
+import { getCurrentUser, auth, useNavigate, AUTH_ROLES } from '../../util/auth_utils';
 
 import VolunteerLog from '../../components/VolunteerLog/VolunteerLog';
 import styles from './VolunteeringHistory.module.css';
 
-const VolunteeringHistory = () => {
+const VolunteeringHistory = ({ cookies }) => {
   const [numHours, setNumHours] = useState(0);
   const [numEvents, setNumEvents] = useState(0);
   const [refreshHours, setRefreshHours] = useState(false);
+  const navigate = useNavigate();
 
   const getHoursAndEvents = async uid => {
     const { data } = await AFCBackend.get(`/volunteers/logs/${uid}`);
@@ -27,7 +32,12 @@ const VolunteeringHistory = () => {
     if (uid) {
       await getHoursAndEvents(uid);
     }
-  }, []);
+    if (cookies.get(cookieKeys.ROLE) === AUTH_ROLES.ADMIN_ROLE) {
+      navigate('/hours');
+    } else if (cookies.get(cookieKeys.ROLE) !== AUTH_ROLES.VOLUNTEER_ROLE) {
+      navigate('/');
+    }
+  }, [refreshHours]);
 
   return (
     <div className={styles.vhContainer}>
@@ -74,4 +84,8 @@ const VolunteeringHistory = () => {
   );
 };
 
-export default VolunteeringHistory;
+VolunteeringHistory.propTypes = {
+  cookies: instanceOf(Cookies).isRequired,
+};
+
+export default withCookies(VolunteeringHistory);
