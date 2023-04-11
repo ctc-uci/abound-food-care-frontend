@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
+import moment from 'moment';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   CalendarOutlined,
@@ -8,15 +9,18 @@ import {
   AimOutlined,
 } from '@ant-design/icons';
 import { Button, Divider, Tag, Space } from 'antd';
-import moment from 'moment';
 import { instanceOf } from 'prop-types';
-import { withCookies, Cookies, cookieKeys } from '../../../../util/cookie_utils';
-import { AFCBackend, eventRequirementsMap } from '../../../../util/utils';
+import { saveAs } from 'file-saver';
+
 import PostEvent from '../PostEvent/PostEvent';
 import EventVolunteerList from '../EventVolunteerList/EventVolunteerList';
+
+import { withCookies, Cookies, cookieKeys } from '../../../../util/cookie_utils';
+import { AFCBackend, eventRequirementsMap } from '../../../../util/utils';
+import AUTH_ROLES from '../../../../util/auth_config';
+
 import EventPageImage from '../../../../assets/img/event-page-banner.png';
 import styles from './EventPage.module.css';
-import AUTH_ROLES from '../../../../util/auth_config';
 
 const EventPage = ({ cookies }) => {
   const [eventData, setEventData] = useState([]);
@@ -97,6 +101,17 @@ const EventPage = ({ cookies }) => {
     const endDate = moment(endDateObj).format('MMMM Do, YYYY');
     const endTime = moment(endDateObj).format('hh:mm a');
     return { startDate, startTime, endDate, endTime };
+  };
+
+  const downloadWaivers = async () => {
+    const { data } = await AFCBackend(`/waivers/event/download/${eventId}`, {
+      headers: { 'Content-Type': 'application/json' },
+      withCredentials: true,
+      responseType: 'blob',
+    });
+    const { data: eventRes } = await AFCBackend.get(`/events/${eventId}`);
+    const name = eventRes[0].name.replace(/\s+/g, '-');
+    await saveAs(data, `${name}-waivers.zip`);
   };
 
   const getPostEvent = () =>
@@ -194,12 +209,10 @@ const EventPage = ({ cookies }) => {
               <p className={styles.header}>Waivers</p>
               {/* TODO Multiple waiver downloads; currently, only single waiver download button */}
               {handoutWaiver ? (
-                <a href={handoutWaiver.link} download={handoutWaiver.name}>
-                  <Button className={styles.waiversButton}>
-                    <VerticalAlignBottomOutlined />
-                    <p className={styles.waiversButtonText}>Click to Download</p>
-                  </Button>
-                </a>
+                <Button className={styles.waiversButton} onClick={downloadWaivers}>
+                  <VerticalAlignBottomOutlined />
+                  <p className={styles.waiversButtonText}>Click to Download</p>
+                </Button>
               ) : (
                 <p className={styles.notAvailable}>Waiver not available</p>
               )}
